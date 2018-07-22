@@ -1,0 +1,75 @@
+package cn.zytx.common.http.smart;
+
+import cn.zytx.common.http.basic.HttpClient;
+import cn.zytx.common.http.HttpException;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
+
+/**
+ * @author xiongshiyan at 2017/12/9
+ * 针对Http超时和各种错误码分别处理
+ * @see HttpClient
+ * 使用时，可以直接new实现类，也可以通过{@link cn.zytx.common.utils.SpringFactoriesLoader }获取，这样就不会与实现类绑定
+ */
+public interface SmartHttpClient extends HttpClient{
+    /**
+     * GET方法
+     * @param request 请求参数
+     * @return 响应
+     * @throws IOException 超时等IO异常
+     * @throws HttpException 404,500等或者其他异常都转换为该异常
+     */
+    Response get(Request request) throws IOException;
+    /**
+     * POST方法
+     * @param request 请求参数
+     * @return 响应
+     * @throws IOException 超时等IO异常
+     * @throws HttpException 404,500等或者其他异常都转换为该异常
+     */
+    Response post(Request request) throws IOException;
+
+    /**
+     * 下载为字节数组
+     * @param request 请求参数
+     * @return byte[]
+     * @throws IOException IOException
+     */
+    byte[] getAsBytes(Request request) throws IOException;
+
+    /**
+     * 下载文件
+     * @param request 请求参数
+     * @return File 下载的文件
+     * @throws IOException IOException
+     */
+    File getAsFile(Request request) throws IOException;
+
+    /**
+     * 文件上传
+     * @param request 请求参数
+     * @return Response
+     * @throws IOException IOException
+     */
+    Response upload(Request request) throws IOException;
+
+    /**
+     * 对请求参数拦截处理 , 比如统一添加header , 参数加密 , 默认不处理
+     * @param request Request
+     * @return Request
+     */
+    default Request beforeTemplate(Request request){
+        return Objects.requireNonNull(request);
+    }
+
+    /**
+     * 对返回结果拦截处理 , 比如统一解密 , 默认不处理
+     * @param response Response
+     * @return Response
+     */
+    default Response afterTemplate(Response response){
+        return response;
+    }
+}
