@@ -65,7 +65,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
 
             } else{
                 String err = errMessage(connect);
-                throw new HttpException(responseCode,err);
+                throw new HttpException(responseCode,err,connect.getHeaderFields());
             }
         } catch (IOException | HttpException e) {
             throw e;
@@ -157,7 +157,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
         bw.close();
         in.close();
 
-        disconnectQuietly(connect);
+        //disconnectQuietly(connect);
 
         return bw.getBuffer().toString();
     }

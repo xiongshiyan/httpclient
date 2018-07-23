@@ -89,7 +89,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
                 return convert;
             }else {
                 String errorMsg = EntityUtils.toString(entity, resultCharset);
-                throw new HttpException(statusCode,errorMsg);
+                throw new HttpException(statusCode,errorMsg,parseHeaders(response));
             }
         } catch (IOException | HttpException e) {//超时和非200情况直接抛出
             throw e;

@@ -124,7 +124,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
         }else {
             //获取错误body，而不是仅仅状态行信息的message response.message()
             String errorMsg = new String(response.body().bytes() , resultCharset);
-            throw new HttpException(statusCode,errorMsg);
+            throw new HttpException(statusCode,errorMsg,parseHeaders(response));
         }
     }
 
