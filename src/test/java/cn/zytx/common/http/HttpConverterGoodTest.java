@@ -53,10 +53,6 @@ public class HttpConverterGoodTest {
 
         }catch (IOException e){
             e.printStackTrace();
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }
     }
 
@@ -86,10 +82,6 @@ public class HttpConverterGoodTest {
             JsonObject jsonObject = resultConverter.toJsonObject();
             System.out.println(jsonObject);
             Assert.assertEquals("熊诗言" , jsonObject.getString("name"));
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }catch (IOException e){
             System.out.println("超时异常");
         }

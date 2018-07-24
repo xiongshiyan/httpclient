@@ -1,7 +1,6 @@
 package cn.zytx.common.http.smart;
 
 import cn.zytx.common.http.basic.HttpClient;
-import cn.zytx.common.http.HttpException;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +18,6 @@ public interface SmartHttpClient extends HttpClient{
      * @param request 请求参数
      * @return 响应
      * @throws IOException 超时等IO异常
-     * @throws HttpException 404,500等或者其他异常都转换为该异常
      */
     Response get(Request request) throws IOException;
     /**
@@ -27,7 +25,6 @@ public interface SmartHttpClient extends HttpClient{
      * @param request 请求参数
      * @return 响应
      * @throws IOException 超时等IO异常
-     * @throws HttpException 404,500等或者其他异常都转换为该异常
      */
     Response post(Request request) throws IOException;
 

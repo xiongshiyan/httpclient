@@ -1,6 +1,5 @@
 package cn.zytx.common.http.base;
 
-import cn.zytx.common.http.HttpException;
 import cn.zytx.common.http.HttpStatus;
 import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.Method;

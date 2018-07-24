@@ -50,9 +50,6 @@ public class HttpSmartTest {
             request = Request.of(url).setFile(new File("C:\\Users\\xiongshiyan\\Desktop\\yyyy.txt"));
             File asFile = http.getAsFile(request);
             System.out.println(asFile.getAbsolutePath());
-        } catch (HttpException e) {
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -87,10 +84,6 @@ public class HttpSmartTest {
             request = Request.of(url).addParam("xx" , "xx").addParam("yy" , "yy").setContentType(FORM_URLENCODED);
             Response response = http.post(request);
             System.out.println(response.getBody());
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }catch (IOException e){
             System.out.println("超时异常");
         }
@@ -120,11 +113,7 @@ public class HttpSmartTest {
             Response response = httpClient.upload(request);
             System.out.println(response.getBody());
             System.out.println(response.getHeaders());
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
-        }catch (IOException e){
+        } catch (IOException e){
             e.printStackTrace();
             System.out.println("超时异常");
         }
@@ -159,11 +148,7 @@ public class HttpSmartTest {
             Response response = httpClient.upload(request);
             System.out.println(response.getBody());
             System.out.println(response.getHeaders());
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
-        }catch (IOException e){
+        } catch (IOException e){
             e.printStackTrace();
             System.out.println("超时异常");
         }

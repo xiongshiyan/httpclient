@@ -1,7 +1,7 @@
 package cn.zytx.common.http.smart;
 
 
-import cn.zytx.common.http.HttpException;
+import cn.zytx.common.http.Header;
 import cn.zytx.common.http.HttpStatus;
 import cn.zytx.common.utils.IoUtil;
 
@@ -46,20 +46,14 @@ public class Response {
         return new Response(body).setResultCharset(resultCharset).setHeaders(headers);
     }
     public static Response with(InputStream body , String resultCharset , Map<String , List<String>> headers){
-        String read = null;
-        try {
-            read = IoUtil.read(body, resultCharset);
-        } catch (IOException e) {
-            throw new HttpException(e);
-        }
-        return new Response(read).setResultCharset(resultCharset).setHeaders(headers);
+        return with(HttpStatus.HTTP_OK , body , resultCharset , headers);
     }
     public static Response with(int statusCode , InputStream body , String resultCharset , Map<String , List<String>> headers){
         String read = null;
         try {
             read = IoUtil.read(body, resultCharset);
         } catch (IOException e) {
-            throw new HttpException(e);
+            throw new RuntimeException(e);
         }
         return new Response(read).setResultCharset(resultCharset).setHeaders(headers).setStatusCode(statusCode);
     }
@@ -123,6 +117,30 @@ public class Response {
     public Response setStatusCode(int statusCode) {
         this.statusCode = statusCode;
         return this;
+    }
+
+    /**
+     * 请求是否OK
+     * @return true only if statusCode==200
+     */
+    public boolean isOk(){
+        return HttpStatus.HTTP_OK == this.statusCode;
+    }
+
+    /**
+     * 是否需要重定向
+     * @return true if 301|302|303
+     */
+    public boolean redirectable(){
+        return HttpStatus.HTTP_MOVED_PERM == this.statusCode || HttpStatus.HTTP_MOVED_TEMP == this.statusCode || HttpStatus.HTTP_SEE_OTHER == this.statusCode;
+    }
+
+    /**
+     * 获取重定向地址
+     * @return 重定向地址
+     */
+    public String getRedirectUrl(){
+        return this.headers.get(Header.LOCATION.name()).get(0);
     }
 
     @Override

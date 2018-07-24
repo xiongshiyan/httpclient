@@ -49,10 +49,6 @@ public class HttpBasicTest {
             System.out.println(asFile.getAbsolutePath());
         }catch (IOException e){
             e.printStackTrace();
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }
     }
     @Test@Ignore
@@ -85,10 +81,6 @@ public class HttpBasicTest {
             params.put("phone" , "15208384257");
             String post = http.post(url, params);
             System.out.println(post);
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }catch (IOException e){
             e.printStackTrace();
             System.out.println("超时异常");
@@ -118,10 +110,6 @@ public class HttpBasicTest {
             headers.put("phone" , "15208384257");
             String s = httpClient.upload(url , headers, formFile);
             System.out.println(s);
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }catch (IOException e){
             e.printStackTrace();
             System.out.println("超时异常");
@@ -160,10 +148,6 @@ public class HttpBasicTest {
             params.put("k2" , "v2");
             String s = httpClient.upload(url , params , headers, formFile);
             System.out.println(s);
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }catch (IOException e){
             e.printStackTrace();
             System.out.println("超时异常");

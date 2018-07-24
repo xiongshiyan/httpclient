@@ -50,10 +50,6 @@ public class HttpConverterTest {
             System.out.println(bean2.getData());
         }catch (IOException e){
             e.printStackTrace();
-        } catch (HttpException e) {
-            e.printStackTrace();
-            System.out.println(e.getResponseCode());
-            System.out.println(e.getErrorMessage());
         }
     }
     private static class Bean{

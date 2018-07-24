@@ -1,6 +1,5 @@
 package cn.zytx.common.http.basic;
 
-import cn.zytx.common.http.HttpException;
 import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.smart.Request;
 import cn.zytx.common.http.smart.SmartHttpClient;
@@ -31,7 +30,6 @@ public interface HttpClient {
      * @param resultCharset 返回编码
      * @return 返回的内容
      * @throws IOException 超时异常 {@link java.net.SocketTimeoutException connect timed out/read time out}
-     * @throws HttpException 非200请求异常(code就是http的statusCode)或者其他异常(code为-1)抛出
      */
     String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException;
 
@@ -76,7 +74,6 @@ public interface HttpClient {
      * @param resultCharset 返回编码
      * @return 请求返回
      * @throws IOException 超时异常 {@link java.net.SocketTimeoutException connect timed out/read time out}
-     * @throws HttpException 非200请求异常(code就是http的statusCode)或者其他异常(code为-1)抛出
      */
     String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException;
 
