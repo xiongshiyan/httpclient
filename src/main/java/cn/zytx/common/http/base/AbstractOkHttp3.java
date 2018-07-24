@@ -28,6 +28,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
     public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
         Objects.requireNonNull(url);
         Response response = null;
+        InputStream inputStream = null;
         try {
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
@@ -62,13 +63,22 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
             response = client.newCall(request).execute();
 
             //5.获取响应
-            return getReturnMsg(response , resultCharset , includeHeaders , resultCallback);
-
-        } catch (IOException | HttpException e) {
+//            return getReturnMsg(response , resultCharset , includeHeaders , resultCallback);
+            inputStream = response.body().byteStream();
+            int statusCode = response.code();
+            R convert;
+            if (HttpStatus.HTTP_OK == statusCode) {
+                convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
+            }else {
+                convert = resultCallback.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
+            }
+            return convert;
+        } catch (IOException e) {
             throw e;
         } catch (Exception e){
-            throw new HttpException(e);
+            throw new RuntimeException(e);
         } finally {
+            IoUtil.close(inputStream);
             if(null != response){
                 try {
                     response.close();
@@ -115,17 +125,26 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
     protected <R> R getReturnMsg(Response response , String resultCharset , boolean includeHeaders , ResultCallback<R> resultParser) throws IOException {
         int statusCode = response.code();
         /*String body = new String(response.body().bytes() , resultCharset);*/
+//        if (HttpStatus.HTTP_OK == statusCode) {
+//            InputStream inputStream = response.body().byteStream();
+//            R convert = resultParser.convert(inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
+//            IoUtil.close(inputStream);
+//            return convert;
+//
+//        }else {
+//            //获取错误body，而不是仅仅状态行信息的message response.message()
+//            String errorMsg = new String(response.body().bytes() , resultCharset);
+//            throw new HttpException(statusCode,errorMsg,parseHeaders(response));
+//        }
+        InputStream inputStream = response.body().byteStream();
+        R convert;
         if (HttpStatus.HTTP_OK == statusCode) {
-            InputStream inputStream = response.body().byteStream();
-            R convert = resultParser.convert(inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
-            IoUtil.close(inputStream);
-            return convert;
-
+            convert = resultParser.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
         }else {
-            //获取错误body，而不是仅仅状态行信息的message response.message()
-            String errorMsg = new String(response.body().bytes() , resultCharset);
-            throw new HttpException(statusCode,errorMsg,parseHeaders(response));
+            convert = resultParser.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
         }
+        IoUtil.close(inputStream);
+        return convert;
     }
 
     /**

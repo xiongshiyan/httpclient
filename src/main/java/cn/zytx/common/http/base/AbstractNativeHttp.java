@@ -39,38 +39,46 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connect);
 
-            //4.连接
-            connect.connect();
-
             //5.写入内容，只对post有效
             if(contentCallback != null){
                 contentCallback.doWriteWith(connect);
             }
 
+            //4.连接
+            connect.connect();
+
             //6.获取返回值
-            int responseCode = connect.getResponseCode();
-            if( HttpStatus.HTTP_OK == responseCode){
-                //6.1获取body
-                /*InputStream is = connect.getInputStream();
-                byte[] result = IoUtil.stream2Bytes(is);
-                is.close();
+            int statusCode = connect.getResponseCode();
+//            if( HttpStatus.HTTP_OK == statusCode){
+//                //6.1获取body
+//                /*InputStream is = connect.getInputStream();
+//                byte[] result = IoUtil.stream2Bytes(is);
+//                is.close();
+//
+//                String s = new String(result, resultCharset);*/
+//
+//                //6.2获取header
+//
+//                inputStream = connect.getInputStream();
+//
+//                return resultCallback.convert(inputStream, resultCharset, includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
+//
+//            } else{
+//                String err = errMessage(connect);
+//                throw new HttpException(statusCode,err,connect.getHeaderFields());
+//            }
 
-                String s = new String(result, resultCharset);*/
-
-                //6.2获取header
-
+            if(HttpStatus.HTTP_OK == statusCode){
                 inputStream = connect.getInputStream();
-
-                return resultCallback.convert(inputStream, resultCharset, includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
-
-            } else{
-                String err = errMessage(connect);
-                throw new HttpException(responseCode,err,connect.getHeaderFields());
+                return resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
+            }else {
+                inputStream = connect.getErrorStream();
+                return resultCallback.convert(statusCode, inputStream, resultCharset, connect.getHeaderFields());
             }
-        } catch (IOException | HttpException e) {
+        } catch (IOException e) {
             throw e;
         } catch (Exception e){
-            throw new HttpException(e);
+            throw new RuntimeException(e);
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接

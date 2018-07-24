@@ -2,6 +2,7 @@ package cn.zytx.common.http.smart;
 
 
 import cn.zytx.common.http.HttpException;
+import cn.zytx.common.http.HttpStatus;
 import cn.zytx.common.utils.IoUtil;
 
 import java.io.IOException;
@@ -17,6 +18,10 @@ import static cn.zytx.common.http.HttpConstants.DEFAULT_CHARSET;
  * @author xiongshiyan at 2017/12/9
  */
 public class Response {
+    /**
+     * 返回码
+     */
+    private int statusCode = HttpStatus.HTTP_OK;
     /**
      * 返回体
      */
@@ -48,6 +53,15 @@ public class Response {
             throw new HttpException(e);
         }
         return new Response(read).setResultCharset(resultCharset).setHeaders(headers);
+    }
+    public static Response with(int statusCode , InputStream body , String resultCharset , Map<String , List<String>> headers){
+        String read = null;
+        try {
+            read = IoUtil.read(body, resultCharset);
+        } catch (IOException e) {
+            throw new HttpException(e);
+        }
+        return new Response(read).setResultCharset(resultCharset).setHeaders(headers).setStatusCode(statusCode);
     }
 
 
@@ -99,6 +113,15 @@ public class Response {
 
     public Response setResultCharset(String resultCharset) {
         this.resultCharset = resultCharset;
+        return this;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public Response setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
         return this;
     }
 

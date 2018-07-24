@@ -38,7 +38,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         Request request = beforeTemplate(req);
         return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders(),
                 request.getConnectionTimeout(),request.getReadTimeout() , request.getResultCharset(),request.isIncludeHeaders(),
-                (b,r,h)-> IoUtil.stream2Bytes(b));
+                (s,b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         Request request = beforeTemplate(req);
         return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders() ,
                 request.getConnectionTimeout(),request.getReadTimeout() , request.getResultCharset(),request.isIncludeHeaders(),
-                (b,r,h)-> IoUtil.copy2File(b, request.getFile()));
+                (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override

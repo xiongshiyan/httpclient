@@ -81,20 +81,30 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
 
             entity = response.getEntity();
 
+//            if (HttpStatus.HTTP_OK == statusCode) {
+//                //7.封装返回参数
+//                InputStream inputStream = entity.getContent();
+//                R convert = resultCallback.convert(inputStream, resultCharset, includeHeader ? parseHeaders(response) : new HashMap<>(0));
+//                IoUtil.close(inputStream);
+//                return convert;
+//            }else {
+//                String errorMsg = EntityUtils.toString(entity, resultCharset);
+//                throw new HttpException(statusCode,errorMsg,parseHeaders(response));
+//            }
+            InputStream inputStream = entity.getContent();
+            R convert;
             if (HttpStatus.HTTP_OK == statusCode) {
                 //7.封装返回参数
-                InputStream inputStream = entity.getContent();
-                R convert = resultCallback.convert(inputStream, resultCharset, includeHeader ? parseHeaders(response) : new HashMap<>(0));
-                IoUtil.close(inputStream);
-                return convert;
+                convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeader ? parseHeaders(response) : new HashMap<>(0));
             }else {
-                String errorMsg = EntityUtils.toString(entity, resultCharset);
-                throw new HttpException(statusCode,errorMsg,parseHeaders(response));
+                convert = resultCallback.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
             }
-        } catch (IOException | HttpException e) {//超时和非200情况直接抛出
+            IoUtil.close(inputStream);
+            return convert;
+        } catch (IOException e) {
             throw e;
         } catch (Exception e){
-            throw new HttpException(e);
+            throw new RuntimeException(e);
         }finally {
             EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);

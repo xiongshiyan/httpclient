@@ -22,7 +22,7 @@ public class OkHttp3Client extends AbstractOkHttp3 implements HttpClient {
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException {
         return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET),Method.GET,null,null,
                 ArrayListMultimap.fromMap(headers),
-                connectTimeout,readTimeout,resultCharset,false,(b,r,h)-> IoUtil.read(b ,r));
+                connectTimeout,readTimeout,resultCharset,false,(s,b,r,h)-> IoUtil.read(b ,r));
     }
 
     /**
@@ -33,21 +33,21 @@ public class OkHttp3Client extends AbstractOkHttp3 implements HttpClient {
         return template(url, Method.POST, contentType, d->setRequestBody(d , Method.POST , stringBody(body , contentType)) ,
                 ArrayListMultimap.fromMap(headers),
                 connectTimeout,readTimeout,resultCharset,false,
-                (b,r,h)-> IoUtil.read(b ,r));
+                (s,b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
         return template(url,Method.GET,null,null, headers ,
                 connectTimeout,readTimeout,null,false,
-                (b,r,h)-> IoUtil.stream2Bytes(b));
+                (s,b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
     public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
         return template(url,Method.GET,null,null, headers ,
                 connectTimeout,readTimeout,null,false,
-                (b,r,h)-> IoUtil.copy2File(b, file));
+                (s,b,r,h)-> IoUtil.copy2File(b, file));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class OkHttp3Client extends AbstractOkHttp3 implements HttpClient {
 
         return template(url, Method.POST, null , d->setRequestBody(d, Method.POST , requestBody), headers,
                 connectTimeout,readTimeout,resultCharset,false,
-                (b,r,h)-> IoUtil.read(b ,r));
+                (s,b,r,h)-> IoUtil.read(b ,r));
     }
 
     protected MultipartBody getFilesBody(FormFile... files) {
@@ -74,7 +74,7 @@ public class OkHttp3Client extends AbstractOkHttp3 implements HttpClient {
 
         return template(url, Method.POST, null , d->setRequestBody(d, Method.POST , requestBody), headers,
                 connectTimeout,readTimeout,resultCharset,false,
-                (b,r,h)-> IoUtil.read(b ,r));
+                (s,b,r,h)-> IoUtil.read(b ,r));
     }
 
     protected MultipartBody getFilesBody(ArrayListMultimap<String, String> params , FormFile... files) {

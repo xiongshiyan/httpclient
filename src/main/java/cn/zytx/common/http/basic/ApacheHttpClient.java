@@ -25,35 +25,35 @@ public class ApacheHttpClient extends AbstractApacheHttp implements HttpClient {
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
         return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET), Method.GET,null,null,
                 ArrayListMultimap.fromMap(headers),
-                connectTimeout,readTimeout , resultCharset,false,(b,r,h)-> IoUtil.read(b ,r));
+                connectTimeout,readTimeout , resultCharset,false,(s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
         return template(url,Method.POST, contentType, (request -> setRequestBody(request , body ,bodyCharset)),
                 ArrayListMultimap.fromMap(headers),
-                connectTimeout, readTimeout , resultCharset,false, (b,r,h)-> IoUtil.read(b ,r));
+                connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
         return template(url, Method.GET,null,null, headers,
                 connectTimeout,readTimeout , null,false,
-                (b,r,h)-> IoUtil.stream2Bytes(b));
+                (s, b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
     public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
         return template(url, Method.GET,null,null, headers ,
                 connectTimeout,readTimeout , null,false,
-                (b,r,h)-> IoUtil.copy2File(b, file));
+                (s, b,r,h)-> IoUtil.copy2File(b, file));
     }
 
 
     @Override
     public String upload(String url, ArrayListMultimap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
         return template(url,Method.POST, null, (request -> addFormFiles(request, files)),
-                headers, connectTimeout, readTimeout , resultCharset,false, (b,r,h)-> IoUtil.read(b ,r));
+                headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     protected void addFormFiles(HttpEntityEnclosingRequest request, FormFile[] files) throws UnsupportedEncodingException {
@@ -72,7 +72,7 @@ public class ApacheHttpClient extends AbstractApacheHttp implements HttpClient {
     @Override
     public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
         return template(url,Method.POST, null, (request -> addFormFiles(request, params ,files)),
-                headers, connectTimeout, readTimeout , resultCharset,false, (b,r,h)-> IoUtil.read(b ,r));
+                headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     protected void addFormFiles(HttpEntityEnclosingRequest request, ArrayListMultimap<String, String> params ,FormFile[] files) throws UnsupportedEncodingException {

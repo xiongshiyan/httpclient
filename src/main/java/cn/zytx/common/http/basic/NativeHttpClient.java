@@ -33,27 +33,27 @@ public class NativeHttpClient extends AbstractNativeHttp implements HttpClient {
     @Override
     public String get(String actionName, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException {
         return template(ParamUtil.contactUrlParams(actionName , params , DEFAULT_CHARSET), Method.GET, null, null, ArrayListMultimap.fromMap(headers),  connectTimeout, readTimeout,
-                resultCharset, false , (b,r,h)-> IoUtil.read(b , r));
+                resultCharset, false , (s, b,r,h)-> IoUtil.read(b , r));
     }
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
         return template(url, Method.POST, contentType, connect -> writeContent(connect , body , bodyCharset),
-                ArrayListMultimap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (b, r, h) -> IoUtil.read(b, r));
+                ArrayListMultimap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     @Override
     public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers,int connectTimeout,int readTimeout) throws IOException {
         return template(url, Method.GET, null, null, headers,
                 connectTimeout, readTimeout, null, false ,
-                (b,r,h)-> IoUtil.stream2Bytes(b));
+                (s, b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
     public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
         return template(url, Method.GET, null, null, headers,
                 connectTimeout, readTimeout, null, false ,
-                (b,r,h)-> IoUtil.copy2File(b, file));
+                (s, b,r,h)-> IoUtil.copy2File(b, file));
     }
 
     /**
@@ -64,7 +64,7 @@ public class NativeHttpClient extends AbstractNativeHttp implements HttpClient {
         ArrayListMultimap<String, String> multimap = mergeHeaders(headers);
         return template(url, Method.POST, null, connect -> this.upload0(connect , files), multimap ,
                 connectTimeout, readTimeout, resultCharset, false,
-                (b, r, h) -> IoUtil.read(b, r));
+                (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     /**
@@ -75,7 +75,7 @@ public class NativeHttpClient extends AbstractNativeHttp implements HttpClient {
         ArrayListMultimap<String, String> multimap = mergeHeaders(headers);
         return template(url, Method.POST, null, connect -> this.upload0(connect , params , files), multimap ,
                 connectTimeout, readTimeout, resultCharset, false,
-                (b, r, h) -> IoUtil.read(b, r));
+                (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     protected void upload0(HttpURLConnection connection , FormFile... files) throws IOException{
