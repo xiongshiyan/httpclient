@@ -59,9 +59,9 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
         setRequestProperty((HttpRequestBase) httpUriRequest, request.getConnectionTimeout(), request.getReadTimeout());
 
         //4.创建请求内容，如果有的话
-        if(request instanceof HttpEntityEnclosingRequest){
+        if(httpUriRequest instanceof HttpEntityEnclosingRequest){
             if(contentCallback != null){
-                contentCallback.doWriteWith((HttpEntityEnclosingRequest)request);
+                contentCallback.doWriteWith((HttpEntityEnclosingRequest)httpUriRequest);
             }
         }
 
@@ -106,18 +106,18 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
         //1.创建请求
         ///*URIBuilder builder = new URIBuilder(url);
         //URI uri = builder.build();*/
-        HttpUriRequest request = (Method.POST == method) ? new HttpPost(url) : new HttpGet(url);
+        HttpUriRequest httpUriRequest = (Method.POST == method) ? new HttpPost(url) : new HttpGet(url);
 
         //2.设置请求头
-        setRequestHeaders(request, contentType, headers);
+        setRequestHeaders(httpUriRequest, contentType, headers);
 
         //3.设置请求参数
-        setRequestProperty((HttpRequestBase) request, connectTimeout, readTimeout);
+        setRequestProperty((HttpRequestBase) httpUriRequest, connectTimeout, readTimeout);
 
         //4.创建请求内容，如果有的话
-        if(request instanceof HttpEntityEnclosingRequest){
+        if(httpUriRequest instanceof HttpEntityEnclosingRequest){
             if(contentCallback != null){
-                contentCallback.doWriteWith((HttpEntityEnclosingRequest)request);
+                contentCallback.doWriteWith((HttpEntityEnclosingRequest)httpUriRequest);
             }
         }
 
@@ -131,7 +131,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
             httpClient = getCloseableHttpClient(url ,new TrustAnyHostnameVerifier() , SSLSocketFactoryBuilder.create().getSSLContext());
 
             //6.发送请求
-            response = httpClient.execute(request  , HttpClientContext.create());
+            response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
             int statusCode = response.getStatusLine().getStatusCode();
             /*String resultString = EntityUtils.toString(response.getEntity(), resultCharset);*/
 
