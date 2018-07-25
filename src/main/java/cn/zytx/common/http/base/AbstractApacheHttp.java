@@ -1,6 +1,5 @@
 package cn.zytx.common.http.base;
 
-import cn.zytx.common.http.HttpStatus;
 import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.Method;
 import cn.zytx.common.http.base.ssl.SSLSocketFactoryBuilder;
@@ -28,6 +27,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import javax.net.ssl.*;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -91,13 +91,17 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
 //                throw new HttpException(statusCode,errorMsg,parseHeaders(response));
 //            }
             InputStream inputStream = entity.getContent();
-            R convert;
-            if (HttpStatus.HTTP_OK == statusCode) {
-                //7.封装返回参数
-                convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeader ? parseHeaders(response) : new HashMap<>(0));
-            }else {
-                convert = resultCallback.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
+//            R convert;
+//            if (HttpStatus.HTTP_OK == statusCode) {
+//                //7.封装返回参数
+//                convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeader ? parseHeaders(response) : new HashMap<>(0));
+//            }else {
+//                convert = resultCallback.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
+//            }
+            if(null == inputStream){
+                inputStream = new ByteArrayInputStream(new byte[]{});
             }
+            R convert = resultCallback.convert(statusCode , inputStream, resultCharset, includeHeader ? parseHeaders(response) : new HashMap<>(0));
             IoUtil.close(inputStream);
             return convert;
         } catch (IOException e) {
@@ -245,7 +249,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
             keySet.forEach((k)->headers.get(k).forEach((v)->request.addHeader(k,v)));
         }
         if(null != contentType){
-            request.setHeader(cn.zytx.common.http.Header.CONTENT_TYPE.name(), contentType);
+            request.setHeader(cn.zytx.common.http.Header.CONTENT_TYPE.toString(), contentType);
         }
     }
 

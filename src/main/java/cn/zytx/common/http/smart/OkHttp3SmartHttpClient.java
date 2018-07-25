@@ -19,7 +19,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET, request.getContentType(), null, request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
     }
     /**
      * @param req 请求体的编码，不支持，需要在contentType中指定
@@ -30,7 +30,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, stringBody(request.getBody(), request.getContentType())),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
     }
 
     @Override
@@ -61,6 +61,14 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, requestBody), request.getHeaders(),
                 request.getConnectionTimeout(), request.getConnectionTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
+    }
+
+    @Override
+    public Response afterTemplate(Request request, Response response) throws IOException{
+        if(request.isRedirectable() && response.needRredirect()){
+            return get(Request.of(response.getRedirectUrl()));
+        }
+        return response;
     }
 }

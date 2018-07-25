@@ -14,6 +14,7 @@ import okio.Source;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +49,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
                 keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));
             }
             if(null != contentType){
-                builder.addHeader(Header.CONTENT_TYPE.name() , contentType);
+                builder.addHeader(Header.CONTENT_TYPE.toString() , contentType);
             }
 
             //2.3处理请求体
@@ -66,13 +67,16 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
 //            return getReturnMsg(response , resultCharset , includeHeaders , resultCallback);
             inputStream = response.body().byteStream();
             int statusCode = response.code();
-            R convert;
-            if (HttpStatus.HTTP_OK == statusCode) {
+            if(null == inputStream){
+                inputStream = new ByteArrayInputStream(new byte[]{});
+            }
+            return resultCallback.convert(statusCode , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
+            /*if (HttpStatus.HTTP_OK == statusCode) {
                 convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
             }else {
                 convert = resultCallback.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
             }
-            return convert;
+            return convert;*/
         } catch (IOException e) {
             throw e;
         } catch (Exception e){

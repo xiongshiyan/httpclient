@@ -18,7 +18,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET,
                 request.getContentType(), null, request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(), Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                 connection -> writeContent(connection, request.getBody(), request.getBodyCharset()),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(), Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
     }
 
     @Override
@@ -60,6 +60,14 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         Response response = template(request.getUrl(), Method.POST, null, connect -> this.upload0(connect, request.getParams() ,request.getFormFiles()),
                 headers, request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
+    }
+
+    @Override
+    public Response afterTemplate(Request request, Response response) throws IOException{
+        if(request.isRedirectable() && response.needRredirect()){
+            return get(Request.of(response.getRedirectUrl()));
+        }
+        return response;
     }
 }

@@ -70,11 +70,13 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
 
             if(HttpStatus.HTTP_OK == statusCode){
                 inputStream = connect.getInputStream();
-                return resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
             }else {
                 inputStream = connect.getErrorStream();
-                return resultCallback.convert(statusCode, inputStream, resultCharset, connect.getHeaderFields());
             }
+            if(null == inputStream){
+                inputStream = new ByteArrayInputStream(new byte[]{});
+            }
+            return resultCallback.convert(statusCode , inputStream, resultCharset, includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {
             throw e;
         } catch (Exception e){

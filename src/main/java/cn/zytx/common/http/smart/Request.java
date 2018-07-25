@@ -62,6 +62,11 @@ public class Request {
     private boolean includeHeaders = false;
 
     /**
+     * 是否支持重定向
+     */
+    private boolean redirectable = false;
+
+    /**
      * 2018-06-18为了文件上传增加的
      */
     private List<FormFile> formFiles = new ArrayList<>();
@@ -189,6 +194,17 @@ public class Request {
 
     public Request setIncludeHeaders(boolean includeHeaders) {
         this.includeHeaders = includeHeaders;
+        return this;
+    }
+
+    public boolean isRedirectable() {
+        return redirectable;
+    }
+
+    public Request setRedirectable(boolean redirectable) {
+        this.redirectable = redirectable;
+        //要支持重定向必须header
+        this.includeHeaders = true;
         return this;
     }
 

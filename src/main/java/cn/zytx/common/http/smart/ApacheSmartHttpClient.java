@@ -20,7 +20,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 r -> setRequestBody(r, request.getBody(), request.getBodyCharset()), request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
     }
 
     @Override
@@ -60,6 +60,14 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         Response response = template(request.getUrl(), Method.POST, request.getContentType(), r -> addFormFiles(r, request.getParams() , request.getFormFiles()),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
-        return afterTemplate(response);
+        return afterTemplate(request , response);
+    }
+
+    @Override
+    public Response afterTemplate(Request request, Response response) throws IOException{
+        if(request.isRedirectable() && response.needRredirect()){
+            return get(Request.of(response.getRedirectUrl()));
+        }
+        return response;
     }
 }

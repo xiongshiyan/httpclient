@@ -131,7 +131,7 @@ public class Response {
      * 是否需要重定向
      * @return true if 301|302|303
      */
-    public boolean redirectable(){
+    public boolean needRredirect(){
         return HttpStatus.HTTP_MOVED_PERM == this.statusCode || HttpStatus.HTTP_MOVED_TEMP == this.statusCode || HttpStatus.HTTP_SEE_OTHER == this.statusCode;
     }
 
@@ -140,7 +140,7 @@ public class Response {
      * @return 重定向地址
      */
     public String getRedirectUrl(){
-        return this.headers.get(Header.LOCATION.name()).get(0);
+        return this.headers.get(Header.LOCATION.toString()).get(0);
     }
 
     @Override

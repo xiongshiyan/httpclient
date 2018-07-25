@@ -63,10 +63,12 @@ public interface SmartHttpClient extends HttpClient{
 
     /**
      * 对返回结果拦截处理 , 比如统一解密 , 默认不处理
+     * @param request Request
      * @param response Response
      * @return Response
+     * @throws IOException IOException
      */
-    default Response afterTemplate(Response response){
+    default Response afterTemplate(Request request , Response response) throws IOException{
         return response;
     }
 }
