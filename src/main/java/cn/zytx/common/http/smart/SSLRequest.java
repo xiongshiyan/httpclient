@@ -30,31 +30,35 @@ public class SSLRequest extends Request{
         return hostnameVerifier;
     }
 
-    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+    public SSLRequest setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = hostnameVerifier;
+        return this;
     }
 
     public SSLSocketFactory getSslSocketFactory() {
         return sslSocketFactory;
     }
 
-    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+    public SSLRequest setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
         this.sslSocketFactory = sslSocketFactory;
+        return this;
     }
 
     public SSLContext getSslContext() {
         return sslContext;
     }
 
-    public void setSslContext(SSLContext sslContext) {
+    public SSLRequest setSslContext(SSLContext sslContext) {
         this.sslContext = sslContext;
+        return this;
     }
 
     public X509TrustManager getX509TrustManager() {
         return x509TrustManager;
     }
 
-    public void setX509TrustManager(X509TrustManager x509TrustManager) {
+    public SSLRequest setX509TrustManager(X509TrustManager x509TrustManager) {
         this.x509TrustManager = x509TrustManager;
+        return this;
     }
 }
