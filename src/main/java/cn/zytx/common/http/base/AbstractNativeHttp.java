@@ -4,6 +4,9 @@ import cn.zytx.common.http.*;
 import cn.zytx.common.http.base.ssl.DefaultTrustManager;
 import cn.zytx.common.http.base.ssl.SSLSocketFactoryBuilder;
 import cn.zytx.common.http.base.ssl.TrustAnyHostnameVerifier;
+import cn.zytx.common.http.smart.Request;
+import cn.zytx.common.http.smart.Response;
+import cn.zytx.common.http.smart.SSLRequest;
 import cn.zytx.common.utils.ArrayListMultimap;
 import cn.zytx.common.utils.IoUtil;
 
@@ -19,6 +22,64 @@ import java.util.Set;
  * @author 熊诗言2018/6/6
  */
 public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnection>{
+    @Override
+    public Response template(Request request, ContentCallback<HttpURLConnection> contentCallback) throws IOException {
+        HttpURLConnection connect = null;
+        InputStream inputStream = null;
+        try {
+            //1.获取连接
+            connect = (HttpURLConnection)new java.net.URL(request.getUrl()).openConnection();
+
+            //2.处理header
+            setConnectProperty(connect, request.getMethod(),request.getContentType(), request.getHeaders(),request.getConnectionTimeout(),request.getReadTimeout());
+
+
+            //处理https
+            if(request instanceof SSLRequest && connect instanceof HttpsURLConnection){
+                HttpsURLConnection con = (HttpsURLConnection)connect;
+                SSLRequest sslRequest = (SSLRequest) request;
+                HostnameVerifier hostnameVerifier = sslRequest.getHostnameVerifier();
+                SSLSocketFactory socketFactory = sslRequest.getSslSocketFactory();
+                initSSL(con , hostnameVerifier, socketFactory);
+            }
+
+
+            //3.留给子类复写的机会:给connection设置更多参数
+            doWithConnection(connect);
+
+            //5.写入内容，只对post有效
+            if(contentCallback != null){
+                contentCallback.doWriteWith(connect);
+            }
+
+            //4.连接
+            connect.connect();
+
+            //6.获取返回值
+            int statusCode = connect.getResponseCode();
+
+            if(HttpStatus.HTTP_OK == statusCode){
+                inputStream = connect.getInputStream();
+            }else {
+                inputStream = connect.getErrorStream();
+            }
+            if(null == inputStream){
+                inputStream = new ByteArrayInputStream(new byte[]{});
+            }
+            return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        } finally {
+            //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
+            //1 . 关闭连接
+            disconnectQuietly(connect);
+            //2 . 关闭流
+            IoUtil.close(inputStream);
+        }
+    }
+
 
     //protected String sslVer = "TLS";
 
@@ -92,12 +153,6 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
 
     /**子类复写需要首先调用此方法，保证http的功能*/
     protected void doWithConnection(HttpURLConnection connect) throws Exception{
-        //处理https
-        if(connect instanceof HttpsURLConnection){
-            HttpsURLConnection con = (HttpsURLConnection)connect;
-            //默认的https处理
-            initSSL(con , new TrustAnyHostnameVerifier() , SSLSocketFactoryBuilder.create().build());
-        }
     }
 
     /**

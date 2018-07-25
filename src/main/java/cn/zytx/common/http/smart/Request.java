@@ -1,5 +1,6 @@
 package cn.zytx.common.http.smart;
 
+import cn.zytx.common.http.Method;
 import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.basic.FormFile;
 import cn.zytx.common.utils.ArrayListMultimap;
@@ -35,6 +36,10 @@ public class Request {
      * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
      */
     private String body;
+    /**
+     * 请求方法
+     */
+    private Method method = Method.GET;
     /**
      * 资源类型
      */
@@ -75,7 +80,7 @@ public class Request {
      */
     private File file = null;
 
-    private Request(String url){this.url = url;}
+    public Request(String url){this.url = url;}
 
     /**
      * 静态方法创建请求
@@ -124,6 +129,15 @@ public class Request {
 
     public Request setContentType(String contentType) {
         this.contentType = contentType;
+        return this;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public Request setMethod(Method method) {
+        this.method = method;
         return this;
     }
 

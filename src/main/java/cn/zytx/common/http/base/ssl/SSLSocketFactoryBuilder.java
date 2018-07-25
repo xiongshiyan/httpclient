@@ -5,11 +5,10 @@ import cn.zytx.common.utils.StrUtil;
 
 import javax.net.ssl.*;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.util.Objects;
 
 /**
@@ -104,10 +103,8 @@ public class SSLSocketFactoryBuilder{
 	/**
 	 * 构建SSLSocketFactory
 	 * @return SSLSocketFactory
-	 * @throws NoSuchAlgorithmException 无此算法
-	 * @throws KeyManagementException Key管理异常
 	 */
-	public SSLSocketFactory build() throws NoSuchAlgorithmException, KeyManagementException {
+	public SSLSocketFactory build() {
 		return getSSLContext().getSocketFactory();
 	}
 
@@ -117,61 +114,77 @@ public class SSLSocketFactoryBuilder{
 	 * @param certPath 证书路径
 	 * @param certPass 证书密码
 	 */
-	public SSLSocketFactory build(String certPath, String certPass) throws Exception{
+	public SSLSocketFactory build(String certPath, String certPass){
 		return getSSLContext(certPath , certPass).getSocketFactory();
 	}
-	public SSLSocketFactory buildWithClassPathCert(String certPath, String certPass) throws Exception{
+	public SSLSocketFactory buildWithClassPathCert(String certPath, String certPass){
 		return getClassPathSSLContext(certPath , certPass).getSocketFactory();
 	}
-	public SSLSocketFactory build(InputStream inputStream, String certPass) throws Exception{
+	public SSLSocketFactory build(InputStream inputStream, String certPass){
 		return getSSLContext(inputStream , certPass).getSocketFactory();
 	}
 
 
-	public SSLContext getSSLContext() throws NoSuchAlgorithmException, KeyManagementException{
-		SSLContext sslContext = SSLContext.getInstance(protocol);
-		sslContext.init(this.keyManagers, this.trustManagers, this.secureRandom);
-		return sslContext;
+	public SSLContext getSSLContext(){
+		try {
+			SSLContext sslContext = SSLContext.getInstance(protocol);
+			sslContext.init(this.keyManagers, this.trustManagers, this.secureRandom);
+			return sslContext;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * @param certPath 证书路径
 	 * @param certPass 证书密码
 	 */
-	public SSLContext getSSLContext(String certPath, String certPass) throws Exception{
-		InputStream inputStream = new FileInputStream(certPath);
-		return getSSLContext(inputStream , certPass);
+	public SSLContext getSSLContext(String certPath, String certPass){
+		try {
+			InputStream inputStream = new FileInputStream(certPath);
+			return getSSLContext(inputStream , certPass);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	/**
 	 * @param certPath classpath 证书路径
 	 * @param certPass 证书密码
 	 */
-	public SSLContext getClassPathSSLContext(String certPath, String certPass) throws Exception{
-		InputStream inputStream = SSLSocketFactoryBuilder.class.getResourceAsStream(certPath);
-		return getSSLContext(inputStream , certPass);
+	public SSLContext getClassPathSSLContext(String certPath, String certPass){
+		try {
+			InputStream inputStream = SSLSocketFactoryBuilder.class.getResourceAsStream(certPath);
+			return getSSLContext(inputStream , certPass);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * @param certStream 证书流，本方法会自动关闭
 	 * @param certPass 密码
 	 */
-	public SSLContext getSSLContext(InputStream certStream, String certPass) throws Exception{
+	public SSLContext getSSLContext(InputStream certStream, String certPass){
 		InputStream inputStream = Objects.requireNonNull(certStream);
 
-		KeyStore clientStore = KeyStore.getInstance("PKCS12");
-		char[] passArray = certPass.toCharArray();
-		clientStore.load(inputStream, passArray);
+		try {
+			KeyStore clientStore = KeyStore.getInstance("PKCS12");
+			char[] passArray = certPass.toCharArray();
+			clientStore.load(inputStream, passArray);
 
-		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-		kmf.init(clientStore, passArray);
-		KeyManager[] kms = kmf.getKeyManagers();
-		//"TLSv1"
-		SSLContext sslContext = SSLContext.getInstance(protocol);
+			KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+			kmf.init(clientStore, passArray);
+			KeyManager[] kms = kmf.getKeyManagers();
+			//"TLSv1"
+			SSLContext sslContext = SSLContext.getInstance(protocol);
 
-		sslContext.init(kms, this.trustManagers, this.secureRandom);
+			sslContext.init(kms, this.trustManagers, this.secureRandom);
 
-		inputStream.close();
+			inputStream.close();
 
-		return sslContext;
+			return sslContext;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

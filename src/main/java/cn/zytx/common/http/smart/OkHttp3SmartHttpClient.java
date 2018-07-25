@@ -16,9 +16,11 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET, request.getContentType(), null, request.getHeaders(),
+        /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET, request.getContentType(), null, request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
+        return afterTemplate(request , response);*/
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET), null);
         return afterTemplate(request , response);
     }
     /**
@@ -27,9 +29,10 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public Response post(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, stringBody(request.getBody(), request.getContentType())),
+        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, stringBody(request.getBody(), request.getContentType())),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);
+                Response::with);*/
+        Response response = template(request.setMethod(Method.POST), d -> setRequestBody(d, Method.POST, stringBody(request.getBody(), request.getContentType())));
         return afterTemplate(request , response);
     }
 
@@ -58,9 +61,10 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
         MultipartBody requestBody = getFilesBody(request.getParams() , request.getFormFiles());
 
-        Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, requestBody), request.getHeaders(),
+        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, requestBody), request.getHeaders(),
                 request.getConnectionTimeout(), request.getConnectionTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);
+                Response::with);*/
+        Response response = template(request.setMethod(Method.POST), d -> setRequestBody(d, Method.POST, requestBody));
         return afterTemplate(request , response);
     }
 

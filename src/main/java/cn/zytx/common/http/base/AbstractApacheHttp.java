@@ -4,6 +4,9 @@ import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.Method;
 import cn.zytx.common.http.base.ssl.SSLSocketFactoryBuilder;
 import cn.zytx.common.http.base.ssl.TrustAnyHostnameVerifier;
+import cn.zytx.common.http.smart.Request;
+import cn.zytx.common.http.smart.Response;
+import cn.zytx.common.http.smart.SSLRequest;
 import cn.zytx.common.utils.ArrayListMultimap;
 import cn.zytx.common.utils.IoUtil;
 import org.apache.http.*;
@@ -44,6 +47,60 @@ import java.util.Set;
  */
 public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclosingRequest> {
     protected int _maxRetryTimes = 3;
+
+    @Override
+    public Response template(Request request, ContentCallback<HttpEntityEnclosingRequest> contentCallback) throws IOException {
+        HttpUriRequest httpUriRequest = (Method.POST == request.getMethod()) ? new HttpPost(request.getUrl()) : new HttpGet(request.getUrl());
+
+        //2.设置请求头
+        setRequestHeaders(httpUriRequest, request.getContentType(), request.getHeaders());
+
+        //3.设置请求参数
+        setRequestProperty((HttpRequestBase) httpUriRequest, request.getConnectionTimeout(), request.getReadTimeout());
+
+        //4.创建请求内容，如果有的话
+        if(request instanceof HttpEntityEnclosingRequest){
+            if(contentCallback != null){
+                contentCallback.doWriteWith((HttpEntityEnclosingRequest)request);
+            }
+        }
+
+        CloseableHttpClient httpClient = null;
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        try {
+            //ssl处理
+            HostnameVerifier hostnameVerifier = null;
+            SSLContext sslContext = null;
+            if(request instanceof SSLRequest){
+                SSLRequest sslRequest = (SSLRequest)request;
+                hostnameVerifier = sslRequest.getHostnameVerifier();
+                sslContext = sslRequest.getSslContext();
+            }
+
+            httpClient = getCloseableHttpClient(request.getUrl() , hostnameVerifier , sslContext);
+            //6.发送请求
+            response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
+            int statusCode = response.getStatusLine().getStatusCode();
+            entity = response.getEntity();
+            InputStream inputStream = entity.getContent();
+            if(null == inputStream){
+                inputStream = new ByteArrayInputStream(new byte[]{});
+            }
+            Response convert = Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            IoUtil.close(inputStream);
+            return convert;
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }finally {
+            EntityUtils.consumeQuietly(entity);
+            IoUtil.close(response);
+            IoUtil.close(httpClient);
+        }
+    }
+
     @Override
     public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
         //1.创建请求
@@ -71,7 +128,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
 
             //5.创建http客户端
             //CloseableHttpClient httpClient = HttpClients.createDefault();
-            httpClient = getCloseableHttpClient(url);
+            httpClient = getCloseableHttpClient(url ,new TrustAnyHostnameVerifier() , SSLSocketFactoryBuilder.create().getSSLContext());
 
             //6.发送请求
             response = httpClient.execute(request  , HttpClientContext.create());
@@ -118,11 +175,11 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
     /**
      * https://ss.xx.xx.ss:8080/dsda
      */
-    private CloseableHttpClient getCloseableHttpClient(String url) throws Exception{
-        return createHttpClient(200, 40, 100, url);
+    private CloseableHttpClient getCloseableHttpClient(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
+        return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext);
     }
 
-    protected CloseableHttpClient createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url) throws Exception{
+    protected CloseableHttpClient createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
         String hostname = url.split("/")[2];
         boolean isHttps = ParamUtil.isHttps(url);
         int port = isHttps ? 443 : 80;
@@ -157,8 +214,10 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
         HttpClientBuilder httpClientBuilder = HttpClients.custom()
                 .setConnectionManager(cm)
                 .setRetryHandler(httpRequestRetryHandler);
-        //给子类复写的机会
 
+        initSSL(httpClientBuilder , hostnameVerifier , sslContext);
+
+        //给子类复写的机会
         doWithClient(httpClientBuilder , isHttps);
 
         return httpClientBuilder.build();
@@ -204,11 +263,6 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
     }
 
     protected void doWithClient(HttpClientBuilder httpClientBuilder , boolean isHttps) throws Exception{
-        if(isHttps){
-            //默认的处理方式
-            initSSL(httpClientBuilder , new TrustAnyHostnameVerifier() , SSLSocketFactoryBuilder.create().getSSLContext());
-        }
-
     }
 
     /**

@@ -15,21 +15,23 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET,
+        /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET,
                 request.getContentType(), null, request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);
+                Response::with);*/
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET), null);
         return afterTemplate(request , response);
     }
 
     @Override
     public Response post(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        Response response = template(request.getUrl(), Method.POST, request.getContentType(),
+        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(),
                 r -> setRequestBody(r, request.getBody(), request.getBodyCharset()), request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);
+                Response::with);*/
+        Response response = template(request.setMethod(Method.POST), r -> setRequestBody(r, request.getBody(), request.getBodyCharset()));
         return afterTemplate(request , response);
     }
 
@@ -57,9 +59,10 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 Response::with);*/
         /*使用更全的 ，支持文件和参数一起上传 */
 
-        Response response = template(request.getUrl(), Method.POST, request.getContentType(), r -> addFormFiles(r, request.getParams() , request.getFormFiles()),
+        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), r -> addFormFiles(r, request.getParams() , request.getFormFiles()),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);
+                Response::with);*/
+        Response response = template(request.setMethod(Method.POST), r -> addFormFiles(r, request.getParams(), request.getFormFiles()));
         return afterTemplate(request , response);
     }
 
