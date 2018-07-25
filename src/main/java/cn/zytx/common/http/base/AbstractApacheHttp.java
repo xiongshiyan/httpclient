@@ -215,7 +215,9 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
                 .setConnectionManager(cm)
                 .setRetryHandler(httpRequestRetryHandler);
 
-        initSSL(httpClientBuilder , hostnameVerifier , sslContext);
+        if(isHttps){
+            initSSL(httpClientBuilder , hostnameVerifier , sslContext);
+        }
 
         //给子类复写的机会
         doWithClient(httpClientBuilder , isHttps);
