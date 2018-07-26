@@ -34,15 +34,18 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             setConnectProperty(connect, request.getMethod(),request.getContentType(), request.getHeaders(),request.getConnectionTimeout(),request.getReadTimeout());
 
 
-            //处理https
-            if(request instanceof SSLRequest && connect instanceof HttpsURLConnection){
+            ////////////////////////////////////ssl处理///////////////////////////////////
+            if(connect instanceof HttpsURLConnection){
+                //默认设置这些
                 HttpsURLConnection con = (HttpsURLConnection)connect;
-                SSLRequest sslRequest = (SSLRequest) request;
-                HostnameVerifier hostnameVerifier = sslRequest.getHostnameVerifier();
-                SSLSocketFactory socketFactory = sslRequest.getSslSocketFactory();
-                initSSL(con , hostnameVerifier, socketFactory);
+                initSSL(con , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory());
+                if(request instanceof SSLRequest){
+                    //客户给了就用给客户的
+                    SSLRequest sslRequest = (SSLRequest) request;
+                    initSSL(con , sslRequest.getHostnameVerifier(), sslRequest.getSslSocketFactory());
+                }
             }
-
+            ////////////////////////////////////ssl处理///////////////////////////////////
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connect);
@@ -97,6 +100,14 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             //2.处理header
             setConnectProperty(connect, method,contentType, headers,connectTimeout,readTimeout);
 
+            ////////////////////////////////////ssl处理///////////////////////////////////
+            if(connect instanceof HttpsURLConnection){
+                //默认设置这些
+                HttpsURLConnection con = (HttpsURLConnection)connect;
+                initSSL(con , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory());
+            }
+            ////////////////////////////////////ssl处理///////////////////////////////////
+
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connect);
 
@@ -149,6 +160,12 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             //2 . 关闭流
             IoUtil.close(inputStream);
         }
+    }
+    protected HostnameVerifier getDefaultHostnameVerifier(){
+        return new TrustAnyHostnameVerifier();
+    }
+    protected SSLSocketFactory getDefaultSSLSocketFactory(){
+        return SSLSocketFactoryBuilder.create().build();
     }
 
     /**子类复写需要首先调用此方法，保证http的功能*/

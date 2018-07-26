@@ -69,14 +69,21 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
         CloseableHttpResponse response = null;
         HttpEntity entity = null;
         try {
-            //ssl处理
+            ////////////////////////////////////ssl处理///////////////////////////////////
             HostnameVerifier hostnameVerifier = null;
             SSLContext sslContext = null;
-            if(request instanceof SSLRequest){
-                SSLRequest sslRequest = (SSLRequest)request;
-                hostnameVerifier = sslRequest.getHostnameVerifier();
-                sslContext = sslRequest.getSslContext();
+            //https默认设置这些
+            if(ParamUtil.isHttps(request.getUrl())){
+                hostnameVerifier = getDefaultHostnameVerifier();
+                sslContext = getDefaultSSLContext();
+                //客户传过来就用客户的
+                if(request instanceof SSLRequest){
+                    SSLRequest sslRequest = (SSLRequest)request;
+                    hostnameVerifier = sslRequest.getHostnameVerifier();
+                    sslContext = sslRequest.getSslContext();
+                }
             }
+            ////////////////////////////////////ssl处理///////////////////////////////////
 
             httpClient = getCloseableHttpClient(request.getUrl() , hostnameVerifier , sslContext);
             //6.发送请求
@@ -128,7 +135,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
 
             //5.创建http客户端
             //CloseableHttpClient httpClient = HttpClients.createDefault();
-            httpClient = getCloseableHttpClient(url ,new TrustAnyHostnameVerifier() , SSLSocketFactoryBuilder.create().getSSLContext());
+            httpClient = getCloseableHttpClient(url ,getDefaultHostnameVerifier() , getDefaultSSLContext());
 
             //6.发送请求
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
@@ -171,12 +178,56 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
             IoUtil.close(httpClient);
         }
     }
-
+    protected HostnameVerifier getDefaultHostnameVerifier(){
+        return new TrustAnyHostnameVerifier();
+    }
+    protected SSLContext getDefaultSSLContext(){
+        return SSLSocketFactoryBuilder.create().getSSLContext();
+    }
     /**
      * https://ss.xx.xx.ss:8080/dsda
      */
     private CloseableHttpClient getCloseableHttpClient(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
         return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext);
+    }
+
+    private boolean retryIf(IOException exception, int executionCount, HttpContext context) {
+        if (executionCount >= _maxRetryTimes) {
+            return false;
+        }
+        // 如果服务器丢掉了连接，那么就重试
+        if (exception instanceof NoHttpResponseException) {
+            return true;
+        }
+        // 不要重试SSL握手异常
+        if (exception instanceof SSLHandshakeException) {
+            return false;
+        }
+        // 超时
+        if (exception instanceof InterruptedIOException) {
+            return false;
+        }
+        // 目标服务器不可达
+        if (exception instanceof UnknownHostException) {
+            return false;
+        }
+        // 连接被拒绝
+        if (exception instanceof ConnectException) {
+            return false;
+        }
+        // SSL握手异常
+        if (exception instanceof SSLException) {
+            return false;
+        }
+
+        HttpClientContext clientContext = HttpClientContext
+                .adapt(context);
+        HttpRequest request = clientContext.getRequest();
+        // 如果请求是幂等的，就再次尝试
+        if (!(request instanceof HttpEntityEnclosingRequest)) {
+            return true;
+        }
+        return false;
     }
 
     protected CloseableHttpClient createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
@@ -223,45 +274,6 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
         doWithClient(httpClientBuilder , isHttps);
 
         return httpClientBuilder.build();
-    }
-
-    private boolean retryIf(IOException exception, int executionCount, HttpContext context) {
-        if (executionCount >= _maxRetryTimes) {
-            return false;
-        }
-        // 如果服务器丢掉了连接，那么就重试
-        if (exception instanceof NoHttpResponseException) {
-            return true;
-        }
-        // 不要重试SSL握手异常
-        if (exception instanceof SSLHandshakeException) {
-            return false;
-        }
-        // 超时
-        if (exception instanceof InterruptedIOException) {
-            return false;
-        }
-        // 目标服务器不可达
-        if (exception instanceof UnknownHostException) {
-            return false;
-        }
-        // 连接被拒绝
-        if (exception instanceof ConnectException) {
-            return false;
-        }
-        // SSL握手异常
-        if (exception instanceof SSLException) {
-            return false;
-        }
-
-        HttpClientContext clientContext = HttpClientContext
-                .adapt(context);
-        HttpRequest request = clientContext.getRequest();
-        // 如果请求是幂等的，就再次尝试
-        if (!(request instanceof HttpEntityEnclosingRequest)) {
-            return true;
-        }
-        return false;
     }
 
     protected void doWithClient(HttpClientBuilder httpClientBuilder , boolean isHttps) throws Exception{

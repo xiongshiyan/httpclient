@@ -38,13 +38,17 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
                     .connectTimeout(request.getConnectionTimeout(), TimeUnit.MILLISECONDS)
                     .readTimeout(request.getReadTimeout(), TimeUnit.MILLISECONDS);
 
-            if(request instanceof SSLRequest){
-                SSLRequest sslRequest = (SSLRequest) request;
-                HostnameVerifier hostnameVerifier = sslRequest.getHostnameVerifier();
-                SSLSocketFactory socketFactory = sslRequest.getSslSocketFactory();
-                X509TrustManager trustManager = sslRequest.getX509TrustManager();
-                initSSL(clientBuilder , hostnameVerifier , socketFactory , trustManager);
+            ////////////////////////////////////ssl处理///////////////////////////////////
+            if(ParamUtil.isHttps(request.getUrl())){
+                //默认设置这些
+                initSSL(clientBuilder , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory() , getDefaultX509TrustManager());
+                if(request instanceof SSLRequest){
+                    //客户给了就用给客户的
+                    SSLRequest sslRequest = (SSLRequest) request;
+                    initSSL(clientBuilder , sslRequest.getHostnameVerifier(), sslRequest.getSslSocketFactory() , sslRequest.getX509TrustManager());
+                }
             }
+            ////////////////////////////////////ssl处理///////////////////////////////////
 
             //给子类复写的机会
             doWithBuilder(clientBuilder , ParamUtil.isHttps(request.getUrl()));
@@ -107,6 +111,14 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
                     .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+
+            ////////////////////////////////////ssl处理///////////////////////////////////
+            if(ParamUtil.isHttps(url)){
+                //默认设置这些
+                initSSL(clientBuilder , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory() , getDefaultX509TrustManager());
+            }
+            ////////////////////////////////////ssl处理///////////////////////////////////
+
             //给子类复写的机会
             doWithBuilder(clientBuilder , ParamUtil.isHttps(url));
 
@@ -162,7 +174,15 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
             }
         }
     }
-
+    protected HostnameVerifier getDefaultHostnameVerifier(){
+        return new TrustAnyHostnameVerifier();
+    }
+    protected SSLSocketFactory getDefaultSSLSocketFactory(){
+        return SSLSocketFactoryBuilder.create().build();
+    }
+    protected X509TrustManager getDefaultX509TrustManager(){
+        return new DefaultTrustManager2();
+    }
     protected void doWithBuilder(OkHttpClient.Builder builder , boolean isHttps) throws Exception{
     }
 
