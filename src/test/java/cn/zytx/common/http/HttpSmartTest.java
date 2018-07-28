@@ -15,18 +15,19 @@ import static cn.zytx.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
  * @author 熊诗言 2017/11/24
  * @see SmartHttpClient
  */
+@Ignore
 public class HttpSmartTest {
-    @Test@Ignore
+    @Test
     public void testGetOkHttp3(){
         SmartHttpClient http = new OkHttp3SmartHttpClient();
         testGet(http);
     }
-    @Test@Ignore
+    @Test
     public void testGetApacheHttp(){
         SmartHttpClient http = new ApacheSmartHttpClient();
         testGet(http);
     }
-    @Test@Ignore
+    @Test
     public void testGetNativeHttp(){
         SmartHttpClient http = new NativeSmartHttpClient();
         testGet(http);
@@ -54,17 +55,17 @@ public class HttpSmartTest {
             e.printStackTrace();
         }
     }
-    @Test@Ignore
+    @Test
     public void testPostOkHttp3(){
         SmartHttpClient http = new OkHttp3SmartHttpClient();
         testPost(http);
     }
-    @Test@Ignore
+    @Test
     public void testPostApacheHttp(){
         SmartHttpClient http = new ApacheSmartHttpClient();
         testPost(http);
     }
-    @Test@Ignore
+    @Test
     public void testPostNativeHttp(){
         SmartHttpClient http = new NativeSmartHttpClient();
         testPost(http);
@@ -89,17 +90,17 @@ public class HttpSmartTest {
         }
     }
 
-    @Test@Ignore
+    @Test
     public void testUploadOkHttp3(){
         SmartHttpClient http = new OkHttp3SmartHttpClient();
         testUploadImpl(http);
     }
-    @Test@Ignore
+    @Test
     public void testUploadApache(){
         SmartHttpClient http = new ApacheSmartHttpClient();
         testUploadImpl(http);
     }
-    @Test@Ignore
+    @Test
     public void testUploadLocal(){
         SmartHttpClient http = new NativeSmartHttpClient();
         testUploadImpl(http);
@@ -120,17 +121,17 @@ public class HttpSmartTest {
     }
 
 
-    @Test@Ignore
+    @Test
     public void testUploadWithParamsOkHttp3(){
         SmartHttpClient http = new OkHttp3SmartHttpClient();
         testUploadImplWithParams(http);
     }
-    @Test@Ignore
+    @Test
     public void testUploadWithParamsApache(){
         SmartHttpClient http = new ApacheSmartHttpClient();
         testUploadImplWithParams(http);
     }
-    @Test@Ignore
+    @Test
     public void testUploadWithParamsLocal(){
         SmartHttpClient http = new NativeSmartHttpClient();
         testUploadImplWithParams(http);

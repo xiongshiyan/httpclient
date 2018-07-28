@@ -16,18 +16,19 @@ import static cn.zytx.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
  * @author 熊诗言 2017/11/24
  * @see HttpClient
  */
+@Ignore
 public class HttpBasicTest {
-    @Test@Ignore
+    @Test
     public void testGetOkHttp3(){
         HttpClient http = new OkHttp3Client();
         testGet(http);
     }
-    @Test@Ignore
+    @Test
     public void testGetApacheHttp(){
         HttpClient http = new ApacheHttpClient();
         testGet(http);
     }
-    @Test@Ignore
+    @Test
     public void testGetNativeHttp(){
         HttpClient http = new NativeHttpClient();
         testGet(http);
@@ -51,17 +52,17 @@ public class HttpBasicTest {
             e.printStackTrace();
         }
     }
-    @Test@Ignore
+    @Test
     public void testPostOkHttp3(){
         HttpClient http = new OkHttp3Client();
         testPost(http);
     }
-    @Test@Ignore
+    @Test
     public void testPostApacheHttp(){
         HttpClient http = new ApacheHttpClient();
         testPost(http);
     }
-    @Test@Ignore
+    @Test
     public void testPostNativeHttp(){
         HttpClient http = new NativeHttpClient();
         testPost(http);
@@ -86,17 +87,17 @@ public class HttpBasicTest {
             System.out.println("超时异常");
         }
     }
-    @Test@Ignore
+    @Test
     public void testUploadOkHttp3(){
         HttpClient http = new OkHttp3Client();
         testUploadImpl(http);
     }
-    @Test@Ignore
+    @Test
     public void testUploadApache(){
         HttpClient http = new ApacheHttpClient();
         testUploadImpl(http);
     }
-    @Test@Ignore
+    @Test
     public void testUploadLocal(){
         HttpClient http = new NativeHttpClient();
         testUploadImpl(http);
@@ -120,17 +121,17 @@ public class HttpBasicTest {
 
 
 
-    @Test@Ignore
+    @Test
     public void testUploadWithParamsOkHttp3(){
         HttpClient http = new OkHttp3Client();
         testUploadImplWithParams(http);
     }
-    @Test@Ignore
+    @Test
     public void testUploadWithParamsApache(){
         HttpClient http = new ApacheHttpClient();
         testUploadImplWithParams(http);
     }
-    @Test@Ignore
+    @Test
     public void testUploadWithParamsLocal(){
         HttpClient http = new NativeHttpClient();
         testUploadImplWithParams(http);

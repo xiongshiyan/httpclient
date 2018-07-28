@@ -40,17 +40,19 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     @Override
     public byte[] getAsBytes(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders(),
+        /*return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders(),
                 request.getConnectionTimeout(),request.getReadTimeout() , request.getResultCharset(),request.isIncludeHeaders(),
-                (s,b,r,h)-> IoUtil.stream2Bytes(b));
+                (s,b,r,h)-> IoUtil.stream2Bytes(b));*/
+        return template(request.setMethod(Method.GET) , null , (s,b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
     public File getAsFile(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders() ,
+        /*return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders() ,
                 request.getConnectionTimeout(),request.getReadTimeout() , request.getResultCharset(),request.isIncludeHeaders(),
-                (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));
+                (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));*/
+        return template(request.setMethod(Method.GET) , null , (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override

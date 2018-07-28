@@ -15,20 +15,21 @@ import java.util.Map;
  * @author 熊诗言 2017/11/24
  * @see HttpClient
  */
+@Ignore
 public class HttpConverterTest {
 
-    @Test@Ignore
+    @Test
     public void testGetOkHttp3(){
         ConverterSmartHttpClient http = new ConverterOkHttp3SmartHttpClient();
         http.setConverter(new Json2BeanConverter());
         testGet(http);
     }
-    @Test@Ignore
+    @Test
     public void testGetApacheHttp(){
         ConverterSmartHttpClient http = new ConverterApacheSmartHttpClient(new Json2BeanConverter());
         testGet(http);
     }
-    @Test@Ignore
+    @Test
     public void testGetNativeHttp(){
         ConverterSmartHttpClient http = new ConverterNativeSmartHttpClient(new Json2BeanConverter());
         testGet(http);

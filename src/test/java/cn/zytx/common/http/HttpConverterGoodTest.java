@@ -17,19 +17,20 @@ import static cn.zytx.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
  * @author 熊诗言 2017/11/24
  * @see HttpClient
  */
+@Ignore
 public class HttpConverterGoodTest {
 
-    @Test@Ignore
+    @Test
     public void testGetOkHttp3(){
         ConverterSmartHttpClient http = new ConverterOkHttp3SmartHttpClient(new DefaultJsonConverter());
         testGet(http);
     }
-    @Test@Ignore
+    @Test
     public void testGetApacheHttp(){
         ConverterSmartHttpClient http = new ConverterApacheSmartHttpClient(new DefaultJsonConverter());
         testGet(http);
     }
-    @Test@Ignore
+    @Test
     public void testGetNativeHttp(){
         ConverterSmartHttpClient http = new ConverterNativeSmartHttpClient().setConverter(new DefaultJsonConverter());
         testGet(http);
@@ -57,17 +58,17 @@ public class HttpConverterGoodTest {
     }
 
 
-    @Test@Ignore
+    @Test
     public void testPostOkHttp3(){
         ConverterSmartHttpClient http = new ConverterOkHttp3SmartHttpClient(new DefaultJsonConverter());
         testPost(http);
     }
-    @Test@Ignore
+    @Test
     public void testPostApacheHttp(){
         ConverterSmartHttpClient http = new ConverterApacheSmartHttpClient(new DefaultJsonConverter());
         testPost(http);
     }
-    @Test@Ignore
+    @Test
     public void testPostNativeHttp(){
         ConverterSmartHttpClient http = new ConverterNativeSmartHttpClient().setConverter(new DefaultJsonConverter());
         testPost(http);
