@@ -19,6 +19,8 @@ dependencies {
     }
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.3'
 
+    compile group: 'commons-net', name: 'commons-net', version: '3.3'
+
     compile group: 'cn.zytx.common', name: 'utils', version: '1.0'
     compile group: 'cn.zytx.common', name: 'json-fastjson', version: '1.0'
 
