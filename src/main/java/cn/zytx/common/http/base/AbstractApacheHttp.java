@@ -5,7 +5,6 @@ import cn.zytx.common.http.Method;
 import cn.zytx.common.http.base.ssl.SSLSocketFactoryBuilder;
 import cn.zytx.common.http.base.ssl.TrustAnyHostnameVerifier;
 import cn.zytx.common.http.smart.Request;
-import cn.zytx.common.http.smart.Response;
 import cn.zytx.common.http.smart.SSLRequest;
 import cn.zytx.common.utils.ArrayListMultimap;
 import cn.zytx.common.utils.IoUtil;
