@@ -49,7 +49,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
     protected int _maxRetryTimes = 3;
 
     @Override
-    public Response template(Request request, ContentCallback<HttpEntityEnclosingRequest> contentCallback) throws IOException {
+    public <R> R template(Request request, ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         HttpUriRequest httpUriRequest = (Method.POST == request.getMethod()) ? new HttpPost(request.getUrl()) : new HttpGet(request.getUrl());
 
         //2.设置请求头
@@ -94,9 +94,13 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
             if(null == inputStream){
                 inputStream = new ByteArrayInputStream(new byte[]{});
             }
-            Response convert = Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            R convert = resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
             IoUtil.close(inputStream);
             return convert;
+
+            /*Response convert = Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            IoUtil.close(inputStream);
+            return convert;*/
         } catch (IOException e) {
             throw e;
         } catch (Exception e){

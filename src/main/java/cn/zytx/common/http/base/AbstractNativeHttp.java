@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnection>{
     @Override
-    public Response template(Request request, ContentCallback<HttpURLConnection> contentCallback) throws IOException {
+    public <R> R template(Request request, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         HttpURLConnection connect = null;
         InputStream inputStream = null;
         try {
@@ -69,7 +69,8 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             if(null == inputStream){
                 inputStream = new ByteArrayInputStream(new byte[]{});
             }
-            return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+            //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {
             throw e;
         } catch (Exception e){

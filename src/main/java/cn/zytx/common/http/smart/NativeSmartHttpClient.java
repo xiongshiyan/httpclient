@@ -18,7 +18,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET,
                 request.getContentType(), null, request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(), Response::with);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET), null);
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET), null , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -29,7 +29,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                 connection -> writeContent(connection, request.getBody(), request.getBodyCharset()),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(), Response::with);*/
-        Response response = template(request.setMethod(Method.POST), connection -> writeContent(connection, request.getBody(), request.getBodyCharset()));
+        Response response = template(request.setMethod(Method.POST), connection -> writeContent(connection, request.getBody(), request.getBodyCharset()) , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -63,7 +63,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                 headers, request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
         Response response = template(request.setMethod(Method.POST).setHeaders(headers),
-                connect -> this.upload0(connect, request.getParams(), request.getFormFiles()));
+                connect -> this.upload0(connect, request.getParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);
     }
 

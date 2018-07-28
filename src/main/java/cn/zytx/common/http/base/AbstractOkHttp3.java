@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
 
     @Override
-    public cn.zytx.common.http.smart.Response template(cn.zytx.common.http.smart.Request request, ContentCallback<Request.Builder> contentCallback) throws IOException {
+    public <R> R template(cn.zytx.common.http.smart.Request request, ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         Response response = null;
         InputStream inputStream = null;
         try {
@@ -85,8 +85,9 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
             if(null == inputStream){
                 inputStream = new ByteArrayInputStream(new byte[]{});
             }
-            return cn.zytx.common.http.smart.Response.with(statusCode , inputStream , request.getResultCharset() ,
-                    request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            /*return cn.zytx.common.http.smart.Response.with(statusCode , inputStream , request.getResultCharset() ,
+                    request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));*/
         } catch (IOException e) {
             throw e;
         } catch (Exception e){

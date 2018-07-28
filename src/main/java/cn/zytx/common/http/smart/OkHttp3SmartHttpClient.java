@@ -20,7 +20,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
         return afterTemplate(request , response);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET), null);
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET), null , Response::with);
         return afterTemplate(request , response);
     }
     /**
@@ -32,7 +32,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, stringBody(request.getBody(), request.getContentType())),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setMethod(Method.POST), d -> setRequestBody(d, Method.POST, stringBody(request.getBody(), request.getContentType())));
+        Response response = template(request.setMethod(Method.POST), d -> setRequestBody(d, Method.POST, stringBody(request.getBody(), request.getContentType())) , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -64,7 +64,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, requestBody), request.getHeaders(),
                 request.getConnectionTimeout(), request.getConnectionTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setMethod(Method.POST), d -> setRequestBody(d, Method.POST, requestBody));
+        Response response = template(request.setMethod(Method.POST), d -> setRequestBody(d, Method.POST, requestBody) , Response::with);
         return afterTemplate(request , response);
     }
 

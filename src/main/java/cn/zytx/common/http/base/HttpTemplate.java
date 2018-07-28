@@ -2,7 +2,6 @@ package cn.zytx.common.http.base;
 
 import cn.zytx.common.http.Method;
 import cn.zytx.common.http.smart.Request;
-import cn.zytx.common.http.smart.Response;
 import cn.zytx.common.utils.ArrayListMultimap;
 
 import java.io.IOException;
@@ -38,9 +37,10 @@ public interface HttpTemplate<C>{
      * @param request 请求参数
      * @see cn.zytx.common.http.smart.SSLRequest
      * @param contentCallback 内容处理器，处理文本或者文件上传
+     * @param resultCallback 结果处理器
      * @throws IOException IOException
-     * @return Response Response
+     * @return <R> R
      */
-    Response template(Request request, ContentCallback<C> contentCallback) throws IOException;
+    <R> R  template(Request request, ContentCallback<C> contentCallback , ResultCallback<R> resultCallback) throws IOException;
 
 }

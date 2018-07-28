@@ -20,7 +20,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET), null);
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET),
+                null , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -31,7 +32,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 r -> setRequestBody(r, request.getBody(), request.getBodyCharset()), request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setMethod(Method.POST), r -> setRequestBody(r, request.getBody(), request.getBodyCharset()));
+        Response response = template(request.setMethod(Method.POST),
+                r -> setRequestBody(r, request.getBody(), request.getBodyCharset()) , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -62,7 +64,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), r -> addFormFiles(r, request.getParams() , request.getFormFiles()),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setMethod(Method.POST), r -> addFormFiles(r, request.getParams(), request.getFormFiles()));
+        Response response = template(request.setMethod(Method.POST),
+                r -> addFormFiles(r, request.getParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);
     }
 
