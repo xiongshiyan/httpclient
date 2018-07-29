@@ -79,11 +79,9 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
             response = client.newCall(okRequest).execute();
 
             //5.获取响应
-            inputStream = response.body().byteStream();
+            inputStream = getStreamFrom(response);
+
             int statusCode = response.code();
-            if(null == inputStream){
-                inputStream = new ByteArrayInputStream(new byte[]{});
-            }
             return resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
             /*return cn.zytx.common.http.smart.Response.with(statusCode , inputStream , request.getResultCharset() ,
                     request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));*/
@@ -99,6 +97,22 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
                 } catch (Exception e) {}
             }
         }
+    }
+
+    private InputStream getStreamFrom(Response response) {
+        ResponseBody body = response.body();
+        InputStream inputStream = (body != null) ? body.byteStream() : emptyInputStream();
+        if(null == inputStream){
+            inputStream = emptyInputStream();
+        }
+        return inputStream;
+    }
+
+    /**
+     * 获取一个空的，防止空指针
+     */
+    private ByteArrayInputStream emptyInputStream() {
+        return new ByteArrayInputStream(new byte[]{});
     }
 
     @Override
@@ -149,11 +163,9 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
 
             //5.获取响应
 //            return getReturnMsg(response , resultCharset , includeHeaders , resultCallback);
-            inputStream = response.body().byteStream();
+            inputStream = getStreamFrom(response);
+
             int statusCode = response.code();
-            if(null == inputStream){
-                inputStream = new ByteArrayInputStream(new byte[]{});
-            }
             return resultCallback.convert(statusCode , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
             /*if (HttpStatus.HTTP_OK == statusCode) {
                 convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
