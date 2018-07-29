@@ -97,6 +97,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
             IoUtil.close(inputStream);
             return convert;
 
+            ///
             /*Response convert = Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
             IoUtil.close(inputStream);
             return convert;*/

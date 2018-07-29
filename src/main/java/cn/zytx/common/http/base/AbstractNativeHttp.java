@@ -69,6 +69,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
                 inputStream = new ByteArrayInputStream(new byte[]{});
             }
             return resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+            ///返回Response
             //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {
             throw e;
@@ -121,6 +122,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
 
             //6.获取返回值
             int statusCode = connect.getResponseCode();
+            ///保留起非200抛异常的方式
 //            if( HttpStatus.HTTP_OK == statusCode){
 //                //6.1获取body
 //                /*InputStream is = connect.getInputStream();

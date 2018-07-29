@@ -167,6 +167,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
 
             int statusCode = response.code();
             return resultCallback.convert(statusCode , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
+            ///保留起
             /*if (HttpStatus.HTTP_OK == statusCode) {
                 convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
             }else {
@@ -238,7 +239,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
 //            String errorMsg = new String(response.body().bytes() , resultCharset);
 //            throw new HttpException(statusCode,errorMsg,parseHeaders(response));
 //        }
-        InputStream inputStream = response.body().byteStream();
+        InputStream inputStream = getStreamFrom(response);
         R convert;
         if (HttpStatus.HTTP_OK == statusCode) {
             convert = resultParser.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
