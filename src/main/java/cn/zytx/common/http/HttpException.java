@@ -10,7 +10,6 @@ import java.util.Map;
  * @see cn.zytx.common.http.smart.Response
  * @author 熊诗言 2017/11/24
  */
-@Deprecated
 public class HttpException extends RuntimeException{
     private int responseCode = -1;
     private String errorMessage = "error happens in client";
