@@ -18,22 +18,30 @@ import java.util.Objects;
 public class SSLSocketFactoryBuilder {
 
     /** Supports some version of SSL; may support other versions */
-	public static final String SSL = "SSL";
+	public static final String SSL    = "SSL";
 	/** Supports SSL version 2 or later; may support other versions */
-	public static final String SSLv2 = "SSLv2";
+	public static final String SSLv2  = "SSLv2";
 	/** Supports SSL version 3; may support other versions */
-	public static final String SSLv3 = "SSLv3";
+	public static final String SSLv3  = "SSLv3";
 	
 	/** Supports some version of TLS; may support other versions */
-	public static final String TLS = "TLS";
+	public static final String TLS    = "TLS";
 	/** Supports RFC 2246: TLS version 1.0 ; may support other versions */
-	public static final String TLSv1 = "TLSv1";
+	public static final String TLSv1  = "TLSv1";
 	/** Supports RFC 4346: TLS version 1.1 ; may support other versions */
 	public static final String TLSv11 = "TLSv1.1";
 	/** Supports RFC 5246: TLS version 1.2 ; may support other versions */
 	public static final String TLSv12 = "TLSv1.2";
 
+
+	/**
+	 * 证书类型
+	 */
+	public static final String JKS = "JKS";
+	public static final String PKCS12 = "PKCS12";
+
 	private String protocol = TLS;
+	private String certType = PKCS12;
 	private KeyManager[] keyManagers;
 	private TrustManager[] trustManagers = {new DefaultTrustManager()};
 	private SecureRandom secureRandom  = new SecureRandom();
@@ -58,7 +66,18 @@ public class SSLSocketFactoryBuilder {
 		}
 		return this;
 	}
-	
+
+	/**
+	 * 设置证书类型
+	 * @param certType 证书类型
+	 */
+	public SSLSocketFactoryBuilder setCertType(String certType) {
+		if(StrUtil.isNotBlank(certType)){
+			this.certType = certType;
+		}
+		return this;
+	}
+
 	/**
 	 * 设置信任信息
 	 * @param trustManagers TrustManager列表
@@ -171,7 +190,7 @@ public class SSLSocketFactoryBuilder {
 		InputStream inputStream = Objects.requireNonNull(certStream);
 
 		try {
-			KeyStore clientStore = KeyStore.getInstance("PKCS12");
+			KeyStore clientStore = KeyStore.getInstance(certType);
 			char[] passArray = certPass.toCharArray();
 			clientStore.load(inputStream, passArray);
 
