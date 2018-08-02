@@ -14,10 +14,10 @@ import javax.net.ssl.X509TrustManager;
  * ssl的一些配置,使用{@link SSLSocketFactoryBuilder} 来生产 HostnameVerifier、SSLSocketFactory、SSLContext、X509TrustManager
  * @see SSLSocketFactoryBuilder
  */
-public class SSLRequest extends Request{
+public class SSLRequest extends Request {
     private HostnameVerifier hostnameVerifier = new TrustAnyHostnameVerifier();
-    private SSLSocketFactory sslSocketFactory = SSLSocketFactoryBuilder.create().build();
     private SSLContext sslContext = SSLSocketFactoryBuilder.create().getSSLContext();
+    private SSLSocketFactory sslSocketFactory = null;
     private X509TrustManager x509TrustManager = new DefaultTrustManager2();
 
     public SSLRequest(String url){
@@ -35,7 +35,13 @@ public class SSLRequest extends Request{
         return this;
     }
 
+    /**
+     * 因为一般地 SslSocketFactory 都是从sslContext产生出来的 ， 所以如果没显式设置就从sslContext产生
+     */
     public SSLSocketFactory getSslSocketFactory() {
+        if(null == sslSocketFactory && null != sslContext){
+            return sslContext.getSocketFactory();
+        }
         return sslSocketFactory;
     }
 
