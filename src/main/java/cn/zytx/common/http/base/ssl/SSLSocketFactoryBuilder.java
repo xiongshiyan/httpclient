@@ -5,10 +5,9 @@ import cn.zytx.common.utils.StrUtil;
 
 import javax.net.ssl.*;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.*;
-import java.security.cert.CertificateException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.Objects;
 
 /**
@@ -16,7 +15,7 @@ import java.util.Objects;
  * @author Looly
  * @author xiongshiyan 增加证书相关方法
  */
-public class SSLSocketFactoryBuilder{
+public class SSLSocketFactoryBuilder {
 
     /** Supports some version of SSL; may support other versions */
 	public static final String SSL = "SSL";
@@ -117,8 +116,8 @@ public class SSLSocketFactoryBuilder{
 	public SSLSocketFactory build(String certPath, String certPass){
 		return getSSLContext(certPath , certPass).getSocketFactory();
 	}
-	public SSLSocketFactory buildWithClassPathCert(String certPath, String certPass){
-		return getClassPathSSLContext(certPath , certPass).getSocketFactory();
+	public SSLSocketFactory buildWithClassPathCert(Class<?> clazz , String certPath, String certPass){
+		return getClassPathSSLContext(clazz , certPath , certPass).getSocketFactory();
 	}
 	public SSLSocketFactory build(InputStream inputStream, String certPass){
 		return getSSLContext(inputStream , certPass).getSocketFactory();
@@ -136,6 +135,7 @@ public class SSLSocketFactoryBuilder{
 	}
 
 	/**
+     * 使用FileInputStream来加载资源
 	 * @param certPath 证书路径
 	 * @param certPass 证书密码
 	 */
@@ -148,12 +148,15 @@ public class SSLSocketFactoryBuilder{
 		}
 	}
 	/**
+     * 使用class来加载资源
+	 * @param clazz 用于加载资源 /开头的话就从classpath目录下，否则从class包下
+	 *              @see Class#getResourceAsStream(String)
 	 * @param certPath classpath 证书路径
 	 * @param certPass 证书密码
 	 */
-	public SSLContext getClassPathSSLContext(String certPath, String certPass){
+	public SSLContext getClassPathSSLContext(Class<?> clazz , String certPath, String certPass){
 		try {
-			InputStream inputStream = SSLSocketFactoryBuilder.class.getResourceAsStream(certPath);
+			InputStream inputStream = clazz.getResourceAsStream(certPath);
 			return getSSLContext(inputStream , certPass);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
