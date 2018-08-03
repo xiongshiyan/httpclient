@@ -1,6 +1,9 @@
 package cn.zytx.common.http.base;
 
-import cn.zytx.common.http.*;
+import cn.zytx.common.http.Header;
+import cn.zytx.common.http.HttpConstants;
+import cn.zytx.common.http.HttpStatus;
+import cn.zytx.common.http.Method;
 import cn.zytx.common.http.base.ssl.DefaultTrustManager;
 import cn.zytx.common.http.base.ssl.SSLSocketFactoryBuilder;
 import cn.zytx.common.http.base.ssl.TrustAnyHostnameVerifier;
@@ -20,7 +23,7 @@ import java.util.Set;
  * 使用URLConnection实现的Http公共父类
  * @author 熊诗言2018/6/6
  */
-public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnection>{
+public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnection> {
     @Override
     public <R> R template(Request request, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         HttpURLConnection connect = null;
@@ -60,14 +63,8 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             //6.获取返回值
             int statusCode = connect.getResponseCode();
 
-            if(HttpStatus.HTTP_OK == statusCode){
-                inputStream = connect.getInputStream();
-            }else {
-                inputStream = connect.getErrorStream();
-            }
-            if(null == inputStream){
-                inputStream = new ByteArrayInputStream(new byte[]{});
-            }
+            inputStream = getStreamFrom(connect , statusCode);
+
             return resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
             ///返回Response
             //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
@@ -85,10 +82,8 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
     }
 
 
-    //protected String sslVer = "TLS";
-
     @Override
-    public <R> R template(String url, Method method, String contentType,  ContentCallback<HttpURLConnection> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
         //默认的https校验
         // 后面会处理的，这里就不需要了 initDefaultSSL(sslVer);
 
@@ -142,14 +137,8 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
 //                throw new HttpException(statusCode,err,connect.getHeaderFields());
 //            }
 
-            if(HttpStatus.HTTP_OK == statusCode){
-                inputStream = connect.getInputStream();
-            }else {
-                inputStream = connect.getErrorStream();
-            }
-            if(null == inputStream){
-                inputStream = new ByteArrayInputStream(new byte[]{});
-            }
+            inputStream = getStreamFrom(connect , statusCode);
+
             return resultCallback.convert(statusCode , inputStream, resultCharset, includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {
             throw e;
@@ -162,6 +151,19 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             //2 . 关闭流
             IoUtil.close(inputStream);
         }
+    }
+
+    private InputStream getStreamFrom(HttpURLConnection connect , int statusCode) throws IOException{
+        InputStream inputStream;
+        if(HttpStatus.HTTP_OK == statusCode){
+            inputStream = connect.getInputStream();
+        }else {
+            inputStream = connect.getErrorStream();
+        }
+        if(null == inputStream){
+            inputStream = new ByteArrayInputStream(new byte[]{});
+        }
+        return inputStream;
     }
     protected HostnameVerifier getDefaultHostnameVerifier(){
         return new TrustAnyHostnameVerifier();
