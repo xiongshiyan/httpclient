@@ -1,6 +1,5 @@
 package cn.zytx.common.http.smart;
 
-import cn.zytx.common.http.Method;
 import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.basic.FormFile;
 import cn.zytx.common.utils.ArrayListMultimap;
@@ -12,9 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static cn.zytx.common.http.HttpConstants.DEFAULT_CHARSET;
-import static cn.zytx.common.http.HttpConstants.DEFAULT_CONNECT_TIMEOUT;
-import static cn.zytx.common.http.HttpConstants.DEFAULT_READ_TIMEOUT;
+import static cn.zytx.common.http.HttpConstants.*;
 
 /**
  * @author xiongshiyan at 2017/12/9
@@ -36,10 +33,6 @@ public class Request {
      * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
      */
     private String body;
-    /**
-     * 请求方法
-     */
-    private Method method = Method.GET;
     /**
      * 资源类型
      */
@@ -105,7 +98,7 @@ public class Request {
         params.forEach((k,v)->this.params.put(k,v));
         return this;
     }
-    public Request addParam(String key,String value){
+    public Request addParam(String key, String value){
         this.params.put(key, value);
         return this;
     }
@@ -129,15 +122,6 @@ public class Request {
 
     public Request setContentType(String contentType) {
         this.contentType = contentType;
-        return this;
-    }
-
-    public Method getMethod() {
-        return method;
-    }
-
-    public Request setMethod(Method method) {
-        this.method = method;
         return this;
     }
 

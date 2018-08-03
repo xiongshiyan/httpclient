@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnection> {
     @Override
-    public <R> R template(Request request, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(Request request, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         HttpURLConnection connect = null;
         InputStream inputStream = null;
         try {
@@ -33,7 +33,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             connect = (HttpURLConnection)new java.net.URL(request.getUrl()).openConnection();
 
             //2.处理header
-            setConnectProperty(connect, request.getMethod(),request.getContentType(), request.getHeaders(),request.getConnectionTimeout(),request.getReadTimeout());
+            setConnectProperty(connect, method, request.getContentType(), request.getHeaders(),request.getConnectionTimeout(),request.getReadTimeout());
 
 
             ////////////////////////////////////ssl处理///////////////////////////////////
@@ -94,7 +94,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             connect = (HttpURLConnection)new java.net.URL(url).openConnection();
 
             //2.处理header
-            setConnectProperty(connect, method,contentType, headers,connectTimeout,readTimeout);
+            setConnectProperty(connect, method, contentType, headers,connectTimeout,readTimeout);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(connect instanceof HttpsURLConnection){

@@ -1,7 +1,7 @@
 package cn.zytx.common.http.base;
 
-import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.Method;
+import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.base.ssl.SSLSocketFactoryBuilder;
 import cn.zytx.common.http.base.ssl.TrustAnyHostnameVerifier;
 import cn.zytx.common.http.smart.Request;
@@ -28,7 +28,10 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,8 +51,8 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
     protected int _maxRetryTimes = 3;
 
     @Override
-    public <R> R template(Request request, ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        HttpUriRequest httpUriRequest = (Method.POST == request.getMethod()) ? new HttpPost(request.getUrl()) : new HttpGet(request.getUrl());
+    public <R> R template(Request request, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        HttpUriRequest httpUriRequest = (Method.POST == method) ? new HttpPost(request.getUrl()) : new HttpGet(request.getUrl());
 
         //2.设置请求头
         setRequestHeaders(httpUriRequest, request.getContentType(), request.getHeaders());

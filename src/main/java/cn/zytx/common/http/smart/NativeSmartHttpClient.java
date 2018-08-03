@@ -1,11 +1,13 @@
 package cn.zytx.common.http.smart;
 
-import cn.zytx.common.http.*;
+import cn.zytx.common.http.Method;
+import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.basic.NativeHttpClient;
 import cn.zytx.common.utils.ArrayListMultimap;
 import cn.zytx.common.utils.IoUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 使用URLConnection实现的Http请求类
@@ -18,7 +20,8 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET,
                 request.getContentType(), null, request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(), Response::with);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET), null , Response::with);
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())) ,
+                Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -29,7 +32,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                 connection -> writeContent(connection, request.getBody(), request.getBodyCharset()),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(), Response::with);*/
-        Response response = template(request.setMethod(Method.POST), connection -> writeContent(connection, request.getBody(), request.getBodyCharset()) , Response::with);
+        Response response = template(request, Method.POST , connection -> writeContent(connection, request.getBody(), request.getBodyCharset()) , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -39,7 +42,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         /*return template(request.getUrl(), Method.GET, request.getContentType(), null,request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders() ,
                 (s,b,r,h)-> IoUtil.stream2Bytes(b));*/
-        return template(request.setMethod(Method.GET) , null , (s,b,r,h)-> IoUtil.stream2Bytes(b));
+        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
@@ -48,7 +51,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         /*return template(request.getUrl(), Method.GET, request.getContentType(), null,request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders() ,
                 (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));*/
-        return template(request.setMethod(Method.GET) , null , (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));
+        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override
@@ -64,7 +67,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         /*Response response = template(request.getUrl(), Method.POST, null, connect -> this.upload0(connect, request.getParams() ,request.getFormFiles()),
                 headers, request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setMethod(Method.POST).setHeaders(headers),
+        Response response = template(request.setHeaders(headers), Method.POST ,
                 connect -> this.upload0(connect, request.getParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);
     }

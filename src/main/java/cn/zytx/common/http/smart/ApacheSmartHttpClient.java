@@ -1,6 +1,7 @@
 package cn.zytx.common.http.smart;
 
-import cn.zytx.common.http.*;
+import cn.zytx.common.http.Method;
+import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.basic.ApacheHttpClient;
 import cn.zytx.common.utils.IoUtil;
 
@@ -20,8 +21,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())).setMethod(Method.GET),
-                null , Response::with);
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())) ,
+                Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -32,7 +33,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 r -> setRequestBody(r, request.getBody(), request.getBodyCharset()), request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setMethod(Method.POST),
+        Response response = template(request, Method.POST ,
                 r -> setRequestBody(r, request.getBody(), request.getBodyCharset()) , Response::with);
         return afterTemplate(request , response);
     }
@@ -43,7 +44,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         /*return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders(),
                 request.getConnectionTimeout(),request.getReadTimeout() , request.getResultCharset(),request.isIncludeHeaders(),
                 (s,b,r,h)-> IoUtil.stream2Bytes(b));*/
-        return template(request.setMethod(Method.GET) , null , (s,b,r,h)-> IoUtil.stream2Bytes(b));
+        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         /*return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders() ,
                 request.getConnectionTimeout(),request.getReadTimeout() , request.getResultCharset(),request.isIncludeHeaders(),
                 (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));*/
-        return template(request.setMethod(Method.GET) , null , (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));
+        return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override
@@ -66,7 +67,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), r -> addFormFiles(r, request.getParams() , request.getFormFiles()),
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setMethod(Method.POST),
+        Response response = template(request , Method.POST ,
                 r -> addFormFiles(r, request.getParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);
     }

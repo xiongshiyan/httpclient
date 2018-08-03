@@ -1,6 +1,9 @@
 package cn.zytx.common.http.base;
 
-import cn.zytx.common.http.*;
+import cn.zytx.common.http.Header;
+import cn.zytx.common.http.HttpStatus;
+import cn.zytx.common.http.Method;
+import cn.zytx.common.http.ParamUtil;
 import cn.zytx.common.http.base.ssl.DefaultTrustManager2;
 import cn.zytx.common.http.base.ssl.SSLSocketFactoryBuilder;
 import cn.zytx.common.http.base.ssl.TrustAnyHostnameVerifier;
@@ -25,10 +28,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author xiongshiyan at 2018/6/6
  */
-public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
+public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
 
     @Override
-    public <R> R template(cn.zytx.common.http.smart.Request request, ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(cn.zytx.common.http.smart.Request request, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         Response response = null;
         InputStream inputStream = null;
         try {
@@ -68,7 +71,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder>{
             }
 
             //2.3处理请求体
-            if(null != contentCallback && Method.POST == request.getMethod()){
+            if(null != contentCallback && Method.POST == method){
                 contentCallback.doWriteWith(builder);
             }
 
