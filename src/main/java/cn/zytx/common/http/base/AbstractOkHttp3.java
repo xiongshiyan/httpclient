@@ -71,7 +71,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
             }
 
             //2.3处理请求体
-            if(null != contentCallback && Method.POST == method){
+            if(null != contentCallback && method.hasContent()){
                 contentCallback.doWriteWith(builder);
             }
 
@@ -154,7 +154,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
             }
 
             //2.3处理请求体
-            if(null != contentCallback && Method.POST == method){
+            if(null != contentCallback && method.hasContent()){
                 contentCallback.doWriteWith(builder);
             }
 

@@ -53,7 +53,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             doWithConnection(connect);
 
             //5.写入内容，只对post有效
-            if(contentCallback != null){
+            if(contentCallback != null && method.hasContent()){
                 contentCallback.doWriteWith(connect);
             }
 
@@ -108,7 +108,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             doWithConnection(connect);
 
             //5.写入内容，只对post有效
-            if(contentCallback != null){
+            if(contentCallback != null && method.hasContent()){
                 contentCallback.doWriteWith(connect);
             }
 

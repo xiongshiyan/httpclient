@@ -52,7 +52,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
 
     @Override
     public <R> R template(Request request, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        HttpUriRequest httpUriRequest = (Method.POST == method) ? new HttpPost(request.getUrl()) : new HttpGet(request.getUrl());
+        HttpUriRequest httpUriRequest = createHttpUriRequest(request.getUrl(), method);
 
         //2.设置请求头
         setRequestHeaders(httpUriRequest, request.getContentType(), request.getHeaders());
@@ -120,7 +120,7 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
         //1.创建请求
         ///*URIBuilder builder = new URIBuilder(url);
         //URI uri = builder.build();*/
-        HttpUriRequest httpUriRequest = (Method.POST == method) ? new HttpPost(url) : new HttpGet(url);
+        HttpUriRequest httpUriRequest = createHttpUriRequest(url , method);
 
         //2.设置请求头
         setRequestHeaders(httpUriRequest, contentType, headers);
@@ -183,6 +183,20 @@ public abstract class AbstractApacheHttp implements HttpTemplate<HttpEntityEnclo
             EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);
             IoUtil.close(httpClient);
+        }
+    }
+
+    private HttpUriRequest createHttpUriRequest(String url, Method method) {
+        switch (method){
+            case GET     : return new HttpGet(url);
+            case POST    : return new HttpPost(url);
+            case PUT     : return new HttpPut(url);
+            case OPTIONS : return new HttpOptions(url);
+            case HEAD    : return new HttpHead(url);
+            case PATCH   : return new HttpPatch(url);
+            case TRACE   : return new HttpTrace(url);
+            case DELETE  : return new HttpDelete(url);
+            default      : throw new IllegalArgumentException("不支持的http方法 : " + method.name());
         }
     }
     protected HostnameVerifier getDefaultHostnameVerifier(){
