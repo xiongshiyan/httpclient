@@ -1,5 +1,6 @@
 package cn.zytx.common.http.smart;
 
+import cn.zytx.common.http.Method;
 import cn.zytx.common.http.basic.HttpClient;
 
 import java.io.File;
@@ -27,6 +28,8 @@ public interface SmartHttpClient extends HttpClient{
      * @throws IOException 超时等IO异常
      */
     Response post(Request request) throws IOException;
+
+    Response httpMethod(Request request , Method method) throws IOException;
 
     /**
      * 下载为字节数组

@@ -154,4 +154,33 @@ public class HttpSmartTest {
             System.out.println("超时异常");
         }
     }
+
+    @Test
+    public void testHttpMethodOkHttp3(){
+        SmartHttpClient http = new OkHttp3SmartHttpClient();
+        testHttpMethod(http);
+    }
+    @Test
+    public void testHttpMethodApacheHttp(){
+        SmartHttpClient http = new ApacheSmartHttpClient();
+        testHttpMethod(http);
+    }
+    @Test
+    public void testHttpMethodNativeHttp(){
+        SmartHttpClient http = new NativeSmartHttpClient();
+        testHttpMethod(http);
+    }
+    public void testHttpMethod(SmartHttpClient http){
+//        String url = "https://dzg.palmte.cn/dzdsds";
+        String url = "http://localhost:8183/dzg/api/v2/test/boss";
+        try {
+            Request request = Request.of(url).setIncludeHeaders(true).addHeader("ss" , "ss").addHeader("ss" , "dd").setBody("{\"name\":\"熊诗言\"}").setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
+            Response response = http.httpMethod(request , Method.PUT);
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
+        }catch (IOException e){
+            System.out.println("超时异常");
+        }
+    }
 }

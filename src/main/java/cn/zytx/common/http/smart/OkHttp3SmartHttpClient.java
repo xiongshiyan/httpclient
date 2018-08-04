@@ -2,6 +2,7 @@ package cn.zytx.common.http.smart;
 
 import cn.zytx.common.http.Method;
 import cn.zytx.common.http.ParamUtil;
+import cn.zytx.common.http.base.ContentCallback;
 import cn.zytx.common.http.basic.OkHttp3Client;
 import cn.zytx.common.utils.IoUtil;
 import okhttp3.MultipartBody;
@@ -35,6 +36,19 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         Response response = template(request, Method.POST , d -> setRequestBody(d, Method.POST, stringBody(request.getBody(), request.getContentType())) , Response::with);
         return afterTemplate(request , response);
     }
+
+
+    @Override
+    public Response httpMethod(Request req, Method method) throws IOException {
+        Request request = beforeTemplate(req);
+        ContentCallback<okhttp3.Request.Builder> contentCallback = null;
+        if(method.hasContent()){
+            contentCallback = d -> setRequestBody(d, method, stringBody(request.getBody(), request.getContentType()));
+        }
+        Response response = template(request, method , contentCallback , Response::with);
+        return afterTemplate(request , response);
+    }
+
 
     @Override
     public byte[] getAsBytes(Request req) throws IOException {
