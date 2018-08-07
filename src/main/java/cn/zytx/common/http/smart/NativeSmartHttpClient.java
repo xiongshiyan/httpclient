@@ -2,12 +2,14 @@ package cn.zytx.common.http.smart;
 
 import cn.zytx.common.http.Method;
 import cn.zytx.common.http.ParamUtil;
+import cn.zytx.common.http.base.ContentCallback;
 import cn.zytx.common.http.basic.NativeHttpClient;
 import cn.zytx.common.utils.ArrayListMultimap;
 import cn.zytx.common.utils.IoUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 /**
  * 使用URLConnection实现的Http请求类
@@ -33,6 +35,17 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(), Response::with);*/
         Response response = template(request, Method.POST , connection -> writeContent(connection, request.getBody(), request.getBodyCharset()) , Response::with);
+        return afterTemplate(request , response);
+    }
+
+    @Override
+    public Response httpMethod(Request req, Method method) throws IOException {
+        Request request = beforeTemplate(req);
+        ContentCallback<HttpURLConnection> contentCallback = null;
+        if(method.hasContent()){
+            contentCallback = connection -> writeContent(connection, request.getBody(), request.getBodyCharset());
+        }
+        Response response = template(request, method , contentCallback , Response::with);
         return afterTemplate(request , response);
     }
 

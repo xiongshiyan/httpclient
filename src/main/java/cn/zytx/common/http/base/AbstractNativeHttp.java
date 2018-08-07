@@ -23,7 +23,7 @@ import java.util.Set;
  * 使用URLConnection实现的Http公共父类
  * @author 熊诗言2018/6/6
  */
-public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnection> {
+public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTemplate<HttpURLConnection> {
     @Override
     public <R> R template(Request request, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         HttpURLConnection connect = null;
@@ -53,7 +53,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             doWithConnection(connect);
 
             //5.写入内容，只对post有效
-            if(contentCallback != null){
+            if(contentCallback != null && method.hasContent()){
                 contentCallback.doWriteWith(connect);
             }
 
@@ -108,7 +108,7 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             doWithConnection(connect);
 
             //5.写入内容，只对post有效
-            if(contentCallback != null){
+            if(contentCallback != null && method.hasContent()){
                 contentCallback.doWriteWith(connect);
             }
 
@@ -161,19 +161,13 @@ public abstract class AbstractNativeHttp implements HttpTemplate<HttpURLConnecti
             inputStream = connect.getErrorStream();
         }
         if(null == inputStream){
-            inputStream = new ByteArrayInputStream(new byte[]{});
+            inputStream = emptyInputStream();
         }
         return inputStream;
     }
-    protected HostnameVerifier getDefaultHostnameVerifier(){
-        return new TrustAnyHostnameVerifier();
-    }
-    protected SSLSocketFactory getDefaultSSLSocketFactory(){
-        return SSLSocketFactoryBuilder.create().build();
-    }
 
     /**子类复写需要首先调用此方法，保证http的功能*/
-    protected void doWithConnection(HttpURLConnection connect) throws Exception{
+    protected void doWithConnection(HttpURLConnection connect) throws IOException{
     }
 
     /**

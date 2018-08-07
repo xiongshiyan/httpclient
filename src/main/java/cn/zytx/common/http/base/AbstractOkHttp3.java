@@ -3,10 +3,7 @@ package cn.zytx.common.http.base;
 import cn.zytx.common.http.Header;
 import cn.zytx.common.http.HttpStatus;
 import cn.zytx.common.http.Method;
-import cn.zytx.common.http.ParamUtil;
-import cn.zytx.common.http.base.ssl.DefaultTrustManager2;
 import cn.zytx.common.http.base.ssl.SSLSocketFactoryBuilder;
-import cn.zytx.common.http.base.ssl.TrustAnyHostnameVerifier;
 import cn.zytx.common.http.smart.SSLRequest;
 import cn.zytx.common.utils.ArrayListMultimap;
 import cn.zytx.common.utils.IoUtil;
@@ -18,7 +15,6 @@ import okio.Source;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author xiongshiyan at 2018/6/6
  */
-public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
+public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTemplate<Request.Builder> {
 
     @Override
     public <R> R template(cn.zytx.common.http.smart.Request request, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
@@ -41,7 +37,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
                     .readTimeout(request.getReadTimeout(), TimeUnit.MILLISECONDS);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
-            if(ParamUtil.isHttps(request.getUrl())){
+            if(isHttps(request.getUrl())){
                 //默认设置这些
                 initSSL(clientBuilder , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory() , getDefaultX509TrustManager());
                 if(request instanceof SSLRequest){
@@ -53,7 +49,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
             ////////////////////////////////////ssl处理///////////////////////////////////
 
             //给子类复写的机会
-            doWithBuilder(clientBuilder , ParamUtil.isHttps(request.getUrl()));
+            doWithBuilder(clientBuilder , isHttps(request.getUrl()));
 
             OkHttpClient client = clientBuilder.build();
 
@@ -71,7 +67,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
             }
 
             //2.3处理请求体
-            if(null != contentCallback && Method.POST == method){
+            if(null != contentCallback && method.hasContent()){
                 contentCallback.doWriteWith(builder);
             }
 
@@ -111,13 +107,6 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
         return inputStream;
     }
 
-    /**
-     * 获取一个空的，防止空指针
-     */
-    private ByteArrayInputStream emptyInputStream() {
-        return new ByteArrayInputStream(new byte[]{});
-    }
-
     @Override
     public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
         Objects.requireNonNull(url);
@@ -130,14 +119,14 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
                     .readTimeout(readTimeout, TimeUnit.MILLISECONDS);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
-            if(ParamUtil.isHttps(url)){
+            if(isHttps(url)){
                 //默认设置这些
                 initSSL(clientBuilder , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory() , getDefaultX509TrustManager());
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
             //给子类复写的机会
-            doWithBuilder(clientBuilder , ParamUtil.isHttps(url));
+            doWithBuilder(clientBuilder , isHttps(url));
 
             OkHttpClient client = clientBuilder.build();
 
@@ -154,7 +143,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
             }
 
             //2.3处理请求体
-            if(null != contentCallback && Method.POST == method){
+            if(null != contentCallback && method.hasContent()){
                 contentCallback.doWriteWith(builder);
             }
 
@@ -190,15 +179,7 @@ public abstract class AbstractOkHttp3 implements HttpTemplate<Request.Builder> {
             }
         }
     }
-    protected HostnameVerifier getDefaultHostnameVerifier(){
-        return new TrustAnyHostnameVerifier();
-    }
-    protected SSLSocketFactory getDefaultSSLSocketFactory(){
-        return SSLSocketFactoryBuilder.create().build();
-    }
-    protected X509TrustManager getDefaultX509TrustManager(){
-        return new DefaultTrustManager2();
-    }
+
     protected void doWithBuilder(OkHttpClient.Builder builder , boolean isHttps) throws Exception{
     }
 

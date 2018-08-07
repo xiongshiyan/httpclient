@@ -1,5 +1,6 @@
 package cn.zytx.common.http.smart;
 
+import cn.zytx.common.http.Method;
 import cn.zytx.common.http.basic.HttpClient;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import java.util.Objects;
  * @see HttpClient
  * 使用时，可以直接new实现类，也可以通过{@link cn.zytx.common.utils.SpringFactoriesLoader }获取，这样就不会与实现类绑定
  */
-public interface SmartHttpClient extends HttpClient{
+public interface SmartHttpClient extends HttpClient {
     /**
      * GET方法
      * @param request 请求参数
@@ -27,6 +28,8 @@ public interface SmartHttpClient extends HttpClient{
      * @throws IOException 超时等IO异常
      */
     Response post(Request request) throws IOException;
+
+    Response httpMethod(Request request, Method method) throws IOException;
 
     /**
      * 下载为字节数组
@@ -68,7 +71,7 @@ public interface SmartHttpClient extends HttpClient{
      * @return Response
      * @throws IOException IOException
      */
-    default Response afterTemplate(Request request , Response response) throws IOException{
+    default Response afterTemplate(Request request, Response response) throws IOException{
         return response;
     }
 }

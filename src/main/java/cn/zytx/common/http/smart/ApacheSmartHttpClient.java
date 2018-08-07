@@ -2,8 +2,10 @@ package cn.zytx.common.http.smart;
 
 import cn.zytx.common.http.Method;
 import cn.zytx.common.http.ParamUtil;
+import cn.zytx.common.http.base.ContentCallback;
 import cn.zytx.common.http.basic.ApacheHttpClient;
 import cn.zytx.common.utils.IoUtil;
+import org.apache.http.HttpEntityEnclosingRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +37,17 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 Response::with);*/
         Response response = template(request, Method.POST ,
                 r -> setRequestBody(r, request.getBody(), request.getBodyCharset()) , Response::with);
+        return afterTemplate(request , response);
+    }
+
+    @Override
+    public Response httpMethod(Request req, Method method) throws IOException {
+        Request request = beforeTemplate(req);
+        ContentCallback<HttpEntityEnclosingRequest> contentCallback = null;
+        if(method.hasContent()){
+            contentCallback = r -> setRequestBody(r, request.getBody(), request.getBodyCharset());
+        }
+        Response response = template(request, method , contentCallback, Response::with);
         return afterTemplate(request , response);
     }
 
