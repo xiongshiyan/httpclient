@@ -1,10 +1,24 @@
 group 'cn.zytx.common'
 version '1.0'
+buildscript {
+    repositories {
+        jcenter()
+       /* maven {
+            url "https://maven.eveoh.nl/content/repositories/releases"
+        }*/
+    }
 
+    dependencies {
+        //classpath "com.novoda:bintray-release:0.3.4"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+    }
+}
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
-
+apply plugin: 'com.jfrog.bintray'
+//用于签名
+apply plugin: 'signing'
 sourceCompatibility = 1.8
 
 repositories {
@@ -73,4 +87,90 @@ uploadArchives {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+
+def gitUrl = 'https://gitee.com/xxssyyyyssxx/network.git'
+def siteUrl = 'https://gitee.com/xxssyyyyssxx/network'
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'jar'
+                name 'network'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'xxssyyyyssxx'
+                        name 'xiongshiyan'
+                        email 'xxssyyyyssxx@126.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+tasks.withType(Javadoc) {
+    /*options.encoding = 'UTF-8'*/
+    options{
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        links "http://docs.oracle.com/javase/7/docs/api"
+    }
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+bintray {
+//    Properties properties = new Properties()
+//    boolean isHasFile = false
+//    if (project.rootProject.file('local.properties') != null){
+//        isHasFile = true
+//        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//    }
+//    user = isHasFile ? properties.getProperty("bintray.user") : System.getenv("bintray.user")
+//    key = isHasFile ? properties.getProperty("bintray.apikey") : System.getenv("bintray.apikey")
+    user = 'xxssyyyyssxx'
+    key = 'a588ddf0bcd539908b1834e4b7823f7ee7881dee'
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "network" //项目名称
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
 }
