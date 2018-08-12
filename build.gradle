@@ -18,7 +18,7 @@ apply plugin: 'maven'
 apply plugin: 'eclipse'
 apply plugin: 'com.jfrog.bintray'
 //用于签名
-apply plugin: 'signing'
+//apply plugin: 'signing'
 sourceCompatibility = 1.8
 
 repositories {
@@ -100,6 +100,7 @@ install {
             project {
                 packaging 'jar'
                 name 'network'
+                description 'the project is doing with network,now we have http interfaces that is implemented by urnconnection,apache httpclient,okhttp3 and ftp implements.'
                 url siteUrl
                 licenses {
                     license {
@@ -139,9 +140,9 @@ artifacts {
     archives javadocJar
 }
 
-signing {
+/*signing {
     sign configurations.archives
-}
+}*/
 
 tasks.withType(Javadoc) {
     /*options.encoding = 'UTF-8'*/
