@@ -1,6 +1,6 @@
 def VERSION = '1.0'
 def ARTIFACT_ID = 'network'
-def GROUP_ID = 'cn.zytx.common'
+def GROUP_ID = 'top.jfunc.common'
 def TYPE = 'jar'
 def DESCRIPTION = 'http客户端请求工具类，有多种实现：OKHttp3、ApacheHttpClient、HttpURLConnection，可以随意切换http实现'
 
@@ -44,8 +44,8 @@ dependencies {
 
     compile group: 'commons-net', name: 'commons-net', version: '3.3'
 
-    compile group: 'cn.zytx.common', name: 'utils', version: '1.0'
-    compile group: 'cn.zytx.common', name: 'json-fastjson', version: '1.0'
+    compile group: 'top.jfunc.common', name: 'utils', version: '1.0'
+    //compile group: 'top.jfunc.json', name: 'json-fastjson', version: '1.0'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.hamcrest' , name: 'hamcrest-core',version: '1.3'
