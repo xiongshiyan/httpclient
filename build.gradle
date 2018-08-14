@@ -1,11 +1,15 @@
-group 'cn.zytx.common'
-version '1.0'
+def VERSION = '1.0'
+def ARTIFACT_ID = 'network'
+def GROUP_ID = 'cn.zytx.common'
+def TYPE = 'jar'
+def DESCRIPTION = 'http客户端请求工具类，有多种实现：OKHttp3、ApacheHttpClient、HttpURLConnection，可以随意切换http实现'
+
+group GROUP_ID
+version VERSION
+
 buildscript {
     repositories {
         jcenter()
-       /* maven {
-            url "https://maven.eveoh.nl/content/repositories/releases"
-        }*/
     }
 
     dependencies {
@@ -13,12 +17,16 @@ buildscript {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
     }
 }
+
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+//用于上传到jcenter
 apply plugin: 'com.jfrog.bintray'
 //用于签名
-apply plugin: 'signing'
+//apply plugin: 'signing'
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -53,13 +61,6 @@ def MAVEN_REPO_SNAPSHOT_URL= 'http://192.168.2.188:8081/nexus/content/repositori
 def NEXUS_USERNAME='admin'
 //登录nexus oss的密码
 def NEXUS_PASSWORD='admin123'
-def VERSION = '1.0'
-def ARTIFACT_ID = 'network'
-def GROUP_ID = 'cn.zytx.common'
-// type
-def TYPE = 'jar'
-//description
-def DESCRIPTION = 'This is Token service included add,edit,delete,query'
 
 uploadArchives {
     configuration = configurations.archives
@@ -89,7 +90,6 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-
 def gitUrl = 'https://gitee.com/xxssyyyyssxx/network.git'
 def siteUrl = 'https://gitee.com/xxssyyyyssxx/network'
 
@@ -98,8 +98,9 @@ install {
         // This generates POM.xml with proper parameters
         pom {
             project {
-                packaging 'jar'
-                name 'network'
+                packaging TYPE
+                name ARTIFACT_ID
+                description DESCRIPTION
                 url siteUrl
                 licenses {
                     license {
@@ -139,9 +140,9 @@ artifacts {
     archives javadocJar
 }
 
-signing {
+/*signing {
     sign configurations.archives
-}
+}*/
 
 tasks.withType(Javadoc) {
     /*options.encoding = 'UTF-8'*/
@@ -154,20 +155,19 @@ tasks.withType(Javadoc) {
 }
 
 bintray {
-//    Properties properties = new Properties()
-//    boolean isHasFile = false
-//    if (project.rootProject.file('local.properties') != null){
-//        isHasFile = true
-//        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-//    }
-//    user = isHasFile ? properties.getProperty("bintray.user") : System.getenv("bintray.user")
-//    key = isHasFile ? properties.getProperty("bintray.apikey") : System.getenv("bintray.apikey")
-    user = 'xxssyyyyssxx'
-    key = 'a588ddf0bcd539908b1834e4b7823f7ee7881dee'
+    Properties properties = new Properties()
+    boolean isHasFile = false
+    if (project.rootProject.file('local.properties') != null){
+        isHasFile = true
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    }
+    user = isHasFile ? properties.getProperty("bintray.user") : System.getenv("bintray.user")
+    key = isHasFile ? properties.getProperty("bintray.apikey") : System.getenv("bintray.apikey")
+
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "network" //项目名称
+        name = ARTIFACT_ID //项目名称
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
