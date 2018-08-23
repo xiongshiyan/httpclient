@@ -37,10 +37,12 @@ dependencies {
 
     //compile 'com.squareup.okhttp3:okhttp:3.3.0'
     compile 'com.squareup.okhttp3:okhttp:3.11.0'
-    compile (group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'){
+    compile ('org.apache.httpcomponents:httpclient:4.5.3'){
         exclude group:'commons-logging'
     }
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.3'
+    compile ('org.apache.httpcomponents:httpmime:4.5.3'){
+        exclude group:'commons-logging'
+    }
 
     compile group: 'commons-net', name: 'commons-net', version: '3.3'
 
