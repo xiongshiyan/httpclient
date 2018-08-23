@@ -2,7 +2,6 @@ package top.jfunc.common.http;
 
 import top.jfunc.common.http.basic.HttpClient;
 import top.jfunc.common.http.basic.NativeHttpClient;
-import top.jfunc.common.http.converter.json.ConverterSmartHttpClient;
 import top.jfunc.common.http.smart.NativeSmartHttpClient;
 import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.ClassUtil;
@@ -30,27 +29,27 @@ public class HttpUtil {
 
 
     // http请求工具代理对象
-    private static final ConverterSmartHttpClient delegate;
-    public static ConverterSmartHttpClient delegate() {
+    private static final SmartHttpClient delegate;
+    public static SmartHttpClient delegate() {
         return delegate;
     }
 
     static {
 
         //根据类路径的jar加载默认顺序是 OKHttp3、ApacheHttpClient、URLConnection
-        ConverterSmartHttpClient delegateToUse = null;
+        SmartHttpClient delegateToUse = null;
         // okhttp3.OkHttpClient ?
         if (ClassUtil.isPresent(HttpUtil.class.getClassLoader() ,"okhttp3.OkHttpClient" , "okio.Okio")) {
-            delegateToUse = new top.jfunc.common.http.converter.json.ConverterOkHttp3SmartHttpClient();
+            delegateToUse = new top.jfunc.common.http.smart.OkHttp3SmartHttpClient();
         }
         // org.apache.http.impl.client.CloseableHttpClient ?
         else if (ClassUtil.isPresent(HttpUtil.class.getClassLoader() ,
                 "org.apache.http.impl.client.CloseableHttpClient","org.apache.http.impl.client.HttpClientBuilder")) {
-            delegateToUse = new top.jfunc.common.http.converter.json.ConverterApacheSmartHttpClient();
+            delegateToUse = new top.jfunc.common.http.smart.ApacheSmartHttpClient();
         }
         // java.net.URLConnection
         else if (ClassUtil.isPresent(HttpUtil.class.getClassLoader() ,"java.net.URLConnection")) {
-            delegateToUse = new top.jfunc.common.http.converter.json.ConverterNativeSmartHttpClient();
+            delegateToUse = new top.jfunc.common.http.smart.NativeSmartHttpClient();
         }
         delegate = delegateToUse;
     }
