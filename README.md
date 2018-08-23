@@ -12,3 +12,30 @@ http模块的架构设计和使用方式见CSDN博客
 
 ### 使用方式
 下载本项目，gradle clean build得到的jar包引入工程即可。本项目依赖于[utils](https://gitee.com/xxssyyyyssxx/utils)
+
+version:1.3
+
+#### 1.直接导入 
+compile 'top.jfunc.common:network:${version}'
+#### 2.如果想只使用HttpURLConnection实现 
+compile ('top.jfunc.common:network:${version}'){
+        exclude group:'org.apache.httpcomponents'
+        exclude group:'com.squareup.okhttp3'
+        exclude group:'commons-net'
+    }
+#### 3.如果想只使用ApacheHttpClient实现 
+compile ('top.jfunc.common:network:${version}'){
+        exclude group:'com.squareup.okhttp3'
+        exclude group:'commons-net'
+    }
+#### 4.如果想只使用Okhttp3实现 
+compile ('top.jfunc.common:network:${version}'){
+        exclude group:'org.apache.httpcomponents'
+        exclude group:'com.squareup.okhttp3'
+        exclude group:'commons-net'
+    }
+#### 5.如果想只使用FTP 
+compile ('top.jfunc.common:network:${version}'){
+        exclude group:'org.apache.httpcomponents'
+        exclude group:'com.squareup.okhttp3'
+    }
