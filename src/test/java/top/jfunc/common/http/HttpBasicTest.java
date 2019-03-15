@@ -34,7 +34,7 @@ public class HttpBasicTest {
         testGet(http);
     }
     private void testGet(HttpClient http){
-        String url = "https://dzgtest.palmte.cn/dzg/api/v2/h5/common/getIp";
+        String url = "http://localhost:8183/dzg/api/v2/h5/common/getIp";
 //        String url = "https://www.hao123.com/";
         String s = null;
         try {
@@ -68,7 +68,7 @@ public class HttpBasicTest {
         testPost(http);
     }
     private void testPost(HttpClient http){
-        String url = "https://dzgtest.palmte.cn/dzg/api/v2/test/boss";
+        String url = "http://localhost:8183/dzg/api/v2/test/boss";
         Map<String , String> headers = new HashMap<>(2);
         headers.put("empCode" , "ahg0023");
         headers.put("phone" , "15208384257");

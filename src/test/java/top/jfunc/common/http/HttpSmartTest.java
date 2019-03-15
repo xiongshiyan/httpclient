@@ -33,8 +33,7 @@ public class HttpSmartTest {
         testGet(http);
     }
     private void testGet(SmartHttpClient http){
-        String url = "https://dzgtest.palmte.cn/dzg/api/v2/h5/common/getIp";
-//        String url = "https://www.hao123.com/";
+        String url = "http://localhost:8183/dzg/api/v2/h5/common/getIp";
         try {
             Response response = http.get(Request.of(url).addHeader("saleType" , "2").setResultCharset("UTF-8"));
             System.out.println(response);
@@ -71,8 +70,7 @@ public class HttpSmartTest {
         testPost(http);
     }
     public void testPost(SmartHttpClient http){
-//        String url = "https://dzg.palmte.cn/dzdsds";
-        String url = "https://dzgtest.palmte.cn/dzg/api/v2/test/boss";
+        String url = "http://localhost:8183/dzg/api/v2/test/boss";
         try {
             Request request = Request.of(url).setIncludeHeaders(true).addHeader("ss" , "ss").addHeader("ss" , "dd").setBody("{\"name\":\"熊诗言\"}").setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             Response post = http.post(request);
