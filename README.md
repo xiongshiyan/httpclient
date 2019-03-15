@@ -51,6 +51,10 @@ public class HttpConfig {
     public SmartHttpClient smartHttpClient(){
         //如果要更换http的实现或者做更多的事情，可以对此bean进行配置
         return new NativeSmartHttpClient();
+        // new OkHttp3SmartHttpClient();
+        // new ApacheSmartHttpClient(){
+                //重写某些方法
+        };
     }
 }
 ```
