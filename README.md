@@ -39,3 +39,26 @@ compile ('top.jfunc.common:network:${version}'){
         exclude group:'org.apache.httpcomponents'
         exclude group:'com.squareup.okhttp3'
     }
+
+
+
+具体的使用方式：面向SmartHttpClient，可以使用HttpUtil的delegate获取一个实现，或者自己实例化一个。在SpringBoot项目中，用Bean注入：
+
+```
+@Configuration
+public class HttpConfig {
+    @Bean("smartHttpClient")
+    public SmartHttpClient smartHttpClient(){
+        //如果要更换http的实现或者做更多的事情，可以对此bean进行配置
+        return new NativeSmartHttpClient();
+    }
+}
+```
+
+
+
+https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/common/http/HttpBasicTest.java
+
+https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/common/http/HttpSmartTest.java
+
+https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/common/http/DelegateTest.java
