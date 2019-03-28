@@ -40,19 +40,19 @@ public class Request {
     /**
      * 连接超时时间
      */
-    private int connectionTimeout = DEFAULT_CONNECT_TIMEOUT;
+    private Integer connectionTimeout = null;
     /**
      * 读数据超时时间
      */
-    private int readTimeout = DEFAULT_READ_TIMEOUT;
-    /**
-     * 返回体编码
-     */
-    private String resultCharset = DEFAULT_CHARSET;
+    private Integer readTimeout = null;
     /**
      * 请求体编码
      */
-    private String bodyCharset = DEFAULT_CHARSET;
+    private String bodyCharset = null;
+    /**
+     * 返回体编码
+     */
+    private String resultCharset = null;
 
     /**
      * 返回结果中是否包含headers
@@ -197,11 +197,11 @@ public class Request {
         return contentType;
     }
 
-    public int getConnectionTimeout() {
+    public Integer getConnectionTimeout() {
         return connectionTimeout;
     }
 
-    public int getReadTimeout() {
+    public Integer getReadTimeout() {
         return readTimeout;
     }
 

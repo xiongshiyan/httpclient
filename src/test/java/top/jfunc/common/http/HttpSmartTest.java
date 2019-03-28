@@ -19,21 +19,24 @@ import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
 public class HttpSmartTest {
     @Test
     public void testGetOkHttp3(){
-        SmartHttpClient http = new OkHttp3SmartHttpClient();
+        OkHttp3SmartHttpClient http = new OkHttp3SmartHttpClient();
+        http.setBaseUrl("https://fanyi.baidu.com/");
         testGet(http);
     }
     @Test
     public void testGetApacheHttp(){
-        SmartHttpClient http = new ApacheSmartHttpClient();
+        ApacheSmartHttpClient http = new ApacheSmartHttpClient();
+        http.setBaseUrl("https://fanyi.baidu.com/");
         testGet(http);
     }
     @Test
     public void testGetNativeHttp(){
-        SmartHttpClient http = new NativeSmartHttpClient();
+        NativeSmartHttpClient http = new NativeSmartHttpClient();
+        http.setBaseUrl("https://fanyi.baidu.com/");
         testGet(http);
     }
     private void testGet(SmartHttpClient http){
-        String url = "http://localhost:8183/dzg/api/v2/h5/common/getIp";
+        String url = "?aldtype=85#zh/en/%E5%AE%8C%E6%95%B4%E7%9A%84%E6%88%91";
         try {
             Response response = http.get(Request.of(url).addHeader("saleType" , "2").setResultCharset("UTF-8"));
             System.out.println(response);

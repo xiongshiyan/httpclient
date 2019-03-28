@@ -23,7 +23,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())) ,
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), getBodyCharsetWithDefault(request.getBodyCharset()))) ,
                 Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
@@ -36,7 +36,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
         Response response = template(request, Method.POST ,
-                r -> setRequestBody(r, request.getBody(), request.getBodyCharset()) , Response::with);
+                r -> setRequestBody(r, request.getBody(), getBodyCharsetWithDefault(request.getBodyCharset())) , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -45,7 +45,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         Request request = beforeTemplate(req);
         ContentCallback<HttpEntityEnclosingRequest> contentCallback = null;
         if(method.hasContent()){
-            contentCallback = r -> setRequestBody(r, request.getBody(), request.getBodyCharset());
+            contentCallback = r -> setRequestBody(r, request.getBody(), getBodyCharsetWithDefault(request.getBodyCharset()));
         }
         Response response = template(request, method , contentCallback, Response::with);
         return afterTemplate(request , response);

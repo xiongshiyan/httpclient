@@ -58,7 +58,9 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
         setRequestHeaders(httpUriRequest, request.getContentType(), request.getHeaders());
 
         //3.设置请求参数
-        setRequestProperty((HttpRequestBase) httpUriRequest, request.getConnectionTimeout(), request.getReadTimeout());
+        setRequestProperty((HttpRequestBase) httpUriRequest,
+                getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
+                getReadTimeoutWithDefault(request.getReadTimeout()));
 
         //4.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
@@ -96,7 +98,7 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
             if(null == inputStream){
                 inputStream = emptyInputStream();
             }
-            R convert = resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
             IoUtil.close(inputStream);
             return convert;
 

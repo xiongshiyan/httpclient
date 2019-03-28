@@ -34,8 +34,8 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
             String completedUrl = addBaseUrlIfNecessary(request.getUrl());
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
-                    .connectTimeout(request.getConnectionTimeout(), TimeUnit.MILLISECONDS)
-                    .readTimeout(request.getReadTimeout(), TimeUnit.MILLISECONDS);
+                    .connectTimeout(getConnectionTimeoutWithDefault(request.getConnectionTimeout()), TimeUnit.MILLISECONDS)
+                    .readTimeout(getReadTimeoutWithDefault(request.getReadTimeout()), TimeUnit.MILLISECONDS);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(isHttps(completedUrl)){
@@ -82,7 +82,7 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
             inputStream = getStreamFrom(response);
 
             int statusCode = response.code();
-            return resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
             /*return top.jfunc.common.http.smart.Response.with(statusCode , inputStream , request.getResultCharset() ,
                     request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));*/
         } catch (IOException e) {

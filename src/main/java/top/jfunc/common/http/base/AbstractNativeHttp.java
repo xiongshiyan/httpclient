@@ -35,7 +35,9 @@ public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTem
             connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
 
             //2.处理header
-            setConnectProperty(connect, method, request.getContentType(), request.getHeaders(),request.getConnectionTimeout(),request.getReadTimeout());
+            setConnectProperty(connect, method, request.getContentType(), request.getHeaders(),
+                    getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
+                    getReadTimeoutWithDefault(request.getReadTimeout()));
 
 
             ////////////////////////////////////ssl处理///////////////////////////////////
@@ -67,7 +69,7 @@ public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTem
 
             inputStream = getStreamFrom(connect , statusCode);
 
-            return resultCallback.convert(statusCode , inputStream, request.getResultCharset(), request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
             ///返回Response
             //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {

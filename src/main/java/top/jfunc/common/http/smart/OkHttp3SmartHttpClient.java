@@ -17,11 +17,12 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);
+        ////
         /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET, request.getContentType(), null, request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
         return afterTemplate(request , response);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), request.getBodyCharset())) , Method.GET , null , Response::with);
+        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), getBodyCharsetWithDefault(request.getBodyCharset()))) , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
     /**
