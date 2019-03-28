@@ -31,8 +31,8 @@ public class NativeHttpClient extends AbstractNativeHttp implements HttpClient {
      */
     private static final String END_LINE = TWO_HYPHENS + BOUNDARY + TWO_HYPHENS + END;
     @Override
-    public String get(String actionName, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException {
-        return template(ParamUtil.contactUrlParams(actionName , params , DEFAULT_CHARSET), Method.GET, null, null, ArrayListMultimap.fromMap(headers),  connectTimeout, readTimeout,
+    public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException {
+        return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET), Method.GET, null, null, ArrayListMultimap.fromMap(headers),  connectTimeout, readTimeout,
                 resultCharset, false , (s, b,r,h)-> IoUtil.read(b , r));
     }
 

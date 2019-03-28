@@ -3,6 +3,7 @@ package top.jfunc.common.http;
 import top.jfunc.common.Editor;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.Joiner;
+import top.jfunc.common.utils.StrUtil;
 
 import java.io.*;
 import java.net.URLEncoder;
@@ -17,13 +18,23 @@ import java.util.Objects;
 public class ParamUtil {
     private ParamUtil(){}
 
+    private static final String SPLASH = "/";
+
     /**
      * 检测是否https
-     * @param url URL
+     * @param url 完整的URL
      * @return 是否https
      */
     public static boolean isHttps(String url) {
-        return url.trim().toLowerCase().startsWith("https");
+        return url.trim().toLowerCase().startsWith("https://");
+    }
+    /**
+     * 检测是否http
+     * @param url 完整的URL
+     * @return 是否https
+     */
+    public static boolean isHttp(String url) {
+        return url.trim().toLowerCase().startsWith("http://");
     }
 
     /**
@@ -138,5 +149,37 @@ public class ParamUtil {
     public static String contactUrlParams(String actionName, Map<String , String> params) {
         Objects.requireNonNull(actionName);
         return contactUrlParams(actionName , contactMap(params , HttpConstants.DEFAULT_CHARSET));
+    }
+
+    /**
+     * 判断给定的字符串是否是完整的URL
+     * https://localhost:8080/... true
+     * http://localhost:8080/... true
+     * /xxx/xxx false
+     * yyy/yyy false
+     *
+     */
+    public static boolean isCompletedUrl(String url){
+        return isHttp(url) || isHttps(url);
+    }
+
+    /**
+     * 如果有必要就添加baseUrl，对 / 的兼容处理
+     * @param baseUrl baseUrl
+     * @param inputUrl inputUrl
+     */
+    public static String addBaseUrlIfNecessary(String baseUrl , String inputUrl){
+        //1.baseUrl为空不处理
+        //2.本身是完整的URL不处理
+        if(StrUtil.isEmpty(baseUrl) || ParamUtil.isCompletedUrl(inputUrl)){
+            return inputUrl;
+        }
+        if(baseUrl.endsWith(SPLASH) && inputUrl.startsWith(SPLASH)){
+            return baseUrl + inputUrl.substring(1);
+        }
+        if(!baseUrl.endsWith(SPLASH) && !inputUrl.startsWith(SPLASH)){
+            return baseUrl + SPLASH + inputUrl;
+        }
+        return baseUrl + inputUrl;
     }
 }

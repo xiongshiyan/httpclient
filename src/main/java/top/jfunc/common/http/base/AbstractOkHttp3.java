@@ -31,13 +31,14 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
         Response response = null;
         InputStream inputStream = null;
         try {
+            String completedUrl = addBaseUrlIfNecessary(request.getUrl());
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
                     .connectTimeout(request.getConnectionTimeout(), TimeUnit.MILLISECONDS)
                     .readTimeout(request.getReadTimeout(), TimeUnit.MILLISECONDS);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
-            if(isHttps(request.getUrl())){
+            if(isHttps(completedUrl)){
                 //默认设置这些
                 initSSL(clientBuilder , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory() , getDefaultX509TrustManager());
                 if(request instanceof SSLRequest){
@@ -49,12 +50,12 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
             ////////////////////////////////////ssl处理///////////////////////////////////
 
             //给子类复写的机会
-            doWithBuilder(clientBuilder , isHttps(request.getUrl()));
+            doWithBuilder(clientBuilder , isHttps(completedUrl));
 
             OkHttpClient client = clientBuilder.build();
 
             //2.1设置URL
-            Request.Builder builder = new Request.Builder().url(request.getUrl());
+            Request.Builder builder = new Request.Builder().url(completedUrl);
 
             ArrayListMultimap<String, String> headers = request.getHeaders();
             //2.2设置headers
@@ -113,25 +114,26 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
         Response response = null;
         InputStream inputStream = null;
         try {
+            String completedUrl = addBaseUrlIfNecessary(url);
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
                     .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(readTimeout, TimeUnit.MILLISECONDS);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
-            if(isHttps(url)){
+            if(isHttps(completedUrl)){
                 //默认设置这些
                 initSSL(clientBuilder , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory() , getDefaultX509TrustManager());
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
             //给子类复写的机会
-            doWithBuilder(clientBuilder , isHttps(url));
+            doWithBuilder(clientBuilder , isHttps(completedUrl));
 
             OkHttpClient client = clientBuilder.build();
 
             //2.1设置URL
-            Request.Builder builder = new Request.Builder().url(url);
+            Request.Builder builder = new Request.Builder().url(completedUrl);
 
             //2.2设置headers
             if(null != headers) {

@@ -4,6 +4,7 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
+import top.jfunc.common.utils.StrUtil;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -45,5 +46,22 @@ public abstract class AbstractHttp {
 
     public boolean isHttps(String url){
         return ParamUtil.isHttps(url);
+    }
+
+    /**
+     * BaseUrl,如果设置了就在正常传送的URL之前添加上
+     */
+    private String baseUrl;
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public String addBaseUrlIfNecessary(String inputUrl){
+        return ParamUtil.addBaseUrlIfNecessary(baseUrl , inputUrl);
     }
 }

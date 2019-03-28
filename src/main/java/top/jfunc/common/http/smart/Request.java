@@ -134,6 +134,43 @@ public class Request {
         this.readTimeout = readTimeout;
         return this;
     }
+    public Request setBodyCharset(String bodyCharset) {
+        this.bodyCharset = bodyCharset;
+        return this;
+    }
+
+    public Request setResultCharset(String resultCharset) {
+        this.resultCharset = resultCharset;
+        return this;
+    }
+
+    public Request setIncludeHeaders(boolean includeHeaders) {
+        this.includeHeaders = includeHeaders;
+        return this;
+    }
+
+    public Request setRedirectable(boolean redirectable) {
+        this.redirectable = redirectable;
+        //要支持重定向必须header
+        this.includeHeaders = true;
+        return this;
+    }
+
+    public Request addFormFile(FormFile... formFiles) {
+        if(null != formFiles){
+            this.formFiles.addAll(Arrays.asList(formFiles));
+        }
+        return this;
+    }
+
+    public Request setFile(File file) {
+        this.file = file;
+        return this;
+    }
+    public Request setFile(String filePath) {
+        this.file = new File(filePath);
+        return this;
+    }
 
     /****************************Getter**************************/
     public String getUrl() {
@@ -172,61 +209,23 @@ public class Request {
         return bodyCharset;
     }
 
-    public Request setBodyCharset(String bodyCharset) {
-        this.bodyCharset = bodyCharset;
-        return this;
-    }
-
     public String getResultCharset() {
         return resultCharset;
-    }
-
-    public Request setResultCharset(String resultCharset) {
-        this.resultCharset = resultCharset;
-        return this;
     }
 
     public boolean isIncludeHeaders() {
         return includeHeaders;
     }
 
-    public Request setIncludeHeaders(boolean includeHeaders) {
-        this.includeHeaders = includeHeaders;
-        return this;
-    }
-
     public boolean isRedirectable() {
         return redirectable;
-    }
-
-    public Request setRedirectable(boolean redirectable) {
-        this.redirectable = redirectable;
-        //要支持重定向必须header
-        this.includeHeaders = true;
-        return this;
     }
 
     public FormFile[] getFormFiles() {
         return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
     }
 
-    public Request addFormFile(FormFile... formFiles) {
-        if(null != formFiles){
-            this.formFiles.addAll(Arrays.asList(formFiles));
-        }
-        return this;
-    }
-
     public File getFile() {
         return file;
-    }
-
-    public Request setFile(File file) {
-        this.file = file;
-        return this;
-    }
-    public Request setFile(String filePath) {
-        this.file = new File(filePath);
-        return this;
     }
 }

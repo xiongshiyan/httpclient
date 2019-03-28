@@ -49,7 +49,10 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
 
     @Override
     public <R> R template(Request request, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        HttpUriRequest httpUriRequest = createHttpUriRequest(request.getUrl(), method);
+        //1.获取完整的URL
+        String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+
+        HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
 
         //2.设置请求头
         setRequestHeaders(httpUriRequest, request.getContentType(), request.getHeaders());
@@ -72,7 +75,7 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
             HostnameVerifier hostnameVerifier = null;
             SSLContext sslContext = null;
             //https默认设置这些
-            if(isHttps(request.getUrl())){
+            if(isHttps(completedUrl)){
                 hostnameVerifier = getDefaultHostnameVerifier();
                 sslContext = getDefaultSSLContext();
                 //客户传过来就用客户的
@@ -84,7 +87,7 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
-            httpClient = getCloseableHttpClient(request.getUrl() , hostnameVerifier , sslContext);
+            httpClient = getCloseableHttpClient(completedUrl , hostnameVerifier , sslContext);
             //6.发送请求
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
             int statusCode = response.getStatusLine().getStatusCode();
@@ -114,10 +117,11 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
 
     @Override
     public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
-        //1.创建请求
+        //1.获取完成的URL，创建请求
+        String completedUrl = addBaseUrlIfNecessary(url);
         ///*URIBuilder builder = new URIBuilder(url);
         //URI uri = builder.build();*/
-        HttpUriRequest httpUriRequest = createHttpUriRequest(url , method);
+        HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl , method);
 
         //2.设置请求头
         setRequestHeaders(httpUriRequest, contentType, headers);
@@ -139,7 +143,7 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
 
             //5.创建http客户端
             //CloseableHttpClient httpClient = HttpClients.createDefault();
-            httpClient = getCloseableHttpClient(url ,getDefaultHostnameVerifier() , getDefaultSSLContext());
+            httpClient = getCloseableHttpClient(completedUrl ,getDefaultHostnameVerifier() , getDefaultSSLContext());
 
             //6.发送请求
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());

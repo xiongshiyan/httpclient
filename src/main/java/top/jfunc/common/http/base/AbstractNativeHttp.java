@@ -30,7 +30,9 @@ public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTem
         InputStream inputStream = null;
         try {
             //1.获取连接
-            connect = (HttpURLConnection)new java.net.URL(request.getUrl()).openConnection();
+            String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+
+            connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
 
             //2.处理header
             setConnectProperty(connect, method, request.getContentType(), request.getHeaders(),request.getConnectionTimeout(),request.getReadTimeout());
@@ -91,7 +93,8 @@ public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTem
         InputStream inputStream = null;
         try {
             //1.获取连接
-            connect = (HttpURLConnection)new java.net.URL(url).openConnection();
+            String completedUrl = addBaseUrlIfNecessary(url);
+            connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
 
             //2.处理header
             setConnectProperty(connect, method, contentType, headers,connectTimeout,readTimeout);
