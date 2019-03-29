@@ -10,6 +10,22 @@ http模块的架构设计和使用方式见CSDN博客
 [一个http请求工具类的接口化（接口设计）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715202)
 [一个http请求工具类的接口化（多种实现）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715837)
 
+
+features:
+
+* HttpClient接口体系
+* SmartHttpClient（继承HttpClient）接口体系：基于Request-Response
+* 支持文件上传、下载
+* 支持https
+* 支持基于OkHttp3、ApacheHttpClient、HttpURLConnection的切换
+* HttpUtil支持根据jar包加载实现
+* 配置项可以通过-D全局设置，可以对某个实现的对象例如 `NativeSmartHttpClient` 全局设置，也可以针对某一个请求Request单独设置，优先级逐渐升高
+* 支持返回值和JavaBean之间的转换，基于项目 https://gitee.com/xxssyyyyssxx/network-converter
+
+* FTP接口上传下载实现
+
+
+
 ### 使用方式
 下载本项目，gradle clean build得到的jar包引入工程即可。本项目依赖于[utils](https://gitee.com/xxssyyyyssxx/utils)
 
