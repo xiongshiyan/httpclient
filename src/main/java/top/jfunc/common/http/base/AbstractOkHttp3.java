@@ -39,13 +39,7 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(isHttps(completedUrl)){
-                //默认设置这些
-                initSSL(clientBuilder , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory() , getDefaultX509TrustManager());
-                if(request instanceof SSLRequest){
-                    //客户给了就用给客户的
-                    SSLRequest sslRequest = (SSLRequest) request;
-                    initSSL(clientBuilder , sslRequest.getHostnameVerifier(), sslRequest.getSslSocketFactory() , sslRequest.getX509TrustManager());
-                }
+                initSSL(clientBuilder , getHostnameVerifier(request) , getSSLSocketFactory(request) , getX509TrustManager(request));
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -121,7 +115,7 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(isHttps(completedUrl)){
                 //默认设置这些
-                initSSL(clientBuilder , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory() , getDefaultX509TrustManager());
+                initSSL(clientBuilder , getHostnameVerifier() , getSSLSocketFactory() , getX509TrustManager());
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 

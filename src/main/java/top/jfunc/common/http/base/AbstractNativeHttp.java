@@ -44,12 +44,7 @@ public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTem
             if(connect instanceof HttpsURLConnection){
                 //默认设置这些
                 HttpsURLConnection con = (HttpsURLConnection)connect;
-                initSSL(con , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory());
-                if(request instanceof SSLRequest){
-                    //客户给了就用给客户的
-                    SSLRequest sslRequest = (SSLRequest) request;
-                    initSSL(con , sslRequest.getHostnameVerifier(), sslRequest.getSslSocketFactory());
-                }
+                initSSL(con , getHostnameVerifier(request) , getSSLSocketFactory(request));
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -105,7 +100,7 @@ public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTem
             if(connect instanceof HttpsURLConnection){
                 //默认设置这些
                 HttpsURLConnection con = (HttpsURLConnection)connect;
-                initSSL(con , getDefaultHostnameVerifier() , getDefaultSSLSocketFactory());
+                initSSL(con , getHostnameVerifier() , getSSLSocketFactory());
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 

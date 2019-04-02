@@ -5,6 +5,8 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
+import top.jfunc.common.http.smart.Request;
+import top.jfunc.common.http.smart.SSLRequest;
 import top.jfunc.common.utils.StrUtil;
 
 import javax.net.ssl.HostnameVerifier;
@@ -36,7 +38,71 @@ public abstract class AbstractHttp {
         return new DefaultTrustManager2();
     }
 
+    protected HostnameVerifier getHostnameVerifier(Request request){
+        HostnameVerifier hostnameVerifier = getHostnameVerifier();
+        if(request instanceof SSLRequest){
+            SSLRequest sslRequest = (SSLRequest)request;
+            HostnameVerifier verifier = sslRequest.getHostnameVerifier();
+            return null == verifier ? hostnameVerifier : verifier;
+        }
+        return hostnameVerifier;
+    }
 
+    /**
+     * 子类可以复写此方法获取 HostnameVerifier ，否则默认
+     */
+    protected HostnameVerifier getHostnameVerifier(){
+        return getDefaultHostnameVerifier();
+    }
+
+    protected SSLSocketFactory getSSLSocketFactory(Request request){
+        SSLSocketFactory sslSocketFactory = getSSLSocketFactory();
+        if(request instanceof SSLRequest){
+            SSLRequest sslRequest = (SSLRequest)request;
+            SSLSocketFactory factory = sslRequest.getSslSocketFactory();
+            return null == factory ? sslSocketFactory : factory;
+        }
+        return sslSocketFactory;
+    }
+    /**
+     * 子类可以复写此方法获取 SSLSocketFactory ，否则默认
+     */
+    protected SSLSocketFactory getSSLSocketFactory(){
+        return getDefaultSSLSocketFactory();
+    }
+
+    protected SSLContext getSSLContext(Request request){
+        SSLContext sslContext = getSSLContext();
+        if(request instanceof SSLRequest){
+            SSLRequest sslRequest = (SSLRequest)request;
+            SSLContext context = sslRequest.getSslContext();
+            return null == context ? sslContext : context;
+        }
+        return sslContext;
+    }
+
+    /**
+     * 子类可以复写此方法获取 SSLContext ，否则默认
+     */
+    protected SSLContext getSSLContext(){
+        return getDefaultSSLContext();
+    }
+    protected X509TrustManager getX509TrustManager(Request request){
+        X509TrustManager x509TrustManager = getX509TrustManager();
+        if(request instanceof SSLRequest){
+            SSLRequest sslRequest = (SSLRequest)request;
+            X509TrustManager manager = sslRequest.getX509TrustManager();
+            return null == manager ? x509TrustManager : manager;
+        }
+        return x509TrustManager;
+    }
+
+    /**
+     * 子类可以复写此方法获取 X509TrustManager ，否则默认
+     */
+    protected X509TrustManager getX509TrustManager(){
+        return getDefaultX509TrustManager();
+    }
 
     /**
      * 获取一个空的，防止空指针

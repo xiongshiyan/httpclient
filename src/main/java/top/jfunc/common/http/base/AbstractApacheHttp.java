@@ -78,14 +78,8 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
             SSLContext sslContext = null;
             //https默认设置这些
             if(isHttps(completedUrl)){
-                hostnameVerifier = getDefaultHostnameVerifier();
-                sslContext = getDefaultSSLContext();
-                //客户传过来就用客户的
-                if(request instanceof SSLRequest){
-                    SSLRequest sslRequest = (SSLRequest)request;
-                    hostnameVerifier = sslRequest.getHostnameVerifier();
-                    sslContext = sslRequest.getSslContext();
-                }
+                hostnameVerifier = getHostnameVerifier(request);
+                sslContext = getSSLContext(request);
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -145,7 +139,7 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
 
             //5.创建http客户端
             //CloseableHttpClient httpClient = HttpClients.createDefault();
-            httpClient = getCloseableHttpClient(completedUrl ,getDefaultHostnameVerifier() , getDefaultSSLContext());
+            httpClient = getCloseableHttpClient(completedUrl ,getHostnameVerifier() , getSSLContext());
 
             //6.发送请求
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
