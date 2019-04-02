@@ -54,6 +54,8 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
 
             OkHttpClient client = clientBuilder.build();
 
+            doWithClient(client);
+
             //2.1设置URL
             Request.Builder builder = new Request.Builder().url(completedUrl);
 
@@ -91,11 +93,7 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
             throw new RuntimeException(e);
         } finally {
             IoUtil.close(inputStream);
-            if(null != response){
-                try {
-                    response.close();
-                } catch (Exception e) {}
-            }
+            IoUtil.close(response);
         }
     }
 
@@ -131,6 +129,8 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
             doWithBuilder(clientBuilder , isHttps(completedUrl));
 
             OkHttpClient client = clientBuilder.build();
+
+            doWithClient(client);
 
             //2.1设置URL
             Request.Builder builder = new Request.Builder().url(completedUrl);
@@ -174,15 +174,15 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
             throw new RuntimeException(e);
         } finally {
             IoUtil.close(inputStream);
-            if(null != response){
-                try {
-                    response.close();
-                } catch (Exception e) {}
-            }
+            IoUtil.close(response);
         }
     }
 
     protected void doWithBuilder(OkHttpClient.Builder builder , boolean isHttps) throws Exception{
+        //default do nothing, give children a chance to do more config
+    }
+    protected void doWithClient(OkHttpClient okHttpClient) throws Exception{
+        //default do nothing, give children a chance to do more config
     }
 
     /**

@@ -296,6 +296,7 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
     }
 
     protected void doWithClient(HttpClientBuilder httpClientBuilder , boolean isHttps) throws Exception{
+        //default do nothing, give children a chance to do more config
     }
 
     /**

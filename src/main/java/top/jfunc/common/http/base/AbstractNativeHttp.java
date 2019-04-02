@@ -173,6 +173,7 @@ public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTem
 
     /**子类复写需要首先调用此方法，保证http的功能*/
     protected void doWithConnection(HttpURLConnection connect) throws IOException{
+        //default do nothing, give children a chance to do more config
     }
 
     /**
