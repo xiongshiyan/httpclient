@@ -132,7 +132,11 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
     }
 
     protected RequestBody stringBody(String body , String contentType){
-        return RequestBody.create(MediaType.parse(contentType),body);
+        MediaType mediaType = null;
+        if(null != contentType){
+            mediaType = MediaType.parse(contentType);
+        }
+        return RequestBody.create(mediaType, body);
     }
 
     protected RequestBody inputStreamBody(String contentType , InputStream inputStream , long length){
