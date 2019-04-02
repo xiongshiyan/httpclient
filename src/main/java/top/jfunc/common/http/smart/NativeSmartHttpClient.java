@@ -3,19 +3,82 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.NativeHttpClient;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
 
 /**
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttpClient {
+public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttpClient  , SmartHttpTemplate<HttpURLConnection>{
+    @Override
+    public <R> R template(Request request, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        HttpURLConnection connect = null;
+        InputStream inputStream = null;
+        try {
+            //1.获取连接
+            String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+
+            connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
+
+            //2.处理header
+            setConnectProperty(connect, method, request.getContentType(), request.getHeaders(),
+                    getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
+                    getReadTimeoutWithDefault(request.getReadTimeout()));
+
+
+            ////////////////////////////////////ssl处理///////////////////////////////////
+            if(connect instanceof HttpsURLConnection){
+                //默认设置这些
+                HttpsURLConnection con = (HttpsURLConnection)connect;
+                initSSL(con , RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier()) ,
+                        RequestSSLUtil.getSSLSocketFactory(request , getSSLSocketFactory()));
+            }
+            ////////////////////////////////////ssl处理///////////////////////////////////
+
+            //3.留给子类复写的机会:给connection设置更多参数
+            doWithConnection(connect);
+
+            //5.写入内容，只对post有效
+            if(contentCallback != null && method.hasContent()){
+                contentCallback.doWriteWith(connect);
+            }
+
+            //4.连接
+            connect.connect();
+
+            //6.获取返回值
+            int statusCode = connect.getResponseCode();
+
+            inputStream = getStreamFrom(connect , statusCode);
+
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+            ///返回Response
+            //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        } finally {
+            //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
+            //1 . 关闭连接
+            disconnectQuietly(connect);
+            //2 . 关闭流
+            IoUtil.close(inputStream);
+        }
+    }
+
+
+
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);

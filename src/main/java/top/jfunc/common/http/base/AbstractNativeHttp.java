@@ -7,8 +7,6 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ssl.DefaultTrustManager;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
-import top.jfunc.common.http.smart.Request;
-import top.jfunc.common.http.smart.SSLRequest;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 
@@ -24,63 +22,6 @@ import java.util.Set;
  * @author 熊诗言2018/6/6
  */
 public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTemplate<HttpURLConnection> {
-    @Override
-    public <R> R template(Request request, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        HttpURLConnection connect = null;
-        InputStream inputStream = null;
-        try {
-            //1.获取连接
-            String completedUrl = addBaseUrlIfNecessary(request.getUrl());
-
-            connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
-
-            //2.处理header
-            setConnectProperty(connect, method, request.getContentType(), request.getHeaders(),
-                    getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
-                    getReadTimeoutWithDefault(request.getReadTimeout()));
-
-
-            ////////////////////////////////////ssl处理///////////////////////////////////
-            if(connect instanceof HttpsURLConnection){
-                //默认设置这些
-                HttpsURLConnection con = (HttpsURLConnection)connect;
-                initSSL(con , getHostnameVerifier(request) , getSSLSocketFactory(request));
-            }
-            ////////////////////////////////////ssl处理///////////////////////////////////
-
-            //3.留给子类复写的机会:给connection设置更多参数
-            doWithConnection(connect);
-
-            //5.写入内容，只对post有效
-            if(contentCallback != null && method.hasContent()){
-                contentCallback.doWriteWith(connect);
-            }
-
-            //4.连接
-            connect.connect();
-
-            //6.获取返回值
-            int statusCode = connect.getResponseCode();
-
-            inputStream = getStreamFrom(connect , statusCode);
-
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
-            ///返回Response
-            //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        } finally {
-            //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
-            //1 . 关闭连接
-            disconnectQuietly(connect);
-            //2 . 关闭流
-            IoUtil.close(inputStream);
-        }
-    }
-
-
     @Override
     public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
         //默认的https校验
@@ -153,7 +94,7 @@ public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTem
         }
     }
 
-    private InputStream getStreamFrom(HttpURLConnection connect , int statusCode) throws IOException{
+    protected InputStream getStreamFrom(HttpURLConnection connect , int statusCode) throws IOException{
         InputStream inputStream;
         if(HttpStatus.HTTP_OK == statusCode){
             inputStream = connect.getInputStream();

@@ -1,19 +1,97 @@
 package top.jfunc.common.http.smart;
 
+import okhttp3.OkHttpClient;
+import top.jfunc.common.http.Header;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.OkHttp3Client;
+import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 import okhttp3.MultipartBody;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiongshiyan at 2018/1/11
  */
-public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpClient {
+public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpClient , SmartHttpTemplate<okhttp3.Request.Builder>{
+
+    @Override
+    public <R> R template(top.jfunc.common.http.smart.Request request, Method method , ContentCallback<okhttp3.Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        okhttp3.Response response = null;
+        InputStream inputStream = null;
+        try {
+            String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+            //1.构造OkHttpClient
+            OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
+                    .connectTimeout(getConnectionTimeoutWithDefault(request.getConnectionTimeout()), TimeUnit.MILLISECONDS)
+                    .readTimeout(getReadTimeoutWithDefault(request.getReadTimeout()), TimeUnit.MILLISECONDS);
+
+            ////////////////////////////////////ssl处理///////////////////////////////////
+            if(isHttps(completedUrl)){
+                initSSL(clientBuilder , RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier()) ,
+                        RequestSSLUtil.getSSLSocketFactory(request , getSSLSocketFactory()) ,
+                        RequestSSLUtil.getX509TrustManager(request , getX509TrustManager()));
+            }
+            ////////////////////////////////////ssl处理///////////////////////////////////
+
+            //给子类复写的机会
+            doWithBuilder(clientBuilder , isHttps(completedUrl));
+
+            OkHttpClient client = clientBuilder.build();
+
+            doWithClient(client);
+
+            //2.1设置URL
+            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(completedUrl);
+
+            ArrayListMultimap<String, String> headers = request.getHeaders();
+            //2.2设置headers
+            if(null != headers) {
+                Set<String> keySet = headers.keySet();
+                keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));
+            }
+            if(null != request.getContentType()){
+                builder.addHeader(Header.CONTENT_TYPE.toString() , request.getContentType());
+            }
+
+            //2.3处理请求体
+            if(null != contentCallback && method.hasContent()){
+                contentCallback.doWriteWith(builder);
+            }
+
+            //3.构造请求
+            okhttp3.Request okRequest = builder.build();
+
+            //4.执行请求
+            response = client.newCall(okRequest).execute();
+
+            //5.获取响应
+            inputStream = getStreamFrom(response);
+
+            int statusCode = response.code();
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            /*return top.jfunc.common.http.smart.Response.with(statusCode , inputStream , request.getResultCharset() ,
+                    request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));*/
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        } finally {
+            IoUtil.close(inputStream);
+            IoUtil.close(response);
+        }
+    }
+
+
+
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);

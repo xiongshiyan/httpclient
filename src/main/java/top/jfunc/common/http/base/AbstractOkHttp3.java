@@ -1,16 +1,15 @@
 package top.jfunc.common.http.base;
 
-import top.jfunc.common.http.Header;
-import top.jfunc.common.http.HttpStatus;
-import top.jfunc.common.http.Method;
-import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
-import top.jfunc.common.http.smart.SSLRequest;
-import top.jfunc.common.utils.ArrayListMultimap;
-import top.jfunc.common.utils.IoUtil;
 import okhttp3.*;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
+import top.jfunc.common.http.Header;
+import top.jfunc.common.http.HttpStatus;
+import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
+import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.IoUtil;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -25,81 +24,6 @@ import java.util.concurrent.TimeUnit;
  * @author xiongshiyan at 2018/6/6
  */
 public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTemplate<Request.Builder> {
-
-    @Override
-    public <R> R template(top.jfunc.common.http.smart.Request request, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        Response response = null;
-        InputStream inputStream = null;
-        try {
-            String completedUrl = addBaseUrlIfNecessary(request.getUrl());
-            //1.构造OkHttpClient
-            OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
-                    .connectTimeout(getConnectionTimeoutWithDefault(request.getConnectionTimeout()), TimeUnit.MILLISECONDS)
-                    .readTimeout(getReadTimeoutWithDefault(request.getReadTimeout()), TimeUnit.MILLISECONDS);
-
-            ////////////////////////////////////ssl处理///////////////////////////////////
-            if(isHttps(completedUrl)){
-                initSSL(clientBuilder , getHostnameVerifier(request) , getSSLSocketFactory(request) , getX509TrustManager(request));
-            }
-            ////////////////////////////////////ssl处理///////////////////////////////////
-
-            //给子类复写的机会
-            doWithBuilder(clientBuilder , isHttps(completedUrl));
-
-            OkHttpClient client = clientBuilder.build();
-
-            doWithClient(client);
-
-            //2.1设置URL
-            Request.Builder builder = new Request.Builder().url(completedUrl);
-
-            ArrayListMultimap<String, String> headers = request.getHeaders();
-            //2.2设置headers
-            if(null != headers) {
-                Set<String> keySet = headers.keySet();
-                keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));
-            }
-            if(null != request.getContentType()){
-                builder.addHeader(Header.CONTENT_TYPE.toString() , request.getContentType());
-            }
-
-            //2.3处理请求体
-            if(null != contentCallback && method.hasContent()){
-                contentCallback.doWriteWith(builder);
-            }
-
-            //3.构造请求
-            Request okRequest = builder.build();
-
-            //4.执行请求
-            response = client.newCall(okRequest).execute();
-
-            //5.获取响应
-            inputStream = getStreamFrom(response);
-
-            int statusCode = response.code();
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
-            /*return top.jfunc.common.http.smart.Response.with(statusCode , inputStream , request.getResultCharset() ,
-                    request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));*/
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        } finally {
-            IoUtil.close(inputStream);
-            IoUtil.close(response);
-        }
-    }
-
-    private InputStream getStreamFrom(Response response) {
-        ResponseBody body = response.body();
-        InputStream inputStream = (body != null) ? body.byteStream() : emptyInputStream();
-        if(null == inputStream){
-            inputStream = emptyInputStream();
-        }
-        return inputStream;
-    }
-
     @Override
     public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
         Objects.requireNonNull(url);
@@ -172,6 +96,15 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
         }
     }
 
+    protected InputStream getStreamFrom(Response response) {
+        ResponseBody body = response.body();
+        InputStream inputStream = (body != null) ? body.byteStream() : emptyInputStream();
+        if(null == inputStream){
+            inputStream = emptyInputStream();
+        }
+        return inputStream;
+    }
+
     protected void doWithBuilder(OkHttpClient.Builder builder , boolean isHttps) throws Exception{
         //default do nothing, give children a chance to do more config
     }
@@ -233,7 +166,7 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
     /**
      * 获取响应中的headers
      */
-    private Map<String, List<String>> parseHeaders(Response response) {
+    protected Map<String, List<String>> parseHeaders(Response response) {
         Headers resHeaders = response.headers();
         ArrayListMultimap<String , String> headers = new ArrayListMultimap<>(resHeaders.size());
         resHeaders.names().forEach((key)-> headers.put(key,resHeaders.get(key)) );

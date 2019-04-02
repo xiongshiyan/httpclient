@@ -32,17 +32,4 @@ public interface HttpTemplate<C>{
     <R> R template(String url, Method method, String contentType, ContentCallback<C> contentCallback,
                    ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout,
                    String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException;
-
-    /**
-     * 使用Request来放请求数据
-     * @param request 请求参数
-     * @param method 请求方法
-     * @see SSLRequest
-     * @param contentCallback 内容处理器，处理文本或者文件上传
-     * @param resultCallback 结果处理器
-     * @throws IOException IOException
-     * @return <R> R
-     */
-    <R> R  template(Request request, Method method, ContentCallback<C> contentCallback, ResultCallback<R> resultCallback) throws IOException;
-
 }

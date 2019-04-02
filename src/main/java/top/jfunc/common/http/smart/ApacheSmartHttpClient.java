@@ -1,20 +1,98 @@
 package top.jfunc.common.http.smart;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.ApacheHttpClient;
 import top.jfunc.common.utils.IoUtil;
 import org.apache.http.HttpEntityEnclosingRequest;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 
 /**
  * 使用Apache SmartHttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttpClient {
+public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttpClient , SmartHttpTemplate<HttpEntityEnclosingRequest> {
+    @Override
+    public <R> R template(Request request, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        //1.获取完整的URL
+        String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+
+        HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
+
+        //2.设置请求头
+        setRequestHeaders(httpUriRequest, request.getContentType(), request.getHeaders());
+
+        //3.设置请求参数
+        setRequestProperty((HttpRequestBase) httpUriRequest,
+                getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
+                getReadTimeoutWithDefault(request.getReadTimeout()));
+
+        //4.创建请求内容，如果有的话
+        if(httpUriRequest instanceof HttpEntityEnclosingRequest){
+            if(contentCallback != null){
+                contentCallback.doWriteWith((HttpEntityEnclosingRequest)httpUriRequest);
+            }
+        }
+
+        CloseableHttpClient httpClient = null;
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        try {
+            ////////////////////////////////////ssl处理///////////////////////////////////
+            HostnameVerifier hostnameVerifier = null;
+            SSLContext sslContext = null;
+            //https默认设置这些
+            if(isHttps(completedUrl)){
+                hostnameVerifier = RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier());
+                sslContext = RequestSSLUtil.getSSLContext(request , getSSLContext());
+            }
+            ////////////////////////////////////ssl处理///////////////////////////////////
+
+            httpClient = getCloseableHttpClient(completedUrl , hostnameVerifier , sslContext);
+            //6.发送请求
+            response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
+            int statusCode = response.getStatusLine().getStatusCode();
+            entity = response.getEntity();
+            InputStream inputStream = entity.getContent();
+            if(null == inputStream){
+                inputStream = emptyInputStream();
+            }
+            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            IoUtil.close(inputStream);
+            return convert;
+
+            ///
+            /*Response convert = Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            IoUtil.close(inputStream);
+            return convert;*/
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }finally {
+            EntityUtils.consumeQuietly(entity);
+            IoUtil.close(response);
+            IoUtil.close(httpClient);
+        }
+    }
+
+
+
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);
