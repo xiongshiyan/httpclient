@@ -1,6 +1,6 @@
 package top.jfunc.common.http.basic;
 
-import top.jfunc.common.http.base.AbstractApacheHttp;
+import top.jfunc.common.http.base.AbstractApacheHttpTemplate;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 import org.apache.http.HttpEntity;
@@ -21,7 +21,7 @@ import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
  * 使用Apache SmartHttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheHttpClient extends AbstractApacheHttp implements HttpClient {
+public class ApacheHttpClient extends AbstractApacheHttpTemplate implements HttpClient {
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
         return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET), Method.GET,null,null,

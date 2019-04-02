@@ -1,6 +1,6 @@
 package top.jfunc.common.http.basic;
 
-import top.jfunc.common.http.base.AbstractOkHttp3;
+import top.jfunc.common.http.base.AbstractOkHttp3Template;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.utils.ArrayListMultimap;
@@ -17,7 +17,7 @@ import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
 /**
  * @author xiongshiyan at 2018/1/11
  */
-public class OkHttp3Client extends AbstractOkHttp3 implements HttpClient {
+public class OkHttp3Client extends AbstractOkHttp3Template implements HttpClient {
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException {
         return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET),Method.GET,null,null,

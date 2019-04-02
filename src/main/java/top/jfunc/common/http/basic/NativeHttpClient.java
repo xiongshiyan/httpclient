@@ -1,6 +1,6 @@
 package top.jfunc.common.http.basic;
 
-import top.jfunc.common.http.base.AbstractNativeHttp;
+import top.jfunc.common.http.base.AbstractNativeHttpTemplate;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.http.Method;
@@ -18,7 +18,7 @@ import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeHttpClient extends AbstractNativeHttp implements HttpClient {
+public class NativeHttpClient extends AbstractNativeHttpTemplate implements HttpClient {
     private static final String END = "\r\n";
     private static final String TWO_HYPHENS = "--";
     private static final String BOUNDARY = "*****xsyloveyou******";
