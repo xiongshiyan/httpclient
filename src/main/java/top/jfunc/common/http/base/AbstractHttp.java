@@ -36,42 +36,10 @@ public abstract class AbstractHttp {
     }
 
     /**
-     * 子类可以复写此方法获取 HostnameVerifier ，否则默认
-     */
-    protected HostnameVerifier getHostnameVerifier(){
-        return getDefaultHostnameVerifier();
-    }
-
-    /**
-     * 子类可以复写此方法获取 SSLSocketFactory ，否则默认
-     */
-    protected SSLSocketFactory getSSLSocketFactory(){
-        return getDefaultSSLSocketFactory();
-    }
-
-    /**
-     * 子类可以复写此方法获取 SSLContext ，否则默认
-     */
-    protected SSLContext getSSLContext(){
-        return getDefaultSSLContext();
-    }
-
-    /**
-     * 子类可以复写此方法获取 X509TrustManager ，否则默认
-     */
-    protected X509TrustManager getX509TrustManager(){
-        return getDefaultX509TrustManager();
-    }
-
-    /**
      * 获取一个空的，防止空指针
      */
     protected InputStream emptyInputStream() {
         return new ByteArrayInputStream(new byte[]{});
-    }
-
-    public boolean isHttps(String url){
-        return ParamUtil.isHttps(url);
     }
 
     /**
@@ -94,6 +62,25 @@ public abstract class AbstractHttp {
      * 返回体编码
      */
     private String defaultResultCharset = HttpConstants.DEFAULT_CHARSET;
+    /**
+     * HostnameVerifier
+     */
+    private HostnameVerifier hostnameVerifier = getDefaultHostnameVerifier();
+    /**
+     * SSLContext
+     */
+    private SSLContext sslContext = getDefaultSSLContext();
+    /**
+     * SSLSocketFactory
+     */
+    private SSLSocketFactory sslSocketFactory = getDefaultSSLSocketFactory();
+    /**
+     * X509TrustManager
+     */
+    private X509TrustManager x509TrustManager = getDefaultX509TrustManager();
+
+
+
 
     public String getBaseUrl() {
         return baseUrl;
@@ -151,5 +138,37 @@ public abstract class AbstractHttp {
     }
     public String getResultCharsetWithDefault(String resultCharset){
         return null == resultCharset ? defaultResultCharset : resultCharset;
+    }
+
+    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
+    }
+
+    public void setSslContext(SSLContext sslContext) {
+        this.sslContext = sslContext;
+    }
+
+    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+        this.sslSocketFactory = sslSocketFactory;
+    }
+
+    public void setX509TrustManager(X509TrustManager x509TrustManager) {
+        this.x509TrustManager = x509TrustManager;
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    public SSLContext getSSLContext() {
+        return sslContext;
+    }
+
+    public SSLSocketFactory getSSLSocketFactory() {
+        return sslSocketFactory;
+    }
+
+    public X509TrustManager getX509TrustManager() {
+        return x509TrustManager;
     }
 }

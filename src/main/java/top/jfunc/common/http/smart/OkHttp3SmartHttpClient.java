@@ -35,7 +35,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
                     .readTimeout(getReadTimeoutWithDefault(request.getReadTimeout()), TimeUnit.MILLISECONDS);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
-            if(isHttps(completedUrl)){
+            if(ParamUtil.isHttps(completedUrl)){
                 initSSL(clientBuilder , RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier()) ,
                         RequestSSLUtil.getSSLSocketFactory(request , getSSLSocketFactory()) ,
                         RequestSSLUtil.getX509TrustManager(request , getX509TrustManager()));
@@ -43,7 +43,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             ////////////////////////////////////ssl处理///////////////////////////////////
 
             //给子类复写的机会
-            doWithBuilder(clientBuilder , isHttps(completedUrl));
+            doWithBuilder(clientBuilder , ParamUtil.isHttps(completedUrl));
 
             OkHttpClient client = clientBuilder.build();
 

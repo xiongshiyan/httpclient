@@ -7,6 +7,7 @@ import okio.Source;
 import top.jfunc.common.http.Header;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
@@ -37,14 +38,14 @@ public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTempla
                     .readTimeout(readTimeout, TimeUnit.MILLISECONDS);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
-            if(isHttps(completedUrl)){
+            if(ParamUtil.isHttps(completedUrl)){
                 //默认设置这些
                 initSSL(clientBuilder , getHostnameVerifier() , getSSLSocketFactory() , getX509TrustManager());
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
             //给子类复写的机会
-            doWithBuilder(clientBuilder , isHttps(completedUrl));
+            doWithBuilder(clientBuilder , ParamUtil.isHttps(completedUrl));
 
             OkHttpClient client = clientBuilder.build();
 

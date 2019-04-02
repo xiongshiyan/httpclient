@@ -57,7 +57,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             HostnameVerifier hostnameVerifier = null;
             SSLContext sslContext = null;
             //https默认设置这些
-            if(isHttps(completedUrl)){
+            if(ParamUtil.isHttps(completedUrl)){
                 hostnameVerifier = RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier());
                 sslContext = RequestSSLUtil.getSSLContext(request , getSSLContext());
             }

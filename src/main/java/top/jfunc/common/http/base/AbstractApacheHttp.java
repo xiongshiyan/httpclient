@@ -20,6 +20,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
@@ -178,7 +179,7 @@ public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTem
 
     protected CloseableHttpClient createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
         String hostname = url.split("/")[2];
-        boolean isHttps = isHttps(url);
+        boolean isHttps = ParamUtil.isHttps(url);
         int port = isHttps ? 443 : 80;
         if (hostname.contains(":")) {
             String[] arr = hostname.split(":");
