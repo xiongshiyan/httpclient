@@ -31,7 +31,7 @@ public abstract class AbstractHttp {
         }
         return null;
     }
-    protected X509TrustManager getDefaultX509TrustManager(){
+    private X509TrustManager getDefaultX509TrustManager(){
         return new DefaultTrustManager2();
     }
 
