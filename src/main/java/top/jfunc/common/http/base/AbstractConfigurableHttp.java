@@ -17,7 +17,7 @@ import java.io.InputStream;
  * 一些http的公共方法处理
  * @author xiongshiyan at 2018/8/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractHttp {
+public abstract class AbstractConfigurableHttp {
     private HostnameVerifier getDefaultHostnameVerifier(){
         return new TrustAnyHostnameVerifier();
     }

@@ -21,7 +21,7 @@ import java.util.Set;
  * 使用URLConnection实现的Http公共父类
  * @author 熊诗言2018/6/6
  */
-public abstract class AbstractNativeHttp extends AbstractHttp implements HttpTemplate<HttpURLConnection> {
+public abstract class AbstractNativeHttp extends AbstractConfigurableHttp implements HttpTemplate<HttpURLConnection> {
     @Override
     public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
         //默认的https校验

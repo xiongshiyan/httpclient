@@ -43,7 +43,7 @@ import java.util.Set;
  * 使用Apache SmartHttpClient 实现的Http请求类
  * @author 熊诗言2018/6/6
  */
-public abstract class AbstractApacheHttp extends AbstractHttp implements HttpTemplate<HttpEntityEnclosingRequest> {
+public abstract class AbstractApacheHttp extends AbstractConfigurableHttp implements HttpTemplate<HttpEntityEnclosingRequest> {
     protected int _maxRetryTimes = 1;
     @Override
     public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {

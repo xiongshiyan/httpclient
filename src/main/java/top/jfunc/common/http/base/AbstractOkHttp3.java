@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author xiongshiyan at 2018/6/6
  */
-public abstract class AbstractOkHttp3 extends AbstractHttp implements HttpTemplate<Request.Builder> {
+public abstract class AbstractOkHttp3 extends AbstractConfigurableHttp implements HttpTemplate<Request.Builder> {
     @Override
     public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
         Objects.requireNonNull(url);
