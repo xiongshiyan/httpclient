@@ -1,4 +1,4 @@
-def VERSION = '1.8.2'
+def VERSION = '1.8.2.0'
 def ARTIFACT_ID = 'network'
 def GROUP_ID = 'top.jfunc.common'
 def TYPE = 'jar'
