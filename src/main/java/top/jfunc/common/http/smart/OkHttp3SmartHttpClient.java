@@ -4,6 +4,7 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.OkHttp3Client;
@@ -19,6 +20,12 @@ import java.util.concurrent.TimeUnit;
  * @author xiongshiyan at 2018/1/11
  */
 public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpClient , SmartHttpTemplate<okhttp3.Request.Builder>{
+
+    @Override
+    public OkHttp3SmartHttpClient setConfig(Config config) {
+        super.setConfig(config);
+        return this;
+    }
 
     @Override
     public <R> R template(top.jfunc.common.http.smart.Request request, Method method , ContentCallback<okhttp3.Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {

@@ -1,6 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.basic.HttpClient;
 
 import java.io.File;
@@ -14,6 +15,12 @@ import java.util.Objects;
  * 使用时，可以直接new实现类，也可以通过{@link top.jfunc.common.utils.SpringFactoriesLoader }获取，这样就不会与实现类绑定
  */
 public interface SmartHttpClient extends HttpClient {
+    /**
+     * @param config config
+     */
+    @Override
+    SmartHttpClient setConfig(Config config);
+
     /**
      * GET方法
      * @param request 请求参数

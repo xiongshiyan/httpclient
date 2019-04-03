@@ -1,8 +1,5 @@
 package top.jfunc.common.http.basic;
 
-import top.jfunc.common.http.base.AbstractApacheHttpTemplate;
-import top.jfunc.common.utils.ArrayListMultimap;
-import top.jfunc.common.utils.IoUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.entity.ContentType;
@@ -11,8 +8,14 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.util.CharsetUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.base.AbstractApacheHttpTemplate;
+import top.jfunc.common.http.base.Config;
+import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.IoUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
@@ -22,6 +25,13 @@ import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
  * @author 熊诗言2017/12/01
  */
 public class ApacheHttpClient extends AbstractApacheHttpTemplate implements HttpClient {
+
+    @Override
+    public ApacheHttpClient setConfig(Config config) {
+        super.setConfig(config);
+        return this;
+    }
+
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
         return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET), Method.GET,null,null,

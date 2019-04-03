@@ -1,6 +1,7 @@
 package top.jfunc.common.http.basic;
 
 import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.ArrayListMultimap;
@@ -19,6 +20,12 @@ import static top.jfunc.common.http.HttpConstants.*;
  * 使用时，可以直接new实现类，也可以通过{@link cn.zytx.common.utils.SpringFactoriesLoader }获取，这样就不会与实现类绑定
  */
 public interface HttpClient {
+    /**
+     * 设置全局默认配置,不调用就用系统设置的
+     * @param config config
+     * @return 链式调用
+     */
+    HttpClient setConfig(Config config);
      /**
      *HTTP GET请求
      * @param url URL，可以帶参数

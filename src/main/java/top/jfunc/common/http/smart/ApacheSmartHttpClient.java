@@ -9,6 +9,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.ApacheHttpClient;
@@ -27,6 +28,13 @@ import java.util.HashMap;
  * @author 熊诗言2017/12/01
  */
 public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttpClient , SmartHttpTemplate<HttpEntityEnclosingRequest> {
+
+    @Override
+    public ApacheSmartHttpClient setConfig(Config config) {
+        super.setConfig(config);
+        return this;
+    }
+
     @Override
     public <R> R template(Request request, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         //1.获取完整的URL
