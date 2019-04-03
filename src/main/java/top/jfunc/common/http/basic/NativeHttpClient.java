@@ -42,26 +42,26 @@ public class NativeHttpClient extends AbstractNativeHttpTemplate implements Http
     }
 
     @Override
-    public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException {
+    public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException {
         return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET), Method.GET, null, null, ArrayListMultimap.fromMap(headers),  connectTimeout, readTimeout,
                 resultCharset, false , (s, b,r,h)-> IoUtil.read(b , r));
     }
 
     @Override
-    public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        return template(url, Method.POST, contentType, connect -> writeContent(connect , body , bodyCharset),
+    public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
+        return template(url, Method.POST, contentType, connect -> writeContent(connect , body , getBodyCharsetWithDefault(bodyCharset)),
                 ArrayListMultimap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     @Override
-    public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers,int connectTimeout,int readTimeout) throws IOException {
+    public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers,Integer connectTimeout,Integer readTimeout) throws IOException {
         return template(url, Method.GET, null, null, headers,
                 connectTimeout, readTimeout, null, false ,
                 (s, b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
+    public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url, Method.GET, null, null, headers,
                 connectTimeout, readTimeout, null, false ,
                 (s, b,r,h)-> IoUtil.copy2File(b, file));
@@ -71,7 +71,7 @@ public class NativeHttpClient extends AbstractNativeHttpTemplate implements Http
      * 上传文件
      */
     @Override
-    public String upload(String url , ArrayListMultimap<String,String> headers , int connectTimeout , int readTimeout , String resultCharset ,FormFile... files) throws IOException{
+    public String upload(String url , ArrayListMultimap<String,String> headers , Integer connectTimeout , Integer readTimeout , String resultCharset ,FormFile... files) throws IOException{
         ArrayListMultimap<String, String> multimap = mergeHeaders(headers);
         return template(url, Method.POST, null, connect -> this.upload0(connect , files), multimap ,
                 connectTimeout, readTimeout, resultCharset, false,
@@ -82,7 +82,7 @@ public class NativeHttpClient extends AbstractNativeHttpTemplate implements Http
      * 上传文件和params参数传递，form-data类型的完全支持
      */
     @Override
-    public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , FormFile... files) throws IOException {
+    public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , FormFile... files) throws IOException {
         ArrayListMultimap<String, String> multimap = mergeHeaders(headers);
         return template(url, Method.POST, null, connect -> this.upload0(connect , params , files), multimap ,
                 connectTimeout, readTimeout, resultCharset, false,

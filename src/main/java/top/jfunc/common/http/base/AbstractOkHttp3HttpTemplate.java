@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHttp implements HttpTemplate<Request.Builder> {
     @Override
-    public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
+    public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
         Objects.requireNonNull(url);
         Response response = null;
         InputStream inputStream = null;
@@ -33,8 +33,8 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
             String completedUrl = addBaseUrlIfNecessary(url);
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
-                    .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+                    .connectTimeout(getConnectionTimeoutWithDefault(connectTimeout), TimeUnit.MILLISECONDS)
+                    .readTimeout(getReadTimeoutWithDefault(readTimeout), TimeUnit.MILLISECONDS);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(ParamUtil.isHttps(completedUrl)){
@@ -72,7 +72,7 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
             inputStream = getStreamFrom(response);
 
             int statusCode = response.code();
-            return resultCallback.convert(statusCode , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeaders ? parseHeaders(response) : new HashMap<>(0));
             ///保留起
             /*if (HttpStatus.HTTP_OK == statusCode) {
                 convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));

@@ -17,7 +17,7 @@ import static top.jfunc.common.http.HttpConstants.*;
  * @author 熊诗言2017/11/24
  * @see SmartHttpClient
  * 针对Http超时和各种错误码分别处理
- * 使用时，可以直接new实现类，也可以通过{@link cn.zytx.common.utils.SpringFactoriesLoader }获取，这样就不会与实现类绑定
+ * 使用时，可以直接new实现类，也可以通过{@link top.jfunc.common.http.HttpUtil }获取，这样就不会与实现类绑定
  */
 public interface HttpClient {
     /**
@@ -38,34 +38,34 @@ public interface HttpClient {
      * @return 返回的内容
      * @throws IOException 超时异常 {@link java.net.SocketTimeoutException connect timed out/read time out}
      */
-    String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException;
+    String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException;
 
-    default String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout) throws IOException{
-        return get(url, params, headers, connectTimeout, readTimeout , DEFAULT_CHARSET);
+    default String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException{
+        return get(url, params, headers, connectTimeout, readTimeout , null);
     }
     default String get(String url, Map<String, String> params, Map<String, String> headers, String resultCharset) throws IOException{
-        return get(url,params,headers,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT,resultCharset);
+        return get(url,params,headers,null,null,resultCharset);
     }
     default String get(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
-        return get(url,params,headers,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+        return get(url,params,headers,null,null);
     }
-    default String get(String url, Map<String, String> params, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
+    default String get(String url, Map<String, String> params, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException{
         return get(url,params,null,connectTimeout,readTimeout,resultCharset);
     }
-    default String get(String url, Map<String, String> params, int connectTimeout, int readTimeout) throws IOException{
+    default String get(String url, Map<String, String> params, Integer connectTimeout, Integer readTimeout) throws IOException{
         return get(url,params,null,connectTimeout,readTimeout);
     }
     default String get(String url, Map<String, String> params, String resultCharset) throws IOException{
-        return get(url,params,null,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT,resultCharset);
+        return get(url,params,null,null,null,resultCharset);
     }
     default String get(String url, Map<String, String> params) throws IOException{
-        return get(url,params,null,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+        return get(url,params,null, null,(Integer) null);
     }
     default String get(String url, String resultCharset) throws IOException{
-        return get(url,null,null,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT, resultCharset);
+        return get(url,null,null,null,null, resultCharset);
     }
     default String get(String url) throws IOException{
-        return get(url,null,null,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+        return get(url,null,null,null,(Integer)null);
     }
 
 
@@ -82,37 +82,37 @@ public interface HttpClient {
      * @return 请求返回
      * @throws IOException 超时异常 {@link java.net.SocketTimeoutException connect timed out/read time out}
      */
-    String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException;
+    String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException;
 
-    default String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout) throws IOException{
-        return post(url,body,contentType,headers,connectTimeout,readTimeout, DEFAULT_CHARSET,DEFAULT_CHARSET);
+    default String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException{
+        return post(url,body,contentType,headers,connectTimeout,readTimeout, null,null);
     }
     default String post(String url, String body, String contentType, Map<String, String> headers, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,contentType,headers,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT,bodyCharset,resultCharset);
+        return post(url,body,contentType,headers,null,null,bodyCharset,resultCharset);
     }
     default String post(String url, String body, String contentType, Map<String, String> headers) throws IOException{
-        return post(url,body,contentType,headers,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+        return post(url,body,contentType,headers,null,(Integer) null);
     }
-    default String post(String url, String body, String contentType, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException{
+    default String post(String url, String body, String contentType, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException{
         return post(url,body,contentType,null,connectTimeout,readTimeout,bodyCharset,resultCharset);
     }
-    default String post(String url, String body, String contentType, int connectTimeout, int readTimeout) throws IOException{
+    default String post(String url, String body, String contentType, Integer connectTimeout, Integer readTimeout) throws IOException{
         return post(url,body,contentType,null,connectTimeout,readTimeout);
     }
     /**
      * @see HttpClient#post(String, String, String, Map, int, int, String, String)
      */
     default String post(String url, String body, String contentType, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,contentType,null,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT,bodyCharset,resultCharset);
+        return post(url,body,contentType,null,null,null,bodyCharset,resultCharset);
     }
     default String post(String url, String body, String contentType) throws IOException{
-        return post(url,body,contentType,null,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+        return post(url,body,contentType,null,null,(Integer) null);
     }
     default String postJson(String url, String body, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT,bodyCharset,resultCharset);
+        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null,null,null,bodyCharset,resultCharset);
     }
     default String postJson(String url, String body) throws IOException{
-        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null,DEFAULT_CONNECT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null,null,(Integer) null);
     }
 
     /**参数用 =和& 连接*/
@@ -120,41 +120,41 @@ public interface HttpClient {
         return post(url, ParamUtil.contactMap(params , bodyCharset),FORM_URLENCODED_WITH_DEFAULT_CHARSET,headers,bodyCharset,resultCharset);
     }
     default String post(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
-        return post(url, ParamUtil.contactMap(params , DEFAULT_CHARSET),FORM_URLENCODED_WITH_DEFAULT_CHARSET,headers);
+        return post(url, ParamUtil.contactMap(params , null),FORM_URLENCODED_WITH_DEFAULT_CHARSET,headers);
     }
     default String post(String url, Map<String, String> params, String bodyCharset, String resultCharset) throws IOException{
         return post(url, ParamUtil.contactMap(params , bodyCharset),FORM_URLENCODED_WITH_DEFAULT_CHARSET,null,bodyCharset,resultCharset);
     }
     default String post(String url, Map<String, String> params) throws IOException{
-        return post(url, ParamUtil.contactMap(params , DEFAULT_CHARSET),FORM_URLENCODED_WITH_DEFAULT_CHARSET,null);
+        return post(url, ParamUtil.contactMap(params , null),FORM_URLENCODED_WITH_DEFAULT_CHARSET,null);
     }
 
     /**
      * 文件下载相关，下载为字节数组
      */
-    byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout) throws IOException;
-    default byte[] getAsBytes(String url, int connectTimeout, int readTimeout) throws IOException{
+    byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException;
+    default byte[] getAsBytes(String url, Integer connectTimeout, Integer readTimeout) throws IOException{
         return getAsBytes(url , null , connectTimeout , readTimeout);
     }
     default byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers) throws IOException{
-        return getAsBytes(url , headers , DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT);
+        return getAsBytes(url , headers , null, null);
     }
     default byte[] getAsBytes(String url) throws IOException{
-        return getAsBytes(url , null , DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT);
+        return getAsBytes(url , null , null, null);
     }
 
     /**
      * 文件下载相关，下载为文件
      */
-    File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException;
-    default File getAsFile(String url, File file, int connectTimeout, int readTimeout) throws IOException{
+    File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException;
+    default File getAsFile(String url, File file, Integer connectTimeout, Integer readTimeout) throws IOException{
         return getAsFile(url , null  , file , connectTimeout , readTimeout);
     }
     default File getAsFile(String url, ArrayListMultimap<String, String> headers, File file) throws IOException{
-        return getAsFile(url , headers  , file , DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT);
+        return getAsFile(url , headers  , file , null, null);
     }
     default File getAsFile(String url, File file) throws IOException{
-        return getAsFile(url , null  , file , DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT);
+        return getAsFile(url , null  , file , null, null);
     }
 
     /**
@@ -162,19 +162,19 @@ public interface HttpClient {
      * @param url URL
      * @param files 多个文件信息
      */
-    String upload(String url, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException;
+    String upload(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException;
 
-    default String upload(String url, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
-        return upload(url, headers ,connectTimeout , readTimeout , DEFAULT_CHARSET , files);
+    default String upload(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, FormFile... files) throws IOException{
+        return upload(url, headers ,connectTimeout , readTimeout , null , files);
     }
     default String upload(String url, ArrayListMultimap<String, String> headers, FormFile... files) throws IOException{
-        return upload(url, headers ,DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_CHARSET , files);
+        return upload(url, headers ,null, null, null , files);
     }
-    default String upload(String url, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
-        return upload(url, null ,connectTimeout , readTimeout , DEFAULT_CHARSET , files);
+    default String upload(String url, Integer connectTimeout, Integer readTimeout, FormFile... files) throws IOException{
+        return upload(url, null ,connectTimeout , readTimeout , null , files);
     }
     default String upload(String url, FormFile... files) throws IOException{
-        return upload(url, null , DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_CHARSET , files);
+        return upload(url, null , null, null, null , files);
     }
 
     /**
@@ -182,18 +182,18 @@ public interface HttpClient {
      * @param url URL
      * @param files 多个文件信息
      */
-    String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException;
+    String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException;
     default String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
-        return upload(url, params ,headers ,connectTimeout , readTimeout , DEFAULT_CHARSET , files);
+        return upload(url, params ,headers ,connectTimeout , readTimeout , null , files);
     }
     default String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, FormFile... files) throws IOException{
-        return upload(url, params ,headers ,DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_CHARSET , files);
+        return upload(url, params ,headers ,DEFAULT_CONNECT_TIMEOUT, null, null , files);
     }
-    default String upload(String url, int connectTimeout, int readTimeout, ArrayListMultimap<String, String> params, FormFile... files) throws IOException{
-        return upload(url, params ,null ,connectTimeout , readTimeout , DEFAULT_CHARSET , files);
+    default String upload(String url, Integer connectTimeout, Integer readTimeout, ArrayListMultimap<String, String> params, FormFile... files) throws IOException{
+        return upload(url, params ,null ,connectTimeout , readTimeout , null , files);
     }
     default String upload(String url, Map<String, String> params, FormFile... files) throws IOException{
         ArrayListMultimap<String , String> multimap = ArrayListMultimap.fromMap(params);
-        return upload(url, multimap ,null , DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_CHARSET , files);
+        return upload(url, multimap ,null , null, null, null , files);
     }
 }

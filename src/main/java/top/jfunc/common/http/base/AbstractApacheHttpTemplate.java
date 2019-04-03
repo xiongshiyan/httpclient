@@ -46,7 +46,7 @@ import java.util.Set;
 public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHttp implements HttpTemplate<HttpEntityEnclosingRequest> {
     protected int _maxRetryTimes = 1;
     @Override
-    public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
+    public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
         //1.获取完成的URL，创建请求
         String completedUrl = addBaseUrlIfNecessary(url);
         ///*URIBuilder builder = new URIBuilder(url);
@@ -57,7 +57,9 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
         setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers));
 
         //3.设置请求参数
-        setRequestProperty((HttpRequestBase) httpUriRequest, connectTimeout, readTimeout);
+        setRequestProperty((HttpRequestBase) httpUriRequest,
+                getConnectionTimeoutWithDefault(connectTimeout),
+                getReadTimeoutWithDefault(readTimeout));
 
         //4.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
@@ -103,7 +105,7 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
             if(null == inputStream){
                 inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
             }
-            R convert = resultCallback.convert(statusCode , inputStream, resultCharset, includeHeader ? parseHeaders(response) : new HashMap<>(0));
+            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeader ? parseHeaders(response) : new HashMap<>(0));
             IoUtil.close(inputStream);
             return convert;
         } catch (IOException e) {

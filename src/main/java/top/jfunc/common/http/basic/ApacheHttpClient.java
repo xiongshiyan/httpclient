@@ -33,28 +33,28 @@ public class ApacheHttpClient extends AbstractApacheHttpTemplate implements Http
     }
 
     @Override
-    public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
-        return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET), Method.GET,null,null,
+    public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException{
+        return template(ParamUtil.contactUrlParams(url , params , getBodyCharsetWithDefault(null)), Method.GET,null,null,
                 ArrayListMultimap.fromMap(headers),
                 connectTimeout,readTimeout , resultCharset,false,(s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
-    public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        return template(url,Method.POST, contentType, (request -> setRequestBody(request , body ,bodyCharset)),
+    public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
+        return template(url,Method.POST, contentType, (request -> setRequestBody(request , body ,getBodyCharsetWithDefault(bodyCharset))),
                 ArrayListMultimap.fromMap(headers),
                 connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
-    public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
+    public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url, Method.GET,null,null, headers,
                 connectTimeout,readTimeout , null,false,
                 (s, b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
+    public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url, Method.GET,null,null, headers ,
                 connectTimeout,readTimeout , null,false,
                 (s, b,r,h)-> IoUtil.copy2File(b, file));
@@ -62,7 +62,7 @@ public class ApacheHttpClient extends AbstractApacheHttpTemplate implements Http
 
 
     @Override
-    public String upload(String url, ArrayListMultimap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
+    public String upload(String url, ArrayListMultimap<String,String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
         return template(url,Method.POST, null, (request -> addFormFiles(request, files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
@@ -81,7 +81,7 @@ public class ApacheHttpClient extends AbstractApacheHttpTemplate implements Http
 
 
     @Override
-    public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
+    public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
         return template(url,Method.POST, null, (request -> addFormFiles(request, params ,files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }

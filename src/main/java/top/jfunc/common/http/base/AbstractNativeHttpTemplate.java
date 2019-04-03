@@ -22,7 +22,7 @@ import java.util.Set;
  */
 public abstract class AbstractNativeHttpTemplate extends AbstractConfigurableHttp implements HttpTemplate<HttpURLConnection> {
     @Override
-    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
         //默认的https校验
         // 后面会处理的，这里就不需要了 initDefaultSSL(sslVer);
 
@@ -34,7 +34,10 @@ public abstract class AbstractNativeHttpTemplate extends AbstractConfigurableHtt
             connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
 
             //2.处理header
-            setConnectProperty(connect, method, contentType, mergeDefaultHeaders(headers),connectTimeout,readTimeout);
+            setConnectProperty(connect, method, contentType,
+                    mergeDefaultHeaders(headers),
+                    getConnectionTimeoutWithDefault(connectTimeout),
+                    getReadTimeoutWithDefault(readTimeout));
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(connect instanceof HttpsURLConnection){
@@ -79,7 +82,7 @@ public abstract class AbstractNativeHttpTemplate extends AbstractConfigurableHtt
 
             inputStream = getStreamFrom(connect , statusCode);
 
-            return resultCallback.convert(statusCode , inputStream, resultCharset, includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
