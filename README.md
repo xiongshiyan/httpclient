@@ -21,6 +21,8 @@ features:
 * HttpUtil支持根据jar包加载实现
 * 配置项可以通过-D或者System.setProperty()全局设置，可以对某个实现的对象例如 `NativeSmartHttpClient` 全局设置，也可以针对某一个请求Request单独设置，优先级逐渐升高
 * 支持返回值和JavaBean之间的转换，基于项目 https://gitee.com/xxssyyyyssxx/network-converter
+* 通过Config全局配置默认参数
+* 支持全局header设置
 
 * FTP接口上传下载实现
 
@@ -98,7 +100,7 @@ private String defaultBodyCharset = HttpConstants.DEFAULT_CHARSET;
  * 返回体编码
  */
 private String defaultResultCharset = HttpConstants.DEFAULT_CHARSET;
-
+....
 定义了这些可配置项，可以通过-D或者System.setProperty()全局设置，可以对某个实现的对象例如 `NativeSmartHttpClient` 全局设置，也可以针对某一个请求单独设置，优先级逐渐升高
 
 ```

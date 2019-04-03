@@ -1,174 +1,88 @@
 package top.jfunc.common.http.base;
 
-import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
-import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
-import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
+import top.jfunc.common.utils.ArrayListMultimap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * 一些http的公共方法处理
  * @author xiongshiyan at 2018/8/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractConfigurableHttp {
-    private HostnameVerifier getDefaultHostnameVerifier(){
-        return new TrustAnyHostnameVerifier();
-    }
-    private SSLContext getDefaultSSLContext(){
-        return SSLSocketFactoryBuilder.create().getSSLContext();
-    }
-    private SSLSocketFactory getDefaultSSLSocketFactory(){
-        SSLContext sslContext = getDefaultSSLContext();
-        if(null != sslContext){
-            return sslContext.getSocketFactory();
-        }
-        return null;
-    }
-    private X509TrustManager getDefaultX509TrustManager(){
-        return new DefaultTrustManager2();
+    private Config config = Config.defaultConfig();
+
+    public Config getConfig() {
+        return Objects.requireNonNull(config);
     }
 
-    /**
-     * 获取一个空的，防止空指针
-     */
-    protected InputStream emptyInputStream() {
-        return new ByteArrayInputStream(new byte[]{});
+    public void setConfig(Config config) {
+        this.config = Objects.requireNonNull(config);
     }
 
-    /**
-     * BaseUrl,如果设置了就在正常传送的URL之前添加上
-     */
-    private String baseUrl;
-    /**
-     * 连接超时时间
-     */
-    private Integer defaultConnectionTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
-    /**
-     * 读数据超时时间
-     */
-    private Integer defaultReadTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
-    /**
-     * 请求体编码
-     */
-    private String defaultBodyCharset = HttpConstants.DEFAULT_CHARSET;
-    /**
-     * 返回体编码
-     */
-    private String defaultResultCharset = HttpConstants.DEFAULT_CHARSET;
-    /**
-     * HostnameVerifier
-     */
-    private HostnameVerifier hostnameVerifier = getDefaultHostnameVerifier();
-    /**
-     * SSLContext
-     */
-    private SSLContext sslContext = getDefaultSSLContext();
-    /**
-     * SSLSocketFactory
-     */
-    private SSLSocketFactory sslSocketFactory = getDefaultSSLSocketFactory();
-    /**
-     * X509TrustManager
-     */
-    private X509TrustManager x509TrustManager = getDefaultX509TrustManager();
 
+    /////////////////////////////////////以下方法都由config代理，只是为了调用方便//////////////////////////////
 
-
-
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public String addBaseUrlIfNecessary(String inputUrl){
-        return ParamUtil.addBaseUrlIfNecessary(baseUrl , inputUrl);
-    }
-
-    public Integer getDefaultConnectionTimeout() {
-        return defaultConnectionTimeout;
-    }
-
-    public void setDefaultConnectionTimeout(Integer defaultConnectionTimeout) {
-        this.defaultConnectionTimeout = defaultConnectionTimeout;
+    protected String addBaseUrlIfNecessary(String inputUrl){
+        return getConfig().addBaseUrlIfNecessary(inputUrl);
     }
 
     public Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
-        return null == connectionTimeout ? defaultConnectionTimeout : connectionTimeout;
+        return getConfig().getConnectionTimeoutWithDefault(connectionTimeout);
     }
 
-    public Integer getDefaultReadTimeout() {
-        return defaultReadTimeout;
-    }
-
-    public void setDefaultReadTimeout(Integer defaultReadTimeout) {
-        this.defaultReadTimeout = defaultReadTimeout;
-    }
     public Integer getReadTimeoutWithDefault(Integer readTimeout){
-        return null == readTimeout ? defaultReadTimeout : readTimeout;
-    }
-
-    public String getDefaultBodyCharset() {
-        return defaultBodyCharset;
-    }
-
-    public void setDefaultBodyCharset(String defaultBodyCharset) {
-        this.defaultBodyCharset = defaultBodyCharset;
+        return getConfig().getReadTimeoutWithDefault(readTimeout);
     }
 
     public String getBodyCharsetWithDefault(String bodyCharset){
-        return null == bodyCharset ? defaultBodyCharset : bodyCharset;
+        return getConfig().getBodyCharsetWithDefault(bodyCharset);
     }
 
-    public String getDefaultResultCharset() {
-        return defaultResultCharset;
-    }
-
-    public void setDefaultResultCharset(String defaultResultCharset) {
-        this.defaultResultCharset = defaultResultCharset;
-    }
     public String getResultCharsetWithDefault(String resultCharset){
-        return null == resultCharset ? defaultResultCharset : resultCharset;
-    }
-
-    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
-        this.hostnameVerifier = hostnameVerifier;
-    }
-
-    public void setSslContext(SSLContext sslContext) {
-        this.sslContext = sslContext;
-    }
-
-    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
-    }
-
-    public void setX509TrustManager(X509TrustManager x509TrustManager) {
-        this.x509TrustManager = x509TrustManager;
+        return getConfig().getResultCharsetWithDefault(resultCharset);
     }
 
     public HostnameVerifier getHostnameVerifier() {
-        return hostnameVerifier;
+        return getConfig().getHostnameVerifier();
     }
 
     public SSLContext getSSLContext() {
-        return sslContext;
+        return getConfig().getSSLContext();
     }
 
     public SSLSocketFactory getSSLSocketFactory() {
-        return sslSocketFactory;
+        return getConfig().getSSLSocketFactory();
     }
 
     public X509TrustManager getX509TrustManager() {
-        return x509TrustManager;
+        return getConfig().getX509TrustManager();
+    }
+
+    public ArrayListMultimap<String , String> getDefaultHeaders(){
+        return getConfig().getDefaultHeaders();
+    }
+
+    /**
+     * 合并默认的header
+     */
+    protected ArrayListMultimap<String , String> mergeDefaultHeaders(final ArrayListMultimap<String , String> headers){
+        ArrayListMultimap<String, String> defaultHeaders = getDefaultHeaders();
+        if(null == headers){
+            return defaultHeaders;
+        }
+        if(null == defaultHeaders){
+            return headers;
+        }
+
+        //合并两个
+        for (String key : defaultHeaders.keySet()) {
+            defaultHeaders.get(key).forEach((v)-> headers.put(key , v));
+        }
+
+        return headers;
     }
 }

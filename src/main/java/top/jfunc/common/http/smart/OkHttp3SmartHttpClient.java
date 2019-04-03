@@ -1,21 +1,18 @@
 package top.jfunc.common.http.smart;
 
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
-import top.jfunc.common.http.Header;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.OkHttp3Client;
-import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
-import okhttp3.MultipartBody;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,15 +49,8 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             //2.1设置URL
             okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(completedUrl);
 
-            ArrayListMultimap<String, String> headers = request.getHeaders();
             //2.2设置headers
-            if(null != headers) {
-                Set<String> keySet = headers.keySet();
-                keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));
-            }
-            if(null != request.getContentType()){
-                builder.addHeader(Header.CONTENT_TYPE.toString() , request.getContentType());
-            }
+            setRequestHeaders(builder , request.getContentType() , mergeDefaultHeaders(request.getHeaders()));
 
             //2.3处理请求体
             if(null != contentCallback && method.hasContent()){

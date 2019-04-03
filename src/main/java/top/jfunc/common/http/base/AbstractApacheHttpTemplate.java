@@ -54,7 +54,7 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl , method);
 
         //2.设置请求头
-        setRequestHeaders(httpUriRequest, contentType, headers);
+        setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers));
 
         //3.设置请求参数
         setRequestProperty((HttpRequestBase) httpUriRequest, connectTimeout, readTimeout);
@@ -101,7 +101,7 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
 //                convert = resultCallback.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
 //            }
             if(null == inputStream){
-                inputStream = emptyInputStream();
+                inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
             }
             R convert = resultCallback.convert(statusCode , inputStream, resultCharset, includeHeader ? parseHeaders(response) : new HashMap<>(0));
             IoUtil.close(inputStream);

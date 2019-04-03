@@ -35,7 +35,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
 
         //2.设置请求头
-        setRequestHeaders(httpUriRequest, request.getContentType(), request.getHeaders());
+        setRequestHeaders(httpUriRequest, request.getContentType(), mergeDefaultHeaders(request.getHeaders()));
 
         //3.设置请求参数
         setRequestProperty((HttpRequestBase) httpUriRequest,
@@ -70,7 +70,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             entity = response.getEntity();
             InputStream inputStream = entity.getContent();
             if(null == inputStream){
-                inputStream = emptyInputStream();
+                inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
             }
             R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
             IoUtil.close(inputStream);

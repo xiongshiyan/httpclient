@@ -20,19 +20,19 @@ public class HttpSmartTest {
     @Test
     public void testGetOkHttp3(){
         OkHttp3SmartHttpClient http = new OkHttp3SmartHttpClient();
-        http.setBaseUrl("https://fanyi.baidu.com/");
+        http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
         testGet(http);
     }
     @Test
     public void testGetApacheHttp(){
         ApacheSmartHttpClient http = new ApacheSmartHttpClient();
-        http.setBaseUrl("https://fanyi.baidu.com/");
+        http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
         testGet(http);
     }
     @Test
     public void testGetNativeHttp(){
         NativeSmartHttpClient http = new NativeSmartHttpClient();
-        http.setBaseUrl("https://fanyi.baidu.com/");
+        http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
         testGet(http);
     }
     private void testGet(SmartHttpClient http){

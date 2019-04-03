@@ -4,7 +4,6 @@ import okhttp3.*;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
-import top.jfunc.common.http.Header;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
@@ -55,13 +54,7 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
             Request.Builder builder = new Request.Builder().url(completedUrl);
 
             //2.2设置headers
-            if(null != headers) {
-                Set<String> keySet = headers.keySet();
-                keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));
-            }
-            if(null != contentType){
-                builder.addHeader(Header.CONTENT_TYPE.toString() , contentType);
-            }
+            setRequestHeaders(builder , contentType , mergeDefaultHeaders(headers));
 
             //2.3处理请求体
             if(null != contentCallback && method.hasContent()){
@@ -99,9 +92,9 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
 
     protected InputStream getStreamFrom(Response response) {
         ResponseBody body = response.body();
-        InputStream inputStream = (body != null) ? body.byteStream() : emptyInputStream();
+        InputStream inputStream = (body != null) ? body.byteStream() : top.jfunc.common.http.IoUtil.emptyInputStream();
         if(null == inputStream){
-            inputStream = emptyInputStream();
+            inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
         }
         return inputStream;
     }
@@ -166,6 +159,15 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
         }
         IoUtil.close(inputStream);
         return convert;
+    }
+    protected void setRequestHeaders(Request.Builder builder, String contentType, ArrayListMultimap<String, String> headers) {
+        if(null != headers) {
+            Set<String> keySet = headers.keySet();
+            keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));
+        }
+        if(null != contentType){
+            builder.addHeader(top.jfunc.common.http.Header.CONTENT_TYPE.toString(), contentType);
+        }
     }
 
     /**

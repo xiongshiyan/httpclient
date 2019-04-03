@@ -1,6 +1,5 @@
 package top.jfunc.common.http.base;
 
-import top.jfunc.common.http.Header;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.Method;
@@ -35,7 +34,7 @@ public abstract class AbstractNativeHttpTemplate extends AbstractConfigurableHtt
             connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
 
             //2.处理header
-            setConnectProperty(connect, method, contentType, headers,connectTimeout,readTimeout);
+            setConnectProperty(connect, method, contentType, mergeDefaultHeaders(headers),connectTimeout,readTimeout);
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(connect instanceof HttpsURLConnection){
@@ -102,7 +101,7 @@ public abstract class AbstractNativeHttpTemplate extends AbstractConfigurableHtt
             inputStream = connect.getErrorStream();
         }
         if(null == inputStream){
-            inputStream = emptyInputStream();
+            inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
         }
         return inputStream;
     }
@@ -130,16 +129,21 @@ public abstract class AbstractNativeHttpTemplate extends AbstractConfigurableHtt
         connect.setRequestMethod(method.name());
         connect.setDoOutput(true);
         connect.setUseCaches(false);
-        if(null != headers) {
-            Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)->connect.addRequestProperty(k,v)));
-        }
-        if(null != contentType){
-            connect.setRequestProperty(Header.CONTENT_TYPE.toString(), contentType);
-        }
+        setRequestHeaders(connect , contentType , headers);
         connect.setConnectTimeout(connectTimeout);
         connect.setReadTimeout(readTimeout);
     }
+
+    protected void setRequestHeaders(HttpURLConnection connection, String contentType, ArrayListMultimap<String, String> headers) {
+        if(null != headers) {
+            Set<String> keySet = headers.keySet();
+            keySet.forEach((k)->headers.get(k).forEach((v)->connection.addRequestProperty(k,v)));
+        }
+        if(null != contentType){
+            connection.setRequestProperty(top.jfunc.common.http.Header.CONTENT_TYPE.toString(), contentType);
+        }
+    }
+
     protected void writeContent(HttpURLConnection connect, String data, String bodyCharset) throws IOException {
         if (null == data || null == bodyCharset) {
             return;

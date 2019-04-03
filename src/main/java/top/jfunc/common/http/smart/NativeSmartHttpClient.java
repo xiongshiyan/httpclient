@@ -31,7 +31,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
 
             //2.处理header
-            setConnectProperty(connect, method, request.getContentType(), request.getHeaders(),
+            setConnectProperty(connect, method, request.getContentType(), mergeDefaultHeaders(request.getHeaders()),
                     getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
                     getReadTimeoutWithDefault(request.getReadTimeout()));
 
