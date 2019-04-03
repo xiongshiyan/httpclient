@@ -1,9 +1,7 @@
 package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.utils.ArrayListMultimap;
-import top.jfunc.common.http.smart.SSLRequest;
 
 import java.io.IOException;
 
