@@ -120,13 +120,13 @@ public interface HttpClient {
         return post(url, ParamUtil.contactMap(params , bodyCharset),FORM_URLENCODED_WITH_DEFAULT_CHARSET,headers,bodyCharset,resultCharset);
     }
     default String post(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
-        return post(url, ParamUtil.contactMap(params , null),FORM_URLENCODED_WITH_DEFAULT_CHARSET,headers);
+        return post(url, ParamUtil.contactMap(params , DEFAULT_CHARSET),FORM_URLENCODED_WITH_DEFAULT_CHARSET,headers);
     }
     default String post(String url, Map<String, String> params, String bodyCharset, String resultCharset) throws IOException{
         return post(url, ParamUtil.contactMap(params , bodyCharset),FORM_URLENCODED_WITH_DEFAULT_CHARSET,null,bodyCharset,resultCharset);
     }
     default String post(String url, Map<String, String> params) throws IOException{
-        return post(url, ParamUtil.contactMap(params , null),FORM_URLENCODED_WITH_DEFAULT_CHARSET,null);
+        return post(url, ParamUtil.contactMap(params , DEFAULT_CHARSET),FORM_URLENCODED_WITH_DEFAULT_CHARSET,null);
     }
 
     /**
