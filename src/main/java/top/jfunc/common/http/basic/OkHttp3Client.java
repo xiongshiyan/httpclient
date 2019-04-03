@@ -26,7 +26,7 @@ public class OkHttp3Client extends AbstractOkHttp3HttpTemplate implements HttpCl
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException {
-        return template(ParamUtil.contactUrlParams(url , params , getBodyCharsetWithDefault(null)),Method.GET,null,null,
+        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()),Method.GET,null,null,
                 ArrayListMultimap.fromMap(headers),
                 connectTimeout,readTimeout,resultCharset,false,(s,b,r,h)-> IoUtil.read(b ,r));
     }

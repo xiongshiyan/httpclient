@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
-
 /**
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
@@ -43,7 +41,7 @@ public class NativeHttpClient extends AbstractNativeHttpTemplate implements Http
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException {
-        return template(ParamUtil.contactUrlParams(url , params , DEFAULT_CHARSET), Method.GET, null, null, ArrayListMultimap.fromMap(headers),  connectTimeout, readTimeout,
+        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET, null, null, ArrayListMultimap.fromMap(headers),  connectTimeout, readTimeout,
                 resultCharset, false , (s, b,r,h)-> IoUtil.read(b , r));
     }
 

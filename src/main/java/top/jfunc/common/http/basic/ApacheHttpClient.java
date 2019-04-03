@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
-
 /**
  * 使用Apache SmartHttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
@@ -34,7 +32,7 @@ public class ApacheHttpClient extends AbstractApacheHttpTemplate implements Http
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException{
-        return template(ParamUtil.contactUrlParams(url , params , getBodyCharsetWithDefault(null)), Method.GET,null,null,
+        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET,null,null,
                 ArrayListMultimap.fromMap(headers),
                 connectTimeout,readTimeout , resultCharset,false,(s, b,r,h)-> IoUtil.read(b ,r));
     }
@@ -70,7 +68,7 @@ public class ApacheHttpClient extends AbstractApacheHttpTemplate implements Http
     protected void addFormFiles(HttpEntityEnclosingRequest request, FormFile[] files) throws UnsupportedEncodingException {
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                .setCharset(CharsetUtils.get(DEFAULT_CHARSET));
+                .setCharset(CharsetUtils.get(getDefaultBodyCharset()));
 
         for (FormFile formFile : files) {
             multipartEntityBuilder.addBinaryBody(formFile.getParameterName(), formFile.getInStream() , ContentType.parse(formFile.getContentType()) , formFile.getFilName());
@@ -89,7 +87,7 @@ public class ApacheHttpClient extends AbstractApacheHttpTemplate implements Http
     protected void addFormFiles(HttpEntityEnclosingRequest request, ArrayListMultimap<String, String> params ,FormFile[] files) throws UnsupportedEncodingException {
         final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                .setCharset(CharsetUtils.get(DEFAULT_CHARSET));
+                .setCharset(CharsetUtils.get(getDefaultBodyCharset()));
 
         if(null != params){
             params.keySet().forEach(key->params.get(key).forEach(value->multipartEntityBuilder.addTextBody(key , value)));

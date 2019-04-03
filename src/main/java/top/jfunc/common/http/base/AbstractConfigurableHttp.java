@@ -42,11 +42,15 @@ public abstract class AbstractConfigurableHttp {
     public String getBodyCharsetWithDefault(String bodyCharset){
         return getConfig().getBodyCharsetWithDefault(bodyCharset);
     }
-
+    public String getDefaultBodyCharset() {
+        return getConfig().getDefaultBodyCharset();
+    }
     public String getResultCharsetWithDefault(String resultCharset){
         return getConfig().getResultCharsetWithDefault(resultCharset);
     }
-
+    public String getDefaultResultCharset() {
+        return getConfig().getDefaultResultCharset();
+    }
     public HostnameVerifier getHostnameVerifier() {
         return getConfig().getHostnameVerifier();
     }
