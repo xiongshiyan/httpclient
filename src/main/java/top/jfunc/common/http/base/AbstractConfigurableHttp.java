@@ -16,7 +16,7 @@ public abstract class AbstractConfigurableHttp {
     private Config config = Config.defaultConfig();
 
     public Config getConfig() {
-        return Objects.requireNonNull(config);
+        return config;
     }
 
     public AbstractConfigurableHttp setConfig(Config config) {
