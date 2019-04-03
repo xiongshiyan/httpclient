@@ -32,7 +32,7 @@ features:
 
 下载本项目，gradle clean build得到的jar包引入工程即可。本项目依赖于[utils](https://gitee.com/xxssyyyyssxx/utils)
 
-version:1.8.1
+lastest version:1.8.2.0
 
 #### 1.直接导入 
 compile 'top.jfunc.common:network:${version}'
