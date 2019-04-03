@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author xiongshiyan at 2017/12/9
  * 针对Http超时和各种错误码分别处理
  * @see HttpClient
- * 使用时，可以直接new实现类，也可以通过{@link top.jfunc.common.utils.SpringFactoriesLoader }获取，这样就不会与实现类绑定
+ * 使用时，可以直接new实现类，也可以通过{@link top.jfunc.common.http.HttpUtil }获取，这样就不会与实现类绑定
  */
 public interface SmartHttpClient extends HttpClient {
     /**
