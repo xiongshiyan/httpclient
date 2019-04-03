@@ -5,7 +5,6 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
-import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.utils.ArrayListMultimap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -22,40 +21,39 @@ public class Config {
     /**
      * BaseUrl,如果设置了就在正常传送的URL之前添加上
      */
-    private String baseUrl = null;
-
+    private String baseUrl                                  = null;
     /**
      * 连接超时时间
      */
-    private Integer defaultConnectionTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+    private Integer defaultConnectionTimeout                = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
     /**
      * 读数据超时时间
      */
-    private Integer defaultReadTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
+    private Integer defaultReadTimeout                      = HttpConstants.DEFAULT_READ_TIMEOUT;
     /**
      * 请求体编码
      */
-    private String defaultBodyCharset = HttpConstants.DEFAULT_CHARSET;
+    private String defaultBodyCharset                       = HttpConstants.DEFAULT_CHARSET;
     /**
      * 返回体编码
      */
-    private String defaultResultCharset = HttpConstants.DEFAULT_CHARSET;
+    private String defaultResultCharset                     = HttpConstants.DEFAULT_CHARSET;
     /**
      * HostnameVerifier
      */
-    private HostnameVerifier hostnameVerifier = getDefaultHostnameVerifier();
+    private HostnameVerifier hostnameVerifier               = getDefaultHostnameVerifier();
     /**
      * SSLContext
      */
-    private SSLContext sslContext = getDefaultSSLContext();
+    private SSLContext sslContext                           = getDefaultSSLContext();
     /**
      * SSLSocketFactory
      */
-    private SSLSocketFactory sslSocketFactory = getDefaultSSLSocketFactory();
+    private SSLSocketFactory sslSocketFactory               = getDefaultSSLSocketFactory();
     /**
      * X509TrustManager
      */
-    private X509TrustManager x509TrustManager = getDefaultX509TrustManager();
+    private X509TrustManager x509TrustManager               = getDefaultX509TrustManager();
     /**
      * 默认的请求头,每个请求都会加上
      */
