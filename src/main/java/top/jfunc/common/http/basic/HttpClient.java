@@ -100,7 +100,7 @@ public interface HttpClient {
         return post(url,body,contentType,null,connectTimeout,readTimeout);
     }
     /**
-     * @see HttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see HttpClient#post(String, String, String, Map, Integer, Integer, String, String)
      */
     default String post(String url, String body, String contentType, String bodyCharset, String resultCharset) throws IOException{
         return post(url,body,contentType,null,null,null,bodyCharset,resultCharset);
