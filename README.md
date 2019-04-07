@@ -61,7 +61,9 @@ compile ('top.jfunc.common:network:${version}'){
 
 
 
-具体的使用方式：面向SmartHttpClient，可以使用HttpUtil的delegate获取一个实现，或者自己实例化一个。在SpringBoot项目中，用Bean注入：
+### 具体的使用方式：
+
+面向SmartHttpClient，可以使用HttpUtil的delegate获取一个实现，或者自己实例化一个。在SpringBoot项目中，用Bean注入：
 
 ```
 @Configuration
