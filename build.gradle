@@ -1,11 +1,11 @@
-def VERSION = '1.8.2.0'
-def ARTIFACT_ID = 'network'
-def GROUP_ID = 'top.jfunc.common'
+def VERSION = '1.0'
+def ARTIFACT_ID = 'httpclient'
+def GROUP_ID = 'top.jfunc.network'
 def TYPE = 'jar'
 def DESCRIPTION = 'http客户端请求工具类，有多种实现：OKHttp3、ApacheHttpClient、HttpURLConnection，可以随意切换http实现'
-def gitUrl = 'https://gitee.com/xxssyyyyssxx/network.git'
-def siteUrl = 'https://gitee.com/xxssyyyyssxx/network'
-def REPO_NAME = 'maven'
+def gitUrl = 'https://gitee.com/xxssyyyyssxx/httpclient.git'
+def siteUrl = 'https://gitee.com/xxssyyyyssxx/httpclient'
+def REPO_NAME = 'network'
 
 group GROUP_ID
 version VERSION
@@ -35,6 +35,7 @@ sourceCompatibility = 1.8
 repositories {
     mavenLocal()
     mavenCentral()
+    jcenter()
 }
 dependencies {
 
