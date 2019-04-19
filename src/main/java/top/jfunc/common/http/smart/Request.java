@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static top.jfunc.common.http.HttpConstants.*;
-
 /**
  * @author xiongshiyan at 2017/12/9
  */

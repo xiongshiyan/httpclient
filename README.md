@@ -1,6 +1,6 @@
 # httpclient
 
-#### 项目介绍
+### introduction
 
 http客户端接口设计，完全模拟http可能的参数，有多种实现：OKHttp3、ApacheHttpClient、HttpURLConnection，可以随意切换http实现。
 我用此工具逐渐替换了业务项目工程中不统一、繁杂的各种HttpClient工具的实现、版本，只需要面向统一、抽象的操作接口。
@@ -10,46 +10,39 @@ http模块的架构设计和使用方式见CSDN博客
 [一个http请求工具类的接口化（多种实现）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715837)
 
 
-features:
+### features
 
-* HttpClient接口体系
-* SmartHttpClient（继承HttpClient）接口体系：基于Request-Response
-* 支持文件上传、下载
-* 支持https
-* 支持无代码修改的OkHttp3、ApacheHttpClient、HttpURLConnection的切换
-* HttpUtil支持根据jar包加载实现
-* 配置项可以通过-D或者System.setProperty()全局设置，可以对某个实现的对象例如 `NativeSmartHttpClient` 全局设置，也可以针对某一个请求Request单独设置，优先级逐渐升高
-* 支持返回值和JavaBean之间的转换，基于项目 https://gitee.com/xxssyyyyssxx/httpclient-converter
-* 通过Config全局配置默认参数
-* 支持全局header设置
-* Proxy代理支持
+- [x] `HttpClient`接口体系
+- [x] `SmartHttpClient`（继承HttpClient）接口体系：基于`Request-Response`
+- [x] 支持文件上传、下载
+- [x] 支持https
+- [x] 支持无代码修改的`OkHttp3、ApacheHttpClient、HttpURLConnection`的切换
+- [x] HttpUtil支持根据jar包的存在性加载实现
+- [x] 配置项可以通过`-D或者System.setProperty()`全局设置，可以对某个实现的对象例如 `NativeSmartHttpClient` 全局设置，也可以针对某一个请求Request单独设置，优先级逐渐升高
+- [x] 支持返回值和JavaBean之间的转换，基于项目 https://gitee.com/xxssyyyyssxx/httpclient-converter
+- [x] 通过Config全局配置默认参数
+- [x] 支持全局header设置
+- [x] 支持请求之前之后加入特定的处理,复写`SmartHttpClient`的`beforeTemplate`和`afterTemplate`方法
+- [x] Proxy代理支持
+- [ ] 文件上传支持断点续传
 
-### 使用方式
+### how to use it?
 
+#### 源码使用
 下载本项目，gradle clean build得到的jar包引入工程即可。本项目依赖于[utils](https://gitee.com/xxssyyyyssxx/utils)
 
-lastest version:1.0
 
-#### 1.直接导入 
-compile 'top.jfunc.common:network:${version}'
-#### 2.如果想只使用HttpURLConnection实现 
-compile ('top.jfunc.common:network:${version}'){
-        exclude group:'org.apache.httpcomponents'
-        exclude group:'com.squareup.okhttp3'
-        exclude group:'commons-net'
-    }
-#### 3.如果想只使用ApacheHttpClient实现 
-compile ('top.jfunc.common:network:${version}'){
-        exclude group:'com.squareup.okhttp3'
-        exclude group:'commons-net'
-    }
-#### 4.如果想只使用Okhttp3实现 
-compile ('top.jfunc.common:network:${version}'){
-        exclude group:'org.apache.httpcomponents'
-        exclude group:'com.squareup.okhttp3'
-        exclude group:'commons-net'
-    }
+#### 项目管理工具导入 
+项目已经发布至jcenter和maven中央仓库 最新版本version:1.0
 
+`compile 'top.jfunc.network:httpclient:${version}'`
+
+如果想去掉不必要的jar包引入可以排除特定的 
+
+`compile ('top.jfunc.network:httpclient:${version}'){
+        ? exclude group:'org.apache.httpcomponents'
+        ? exclude group:'com.squareup.okhttp3'
+    }`
 
 ### 具体的使用方式：
 
@@ -66,7 +59,7 @@ public class HttpConfig {
         // new ApacheSmartHttpClient(){
                 //重写某些方法
         };
-        smartHttpClient.setBaseUrl("....");//设置baseUrl
+        smartHttpClient.setConfig(Config.defaultConfig()...);//设置baseUrl...
         retrun smartHttpClient;
     }
 }
