@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -30,48 +31,52 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
     @Override
     public <R> R template(Request request, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        HttpURLConnection connect = null;
+        HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
             //1.获取连接
             String completedUrl = addBaseUrlIfNecessary(request.getUrl());
 
-            connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
+            URL url = new URL(completedUrl);
+            //1.1如果需要则设置代理
+            connection = (null != request.getProxy()) ?
+                    (HttpURLConnection)url.openConnection(request.getProxy()) :
+                    (HttpURLConnection) url.openConnection();
 
             //2.处理header
-            setConnectProperty(connect, method, request.getContentType(), mergeDefaultHeaders(request.getHeaders()),
+            setConnectProperty(connection, method, request.getContentType(), mergeDefaultHeaders(request.getHeaders()),
                     getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
                     getReadTimeoutWithDefault(request.getReadTimeout()));
 
 
             ////////////////////////////////////ssl处理///////////////////////////////////
-            if(connect instanceof HttpsURLConnection){
+            if(connection instanceof HttpsURLConnection){
                 //默认设置这些
-                HttpsURLConnection con = (HttpsURLConnection)connect;
+                HttpsURLConnection con = (HttpsURLConnection)connection;
                 initSSL(con , RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier()) ,
                         RequestSSLUtil.getSSLSocketFactory(request , getSSLSocketFactory()));
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
             //3.留给子类复写的机会:给connection设置更多参数
-            doWithConnection(connect);
+            doWithConnection(connection);
 
             //5.写入内容，只对post有效
             if(contentCallback != null && method.hasContent()){
-                contentCallback.doWriteWith(connect);
+                contentCallback.doWriteWith(connection);
             }
 
             //4.连接
-            connect.connect();
+            connection.connect();
 
             //6.获取返回值
-            int statusCode = connect.getResponseCode();
+            int statusCode = connection.getResponseCode();
 
-            inputStream = getStreamFrom(connect , statusCode);
+            inputStream = getStreamFrom(connection , statusCode);
 
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? connection.getHeaderFields() : new HashMap<>(0));
             ///返回Response
-            //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connect.getHeaderFields() : new HashMap<>(0));
+            //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connection.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
@@ -79,7 +84,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接
-            disconnectQuietly(connect);
+            disconnectQuietly(connection);
             //2 . 关闭流
             IoUtil.close(inputStream);
         }

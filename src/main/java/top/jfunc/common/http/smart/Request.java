@@ -6,6 +6,7 @@ import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -72,6 +73,11 @@ public class Request {
      * 为文件下载确定信息
      */
     private File file = null;
+    /**
+     * 代理设置,如果有就设置
+     * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
+     */
+    private Proxy proxy = null;
 
     public Request(String url){this.url = url;}
 
@@ -172,6 +178,11 @@ public class Request {
         return this;
     }
 
+    public Request setProxy(Proxy proxy) {
+        this.proxy = proxy;
+        return this;
+    }
+
     /****************************Getter**************************/
     public String getUrl() {
         return url;
@@ -227,5 +238,9 @@ public class Request {
 
     public File getFile() {
         return file;
+    }
+
+    public Proxy getProxy() {
+        return proxy;
     }
 }

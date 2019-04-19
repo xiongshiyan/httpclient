@@ -32,8 +32,7 @@ import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
-import java.net.ConnectException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,14 +250,28 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
         request.setEntity(entity);
     }
 
-    protected void setRequestProperty(HttpRequestBase request, int connectTimeout, int readTimeout) {
-        RequestConfig config = RequestConfig.custom()
+    protected void setRequestProperty(HttpRequestBase request,
+                                      int connectTimeout,
+                                      int readTimeout) {
+        setRequestProperty(request, connectTimeout, readTimeout , null);
+    }
+    protected void setRequestProperty(HttpRequestBase request,
+                                      int connectTimeout,
+                                      int readTimeout,
+                                      Proxy proxy) {
+        RequestConfig.Builder builder = RequestConfig.custom()
                 .setConnectTimeout(connectTimeout)
                 .setConnectionRequestTimeout(readTimeout)
                 .setSocketTimeout(readTimeout)
-                //.setStaleConnectionCheckEnabled(true)
-                .build();
-        request.setConfig(config);
+        //.setStaleConnectionCheckEnabled(true)
+                ;
+        //代理设置
+        if(null != proxy){
+            InetSocketAddress address = (InetSocketAddress)proxy.address();
+            HttpHost proxyHost = new HttpHost(address.getHostName() , address.getPort());
+            builder.setProxy(proxyHost);
+        }
+        request.setConfig(builder.build());
     }
 
     protected void setRequestHeaders(HttpUriRequest request, String contentType, ArrayListMultimap<String, String> headers) {

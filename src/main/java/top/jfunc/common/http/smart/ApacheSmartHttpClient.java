@@ -48,7 +48,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         //3.设置请求参数
         setRequestProperty((HttpRequestBase) httpUriRequest,
                 getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
-                getReadTimeoutWithDefault(request.getReadTimeout()));
+                getReadTimeoutWithDefault(request.getReadTimeout()),
+                request.getProxy());
 
         //4.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
