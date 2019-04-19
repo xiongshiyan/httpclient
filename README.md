@@ -26,13 +26,13 @@ http模块的架构设计和使用方式见CSDN博客
 - [x] Proxy代理支持
 - [ ] 文件上传支持断点续传
 
-### how to use it?
+### how to import it?
 
-#### 源码使用
+##### 源码使用
 下载本项目，gradle clean build得到的jar包引入工程即可。本项目依赖于[utils](https://gitee.com/xxssyyyyssxx/utils)
 
 
-#### 项目管理工具导入 
+##### 项目管理工具导入 
 项目已经发布至jcenter和maven中央仓库 最新版本version:1.0
 
 `compile 'top.jfunc.network:httpclient:${version}'`
@@ -44,7 +44,7 @@ http模块的架构设计和使用方式见CSDN博客
         ? exclude group:'com.squareup.okhttp3'
     }`
 
-### 具体的使用方式：
+### how to use it?
 
 面向SmartHttpClient，可以使用HttpUtil的delegate获取一个实现，或者自己实例化一个。在SpringBoot项目中，用Bean注入：
 
