@@ -2,12 +2,39 @@
 
 ### introduction
 
-http客户端接口设计，完全模拟http可能的参数，有多种实现：OKHttp3、ApacheHttpClient、HttpURLConnection，可以随意切换http实现。
-我用此工具逐渐替换了业务项目工程中不统一、繁杂的各种HttpClient工具的实现、版本，只需要面向统一、抽象的操作接口。
+http客户端接口设计，完全模拟http可能的参数，有多种实现：OKHttp3、ApacheHttpClient、HttpURLConnection，可以一键切换http实现。
+我用此工具逐渐替换了业务项目工程中不统一、繁杂的各种HttpClient工具的实现、版本，只需要面向统一、抽象的操作接口。可以做到一键切换http请求的实现，而无需散弹式修改。
 
-http模块的架构设计和使用方式见CSDN博客
+http模块的架构设计和使用方式见 CSDN博客
+
 [一个http请求工具类的接口化（接口设计）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715202)
+
 [一个http请求工具类的接口化（多种实现）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715837)
+
+项目采用双接口并行设计模式，一种是面向接口实现者的 **HttpTemplate-SmartHttpTemplate**  _功能接口_ ，主要的功能是模拟Http的参数、header等；一种是面向终端用户调用者的 **HttpClient-SmartHttpClient**  _用户接口_ 。具体实现类通过实现两组接口，后者接口实现最终调用前者的接口实现。这样做的好处是互不影响，实现者可以无限优化 **HttpTemplate、SmartHttpTemplate** 的实现类，而对使用者几无影响。
+
+HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；SmartHttpTemplate继承于HttpTemplate，SmartHttpClient接口继承于HttpClient，且基于Request来模拟Http的参数、header，这样更容易优化、更容易使用。
+
+接口及实现类整体鸟瞰：
+![接口及实现类整体鸟瞰](https://gitee.com/uploads/images/2019/0428/143030_35ee9676_1507575.png "all.png")
+
+功能接口设计：
+![功能接口设计](https://gitee.com/uploads/images/2019/0428/143237_36d81cf6_1507575.png "expound-http.png")
+
+用户接口设计：
+![用户接口设计](https://gitee.com/uploads/images/2019/0428/143300_9d754644_1507575.png "facade-(HttpClient-SmartHttpClient).png")
+
+OkHttp3实现主线：
+![OkHttp3主线](https://gitee.com/uploads/images/2019/0428/143441_041fd1c3_1507575.png "OkHttp3SmartHttpClient.png")
+
+Apache实现主线：
+![Apache实现主线](https://gitee.com/uploads/images/2019/0428/143520_705db9ac_1507575.png "ApacheSmartHttpClient.png")
+
+HttpURLConnection实现主线：
+![HttpURLConnection实现主线](https://gitee.com/uploads/images/2019/0428/143602_034df52d_1507575.png "NativeSmartHttpClient.png")
+
+Request类：
+![Request](https://gitee.com/uploads/images/2019/0428/143824_b51781b4_1507575.png "Request.png")
 
 
 ### features
