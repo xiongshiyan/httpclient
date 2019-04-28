@@ -28,6 +28,7 @@ HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；
 ![用户接口设计](https://gitee.com/uploads/images/2019/0428/143300_9d754644_1507575.png "facade-(HttpClient-SmartHttpClient).png")
 
 OkHttp3实现主线：
+
 ![OkHttp3主线](https://gitee.com/uploads/images/2019/0428/143441_041fd1c3_1507575.png "OkHttp3SmartHttpClient.png")
 
 Apache实现主线：
@@ -36,7 +37,7 @@ Apache实现主线：
 
 HttpURLConnection实现主线：
 
-![HttpURLConnection实现主线](https://gitee.com/uploads/images/2019/0428/143602_034df52d_1507575.png "NativeSmartHttpClient.png")
+![HttpURLConnection实现主线](https://gitee.com/uploads/images/2019/0428/144957_71a04d16_1507575.png "NativeSmartHttpClient.png")
 
 Request类：
 
