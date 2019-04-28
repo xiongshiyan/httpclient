@@ -16,24 +16,30 @@ http模块的架构设计和使用方式见 CSDN博客
 HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；SmartHttpTemplate继承于HttpTemplate，SmartHttpClient接口继承于HttpClient，且基于Request来模拟Http的参数、header，这样更容易优化、更容易使用。
 
 接口及实现类整体鸟瞰：
+
 ![接口及实现类整体鸟瞰](https://gitee.com/uploads/images/2019/0428/143030_35ee9676_1507575.png "all.png")
 
 功能接口设计：
+
 ![功能接口设计](https://gitee.com/uploads/images/2019/0428/143237_36d81cf6_1507575.png "expound-http.png")
 
 用户接口设计：
+
 ![用户接口设计](https://gitee.com/uploads/images/2019/0428/143300_9d754644_1507575.png "facade-(HttpClient-SmartHttpClient).png")
 
 OkHttp3实现主线：
 ![OkHttp3主线](https://gitee.com/uploads/images/2019/0428/143441_041fd1c3_1507575.png "OkHttp3SmartHttpClient.png")
 
 Apache实现主线：
+
 ![Apache实现主线](https://gitee.com/uploads/images/2019/0428/143520_705db9ac_1507575.png "ApacheSmartHttpClient.png")
 
 HttpURLConnection实现主线：
+
 ![HttpURLConnection实现主线](https://gitee.com/uploads/images/2019/0428/143602_034df52d_1507575.png "NativeSmartHttpClient.png")
 
 Request类：
+
 ![Request](https://gitee.com/uploads/images/2019/0428/143824_b51781b4_1507575.png "Request.png")
 
 
