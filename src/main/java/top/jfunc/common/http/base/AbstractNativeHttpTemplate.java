@@ -80,7 +80,7 @@ public abstract class AbstractNativeHttpTemplate extends AbstractConfigurableHtt
 //                throw new HttpException(statusCode,err,connect.getHeaderFields());
 //            }
 
-            inputStream = getStreamFrom(connect , statusCode);
+            inputStream = getStreamFrom(connect , statusCode , false);
 
             return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {
@@ -96,7 +96,12 @@ public abstract class AbstractNativeHttpTemplate extends AbstractConfigurableHtt
         }
     }
 
-    protected InputStream getStreamFrom(HttpURLConnection connect , int statusCode) throws IOException{
+    protected InputStream getStreamFrom(HttpURLConnection connect , int statusCode , boolean ignoreResponseBody) throws IOException{
+        //忽略返回body的情况下，直接返回空的
+        if(ignoreResponseBody){
+            return top.jfunc.common.http.IoUtil.emptyInputStream();
+        }
+
         InputStream inputStream;
         if(HttpStatus.HTTP_OK == statusCode){
             inputStream = connect.getInputStream();

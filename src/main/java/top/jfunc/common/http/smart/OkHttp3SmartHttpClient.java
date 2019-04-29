@@ -75,7 +75,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             response = client.newCall(okRequest).execute();
 
             //5.获取响应
-            inputStream = getStreamFrom(response);
+            inputStream = getStreamFrom(response , request.isIgnoreResponseBody());
 
             int statusCode = response.code();
             return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));

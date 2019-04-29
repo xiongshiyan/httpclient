@@ -72,7 +72,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             //6.获取返回值
             int statusCode = connection.getResponseCode();
 
-            inputStream = getStreamFrom(connection , statusCode);
+            inputStream = getStreamFrom(connection , statusCode , request.isIgnoreResponseBody());
 
             return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? connection.getHeaderFields() : new HashMap<>(0));
             ///返回Response
