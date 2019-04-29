@@ -17,17 +17,31 @@ import java.util.Map;
  */
 public class Request {
     /**
+     * 结果包含headers
+     */
+    public static final boolean INCLUDE_HEADERS = true;
+    /**
+     * 结果忽略body
+     */
+    public static final boolean IGNORE_RESPONSE_BODY = true;
+    /**
+     * 支持重定向
+     */
+    public static final boolean REDIRECTABLE = true;
+
+
+    /**
      * 请求的URL
      */
     private String url;
     /**
      * 请求参数，针对GET请求存在
      */
-    private ArrayListMultimap<String,String> params = new ArrayListMultimap<>();
+    private ArrayListMultimap<String,String> params;
     /**
      * 请求头
      */
-    private ArrayListMultimap<String,String> headers = new ArrayListMultimap<>();
+    private ArrayListMultimap<String,String> headers;
     /**
      * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
      */
@@ -54,14 +68,19 @@ public class Request {
     private String resultCharset = null;
 
     /**
-     * 返回结果中是否包含headers
+     * 返回结果中是否包含headers,默认不包含
      */
-    private boolean includeHeaders = false;
+    private boolean includeHeaders = !INCLUDE_HEADERS;
+
+    /**
+     * 返回结果中是否忽略body,  true那么就不去读取body，提高效率, 默认不忽略
+     */
+    private boolean ignoreResponseBody = !IGNORE_RESPONSE_BODY;
 
     /**
      * 是否支持重定向
      */
-    private boolean redirectable = false;
+    private boolean redirectable = !REDIRECTABLE;
 
     /**
      * 2018-06-18为了文件上传增加的
@@ -99,24 +118,39 @@ public class Request {
         return this;
     }
     public Request setParams(Map<String, String> params) {
+        initParams();
         params.forEach((k,v)->this.params.put(k,v));
         return this;
     }
     public Request addParam(String key, String value){
+        initParams();
         this.params.put(key, value);
         return this;
+    }
+    private void initParams(){
+        if(null == this.params){
+            this.params = new ArrayListMultimap<>();
+        }
     }
     public Request setHeaders(ArrayListMultimap<String, String> headers) {
         this.headers = headers;
         return this;
     }
     public Request setHeaders(Map<String, String> headers) {
+        initHeaders();
         headers.forEach((k,v)->this.headers.put(k,v));
         return this;
     }
     public Request addHeader(String key, String value){
+        initHeaders();
         this.headers.put(key, value);
         return this;
+    }
+
+    private void initHeaders(){
+        if(null == this.headers){
+            this.headers = new ArrayListMultimap<>();
+        }
     }
 
     public Request setBody(String body) {
@@ -150,6 +184,11 @@ public class Request {
 
     public Request setIncludeHeaders(boolean includeHeaders) {
         this.includeHeaders = includeHeaders;
+        return this;
+    }
+
+    public Request setIgnoreResponseBody(boolean ignoreResponseBody) {
+        this.ignoreResponseBody = ignoreResponseBody;
         return this;
     }
 
@@ -224,6 +263,10 @@ public class Request {
 
     public boolean isIncludeHeaders() {
         return includeHeaders;
+    }
+
+    public boolean isIgnoreResponseBody() {
+        return ignoreResponseBody;
     }
 
     public boolean isRedirectable() {

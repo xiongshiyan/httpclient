@@ -38,9 +38,9 @@ public class HttpSmartTest {
     private void testGet(SmartHttpClient http){
         String url = "?aldtype=85#zh/en/%E5%AE%8C%E6%95%B4%E7%9A%84%E6%88%91";
         try {
-            Response response = http.get(Request.of(url).addHeader("saleType" , "2").setResultCharset("UTF-8"));
+            Response response = http.get(Request.of(url).setIgnoreResponseBody(false).setIncludeHeaders(true).addHeader("saleType" , "2").setResultCharset("UTF-8"));
             System.out.println(response);
-            System.out.println(response.getHeaders());
+            System.out.println("headers:" + response.getHeaders());
 
             String s = http.get(url);
             System.out.println(s);

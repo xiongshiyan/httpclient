@@ -93,7 +93,7 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
 //                String errorMsg = EntityUtils.toString(entity, resultCharset);
 //                throw new HttpException(statusCode,errorMsg,parseHeaders(response));
 //            }
-            InputStream inputStream = entity.getContent();
+            //InputStream inputStream = entity.getContent();
 //            R convert;
 //            if (HttpStatus.HTTP_OK == statusCode) {
 //                //7.封装返回参数
@@ -101,9 +101,13 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
 //            }else {
 //                convert = resultCallback.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
 //            }
-            if(null == inputStream){
+            /*if(null == inputStream){
                 inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
-            }
+            }*/
+
+            InputStream inputStream = getStreamFrom(entity, false);
+
+
             R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeader ? parseHeaders(response) : new HashMap<>(0));
             IoUtil.close(inputStream);
             return convert;
@@ -116,6 +120,18 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
             IoUtil.close(response);
             IoUtil.close(httpClient);
         }
+    }
+
+    protected InputStream getStreamFrom(HttpEntity entity , boolean ignoreResponseBody) throws IOException {
+        //忽略返回body的情况下，直接返回空的
+        if(ignoreResponseBody){
+            return top.jfunc.common.http.IoUtil.emptyInputStream();
+        }
+        InputStream inputStream = entity.getContent();
+        if(null == inputStream){
+            inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
+        }
+        return inputStream;
     }
 
     protected HttpUriRequest createHttpUriRequest(String url, Method method) {

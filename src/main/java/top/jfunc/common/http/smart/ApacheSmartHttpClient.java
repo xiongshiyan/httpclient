@@ -77,12 +77,13 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
             int statusCode = response.getStatusLine().getStatusCode();
             entity = response.getEntity();
-            InputStream inputStream = entity.getContent();
-            if(null == inputStream){
-                inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
-            }
+
+            InputStream inputStream = getStreamFrom(entity , request.isIgnoreResponseBody());
+
             R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+
             IoUtil.close(inputStream);
+
             return convert;
 
             ///
@@ -99,8 +100,6 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             IoUtil.close(httpClient);
         }
     }
-
-
 
     @Override
     public Response get(Request req) throws IOException {

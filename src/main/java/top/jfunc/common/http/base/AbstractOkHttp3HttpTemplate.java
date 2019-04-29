@@ -69,7 +69,7 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
 
             //5.获取响应
 //            return getReturnMsg(response , resultCharset , includeHeaders , resultCallback);
-            inputStream = getStreamFrom(response);
+            inputStream = getStreamFrom(response , false);
 
             int statusCode = response.code();
             return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeaders ? parseHeaders(response) : new HashMap<>(0));
@@ -90,7 +90,11 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
         }
     }
 
-    protected InputStream getStreamFrom(Response response) {
+    protected InputStream getStreamFrom(Response response , boolean ignoreResponseBody) {
+        //忽略返回body的情况下，直接返回空的
+        if(ignoreResponseBody){
+            return top.jfunc.common.http.IoUtil.emptyInputStream();
+        }
         ResponseBody body = response.body();
         InputStream inputStream = (body != null) ? body.byteStream() : top.jfunc.common.http.IoUtil.emptyInputStream();
         if(null == inputStream){
@@ -150,7 +154,7 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
 //            String errorMsg = new String(response.body().bytes() , resultCharset);
 //            throw new HttpException(statusCode,errorMsg,parseHeaders(response));
 //        }
-        InputStream inputStream = getStreamFrom(response);
+        InputStream inputStream = getStreamFrom(response , false);
         R convert;
         if (HttpStatus.HTTP_OK == statusCode) {
             convert = resultParser.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
