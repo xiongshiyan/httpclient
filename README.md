@@ -73,8 +73,11 @@ Request类：
 项目已经发布至jcenter和maven中央仓库 最新版本version: **1.0.1**
 
 Gradle:
+
 `compile 'top.jfunc.network:httpclient:${version}'`
+
 Maven:
+
 ```xml
 <!-- https://mvnrepository.com/artifact/top.jfunc.network/httpclient -->
 <dependency>
@@ -82,7 +85,6 @@ Maven:
     <artifactId>httpclient</artifactId>
     <version>${version}</version>
 </dependency>
-
 ```
 
 如果想去掉不必要的jar包引入可以排除特定的 
