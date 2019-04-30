@@ -48,6 +48,7 @@ Request类：
 
 - [x] `HttpClient`接口体系
 - [x] `SmartHttpClient`（继承HttpClient）接口体系：基于`Request-Response`
+- [x] `Request`支持链式调用
 - [x] 支持文件上传、下载
 - [x] 支持https
 - [x] 支持无代码修改的`OkHttp3、ApacheHttpClient、HttpURLConnection`的切换
@@ -68,9 +69,21 @@ Request类：
 
 
 ##### 项目管理工具导入 
-项目已经发布至jcenter和maven中央仓库 最新版本version:1.0
 
+项目已经发布至jcenter和maven中央仓库 最新版本version: **1.0.1**
+
+Gradle:
 `compile 'top.jfunc.network:httpclient:${version}'`
+Maven:
+```xml
+<!-- https://mvnrepository.com/artifact/top.jfunc.network/httpclient -->
+<dependency>
+    <groupId>top.jfunc.network</groupId>
+    <artifactId>httpclient</artifactId>
+    <version>${version}</version>
+</dependency>
+
+```
 
 如果想去掉不必要的jar包引入可以排除特定的 
 
@@ -81,7 +94,11 @@ Request类：
 
 ### how to use it?
 
-面向SmartHttpClient，可以使用HttpUtil的delegate获取一个实现，或者自己实例化一个。在SpringBoot项目中，用Bean注入：
+**面向SmartHttpClient**
+
+1. 可以使用HttpUtil的delegate获取一个实现，或者自己实例化一个；
+2. 在SpringBoot项目中，用Bean注入；
+3. HttpUtil实现了对接口SmartHttpClient的完全静态化代理，一句话实现Http请求。
 
 ```
 @Configuration
@@ -395,3 +412,67 @@ https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/commo
 https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/common/http/HttpSmartTest.java
 
 https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/common/http/DelegateTest.java
+
+下面演示几种用法：
+1. Request代表所有请求的变量，支持链式编程
+2. SmartHttpClient接口的实现类完成真正的请求
+3. Response代表返回信息，可以根据需要转换为字节数组、字符串。。。
+
+GET:
+```java
+Response response = http.get(Request.of(url).setIgnoreResponseBody(false).setIncludeHeaders(true).addHeader("saleType" , "2").setResultCharset("UTF-8"));
+System.out.println(response);
+System.out.println("headers:" + response.getHeaders());
+
+String s = http.get(url);
+System.out.println(s);
+
+Request request = Request.of(url).addParam("xx" , "xx").addParam("yy" , "yy").addHeader("saleType" , "2").setResultCharset("UTF-8");
+byte[] bytes = http.getAsBytes(request);
+System.out.println(bytes.length);
+System.out.println(new String(bytes));
+
+request = Request.of(url).setFile(new File("C:\\Users\\xiongshiyan\\Desktop\\yyyy.txt"));
+File asFile = http.getAsFile(request);
+System.out.println(asFile.getAbsolutePath());
+```
+
+POST:
+```java
+Request request = Request.of(url).setIncludeHeaders(true).addHeader("ss" , "ss").addHeader("ss" , "dd").setBody("{\"name\":\"熊诗言\"}").setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
+Response post = http.post(request);
+System.out.println(post.getBody());
+System.out.println(post.getHeaders());
+
+String s = http.postJson(url, "{\"name\":\"熊诗言\"}");
+System.out.println(s);
+
+request = Request.of(url).addParam("xx" , "xx").addParam("yy" , "yy").setContentType(FORM_URLENCODED);
+Response response = http.post(request);
+System.out.println(response.getBody());
+```
+
+UPLOAD:
+```java
+FormFile formFile = new FormFile(new File("E:\\838586397836550106.jpg") , "filedata",null);
+Request request = Request.of(url).addHeader("empCode" , "ahg0023")
+        .addHeader("phone" , "15208384257").addFormFile(formFile).setIncludeHeaders(true);
+Response response = httpClient.upload(request);
+System.out.println(response.getBody());
+System.out.println(response.getHeaders());
+```
+
+多文件及带参数的上传:
+```java
+FormFile formFile = new FormFile(new File("E:\\838586397836550106.jpg") , "filedata",null);
+FormFile formFile2 = new FormFile(new File("E:\\BugReport.png") , "filedata2",null);
+Request request = Request.of(url).addHeader("empCode" , "ahg0023")
+        .addHeader("phone" , "15208384257").addFormFile(formFile2).addFormFile(formFile).setIncludeHeaders(true);
+
+request.addParam("k1", "v1").addParam("k2" , "v2");
+Response response = httpClient.upload(request);
+System.out.println(response.getBody());
+System.out.println(response.getHeaders());
+```
+
+更多用法等待你探索
