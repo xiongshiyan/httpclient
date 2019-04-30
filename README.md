@@ -74,7 +74,9 @@ Request类：
 
 Gradle:
 
-`compile 'top.jfunc.network:httpclient:${version}'`
+```dsl
+compile 'top.jfunc.network:httpclient:${version}'
+```
 
 Maven:
 
@@ -89,10 +91,33 @@ Maven:
 
 如果想去掉不必要的jar包引入可以排除特定的 
 
-`compile ('top.jfunc.network:httpclient:${version}'){
+```
+compile ('top.jfunc.network:httpclient:${version}'){
         ? exclude group:'org.apache.httpcomponents'
         ? exclude group:'com.squareup.okhttp3'
-    }`
+    }
+```
+```
+<dependency>
+    <groupId>top.jfunc.network</groupId>
+    <artifactId>httpclient</artifactId>
+    <version>${version}</version>
+    <exclusions>  
+        <exclusion>  ?
+            <groupId>com.squareup.okhttp3</groupId>  
+            <artifactId>okhttp</artifactId>  
+        </exclusion>  
+        <exclusion>  ?
+            <groupId>org.apache.httpcomponents</groupId>  
+            <artifactId>httpclient</artifactId>  
+        </exclusion>  
+        <exclusion>  ?
+            <groupId>org.apache.httpcomponents</groupId>  
+            <artifactId>httpmime</artifactId>  
+        </exclusion>  
+    </exclusions>  
+</dependency>
+```
 
 ### how to use it?
 
@@ -475,6 +500,20 @@ request.addParam("k1", "v1").addParam("k2" , "v2");
 Response response = httpClient.upload(request);
 System.out.println(response.getBody());
 System.out.println(response.getHeaders());
+```
+
+对SmartHttpClient设置全局默认参数
+```java
+http.setConfig(Config.defaultConfig()
+            .setBaseUrl("https://fanyi.baidu.com/")
+            .addDefaultHeader("xx" , "xx")
+            .setDefaultBodyCharset("UTF-8")
+            .setDefaultResultCharset("UTF-8")
+            .setDefaultConnectionTimeout(15000)
+            .setDefaultReadTimeout(15000)
+
+    //.....
+   );
 ```
 
 更多用法等待你探索
