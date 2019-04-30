@@ -54,10 +54,11 @@ Request类：
 - [x] HttpUtil支持根据jar包的存在性加载实现
 - [x] 配置项可以通过`-D或者System.setProperty()`全局设置，可以对某个实现的对象例如 `NativeSmartHttpClient` 全局设置，也可以针对某一个请求Request单独设置，优先级逐渐升高
 - [x] 支持返回值和JavaBean之间的转换，基于项目 https://gitee.com/xxssyyyyssxx/httpclient-converter
-- [x] 通过Config全局配置默认参数
+- [x] 通过`Config`全局配置默认参数
 - [x] 支持全局header设置
 - [x] 支持请求之前之后加入特定的处理,复写`SmartHttpClient`的`beforeTemplate`和`afterTemplate`方法
-- [x] Proxy代理支持
+- [x] `Proxy`代理支持
+- [x] `HttpUtil`提供的静态方法完全代理`SmartHttpClient`接口，实现一句话完成Http请求
 - [ ] 文件上传支持断点续传
 
 ### how to import it?

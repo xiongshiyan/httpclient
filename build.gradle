@@ -1,4 +1,4 @@
-def VERSION = '1.0.0'
+def VERSION = '1.0.1'
 def ARTIFACT_ID = 'httpclient'
 def GROUP_ID = 'top.jfunc.network'
 def TYPE = 'jar'
