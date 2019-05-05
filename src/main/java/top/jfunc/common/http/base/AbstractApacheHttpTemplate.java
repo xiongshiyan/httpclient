@@ -12,16 +12,21 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.CharsetUtils;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
+import top.jfunc.common.http.basic.FormFile;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 
@@ -32,6 +37,7 @@ import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.util.HashMap;
 import java.util.List;
@@ -265,6 +271,24 @@ public abstract class AbstractApacheHttpTemplate extends AbstractConfigurableHtt
         entity.setContentEncoding(bodyCharset);
         request.setEntity(entity);
     }
+
+
+    protected void addFormFiles(HttpEntityEnclosingRequest request, ArrayListMultimap<String, String> params ,FormFile[] files) throws UnsupportedEncodingException {
+        final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                .setCharset(CharsetUtils.get(getDefaultBodyCharset()));
+
+        if(null != params){
+            params.keySet().forEach(key->params.get(key).forEach(value->multipartEntityBuilder.addTextBody(key , value)));
+        }
+
+        for (FormFile formFile : files) {
+            multipartEntityBuilder.addBinaryBody(formFile.getParameterName(), formFile.getInStream() , ContentType.parse(formFile.getContentType()) , formFile.getFilName());
+        }
+        HttpEntity reqEntity = multipartEntityBuilder.build();
+        request.setEntity(reqEntity);
+    }
+
 
     protected void setRequestProperty(HttpRequestBase request,
                                       int connectTimeout,

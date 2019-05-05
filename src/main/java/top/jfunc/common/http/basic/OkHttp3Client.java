@@ -1,6 +1,5 @@
 package top.jfunc.common.http.basic;
 
-import okhttp3.Headers;
 import okhttp3.MultipartBody;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
@@ -58,42 +57,19 @@ public class OkHttp3Client extends AbstractOkHttp3HttpTemplate implements HttpCl
 
     @Override
     public String upload(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
-        MultipartBody requestBody = getFilesBody(files);
+        MultipartBody requestBody = filesBody(null , files);
 
         return template(url, Method.POST, null , d->setRequestBody(d, Method.POST , requestBody), headers,
                 connectTimeout,readTimeout,resultCharset,false,
                 (s,b,r,h)-> IoUtil.read(b ,r));
-    }
-
-    protected MultipartBody getFilesBody(FormFile... files) {
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        for (FormFile formFile : files) {
-            builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
-                    inputStreamBody(formFile.getContentType() , formFile.getInStream() , formFile.getFileLen()));
-        }
-        return builder.build();
     }
 
     @Override
     public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , FormFile... files) throws IOException {
-        MultipartBody requestBody = getFilesBody(params , files);
+        MultipartBody requestBody = filesBody(params , files);
 
         return template(url, Method.POST, null , d->setRequestBody(d, Method.POST , requestBody), headers,
                 connectTimeout,readTimeout,resultCharset,false,
                 (s,b,r,h)-> IoUtil.read(b ,r));
-    }
-
-    protected MultipartBody getFilesBody(ArrayListMultimap<String, String> params , FormFile... files) {
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-
-        if(null != params){
-            params.keySet().forEach(key->params.get(key).forEach(value->builder.addFormDataPart(key , value)));
-        }
-
-        for (FormFile formFile : files) {
-            builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
-                    inputStreamBody(formFile.getContentType() , formFile.getInStream() , formFile.getFileLen()));
-        }
-        return builder.build();
     }
 }

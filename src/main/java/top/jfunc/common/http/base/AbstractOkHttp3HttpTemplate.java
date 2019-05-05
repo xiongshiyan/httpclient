@@ -8,6 +8,7 @@ import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
+import top.jfunc.common.http.basic.FormFile;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 
@@ -134,6 +135,25 @@ public abstract class AbstractOkHttp3HttpTemplate extends AbstractConfigurableHt
             mediaType = MediaType.parse(contentType);
         }
         return RequestBody.create(mediaType, body);
+    }
+
+    /**
+     * 文件上传body
+     * @param params 伴随文件上传的参数key=value，可以为空
+     * @param files 上传文件信息
+     */
+    protected MultipartBody filesBody(ArrayListMultimap<String, String> params , FormFile... files) {
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        if(null != params){
+            params.keySet().forEach(key->params.get(key).forEach(value->builder.addFormDataPart(key , value)));
+        }
+
+        for (FormFile formFile : files) {
+            builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
+                    inputStreamBody(formFile.getContentType() , formFile.getInStream() , formFile.getFileLen()));
+        }
+        return builder.build();
     }
 
     protected RequestBody inputStreamBody(String contentType , InputStream inputStream , long length){

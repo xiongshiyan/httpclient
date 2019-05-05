@@ -152,10 +152,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     public Response upload(Request req) throws IOException {
         Request request = beforeTemplate(req);
 
-        //MultipartBody requestBody = getFilesBody(request.getFormFiles());
-        /*使用更全的 ，支持文件和参数一起上传 */
-
-        MultipartBody requestBody = getFilesBody(request.getParams() , request.getFormFiles());
+        MultipartBody requestBody = filesBody(request.getParams() , request.getFormFiles());
 
         /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, requestBody), request.getHeaders(),
                 request.getConnectionTimeout(), request.getConnectionTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
