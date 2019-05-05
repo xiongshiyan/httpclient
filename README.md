@@ -17,7 +17,7 @@ HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；
 
 接口及实现类整体鸟瞰：
 
-![接口及实现类整体鸟瞰](https://gitee.com/uploads/images/2019/0428/143030_35ee9676_1507575.png "all.png")
+![接口及实现类整体鸟瞰](https://gitee.com/uploads/images/2019/0505/180746_4486387c_1507575.png "all.png")
 
 功能接口设计：
 
@@ -29,19 +29,19 @@ HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；
 
 OkHttp3实现主线：
 
-![OkHttp3主线](https://gitee.com/uploads/images/2019/0428/143441_041fd1c3_1507575.png "OkHttp3SmartHttpClient.png")
+![OkHttp3主线](https://gitee.com/uploads/images/2019/0505/180835_8b621fdb_1507575.png "OkHttp3SmartHttpClient.png")
 
-Apache实现主线：
+ApacheHttpClient实现主线：
 
-![Apache实现主线](https://gitee.com/uploads/images/2019/0428/143520_705db9ac_1507575.png "ApacheSmartHttpClient.png")
+![ApacheHttpClient实现主线](https://gitee.com/uploads/images/2019/0505/180859_f2b9b142_1507575.png "ApacheSmartHttpClient.png")
 
 HttpURLConnection实现主线：
 
-![HttpURLConnection实现主线](https://gitee.com/uploads/images/2019/0428/144957_71a04d16_1507575.png "NativeSmartHttpClient.png")
+![HttpURLConnection实现主线](https://gitee.com/uploads/images/2019/0505/180936_6e33efcb_1507575.png "NativeSmartHttpClient.png")
 
 Request类：
 
-![Request](https://gitee.com/uploads/images/2019/0428/143824_b51781b4_1507575.png "Request.png")
+![Request](https://gitee.com/uploads/images/2019/0505/180954_7dfb032f_1507575.png "Request.png")
 
 
 ### features
