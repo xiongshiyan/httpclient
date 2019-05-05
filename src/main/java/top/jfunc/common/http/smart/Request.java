@@ -7,10 +7,7 @@ import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
 import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
@@ -122,7 +119,7 @@ public class Request {
     }
 
     public Request setParams(ArrayListMultimap<String, String> params) {
-        this.params = params;
+        this.params = Objects.requireNonNull(params);
         return this;
     }
     public Request setParams(Map<String, String> params) {
@@ -141,7 +138,7 @@ public class Request {
         }
     }
     public Request setHeaders(ArrayListMultimap<String, String> headers) {
-        this.headers = headers;
+        this.headers = Objects.requireNonNull(headers);
         return this;
     }
     public Request setHeaders(Map<String, String> headers) {
