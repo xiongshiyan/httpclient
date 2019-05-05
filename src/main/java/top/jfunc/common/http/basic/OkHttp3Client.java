@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 使用OkHttp3实现的Http请求类
  * @author xiongshiyan at 2018/1/11
  */
 public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTemplate<Request.Builder> , HttpClient {

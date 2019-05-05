@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 使用Apache SmartHttpClient 实现的Http请求类
+ * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
 public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTemplate<HttpEntityEnclosingRequest> , HttpClient {
