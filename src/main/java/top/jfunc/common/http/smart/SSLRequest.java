@@ -10,14 +10,31 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * @author xiongshiyan at 2017/12/9
- * ssl的一些配置,使用{@link SSLSocketFactoryBuilder} 来生产 HostnameVerifier、SSLSocketFactory、SSLContext、X509TrustManager
+ * 在{@link Request}的基础上添加一些ssl的一些配置,一般只在需要双向校验的地方才需要。
+ * 使用{@link SSLSocketFactoryBuilder} 来生产 HostnameVerifier、SSLSocketFactory、SSLContext、X509TrustManager
  * @see SSLSocketFactoryBuilder
+ * @author xiongshiyan at 2017/12/9
  */
 public class SSLRequest extends Request {
+    /**
+     * HostnameVerifier
+     * @see top.jfunc.common.http.base.Config#hostnameVerifier
+     */
     private HostnameVerifier hostnameVerifier = new TrustAnyHostnameVerifier();
+    /**
+     * SSLContext
+     * @see top.jfunc.common.http.base.Config#sslContext
+     */
     private SSLContext sslContext = SSLSocketFactoryBuilder.create().getSSLContext();
+    /**
+     * SSLSocketFactory
+     * @see top.jfunc.common.http.base.Config#sslSocketFactory
+     */
     private SSLSocketFactory sslSocketFactory = null;
+    /**
+     * X509TrustManager
+     * @see top.jfunc.common.http.base.Config#x509TrustManager
+     */
     private X509TrustManager x509TrustManager = new DefaultTrustManager2();
 
     public SSLRequest(String url){

@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
+ * @see top.jfunc.common.http.basic.HttpClient
+ * @see SmartHttpClient
+ * @see SSLRequest
  * @author xiongshiyan at 2017/12/9
  */
 public class Request {
@@ -51,19 +55,23 @@ public class Request {
      */
     private String contentType = null;
     /**
-     * 连接超时时间
+     * 连接超时时间，不设置就使用系统默认的
+     * @see top.jfunc.common.http.base.Config#defaultConnectionTimeout
      */
     private Integer connectionTimeout = null;
     /**
-     * 读数据超时时间
+     * 读数据超时时间，不设置就使用系统默认的
+     * @see top.jfunc.common.http.base.Config#defaultReadTimeout
      */
     private Integer readTimeout = null;
     /**
-     * 请求体编码
+     * 请求体编码，不设置就使用系统默认的
+     * @see top.jfunc.common.http.base.Config#defaultBodyCharset
      */
     private String bodyCharset = null;
     /**
-     * 返回体编码
+     * 返回体编码，不设置就使用系统默认的
+     * @see top.jfunc.common.http.base.Config#defaultResultCharset
      */
     private String resultCharset = null;
 
