@@ -1,7 +1,8 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.ToStringHandler;
+import top.jfunc.common.http.base.handler.ToString;
+import top.jfunc.common.http.base.handler.ToStringHandler;
 import top.jfunc.common.http.basic.FormFile;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.StrUtil;
@@ -173,6 +174,11 @@ public class Request {
     public <T> Request setBody(T o , ToStringHandler<T> handler){
         ToStringHandler<T> stringHandler = Objects.requireNonNull(handler, "handler不能为空");
         this.body = stringHandler.toString(o);
+        return this;
+    }
+    public Request setBodyT(Object o , ToString handler){
+        ToString toString = Objects.requireNonNull(handler, "handler不能为空");
+        this.body = toString.toString(o);
         return this;
     }
 

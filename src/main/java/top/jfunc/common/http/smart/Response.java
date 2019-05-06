@@ -3,7 +3,8 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Header;
 import top.jfunc.common.http.HttpStatus;
-import top.jfunc.common.http.base.FromStringHandler;
+import top.jfunc.common.http.base.handler.FromString;
+import top.jfunc.common.http.base.handler.FromStringHandler;
 import top.jfunc.common.utils.IoUtil;
 
 import java.io.*;
@@ -96,7 +97,11 @@ public class Response implements Closeable{
      * @return T
      */
     public <T> T as(Class<T> toClass , FromStringHandler<T> handler){
-        FromStringHandler<T> stringHandler = Objects.requireNonNull(handler);
+        FromStringHandler<T> stringHandler = Objects.requireNonNull(handler , "handler不能为空");
+        return stringHandler.as(asString() , toClass);
+    }
+    public <T> T asT(Class<T> toClass , FromString handler){
+        FromString stringHandler = Objects.requireNonNull(handler , "handler不能为空");
         return stringHandler.as(asString() , toClass);
     }
 

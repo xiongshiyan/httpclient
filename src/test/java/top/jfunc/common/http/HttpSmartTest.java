@@ -1,7 +1,7 @@
 package top.jfunc.common.http;
 
 import org.junit.Assert;
-import top.jfunc.common.http.base.FromStringHandler;
+import top.jfunc.common.http.base.handler.FromString;
 import top.jfunc.common.http.basic.FormFile;
 import top.jfunc.common.http.smart.*;
 import org.junit.Ignore;
@@ -198,6 +198,12 @@ public class HttpSmartTest {
                 .setBody(new SomeBean("ss"), SomeBean::getSs);
         Assert.assertEquals("ss" , request.getBody());
     }
+    @Test
+    public void testRequest2(){
+        Request request = Request.of("https://wwww.baidu.com")
+                .setBodyT(new SomeBean("ss"), (o)->"sssss");
+        Assert.assertEquals("sssss" , request.getBody());
+    }
 
     @Test
     public void testResponse(){
@@ -210,8 +216,29 @@ public class HttpSmartTest {
         );
         Assert.assertEquals("ss" , someBean.getSs());
     }
+    @Test
+    public void testResponse2(){
+        Response response = Response.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
+        SomeBean someBean = response.asT(SomeBean.class, new FromString() {
+                    @Override
+                    public <T> T as(String src, Class<T> toClass) {
+                        T t = null;
+                        try {
+                            t = toClass.newInstance();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return t;
+                    }
+                }
+        );
+        Assert.assertEquals(SomeBean.class , someBean.getClass());
+    }
     private static class SomeBean{
         private String ss;
+
+        public SomeBean() {
+        }
 
         public SomeBean(String ss) {
             this.ss = ss;
