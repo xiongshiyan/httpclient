@@ -1,5 +1,7 @@
 package top.jfunc.common.http.smart;
 
+import top.jfunc.common.http.Header;
+import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
@@ -152,6 +154,21 @@ public class Request {
         initHeaders();
         this.headers.put(key, value);
         return this;
+    }
+
+    public Request addContentType(String contentType){
+        initHeaders();
+        this.headers.put(Header.CONTENT_TYPE.name() , contentType);
+        return this;
+    }
+    public Request addFormHeader(){
+        return addContentType(HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET);
+    }
+    public Request addJsonHeader(){
+        return addContentType(HttpConstants.JSON_WITH_DEFAULT_CHARSET);
+    }
+    public Request addXmlHeader(){
+        return addContentType(HttpConstants.TEXT_XML_WITH_DEFAULT_CHARSET);
     }
 
     private void initHeaders(){
