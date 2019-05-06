@@ -163,7 +163,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
     @Override
     public Response afterTemplate(Request request, Response response) throws IOException{
-        if(request.isRedirectable() && response.needRredirect()){
+        if(request.isRedirectable() && response.needRedirect()){
             return get(Request.of(response.getRedirectUrl()));
         }
         return response;

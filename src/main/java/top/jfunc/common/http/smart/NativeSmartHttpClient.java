@@ -163,7 +163,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
     @Override
     public Response afterTemplate(Request request, Response response) throws IOException{
-        if(request.isRedirectable() && response.needRredirect()){
+        if(request.isRedirectable() && response.needRedirect()){
             return get(Request.of(response.getRedirectUrl()));
         }
         return response;

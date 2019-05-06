@@ -177,7 +177,7 @@ public class Response implements Closeable{
      * 是否需要重定向
      * @return true if 301|302|303
      */
-    public boolean needRredirect(){
+    public boolean needRedirect(){
         return HttpStatus.HTTP_MOVED_PERM == this.statusCode
                 || HttpStatus.HTTP_MOVED_TEMP == this.statusCode
                 || HttpStatus.HTTP_SEE_OTHER == this.statusCode;
