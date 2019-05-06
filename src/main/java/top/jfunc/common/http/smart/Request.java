@@ -1,6 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.base.ToStringHandler;
 import top.jfunc.common.http.basic.FormFile;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.StrUtil;
@@ -160,6 +161,18 @@ public class Request {
 
     public Request setBody(String body) {
         this.body = body;
+        return this;
+    }
+
+    /**
+     * 直接传输一个Java对象可以使用该方法
+     * @param o Java对象
+     * @param handler 将Java对象转换为String的策略接口
+     * @return this
+     */
+    public <T> Request setBody(T o , ToStringHandler<T> handler){
+        ToStringHandler<T> stringHandler = Objects.requireNonNull(handler, "handler不能为空");
+        this.body = stringHandler.toString(o);
         return this;
     }
 

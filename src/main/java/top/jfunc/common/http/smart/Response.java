@@ -3,13 +3,11 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Header;
 import top.jfunc.common.http.HttpStatus;
+import top.jfunc.common.http.base.FromStringHandler;
 import top.jfunc.common.utils.IoUtil;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
 
@@ -89,6 +87,17 @@ public class Response implements Closeable{
 
     public String getBody() {
         return asString();
+    }
+
+    /**
+     * 将返回结果直接转换为Java对象时使用此方法
+     * @param toClass 转换的class
+     * @param handler 将String转换为Java对象的策略接口
+     * @return T
+     */
+    public <T> T as(Class<T> toClass , FromStringHandler<T> handler){
+        FromStringHandler<T> stringHandler = Objects.requireNonNull(handler);
+        return stringHandler.as(asString() , toClass);
     }
 
     public File asFile(String fileName){

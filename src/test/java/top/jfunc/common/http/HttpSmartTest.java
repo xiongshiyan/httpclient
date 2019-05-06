@@ -1,10 +1,13 @@
 package top.jfunc.common.http;
 
+import org.junit.Assert;
+import top.jfunc.common.http.base.FromStringHandler;
 import top.jfunc.common.http.basic.FormFile;
 import top.jfunc.common.http.smart.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -182,6 +185,44 @@ public class HttpSmartTest {
             System.out.println(response.getHeaders());
         }catch (IOException e){
             System.out.println("超时异常");
+        }
+    }
+
+
+
+
+
+    @Test
+    public void testRequest(){
+        Request request = Request.of("https://wwww.baidu.com")
+                .setBody(new SomeBean("ss"), SomeBean::getSs);
+        Assert.assertEquals("ss" , request.getBody());
+    }
+
+    @Test
+    public void testResponse(){
+        Response response = Response.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
+        SomeBean someBean = response.as(SomeBean.class, (s , c)->{
+                    Assert.assertEquals("ss", s);
+                    Assert.assertEquals(c , SomeBean.class);
+                    return new SomeBean(s);
+                }
+        );
+        Assert.assertEquals("ss" , someBean.getSs());
+    }
+    private static class SomeBean{
+        private String ss;
+
+        public SomeBean(String ss) {
+            this.ss = ss;
+        }
+
+        public String getSs() {
+            return ss;
+        }
+
+        public void setSs(String ss) {
+            this.ss = ss;
         }
     }
 }
