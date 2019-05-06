@@ -17,7 +17,7 @@ HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；
 
 接口及实现类整体鸟瞰：
 
-![接口及实现类整体鸟瞰](https://gitee.com/uploads/images/2019/0505/180746_4486387c_1507575.png "all.png")
+![接口及实现类整体鸟瞰](https://gitee.com/uploads/images/2019/0506/100452_21423bf8_1507575.png "all.png")
 
 功能接口设计：
 
@@ -41,7 +41,7 @@ HttpURLConnection实现主线：
 
 Request类：
 
-![Request](https://gitee.com/uploads/images/2019/0505/180954_7dfb032f_1507575.png "Request.png")
+![Request](https://gitee.com/uploads/images/2019/0506/100507_56e6b9ca_1507575.png "Request.png")
 
 
 ### features
