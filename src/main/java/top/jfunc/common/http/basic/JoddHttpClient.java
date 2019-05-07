@@ -140,21 +140,22 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
      * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build()
      * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build(String, String)
      */
-    protected void initSSL(HttpRequest httpRequest, HostnameVerifier hostnameVerifier , SSLSocketFactory sslSocketFactory , X509TrustManager trustManager , java.net.Proxy proxy) {
+    protected void initSSL(HttpRequest httpRequest, HostnameVerifier hostnameVerifier , SSLSocketFactory sslSocketFactory , X509TrustManager trustManager , top.jfunc.common.http.base.ProxyInfo proxyInfo) {
         SocketHttpConnectionProvider httpConnectionProvider = null;
         if(ParamUtil.isHttps(httpRequest.url())){
             httpConnectionProvider = new SSLSocketHttpConnectionProvider(getSSLSocketFactory());
         }else {
             httpConnectionProvider = new SocketHttpConnectionProvider();
         }
-        if(null != proxy){
+        if(null != proxyInfo){
+            Proxy proxy = proxyInfo.getProxy();
             InetSocketAddress address = (InetSocketAddress) proxy.address();
             if(Proxy.Type.DIRECT.equals(proxy.type())){
                 httpConnectionProvider.useProxy(ProxyInfo.directProxy());
             }else if(Proxy.Type.HTTP.equals(proxy.type())){
-                httpConnectionProvider.useProxy(ProxyInfo.httpProxy(address.getHostName() , address.getPort() , null , null));
+                httpConnectionProvider.useProxy(ProxyInfo.httpProxy(address.getHostName() , address.getPort() , proxyInfo.getProxyUserName() , proxyInfo.getProxyPassword()));
             }else if(Proxy.Type.SOCKS.equals(proxy.type())){
-                httpConnectionProvider.useProxy(ProxyInfo.socks5Proxy(address.getHostName() , address.getPort() , null , null));
+                httpConnectionProvider.useProxy(ProxyInfo.socks5Proxy(address.getHostName() , address.getPort() , proxyInfo.getProxyUserName() , proxyInfo.getProxyPassword()));
             }
         }
 

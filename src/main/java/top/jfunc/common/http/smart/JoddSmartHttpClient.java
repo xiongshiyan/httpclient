@@ -46,7 +46,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             //默认设置这些
             initSSL(httpRequest , RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier()) ,
                     RequestSSLUtil.getSSLSocketFactory(request , getSSLSocketFactory()) ,
-                    RequestSSLUtil.getX509TrustManager(request , getX509TrustManager()), request.getProxy());
+                    RequestSSLUtil.getX509TrustManager(request , getX509TrustManager()), request.getProxyInfo());
         }
 
         //5.处理body

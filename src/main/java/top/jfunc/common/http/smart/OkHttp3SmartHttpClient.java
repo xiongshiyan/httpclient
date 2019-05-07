@@ -38,8 +38,8 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
                     .connectTimeout(getConnectionTimeoutWithDefault(request.getConnectionTimeout()), TimeUnit.MILLISECONDS)
                     .readTimeout(getReadTimeoutWithDefault(request.getReadTimeout()), TimeUnit.MILLISECONDS);
             //1.1如果存在就设置代理
-            if(null != request.getProxy()){
-                clientBuilder.proxy(request.getProxy());
+            if(null != request.getProxyInfo()){
+                clientBuilder.proxy(request.getProxyInfo().getProxy());
             }
 
             ////////////////////////////////////ssl处理///////////////////////////////////

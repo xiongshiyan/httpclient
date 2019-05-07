@@ -348,7 +348,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     protected void setRequestProperty(HttpRequestBase request,
                                       int connectTimeout,
                                       int readTimeout,
-                                      Proxy proxy) {
+                                      ProxyInfo proxyInfo) {
         RequestConfig.Builder builder = RequestConfig.custom()
                 .setConnectTimeout(connectTimeout)
                 .setConnectionRequestTimeout(readTimeout)
@@ -356,7 +356,8 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
                 //.setStaleConnectionCheckEnabled(true)
                 ;
         //代理设置
-        if(null != proxy){
+        if(null != proxyInfo){
+            Proxy proxy = proxyInfo.getProxy();
             InetSocketAddress address = (InetSocketAddress)proxy.address();
             HttpHost proxyHost = new HttpHost(address.getHostName() , address.getPort());
             builder.setProxy(proxyHost);

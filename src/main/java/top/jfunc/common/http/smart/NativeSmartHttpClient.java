@@ -39,8 +39,8 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
             URL url = new URL(completedUrl);
             //1.1如果需要则设置代理
-            connection = (null != request.getProxy()) ?
-                    (HttpURLConnection)url.openConnection(request.getProxy()) :
+            connection = (null != request.getProxyInfo()) ?
+                    (HttpURLConnection)url.openConnection(request.getProxyInfo().getProxy()) :
                     (HttpURLConnection) url.openConnection();
 
             //2.处理header

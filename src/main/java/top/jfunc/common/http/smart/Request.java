@@ -3,6 +3,7 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Header;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
 import top.jfunc.common.http.basic.FormFile;
@@ -103,7 +104,7 @@ public class Request {
      * 代理设置,如果有就设置
      * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
      */
-    private Proxy proxy = null;
+    private ProxyInfo proxyInfo = null;
 
     public Request(String url){this.url = url;}
 
@@ -256,8 +257,8 @@ public class Request {
         return this;
     }
 
-    public Request setProxy(Proxy proxy) {
-        this.proxy = proxy;
+    public Request setProxy(ProxyInfo proxyInfo) {
+        this.proxyInfo = proxyInfo;
         return this;
     }
 
@@ -322,7 +323,7 @@ public class Request {
         return file;
     }
 
-    public Proxy getProxy() {
-        return proxy;
+    public ProxyInfo getProxyInfo() {
+        return proxyInfo;
     }
 }
