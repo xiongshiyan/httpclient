@@ -12,7 +12,6 @@ import top.jfunc.common.utils.IoUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * 使用Jodd-http 实现的Http请求类
@@ -62,9 +61,9 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
 
         //8.返回处理
         return resultCallback.convert(response.statusCode() ,
-                getStreamFrom(response , false),
+                getStreamFrom(response , request.isIgnoreResponseBody()),
                 getResultCharsetWithDefault(request.getResultCharset()) ,
-                request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+                parseHeaders(response , request.isIncludeHeaders()));
     }
 
     @Override

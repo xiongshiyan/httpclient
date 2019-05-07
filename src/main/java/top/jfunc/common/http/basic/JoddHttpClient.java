@@ -69,7 +69,7 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
         return resultCallback.convert(response.statusCode() ,
                 getStreamFrom(response , false),
                 getResultCharsetWithDefault(resultCharset) ,
-                includeHeaders ? parseHeaders(response) : new HashMap<>(0));
+                parseHeaders(response , includeHeaders));
     }
 
     @Override
@@ -124,7 +124,11 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
 
     protected void doWithHttpRequest(HttpRequest httpRequest){}
 
-    protected Map<String , List<String>> parseHeaders(HttpResponse response) {
+    protected Map<String , List<String>> parseHeaders(HttpResponse response , boolean isIncludeHeaders) {
+        if(!isIncludeHeaders){
+            return new HashMap<>(0);
+        }
+
         Collection<String> headerNames = response.headerNames();
         ArrayListMultimap<String,String> arrayListMultimap = new ArrayListMultimap<>(headerNames.size());
         for (String headerName : headerNames) {

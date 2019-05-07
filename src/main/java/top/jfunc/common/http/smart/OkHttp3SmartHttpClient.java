@@ -13,7 +13,6 @@ import top.jfunc.common.utils.IoUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -78,7 +77,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             inputStream = getStreamFrom(response , request.isIgnoreResponseBody());
 
             int statusCode = response.code();
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), parseHeaders(response , request.isIncludeHeaders()));
             /*return top.jfunc.common.http.smart.Response.with(statusCode , inputStream , request.getResultCharset() ,
                     request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));*/
         } catch (IOException e) {

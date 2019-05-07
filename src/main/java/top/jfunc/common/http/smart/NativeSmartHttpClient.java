@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 
 /**
  * 使用URLConnection实现的Http请求类
@@ -74,7 +73,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
             inputStream = getStreamFrom(connection , statusCode , request.isIgnoreResponseBody());
 
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? connection.getHeaderFields() : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), parseHeaders(connection , request.isIncludeHeaders()));
             ///返回Response
             //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connection.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {

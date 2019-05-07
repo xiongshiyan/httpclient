@@ -103,7 +103,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
 
             inputStream = getStreamFrom(connect , statusCode , false);
 
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), parseHeaders(connect, includeHeaders));
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
@@ -115,6 +115,10 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             //2 . 关闭流
             IoUtil.close(inputStream);
         }
+    }
+
+    protected Map<String, List<String>> parseHeaders(HttpURLConnection connect, boolean includeHeaders) {
+        return includeHeaders ? connect.getHeaderFields() : new HashMap<>(0);
     }
 
     @Override
@@ -335,6 +339,8 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         }
         out.close();*/
     }
+
+
 
     /**
      * 获取输出流中的错误信息，针对HttpURLConnection

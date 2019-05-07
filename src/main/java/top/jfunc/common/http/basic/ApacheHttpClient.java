@@ -120,7 +120,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
             InputStream inputStream = getStreamFrom(entity, false);
 
 
-            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeader ? parseHeaders(response) : new HashMap<>(0));
+            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset),  parseHeaders(response , includeHeader));
             IoUtil.close(inputStream);
             return convert;
         } catch (IOException e) {
@@ -375,7 +375,10 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         }
     }
 
-    protected Map<String , List<String>> parseHeaders(CloseableHttpResponse response) {
+    protected Map<String , List<String>> parseHeaders(CloseableHttpResponse response, boolean isIncludeHeaders) {
+        if(!isIncludeHeaders){
+            return new HashMap<>(0);
+        }
         Header[] allHeaders = response.getAllHeaders();
         ArrayListMultimap<String,String> arrayListMultimap = new ArrayListMultimap<>(allHeaders.length);
         for (Header header : allHeaders) {

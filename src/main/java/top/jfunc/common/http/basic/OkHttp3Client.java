@@ -4,7 +4,6 @@ import okhttp3.*;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
-import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
@@ -80,7 +79,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
             inputStream = getStreamFrom(response , false);
 
             int statusCode = response.code();
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), includeHeaders ? parseHeaders(response) : new HashMap<>(0));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), parseHeaders(response , includeHeaders));
             ///保留起
             /*if (HttpStatus.HTTP_OK == statusCode) {
                 convert = resultCallback.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
@@ -217,30 +216,6 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
         return new InputStreamRequestBody(contentType , inputStream , length);
     }
 
-    protected <R> R getReturnMsg(Response response , String resultCharset , boolean includeHeaders , ResultCallback<R> resultParser) throws IOException {
-        int statusCode = response.code();
-        /*String body = new String(response.body().bytes() , resultCharset);*/
-//        if (HttpStatus.HTTP_OK == statusCode) {
-//            InputStream inputStream = response.body().byteStream();
-//            R convert = resultParser.convert(inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
-//            IoUtil.close(inputStream);
-//            return convert;
-//
-//        }else {
-//            //获取错误body，而不是仅仅状态行信息的message response.message()
-//            String errorMsg = new String(response.body().bytes() , resultCharset);
-//            throw new HttpException(statusCode,errorMsg,parseHeaders(response));
-//        }
-        InputStream inputStream = getStreamFrom(response , false);
-        R convert;
-        if (HttpStatus.HTTP_OK == statusCode) {
-            convert = resultParser.convert(HttpStatus.HTTP_OK , inputStream, resultCharset, includeHeaders ? parseHeaders(response) : new HashMap<>(0));
-        }else {
-            convert = resultParser.convert(statusCode , inputStream , resultCharset , parseHeaders(response));
-        }
-        IoUtil.close(inputStream);
-        return convert;
-    }
     protected void setRequestHeaders(Request.Builder builder, String contentType, ArrayListMultimap<String, String> headers) {
         if(null != headers) {
             Set<String> keySet = headers.keySet();
@@ -254,7 +229,10 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
     /**
      * 获取响应中的headers
      */
-    protected Map<String, List<String>> parseHeaders(Response response) {
+    protected Map<String, List<String>> parseHeaders(Response response , boolean includeHeaders) {
+        if(!includeHeaders){
+            return new HashMap<>(0);
+        }
         Headers resHeaders = response.headers();
         ArrayListMultimap<String , String> headers = new ArrayListMultimap<>(resHeaders.size());
         resHeaders.names().forEach((key)-> headers.put(key,resHeaders.get(key)) );

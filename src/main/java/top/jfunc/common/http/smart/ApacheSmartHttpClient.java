@@ -21,7 +21,6 @@ import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
 /**
  * 使用Apache HttpClient 实现的Http请求类
@@ -80,7 +79,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
 
             InputStream inputStream = getStreamFrom(entity , request.isIgnoreResponseBody());
 
-            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
+            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), parseHeaders(response , request.isIncludeHeaders()));
 
             IoUtil.close(inputStream);
 
