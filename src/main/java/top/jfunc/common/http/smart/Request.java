@@ -11,7 +11,6 @@ import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
-import java.net.Proxy;
 import java.util.*;
 
 /**
@@ -70,12 +69,12 @@ public class Request {
      * 请求体编码，不设置就使用系统默认的
      * @see top.jfunc.common.http.base.Config#defaultBodyCharset
      */
-    private String bodyCharset = null;
+    private String bodyCharset = HttpConstants.DEFAULT_CHARSET;
     /**
      * 返回体编码，不设置就使用系统默认的
      * @see top.jfunc.common.http.base.Config#defaultResultCharset
      */
-    private String resultCharset = null;
+    private String resultCharset = HttpConstants.DEFAULT_CHARSET;
 
     /**
      * 返回结果中是否包含headers,默认不包含

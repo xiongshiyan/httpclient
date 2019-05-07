@@ -39,7 +39,7 @@ public class HttpBasicTest {
         testGet(http);
     }
     private void testGet(HttpClient http){
-        String url = "http://localhost:8183/dzg/api/v2/h5/common/getIp";
+        String url = "http://localhost:8080/http-server-test/get/query";
 //        String url = "https://www.hao123.com/";
         String s = null;
         try {
@@ -78,18 +78,19 @@ public class HttpBasicTest {
         testPost(http);
     }
     private void testPost(HttpClient http){
-        String url = "http://localhost:8183/dzg/api/v2/test/boss";
         Map<String , String> headers = new HashMap<>(2);
         headers.put("empCode" , "ahg0023");
         headers.put("phone" , "15208384257");
         try {
             String s = null;
+            String url = "http://localhost:8080/http-server-test/post/body";
             s = http.post(url,"{\"name\":\"熊诗言\"}", JSON_WITH_DEFAULT_CHARSET,headers,15000,15000);
             System.out.println(s);
 
             Map<String , String> params = new HashMap<>(2);
             params.put("empCode" , "ahg0023");
             params.put("phone" , "15208384257");
+            url = "http://localhost:8080/http-server-test/post/form";
             String post = http.post(url, params);
             System.out.println(post);
         }catch (IOException e){
@@ -118,9 +119,9 @@ public class HttpBasicTest {
         testUploadImpl(http);
     }
     private void testUploadImpl(HttpClient httpClient){
-        String url = "http://localhost:8183/dzg/api/v2/common/VPFileUpload";
+        String url = "http://localhost:8080/http-server-test/upload/only";
         try {
-            FormFile formFile = new FormFile(new File("E:\\838586397836550106.jpg") , "filedata",null);
+            FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "file",null);
             ArrayListMultimap<String , String> headers = new ArrayListMultimap<>(2);
             headers.put("empCode" , "ahg0023");
             headers.put("phone" , "15208384257");
@@ -158,9 +159,9 @@ public class HttpBasicTest {
     }
 
     private void testUploadImplWithParams(HttpClient httpClient){
-        String url = "http://localhost:8183/dzg/api/v2/common/VPFileUpload";
+        String url = "http://localhost:8080/http-server-test/upload/withParam";
         try {
-            FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "filedata",null);
+            FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "file",null);
             ArrayListMultimap<String , String> headers = new ArrayListMultimap<>(2);
             headers.put("empCode" , "ahg0023");
             headers.put("phone" , "15208384257");

@@ -12,40 +12,41 @@ import java.io.File;
 import java.io.IOException;
 
 import static top.jfunc.common.http.HttpConstants.FORM_URLENCODED;
+import static top.jfunc.common.http.HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET;
 import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
 
 /**
  * @author 熊诗言 2017/11/24
  * @see SmartHttpClient
  */
-@Ignore
+//@Ignore
 public class HttpSmartTest {
     @Test
     public void testGetOkHttp3(){
         OkHttp3SmartHttpClient http = new OkHttp3SmartHttpClient();
-        http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
+        http.getConfig().setBaseUrl("http://localhost:8080/http-server-test/");
         testGet(http);
     }
     @Test
     public void testGetApacheHttp(){
         ApacheSmartHttpClient http = new ApacheSmartHttpClient();
-        http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
+        http.getConfig().setBaseUrl("http://localhost:8080/http-server-test/");
         testGet(http);
     }
     @Test
     public void testGetNativeHttp(){
         NativeSmartHttpClient http = new NativeSmartHttpClient();
-        http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
+        http.getConfig().setBaseUrl("http://localhost:8080/http-server-test/");
         testGet(http);
     }
     @Test
     public void testGetJoddHttp(){
         JoddSmartHttpClient http = new JoddSmartHttpClient();
-        http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
+        http.getConfig().setBaseUrl("http://localhost:8080/http-server-test/");
         testGet(http);
     }
     private void testGet(SmartHttpClient http){
-        String url = "?aldtype=85#zh/en/%E5%AE%8C%E6%95%B4%E7%9A%84%E6%88%91";
+        String url = "get/query";
         try {
             Response response = http.get(Request.of(url).setIgnoreResponseBody(false).setIncludeHeaders(true).addHeader("saleType" , "2").setResultCharset("UTF-8"));
             System.out.println(response);
@@ -87,8 +88,8 @@ public class HttpSmartTest {
         testPost(http);
     }
     public void testPost(SmartHttpClient http){
-        String url = "http://localhost:8183/dzg/api/v2/test/boss";
         try {
+            String url = "http://localhost:8080/http-server-test/post/body";
             Request request = Request.of(url).setIncludeHeaders(true).addHeader("ss" , "ss").addHeader("ss" , "dd").setBody("{\"name\":\"熊诗言\"}").setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             Response post = http.post(request);
             System.out.println(post.getBody());
@@ -97,7 +98,8 @@ public class HttpSmartTest {
             String s = http.postJson(url, "{\"name\":\"熊诗言\"}");
             System.out.println(s);
 
-            request = Request.of(url).addParam("xx" , "xx").addParam("yy" , "yy").setContentType(FORM_URLENCODED);
+            url = "http://localhost:8080/http-server-test/post/form";
+            request = Request.of(url).addParam("xx" , "xx").addParam("yy" , "yy").setContentType(FORM_URLENCODED_WITH_DEFAULT_CHARSET);
             Response response = http.post(request);
             System.out.println(response.getBody());
         }catch (IOException e){
@@ -126,9 +128,9 @@ public class HttpSmartTest {
         testUploadImpl(http);
     }
     private void testUploadImpl(SmartHttpClient httpClient){
-        String url = "http://localhost:8183/dzg/api/v2/common/VPFileUpload";
+        String url = "http://localhost:8080/http-server-test/upload/only";
         try {
-            FormFile formFile = new FormFile(new File("E:\\838586397836550106.jpg") , "filedata",null);
+            FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "file",null);
             Request request = Request.of(url).addHeader("empCode" , "ahg0023")
                     .addHeader("phone" , "15208384257").addFormFile(formFile).setIncludeHeaders(true);
             Response response = httpClient.upload(request);
@@ -163,10 +165,10 @@ public class HttpSmartTest {
     }
 
     private void testUploadImplWithParams(SmartHttpClient httpClient){
-        String url = "http://localhost:8183/dzg/api/v2/common/VPFileUpload";
+        String url = "http://localhost:8080/http-server-test/upload/withParam";
         try {
-            FormFile formFile = new FormFile(new File("E:\\838586397836550106.jpg") , "filedata",null);
-            FormFile formFile2 = new FormFile(new File("E:\\BugReport.png") , "filedata2",null);
+            FormFile formFile = new FormFile(new File("E:\\BugReport.3png") , "file",null);
+            FormFile formFile2 = new FormFile(new File("E:\\BugReport.png") , "file2",null);
             Request request = Request.of(url).addHeader("empCode" , "ahg0023")
                     .addHeader("phone" , "15208384257").addFormFile(formFile2).addFormFile(formFile).setIncludeHeaders(true);
 
@@ -197,7 +199,7 @@ public class HttpSmartTest {
     }
     public void testHttpMethod(SmartHttpClient http){
 //        String url = "https://dzg.palmte.cn/dzdsds";
-        String url = "http://localhost:8183/dzg/api/v2/test/boss";
+        String url = "http://localhost:8080/http-server-test/put/body";
         try {
             Request request = Request.of(url).setIncludeHeaders(true).addHeader("ss" , "ss").addHeader("ss" , "dd").setBody("{\"name\":\"熊诗言\"}").setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             Response response = http.httpMethod(request , Method.PUT);

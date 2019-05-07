@@ -527,3 +527,5 @@ http.setConfig(Config.defaultConfig()
 ```
 
 更多用法等待你探索
+
+提供了服务端的测试工程，可以clone下来运行，再跑本项目的单元测试。https://gitee.com/xxssyyyyssxx/http-server-test
