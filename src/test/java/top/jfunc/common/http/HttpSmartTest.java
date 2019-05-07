@@ -19,7 +19,7 @@ import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
  * @author 熊诗言 2017/11/24
  * @see SmartHttpClient
  */
-//@Ignore
+@Ignore
 public class HttpSmartTest {
     @Test
     public void testGetOkHttp3(){
