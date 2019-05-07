@@ -33,6 +33,11 @@ public class HttpBasicTest {
         HttpClient http = new NativeHttpClient();
         testGet(http);
     }
+    @Test
+    public void testGetJoddHttp(){
+        HttpClient http = new JoddHttpClient();
+        testGet(http);
+    }
     private void testGet(HttpClient http){
         String url = "http://localhost:8183/dzg/api/v2/h5/common/getIp";
 //        String url = "https://www.hao123.com/";
@@ -65,6 +70,11 @@ public class HttpBasicTest {
     @Test
     public void testPostNativeHttp(){
         HttpClient http = new NativeHttpClient();
+        testPost(http);
+    }
+    @Test
+    public void testPostJoddHttp(){
+        HttpClient http = new JoddHttpClient();
         testPost(http);
     }
     private void testPost(HttpClient http){
@@ -102,6 +112,11 @@ public class HttpBasicTest {
         HttpClient http = new NativeHttpClient();
         testUploadImpl(http);
     }
+    @Test
+    public void testUploadJodd(){
+        HttpClient http = new JoddHttpClient();
+        testUploadImpl(http);
+    }
     private void testUploadImpl(HttpClient httpClient){
         String url = "http://localhost:8183/dzg/api/v2/common/VPFileUpload";
         try {
@@ -134,6 +149,11 @@ public class HttpBasicTest {
     @Test
     public void testUploadWithParamsLocal(){
         HttpClient http = new NativeHttpClient();
+        testUploadImplWithParams(http);
+    }
+    @Test
+    public void testUploadWithParamsJodd(){
+        HttpClient http = new JoddHttpClient();
         testUploadImplWithParams(http);
     }
 

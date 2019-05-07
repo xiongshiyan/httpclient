@@ -38,6 +38,12 @@ public class HttpSmartTest {
         http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
         testGet(http);
     }
+    @Test
+    public void testGetJoddHttp(){
+        JoddSmartHttpClient http = new JoddSmartHttpClient();
+        http.getConfig().setBaseUrl("https://fanyi.baidu.com/");
+        testGet(http);
+    }
     private void testGet(SmartHttpClient http){
         String url = "?aldtype=85#zh/en/%E5%AE%8C%E6%95%B4%E7%9A%84%E6%88%91";
         try {
@@ -75,6 +81,11 @@ public class HttpSmartTest {
         SmartHttpClient http = new NativeSmartHttpClient();
         testPost(http);
     }
+    @Test
+    public void testPostJoddHttp(){
+        SmartHttpClient http = new JoddSmartHttpClient();
+        testPost(http);
+    }
     public void testPost(SmartHttpClient http){
         String url = "http://localhost:8183/dzg/api/v2/test/boss";
         try {
@@ -109,6 +120,11 @@ public class HttpSmartTest {
         SmartHttpClient http = new NativeSmartHttpClient();
         testUploadImpl(http);
     }
+    @Test
+    public void testUploadJodd(){
+        SmartHttpClient http = new JoddSmartHttpClient();
+        testUploadImpl(http);
+    }
     private void testUploadImpl(SmartHttpClient httpClient){
         String url = "http://localhost:8183/dzg/api/v2/common/VPFileUpload";
         try {
@@ -138,6 +154,11 @@ public class HttpSmartTest {
     @Test
     public void testUploadWithParamsLocal(){
         SmartHttpClient http = new NativeSmartHttpClient();
+        testUploadImplWithParams(http);
+    }
+    @Test
+    public void testUploadWithParamsJodd(){
+        SmartHttpClient http = new JoddSmartHttpClient();
         testUploadImplWithParams(http);
     }
 

@@ -47,6 +47,8 @@ dependencies {
     compile ('org.apache.httpcomponents:httpmime:4.5.3'){
         exclude group:'commons-logging'
     }
+    // https://mvnrepository.com/artifact/org.jodd/jodd-http
+    compile group: 'org.jodd', name: 'jodd-http', version: '5.0.12'
 
     compile group: 'top.jfunc.common', name: 'utils', version: '1.8.2.0'
 

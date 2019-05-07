@@ -1,104 +1,70 @@
 package top.jfunc.common.http.smart;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
+import jodd.http.HttpRequest;
+import jodd.http.HttpResponse;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.ApacheHttpClient;
+import top.jfunc.common.http.basic.JoddHttpClient;
 import top.jfunc.common.utils.IoUtil;
-import org.apache.http.HttpEntityEnclosingRequest;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 
 /**
- * 使用Apache HttpClient 实现的Http请求类
+ * 使用Jodd-http 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttpClient , SmartHttpTemplate<HttpEntityEnclosingRequest> {
+public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient , SmartHttpTemplate<HttpRequest> {
 
     @Override
-    public ApacheSmartHttpClient setConfig(Config config) {
+    public JoddSmartHttpClient setConfig(Config config) {
         super.setConfig(config);
         return this;
     }
 
     @Override
-    public <R> R template(Request request, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        //1.获取完整的URL
+    public <R> R template(Request request, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        //1.获取完成的URL，创建请求
         String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+        HttpRequest httpRequest = new HttpRequest();
+        httpRequest.method(method.name());
+        httpRequest.set(completedUrl);
 
-        HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
+        //2.设置header
+        setRequestHeaders(httpRequest , request.getContentType() , mergeDefaultHeaders(request.getHeaders()));
 
-        //2.设置请求头
-        setRequestHeaders(httpUriRequest, request.getContentType(), mergeDefaultHeaders(request.getHeaders()));
+        //3.超时设置
+        httpRequest.connectionTimeout(getConnectionTimeoutWithDefault(request.getConnectionTimeout()));
+        httpRequest.timeout(getReadTimeoutWithDefault(request.getReadTimeout()));
 
-        //3.设置请求参数
-        setRequestProperty((HttpRequestBase) httpUriRequest,
-                getConnectionTimeoutWithDefault(request.getConnectionTimeout()),
-                getReadTimeoutWithDefault(request.getReadTimeout()),
-                request.getProxy());
-
-        //4.创建请求内容，如果有的话
-        if(httpUriRequest instanceof HttpEntityEnclosingRequest){
-            if(contentCallback != null){
-                contentCallback.doWriteWith((HttpEntityEnclosingRequest)httpUriRequest);
-            }
+        //4.SSL设置
+        if(ParamUtil.isHttps(completedUrl)){
+            //默认设置这些
+            initSSL(httpRequest , RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier()) ,
+                    RequestSSLUtil.getSSLSocketFactory(request , getSSLSocketFactory()) ,
+                    RequestSSLUtil.getX509TrustManager(request , getX509TrustManager()), request.getProxy());
         }
 
-        CloseableHttpClient httpClient = null;
-        CloseableHttpResponse response = null;
-        HttpEntity entity = null;
-        try {
-            ////////////////////////////////////ssl处理///////////////////////////////////
-            HostnameVerifier hostnameVerifier = null;
-            SSLContext sslContext = null;
-            //https默认设置这些
-            if(ParamUtil.isHttps(completedUrl)){
-                hostnameVerifier = RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier());
-                sslContext = RequestSSLUtil.getSSLContext(request , getSSLContext());
-            }
-            ////////////////////////////////////ssl处理///////////////////////////////////
-
-            httpClient = getCloseableHttpClient(completedUrl , hostnameVerifier , sslContext);
-            //6.发送请求
-            response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
-            int statusCode = response.getStatusLine().getStatusCode();
-            entity = response.getEntity();
-
-            InputStream inputStream = getStreamFrom(entity , request.isIgnoreResponseBody());
-
-            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
-
-            IoUtil.close(inputStream);
-
-            return convert;
-
-            ///
-            /*Response convert = Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
-            IoUtil.close(inputStream);
-            return convert;*/
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }finally {
-            EntityUtils.consumeQuietly(entity);
-            IoUtil.close(response);
-            IoUtil.close(httpClient);
+        //5.处理body
+        if(contentCallback != null && method.hasContent()){
+            contentCallback.doWriteWith(httpRequest);
         }
+
+        //6.子类可以复写
+        doWithHttpRequest(httpRequest);
+
+        //7.真正请求
+        HttpResponse response = httpRequest.send();
+
+        //8.返回处理
+        return resultCallback.convert(response.statusCode() ,
+                getStreamFrom(response , false),
+                getResultCharsetWithDefault(request.getResultCharset()) ,
+                request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));
     }
 
     @Override
@@ -121,17 +87,18 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 r -> setRequestBody(r, request.getBody(), request.getBodyCharset()), request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request, Method.POST ,
-                r -> setRequestBody(r, request.getBody(), getBodyCharsetWithDefault(request.getBodyCharset())) , Response::with);
+        Response response = template(request, Method.POST, httpRequest -> httpRequest.body(request.getBody().getBytes(getBodyCharsetWithDefault(request.getBodyCharset())) , request.getContentType()),
+                Response::with);
+
         return afterTemplate(request , response);
     }
 
     @Override
     public Response httpMethod(Request req, Method method) throws IOException {
         Request request = beforeTemplate(req);
-        ContentCallback<HttpEntityEnclosingRequest> contentCallback = null;
+        ContentCallback<HttpRequest> contentCallback = null;
         if(method.hasContent()){
-            contentCallback = r -> setRequestBody(r, request.getBody(), getBodyCharsetWithDefault(request.getBodyCharset()));
+            contentCallback = httpRequest -> httpRequest.body(request.getBody().getBytes(getBodyCharsetWithDefault(request.getBodyCharset())) , request.getContentType());
         }
         Response response = template(request, method , contentCallback, Response::with);
         return afterTemplate(request , response);
@@ -167,7 +134,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
         Response response = template(request , Method.POST ,
-                r -> addFormFiles(r, request.getParams(), request.getFormFiles()) , Response::with);
+                r -> upload0(r, request.getParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);
     }
 
