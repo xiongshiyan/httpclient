@@ -444,11 +444,11 @@ private String defaultResultCharset = HttpConstants.DEFAULT_CHARSET;
 
 
 
-https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/common/http/HttpBasicTest.java
+https://gitee.com/xxssyyyyssxx/httpclient/blob/master/src/test/java/top/jfunc/common/http/HttpBasicTest.java
 
-https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/common/http/HttpSmartTest.java
+https://gitee.com/xxssyyyyssxx/httpclient/blob/master/src/test/java/top/jfunc/common/http/HttpSmartTest.java
 
-https://gitee.com/xxssyyyyssxx/network/blob/master/src/test/java/top/jfunc/common/http/DelegateTest.java
+https://gitee.com/xxssyyyyssxx/httpclient/blob/master/src/test/java/top/jfunc/common/http/DelegateTest.java
 
 下面演示几种用法：
 1. Request代表所有请求的变量，支持链式编程
@@ -529,3 +529,6 @@ http.setConfig(Config.defaultConfig()
 更多用法等待你探索，本人才疏学浅，难免有考虑不周到的地方，请不吝赐教。
 
 提供了服务端的测试工程，可以clone下来运行，再跑本项目的单元测试。https://gitee.com/xxssyyyyssxx/http-server-test
+
+如果你想实现自己的，只需要继承 `top.jfunc.common.http.smart.AbstractSmartHttpClient` , 
+参考`top.jfunc.common.http.smart.DemoImpl`实现抽象方法即可。实现方法可以参考httpclient-jdk、apache、okhttp3、jodd等。
