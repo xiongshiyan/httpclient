@@ -188,7 +188,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
 
         String textEntity = getTextEntity(params);
         // 计算传输给服务器的实体数据总长度
-        int dataLength = textEntity.getBytes().length + fileDataLength + END_LINE.length();
+        int dataLength = textEntity.getBytes(HttpConstants.DEFAULT_CHARSET).length + fileDataLength + END_LINE.length();
 
         connection.addRequestProperty("Content-Length" , String.valueOf(dataLength));
 
@@ -378,7 +378,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             } catch (Exception e) {}
         }
     }
-
+    /*
     protected void initDefaultSSL(String sslVer) {
         try {
             TrustManager[] tmCerts = new TrustManager[1];
@@ -391,7 +391,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
         } catch (Exception e) {
         }
-    }
+    }*/
 
     /**
      * form-data的格式为：

@@ -138,6 +138,11 @@ public class SSLSocketFactoryBuilder {
 	public SSLSocketFactory buildWithClassPathCert(Class<?> clazz , String certPath, String certPass){
 		return getClassPathSSLContext(clazz , certPath , certPass).getSocketFactory();
 	}
+
+    /**
+     * @param inputStream 需要自行关闭流
+     * @param certPass 密码
+     */
 	public SSLSocketFactory build(InputStream inputStream, String certPass){
 		return getSSLContext(inputStream , certPass).getSocketFactory();
 	}
@@ -159,12 +164,11 @@ public class SSLSocketFactoryBuilder {
 	 * @param certPass 证书密码
 	 */
 	public SSLContext getSSLContext(String certPath, String certPass){
-		try {
-			InputStream inputStream = new FileInputStream(certPath);
-			return getSSLContext(inputStream , certPass);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	    try(InputStream inputStream = new FileInputStream(certPath)){
+	        return getSSLContext(inputStream , certPass);}
+	    catch (Exception e){
+            throw new RuntimeException(e);
+        }
 	}
 	/**
      * 使用class来加载资源
@@ -174,16 +178,15 @@ public class SSLSocketFactoryBuilder {
 	 * @param certPass 证书密码
 	 */
 	public SSLContext getClassPathSSLContext(Class<?> clazz , String certPath, String certPass){
-		try {
-			InputStream inputStream = clazz.getResourceAsStream(certPath);
-			return getSSLContext(inputStream , certPass);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        try(InputStream inputStream = clazz.getResourceAsStream(certPath)){
+            return getSSLContext(inputStream , certPass);}
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
 	}
 
 	/**
-	 * @param certStream 证书流，本方法会自动关闭
+	 * @param certStream 证书流，本方法不会关闭流
 	 * @param certPass 密码
 	 */
 	public SSLContext getSSLContext(InputStream certStream, String certPass){
@@ -202,7 +205,8 @@ public class SSLSocketFactoryBuilder {
 
 			sslContext.init(kms, this.trustManagers, this.secureRandom);
 
-			inputStream.close();
+			/// 谁打开谁关闭
+			//inputStream.close();
 
 			return sslContext;
 		} catch (Exception e) {

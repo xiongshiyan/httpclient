@@ -200,9 +200,6 @@ public class Config {
     }
     private SSLSocketFactory getDefaultSSLSocketFactory(){
         SSLContext sslContext = getDefaultSSLContext();
-        if(null != sslContext){
-            return sslContext.getSocketFactory();
-        }
-        return null;
+        return sslContext.getSocketFactory();
     }
 }
