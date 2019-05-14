@@ -75,7 +75,7 @@ Request类：
 
 ##### 项目管理工具导入 
 
-项目已经发布至jcenter和maven中央仓库 最新版本version: **1.0.2**
+项目已经发布至jcenter和maven中央仓库 最新版本version: **1.0.3**
 
 Gradle:
 
