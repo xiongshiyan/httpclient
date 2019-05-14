@@ -85,7 +85,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         try {
 
             //5.创建http客户端
-            //CloseableHttpClient httpClient = HttpClients.createDefault();
+            ///CloseableHttpClient httpClient = HttpClients.createDefault();
             httpClient = getCloseableHttpClient(completedUrl ,getHostnameVerifier() , getSSLContext());
 
             //6.发送请求

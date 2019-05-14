@@ -16,7 +16,9 @@ import java.util.Objects;
  */
 public interface SmartHttpClient extends HttpClient {
     /**
+     * 注入全局配置信息
      * @param config config
+     * @return SmartHttpClient 链式调用
      */
     @Override
     SmartHttpClient setConfig(Config config);
@@ -36,6 +38,13 @@ public interface SmartHttpClient extends HttpClient {
      */
     Response post(Request request) throws IOException;
 
+    /**
+     * 接口对其他http方法的支持
+     * @param request Request
+     * @param method Method
+     * @return Response
+     * @throws IOException IOException
+     */
     Response httpMethod(Request request, Method method) throws IOException;
 
     /**

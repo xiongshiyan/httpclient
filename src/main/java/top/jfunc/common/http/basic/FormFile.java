@@ -8,7 +8,6 @@ import java.io.*;
  */
 public class FormFile{
     /**上传文件的数据 */
-    /*private byte[]      data;*/
     private InputStream inStream;
     private long        fileLen;
     /**文件名称 */

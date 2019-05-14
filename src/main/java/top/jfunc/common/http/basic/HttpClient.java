@@ -23,7 +23,7 @@ public interface HttpClient {
     /**
      * 设置全局默认配置,不调用就用系统设置的
      * @param config config
-     * @return 链式调用
+     * @return HttpClient 链式调用
      */
     HttpClient setConfig(Config config);
      /**

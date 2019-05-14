@@ -49,6 +49,7 @@ public class ParamUtil {
      */
     public static String contactMap(Map<String, String> value , final String valueCharset){
         if(null == value){return "";}
+        ///
 		/*value.forEach((k,v)->{
             try {
                 value.put(k,URLEncoder.encode(v, CharsetUtil.UTF_8));

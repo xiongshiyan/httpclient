@@ -263,7 +263,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         if(null == headers){
             headers = new ArrayListMultimap<>();
         }
-        //headers.put("Connection" , "Keep-Alive");
+        ///headers.put("Connection" , "Keep-Alive");
         headers.put("Charset" , "UTF-8");
         headers.put("Content-Type" , "multipart/form-data; boundary=" + BOUNDARY);
         return headers;
