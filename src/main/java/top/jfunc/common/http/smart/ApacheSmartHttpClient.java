@@ -120,8 +120,9 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
                 r -> setRequestBody(r, request.getBodyIfNullWithParams(), request.getBodyCharset()), request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
+        String body = request.getBodyIfNullWithParams();
         Response response = template(request, Method.POST ,
-                r -> setRequestBody(r, request.getBodyIfNullWithParams(), getBodyCharsetWithDefault(request.getBodyCharset())) , Response::with);
+                r -> setRequestBody(r, body, getBodyCharsetWithDefault(request.getBodyCharset())), Response::with);
         return afterTemplate(request , response);
     }
 
@@ -130,7 +131,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         Request request = beforeTemplate(req);
         ContentCallback<HttpEntityEnclosingRequest> contentCallback = null;
         if(method.hasContent()){
-            contentCallback = r -> setRequestBody(r, request.getBodyIfNullWithParams(), getBodyCharsetWithDefault(request.getBodyCharset()));
+            String body = request.getBodyIfNullWithParams();
+            contentCallback = r -> setRequestBody(r, body, getBodyCharsetWithDefault(request.getBodyCharset()));
         }
         Response response = template(request, method , contentCallback, Response::with);
         return afterTemplate(request , response);
