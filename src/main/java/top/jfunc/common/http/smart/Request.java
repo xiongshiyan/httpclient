@@ -2,6 +2,7 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Header;
 import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.handler.ToString;
@@ -16,7 +17,7 @@ import java.util.*;
 /**
  * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
  * @see top.jfunc.common.http.basic.HttpClient
- * @see SmartHttpClient
+ * @see top.jfunc.common.http.smart.SmartHttpClient
  * @see SSLRequest
  * @author xiongshiyan at 2017/12/9
  */
@@ -40,7 +41,9 @@ public class Request {
      */
     private String url;
     /**
-     * 请求参数，针对GET请求存在
+     * 请求参数
+     * 1.GET请求，会拼接在url后面
+     * 2.POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
      */
     private ArrayListMultimap<String,String> params;
     /**
@@ -49,6 +52,7 @@ public class Request {
     private ArrayListMultimap<String,String> headers;
     /**
      * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
+     * @see Method#hasContent()
      */
     private String body;
     /**
@@ -274,11 +278,23 @@ public class Request {
         return headers;
     }
 
-    public String getBody() {
+    /**
+     * 如果没有显式设置body而是通过params添加的，此时一般认为是想发起form请求，最好设置Content-Type
+     * @see this#setContentType(String)
+     */
+    public String getBodyIfNullWithParams() {
         //如果没有Body就将params的参数拼接
         if(StrUtil.isBlank(body)){
+            //没有显式设置就设置默认的
+            if(null == this.contentType){
+                this.contentType = HttpConstants.FORM_URLENCODED + ";charset=" + bodyCharset;
+            }
             return ParamUtil.contactMap(params , bodyCharset);
         }
+        return body;
+    }
+
+    public String getBody() {
         return body;
     }
 

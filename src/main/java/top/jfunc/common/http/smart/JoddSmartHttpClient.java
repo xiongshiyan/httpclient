@@ -83,10 +83,10 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     public Response post(Request req) throws IOException {
         Request request = beforeTemplate(req);
         /*Response response = template(request.getUrl(), Method.POST, request.getContentType(),
-                r -> setRequestBody(r, request.getBody(), request.getBodyCharset()), request.getHeaders(),
+                r -> setRequestBody(r, request.getBodyIfNullWithParams(), request.getBodyCharset()), request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request, Method.POST, httpRequest -> httpRequest.body(request.getBody().getBytes(getBodyCharsetWithDefault(request.getBodyCharset())) , request.getContentType()),
+        Response response = template(request, Method.POST, httpRequest -> httpRequest.body(request.getBodyIfNullWithParams().getBytes(getBodyCharsetWithDefault(request.getBodyCharset())) , request.getContentType()),
                 Response::with);
 
         return afterTemplate(request , response);
@@ -97,7 +97,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         Request request = beforeTemplate(req);
         ContentCallback<HttpRequest> contentCallback = null;
         if(method.hasContent()){
-            contentCallback = httpRequest -> httpRequest.body(request.getBody().getBytes(getBodyCharsetWithDefault(request.getBodyCharset())) , request.getContentType());
+            contentCallback = httpRequest -> httpRequest.body(request.getBodyIfNullWithParams().getBytes(getBodyCharsetWithDefault(request.getBodyCharset())) , request.getContentType());
         }
         Response response = template(request, method , contentCallback, Response::with);
         return afterTemplate(request , response);

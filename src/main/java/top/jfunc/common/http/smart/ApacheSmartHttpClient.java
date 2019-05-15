@@ -117,11 +117,11 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     public Response post(Request req) throws IOException {
         Request request = beforeTemplate(req);
         /*Response response = template(request.getUrl(), Method.POST, request.getContentType(),
-                r -> setRequestBody(r, request.getBody(), request.getBodyCharset()), request.getHeaders(),
+                r -> setRequestBody(r, request.getBodyIfNullWithParams(), request.getBodyCharset()), request.getHeaders(),
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
         Response response = template(request, Method.POST ,
-                r -> setRequestBody(r, request.getBody(), getBodyCharsetWithDefault(request.getBodyCharset())) , Response::with);
+                r -> setRequestBody(r, request.getBodyIfNullWithParams(), getBodyCharsetWithDefault(request.getBodyCharset())) , Response::with);
         return afterTemplate(request , response);
     }
 
@@ -130,7 +130,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         Request request = beforeTemplate(req);
         ContentCallback<HttpEntityEnclosingRequest> contentCallback = null;
         if(method.hasContent()){
-            contentCallback = r -> setRequestBody(r, request.getBody(), getBodyCharsetWithDefault(request.getBodyCharset()));
+            contentCallback = r -> setRequestBody(r, request.getBodyIfNullWithParams(), getBodyCharsetWithDefault(request.getBodyCharset()));
         }
         Response response = template(request, method , contentCallback, Response::with);
         return afterTemplate(request , response);

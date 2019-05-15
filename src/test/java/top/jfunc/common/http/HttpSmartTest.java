@@ -11,7 +11,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import static top.jfunc.common.http.HttpConstants.FORM_URLENCODED;
 import static top.jfunc.common.http.HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET;
 import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
 
@@ -219,13 +218,13 @@ public class HttpSmartTest {
     public void testRequest(){
         Request request = Request.of("https://wwww.baidu.com")
                 .setBody(new SomeBean("ss"), SomeBean::getSs);
-        Assert.assertEquals("ss" , request.getBody());
+        Assert.assertEquals("ss" , request.getBodyIfNullWithParams());
     }
     @Test
     public void testRequest2(){
         Request request = Request.of("https://wwww.baidu.com")
                 .setBodyT(new SomeBean("ss"), (o)->"sssss");
-        Assert.assertEquals("sssss" , request.getBody());
+        Assert.assertEquals("sssss" , request.getBodyIfNullWithParams());
     }
 
     @Test
