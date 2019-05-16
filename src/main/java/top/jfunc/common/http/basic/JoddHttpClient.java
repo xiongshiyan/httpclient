@@ -171,7 +171,11 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
         if(ignoreResponseBody){
             return top.jfunc.common.http.IoUtil.emptyInputStream();
         }
-        return new ByteArrayInputStream(httpResponse.bodyBytes());
+        byte[] bodyBytes = httpResponse.bodyBytes();
+        if(null == bodyBytes || 0 == bodyBytes.length){
+            return top.jfunc.common.http.IoUtil.emptyInputStream();
+        }
+        return new ByteArrayInputStream(bodyBytes);
     }
 
     protected void upload0(HttpRequest httpRequest , ArrayListMultimap<String, String> params,FormFile...formFiles){
