@@ -1,6 +1,7 @@
 package top.jfunc.common.http;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.http.smart.Response;
@@ -8,6 +9,7 @@ import top.jfunc.common.http.smart.Response;
 /**
  * @author xiongshiyan at 2019/5/16 , contact me with email yanshixiong@126.com or phone 15208384257
  */
+@Ignore
 public class RouteParamTest {
     @Test
     public void testRouteParam() throws Exception{
