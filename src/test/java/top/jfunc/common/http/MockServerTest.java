@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.Header;
+import org.mockserver.model.Parameter;
 import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.http.smart.Response;
 
@@ -38,6 +39,27 @@ public class MockServerTest {
         Assert.assertEquals(expected , response.asString());
     }
     @Test
+    public void testGetQueryParam() throws Exception{
+        MockServerClient mockClient = new MockServerClient("127.0.0.1", 50000);
+        String expected = "{ message: 'incorrect username and password combination' }";
+        mockClient.when(
+                request()
+                        .withPath("/hello/John")
+                        .withMethod("GET")
+                        .withQueryStringParameters(Parameter.param("key1" , "value1"))
+                        .withQueryStringParameters(Parameter.param("key2" , "value2")))
+        .respond(
+                response()
+                        .withStatusCode(200)
+                        .withBody(expected)
+        );
+
+        Request request = Request.of("http://localhost:50000/hello/{name}")
+                .addRouteParam("name" , "John").addParam("key1" , "value1").addParam("key2" , "value2");
+        Response response = HttpUtil.get(request);
+        Assert.assertEquals(expected , response.asString());
+    }
+    @Test
     public void testPost() throws Exception{
         MockServerClient mockClient = new MockServerClient("127.0.0.1", 50000);
         String expected = "{ message: 'incorrect username and password combination' }";
@@ -52,6 +74,27 @@ public class MockServerTest {
         );
 
         Request request = Request.of("http://localhost:50000/hello/{name}").addRouteParam("name" , "John").setBody(expected);
+        Response response = HttpUtil.post(request);
+        Assert.assertEquals(expected , response.asString());
+    }
+    @Test
+    public void testPostForm() throws Exception{
+        MockServerClient mockClient = new MockServerClient("127.0.0.1", 50000);
+        String expected = "{ message: 'incorrect username and password combination' }";
+        mockClient.when(
+                request()
+                        .withPath("/hello/John")
+                        .withMethod("POST")
+                        .withBody("key1=value1&key2=value2")
+                        .withHeader(Header.header("Content-Type" , HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET)))
+        .respond(
+                response()
+                        .withStatusCode(200)
+                        .withBody(expected)
+        );
+
+        Request request = Request.of("http://localhost:50000/hello/{name}").addRouteParam("name" , "John")
+                .addParam("key1" , "value1").addParam("key2" , "value2");
         Response response = HttpUtil.post(request);
         Assert.assertEquals(expected , response.asString());
     }
