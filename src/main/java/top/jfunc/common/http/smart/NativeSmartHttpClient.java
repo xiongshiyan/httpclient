@@ -34,7 +34,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         InputStream inputStream = null;
         try {
             //1.获取连接
-            String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+            String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getParams() , request.getBodyCharset() , method);
 
             URL url = new URL(completedUrl);
             //1.1如果需要则设置代理
@@ -97,8 +97,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET,
                 request.getContentType(), null, request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(), Response::with);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), getBodyCharsetWithDefault(request.getBodyCharset()))) ,
-                Method.GET , null , Response::with);
+        Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
 

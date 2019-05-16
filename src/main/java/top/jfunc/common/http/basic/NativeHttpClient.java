@@ -5,8 +5,6 @@ import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
-import top.jfunc.common.http.base.ssl.DefaultTrustManager;
-import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 

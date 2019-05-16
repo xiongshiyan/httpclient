@@ -2,7 +2,7 @@ package top.jfunc.common.http;
 
 import org.junit.Assert;
 import top.jfunc.common.http.base.handler.FromString;
-import top.jfunc.common.http.basic.FormFile;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.smart.*;
 import org.junit.Ignore;
 import org.junit.Test;

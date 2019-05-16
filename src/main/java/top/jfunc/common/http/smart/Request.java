@@ -7,7 +7,7 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
-import top.jfunc.common.http.basic.FormFile;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.StrUtil;
 
@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
  * @see top.jfunc.common.http.basic.HttpClient
- * @see top.jfunc.common.http.smart.SmartHttpClient
+ * @see SmartHttpClient
  * @see SSLRequest
  * @author xiongshiyan at 2017/12/9
  */
@@ -40,6 +40,10 @@ public class Request {
      * 请求的URL
      */
     private String url;
+    /**
+     * 路径参数，形如这种URL http://httpbin.org/book/{id}，保存id和id的值
+     */
+    private Map<String , String> routeParams;
     /**
      * 请求参数
      * 1.GET请求，会拼接在url后面
@@ -123,6 +127,19 @@ public class Request {
     /**************************变种的Setter*******************************/
     public Request setUrl(String url) {
         this.url = url;
+        return this;
+    }
+
+    public Request setRouteParams(Map<String, String> routeParams) {
+        this.routeParams = routeParams;
+        return this;
+    }
+
+    public Request addRouteParam(String key , String value){
+        if(null == this.routeParams){
+            this.routeParams = new HashMap<>(2);
+        }
+        this.routeParams.put(key, value);
         return this;
     }
 
@@ -268,6 +285,10 @@ public class Request {
     /****************************Getter**************************/
     public String getUrl() {
         return url;
+    }
+
+    public Map<String, String> getRouteParams() {
+        return routeParams;
     }
 
     public ArrayListMultimap<String, String> getParams() {

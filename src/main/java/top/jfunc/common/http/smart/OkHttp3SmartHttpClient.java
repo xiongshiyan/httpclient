@@ -31,7 +31,8 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         okhttp3.Response response = null;
         InputStream inputStream = null;
         try {
-            String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+            String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getParams() , request.getBodyCharset() , method);
+
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
                     .connectTimeout(getConnectionTimeoutWithDefault(request.getConnectionTimeout()), TimeUnit.MILLISECONDS)
@@ -100,7 +101,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
                 request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);
         return afterTemplate(request , response);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), getBodyCharsetWithDefault(request.getBodyCharset()))) , Method.GET , null , Response::with);
+        Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
     /**

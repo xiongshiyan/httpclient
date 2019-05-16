@@ -2,6 +2,7 @@ package top.jfunc.common.http.basic;
 
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.ArrayListMultimap;

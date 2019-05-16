@@ -52,7 +52,7 @@ Request类：
 
 - [x] `HttpClient`接口体系
 - [x] `SmartHttpClient`（继承HttpClient）接口体系：基于`Request-Response`
-- [x] `Request`支持链式调用、支持基于策略接口的Java对象转换为String
+- [x] `Request`支持链式调用、支持基于策略接口的Java对象转换为String、支持路径参数
 - [x] `Response`支持基于策略接口的String转换为Java对象
 - [x] 支持文件上传、下载
 - [x] 支持https

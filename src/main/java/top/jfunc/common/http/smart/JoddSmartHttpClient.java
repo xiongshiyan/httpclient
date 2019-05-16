@@ -28,7 +28,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     @Override
     public <R> R template(Request request, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         //1.获取完成的URL，创建请求
-        String completedUrl = addBaseUrlIfNecessary(request.getUrl());
+        String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getParams() , request.getBodyCharset() , method);
+
         HttpRequest httpRequest = new HttpRequest();
         httpRequest.method(method.name());
         httpRequest.set(completedUrl);
@@ -74,8 +75,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
                 request.getConnectionTimeout(), request.getReadTimeout(),
                 request.getResultCharset(), request.isIncludeHeaders(),
                 Response::with);*/
-        Response response = template(request.setUrl(ParamUtil.contactUrlParams(request.getUrl(), request.getParams(), getBodyCharsetWithDefault(request.getBodyCharset()))) ,
-                Method.GET , null , Response::with);
+        Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
 

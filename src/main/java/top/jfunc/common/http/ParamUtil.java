@@ -5,7 +5,7 @@ import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.Joiner;
 import top.jfunc.common.utils.StrUtil;
 
-import java.io.*;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
@@ -182,5 +182,23 @@ public class ParamUtil {
             return baseUrl + SPLASH + inputUrl;
         }
         return baseUrl + inputUrl;
+    }
+
+    /**
+     * 处理路径参数
+     * @param originUrl 形如 http://httpbin.org/book/{id}
+     * @param routeParams 参数值
+     * @return 处理过后的URL
+     */
+    public static String replaceRouteParamsIfNecessary(String originUrl , Map<String , String> routeParams){
+        if(null == routeParams || 0 == routeParams.size()){
+            return originUrl;
+        }
+        String url = originUrl;
+        for (Map.Entry<String, String> entry : routeParams.entrySet()) {
+            url = url.replaceFirst("\\{" + entry.getKey() + "\\}", entry.getValue());
+        }
+
+        return url;
     }
 }

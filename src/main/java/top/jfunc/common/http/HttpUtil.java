@@ -1,6 +1,6 @@
 package top.jfunc.common.http;
 
-import top.jfunc.common.http.basic.FormFile;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.basic.HttpClient;
 import top.jfunc.common.http.basic.NativeHttpClient;
 import top.jfunc.common.http.smart.NativeSmartHttpClient;
