@@ -5,6 +5,8 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
+import top.jfunc.common.http.kv.Header;
+import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.StrUtil;
 
@@ -39,14 +41,19 @@ public class Request {
     private String url;
     /**
      * 路径参数，形如这种URL http://httpbin.org/book/{id}，保存id和id的值
+     * @since 1.0.4
      */
     private Map<String , String> routeParams;
     /**
-     * 请求参数
-     * 1.GET请求，会拼接在url后面
-     * 2.POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
+     * 查询参数，拼装在URL后面 ?
+     * @since 1.0.4
      */
-    private ArrayListMultimap<String,String> params;
+    private ArrayListMultimap<String,String> queryParams;
+    /**
+     * form参数
+     * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
+     */
+    private ArrayListMultimap<String,String> formParams;
     /**
      * 请求头
      */
@@ -128,7 +135,7 @@ public class Request {
     }
 
     public Request setRouteParams(Map<String, String> routeParams) {
-        this.routeParams = routeParams;
+        this.routeParams = Objects.requireNonNull(routeParams);
         return this;
     }
 
@@ -140,43 +147,94 @@ public class Request {
         return this;
     }
 
-    public Request setParams(ArrayListMultimap<String, String> params) {
-        this.params = Objects.requireNonNull(params);
+    public Request setFormParams(ArrayListMultimap<String, String> formParams) {
+        this.formParams = Objects.requireNonNull(formParams);
         return this;
     }
-    public Request setParams(Map<String, String> params) {
-        initParams();
-        params.forEach((k,v)->this.params.put(k,v));
+    public Request setFormParams(Map<String, String> formParams) {
+        initFormParams();
+        formParams.forEach((k,v)->this.formParams.put(k,v));
         return this;
     }
-    public Request addParam(String key, String value){
-        initParams();
-        this.params.put(key, value);
+    public Request addFormParam(String key, String value){
+        initFormParams();
+        this.formParams.put(key, value);
         return this;
     }
-    public Request addParam(String key, String... values){
-        initParams();
+    public Request addFormParam(String key, String... values){
+        initFormParams();
         for (String value : values) {
-            this.params.put(key , value);
+            this.formParams.put(key , value);
         }
         return this;
     }
-    public Request addParam(String key, Iterable<String> values){
-        initParams();
+    public Request addFormParam(String key, Iterable<String> values){
+        initFormParams();
         for (String value : values) {
-            this.params.put(key , value);
+            this.formParams.put(key , value);
         }
         return this;
     }
-    public Request addParam(Parameter... headers){
-        for (Parameter parameter : headers) {
-            addParam(parameter.getKey() , parameter.getValues());
+    public Request addFormParam(Parameter... parameters){
+        for (Parameter parameter : parameters) {
+            addFormParam(parameter.getKey() , parameter.getValue());
         }
         return this;
     }
-    private void initParams(){
-        if(null == this.params){
-            this.params = new ArrayListMultimap<>();
+    public Request addFormParam(Map.Entry<String , Iterable<String>>... parameters){
+        for (Map.Entry<String , Iterable<String>> parameter : parameters) {
+            addFormParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
+    private void initFormParams(){
+        if(null == this.formParams){
+            this.formParams = new ArrayListMultimap<>();
+        }
+    }
+    public Request setQueryParams(ArrayListMultimap<String, String> queryParams) {
+        this.queryParams = Objects.requireNonNull(queryParams);
+        return this;
+    }
+    public Request setQueryParams(Map<String, String> queryParams) {
+        initQueryParams();
+        queryParams.forEach((k,v)->this.queryParams.put(k,v));
+        return this;
+    }
+    public Request addQueryParam(String key, String value){
+        initQueryParams();
+        this.queryParams.put(key, value);
+        return this;
+    }
+    public Request addQueryParam(String key, String... values){
+        initQueryParams();
+        for (String value : values) {
+            this.queryParams.put(key , value);
+        }
+        return this;
+    }
+    public Request addQueryParam(String key, Iterable<String> values){
+        initQueryParams();
+        for (String value : values) {
+            this.queryParams.put(key , value);
+        }
+        return this;
+    }
+    public Request addQueryParam(Parameter... parameters){
+        for (Parameter parameter : parameters) {
+            addQueryParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
+    public Request addQueryParam(Map.Entry<String , Iterable<String>>... parameters){
+        for (Map.Entry<String , Iterable<String>> parameter : parameters) {
+            addQueryParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
+    private void initQueryParams(){
+        if(null == this.queryParams){
+            this.queryParams = new ArrayListMultimap<>();
         }
     }
     public Request setHeaders(ArrayListMultimap<String, String> headers) {
@@ -209,7 +267,7 @@ public class Request {
     }
     public Request addHeader(Header... headers){
         for (Header header : headers) {
-            addHeader(header.getKey() , header.getValues());
+            addHeader(header.getKey() , header.getValue());
         }
         return this;
     }
@@ -332,8 +390,12 @@ public class Request {
         return routeParams;
     }
 
-    public ArrayListMultimap<String, String> getParams() {
-        return params;
+    public ArrayListMultimap<String, String> getQueryParams() {
+        return queryParams;
+    }
+
+    public ArrayListMultimap<String, String> getFormParams() {
+        return formParams;
     }
 
     public ArrayListMultimap<String, String> getHeaders() {
@@ -351,7 +413,7 @@ public class Request {
             if(null == this.contentType){
                 this.contentType = HttpConstants.FORM_URLENCODED + ";charset=" + bodyCharset;
             }
-            return ParamUtil.contactMap(params , bodyCharset);
+            return ParamUtil.contactMap(formParams, bodyCharset);
         }
         return body;
     }

@@ -1,6 +1,5 @@
 package top.jfunc.common.http.base;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.utils.ArrayListMultimap;
 
@@ -28,30 +27,25 @@ public abstract class AbstractConfigurableHttp {
     }
 
     /**
-     *
+     * 处理路径参数、Query参数
      * @param originUrl 原始URL
      * @param routeParams 路径参数 可空
-     * @param params Query参数 可空
+     * @param queryParams Query参数 可空
      * @param charset Query参数的字符集，null则取默认的
-     * @param method 请求方法，GET请求方法才会拼接Query参数
      * @return 处理后的URL
      */
     protected String handleUrlIfNecessary(String originUrl ,
                                           Map<String , String> routeParams ,
-                                          ArrayListMultimap<String,String> params,
-                                          String charset,
-                                          Method method){
+                                          ArrayListMultimap<String,String> queryParams,
+                                          String charset){
         //1.处理路径参数
         String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , routeParams);
+
         //2.处理BaseUrl
         String urlWithBase = addBaseUrlIfNecessary(routeUrl);
 
-        String finalUrl = urlWithBase;
         //3.处理Query参数
-        if(Method.GET == method){
-            finalUrl = ParamUtil.contactUrlParams(urlWithBase, params, getBodyCharsetWithDefault(charset));
-        }
-        return finalUrl;
+        return ParamUtil.contactUrlParams(urlWithBase, queryParams, getBodyCharsetWithDefault(charset));
     }
 
     /////////////////////////////////////以下方法都由config代理，只是为了调用方便//////////////////////////////

@@ -33,7 +33,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         InputStream inputStream = null;
         try {
             //1.获取连接
-            String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getParams() , request.getBodyCharset() , method);
+            String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getQueryParams() , request.getBodyCharset());
 
             URL url = new URL(completedUrl);
             //1.1如果需要则设置代理
@@ -134,7 +134,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         Request request = beforeTemplate(req);
         ArrayListMultimap<String, String> headers = mergeHeaders(request.getHeaders());
         Response response = template(request.setHeaders(headers), Method.POST ,
-                connect -> this.upload0(connect, request.getParams(), request.getFormFiles()) , Response::with);
+                connect -> this.upload0(connect, request.getFormParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);
     }
 

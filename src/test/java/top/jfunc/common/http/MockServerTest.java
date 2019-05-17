@@ -46,8 +46,8 @@ public class MockServerTest {
                 request()
                         .withPath("/hello/John")
                         .withMethod("GET")
-                        .withQueryStringParameters(Parameter.param("key1" , "value1"))
-                        .withQueryStringParameters(Parameter.param("key2" , "value2")))
+                        .withQueryStringParameters(Parameter.param("key1" , "value1") ,
+                                Parameter.param("key2" , "value2")))
         .respond(
                 response()
                         .withStatusCode(200)
@@ -55,7 +55,7 @@ public class MockServerTest {
         );
 
         Request request = Request.of("http://localhost:50000/hello/{name}")
-                .addRouteParam("name" , "John").addParam("key1" , "value1").addParam("key2" , "value2");
+                .addRouteParam("name" , "John").addQueryParam("key1" , "value1").addQueryParam("key2" , "value2");
         Response response = HttpUtil.get(request);
         Assert.assertEquals(expected , response.asString());
     }
@@ -94,7 +94,7 @@ public class MockServerTest {
         );
 
         Request request = Request.of("http://localhost:50000/hello/{name}").addRouteParam("name" , "John")
-                .addParam("key1" , "value1").addParam("key2" , "value2");
+                .addFormParam("key1" , "value1").addFormParam("key2" , "value2");
         Response response = HttpUtil.post(request);
         Assert.assertEquals(expected , response.asString());
     }

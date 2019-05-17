@@ -98,7 +98,7 @@ public class HttpSmartTest {
             System.out.println(s);
 
             url = "http://localhost:8080/http-server-test/post/form";
-            request = Request.of(url).addParam("xx" , "xx").addParam("yy" , "yy").setContentType(FORM_URLENCODED_WITH_DEFAULT_CHARSET);
+            request = Request.of(url).addFormParam("xx" , "xx").addFormParam("yy" , "yy").setContentType(FORM_URLENCODED_WITH_DEFAULT_CHARSET);
             Response response = http.post(request);
             System.out.println(response.getBody());
         }catch (IOException e){
@@ -171,7 +171,7 @@ public class HttpSmartTest {
             Request request = Request.of(url).addHeader("empCode" , "ahg0023")
                     .addHeader("phone" , "15208384257").addFormFile(formFile2).addFormFile(formFile).setIncludeHeaders(true);
 
-            request.addParam("k1", "v1").addParam("k2" , "v2");
+            request.addFormParam("k1", "v1").addFormParam("k2" , "v2");
             Response response = httpClient.upload(request);
             System.out.println(response.getBody());
             System.out.println(response.getHeaders());

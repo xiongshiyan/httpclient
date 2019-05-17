@@ -31,7 +31,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         okhttp3.Response response = null;
         InputStream inputStream = null;
         try {
-            String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getParams() , request.getBodyCharset() , method);
+            String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getQueryParams() , request.getBodyCharset());
 
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
@@ -138,7 +138,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public Response upload(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        MultipartBody requestBody = filesBody(request.getParams() , request.getFormFiles());
+        MultipartBody requestBody = filesBody(request.getFormParams() , request.getFormFiles());
         Response response = template(request, Method.POST ,
                 d -> setRequestBody(d, Method.POST, requestBody) ,
                 Response::with);

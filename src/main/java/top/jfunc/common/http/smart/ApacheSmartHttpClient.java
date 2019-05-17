@@ -37,7 +37,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     @Override
     public <R> R template(Request request, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         //1.获取完整的URL
-        String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getParams() , request.getBodyCharset() , method);
+        String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getQueryParams() , request.getBodyCharset());
 
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
 
@@ -140,7 +140,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     public Response upload(Request req) throws IOException {
         Request request = beforeTemplate(req);
         Response response = template(request , Method.POST ,
-                r -> addFormFiles(r, request.getParams(), request.getFormFiles()) , Response::with);
+                r -> addFormFiles(r, request.getFormParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);
     }
 
