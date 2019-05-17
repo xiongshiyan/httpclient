@@ -1,9 +1,6 @@
 package top.jfunc.common.http.basic;
 
-import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.HttpStatus;
-import top.jfunc.common.http.Method;
-import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.*;
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
@@ -319,7 +316,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             keySet.forEach((k)->headers.get(k).forEach((v)->connection.addRequestProperty(k,v)));
         }
         if(null != contentType){
-            connection.setRequestProperty(top.jfunc.common.http.Header.CONTENT_TYPE.toString(), contentType);
+            connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString(), contentType);
         }
     }
 

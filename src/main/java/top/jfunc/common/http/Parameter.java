@@ -3,29 +3,29 @@ package top.jfunc.common.http;
 import java.util.Arrays;
 
 /**
- * Http的Header模型(multiValue),key-value1,value2
+ * Http的Query或者Form参数模型(multiValue),key-value1,value2
  * @author xiongshiyan at 2019/5/17 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class Header {
+public class Parameter {
     private String key;
     private Iterable<String> values;
 
-    public Header(String key, String... values) {
+    public Parameter(String key, String... values) {
         this.key = key;
         this.values = Arrays.asList(values);
     }
-    public Header(String key, Iterable<String> values) {
+    public Parameter(String key, Iterable<String> values) {
         this.key = key;
         this.values = values;
     }
 
 
-    public static Header of(String name, String... values){
-        return new Header(name, values);
+    public static Parameter of(String name, String... values){
+        return new Parameter(name, values);
     }
 
-    public static Header of(String name, Iterable<String> values){
-        return new Header(name, values);
+    public static Parameter of(String name, Iterable<String> values){
+        return new Parameter(name, values);
     }
 
 

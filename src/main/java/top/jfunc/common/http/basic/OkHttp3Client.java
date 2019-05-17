@@ -4,6 +4,7 @@ import okhttp3.*;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
+import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
@@ -222,7 +223,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
             keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));
         }
         if(null != contentType){
-            builder.addHeader(top.jfunc.common.http.Header.CONTENT_TYPE.toString(), contentType);
+            builder.addHeader(HeaderRegular.CONTENT_TYPE.toString(), contentType);
         }
     }
 

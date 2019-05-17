@@ -1,13 +1,10 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.Header;
-import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.Method;
-import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.*;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.StrUtil;
 
@@ -157,6 +154,26 @@ public class Request {
         this.params.put(key, value);
         return this;
     }
+    public Request addParam(String key, String... values){
+        initParams();
+        for (String value : values) {
+            this.params.put(key , value);
+        }
+        return this;
+    }
+    public Request addParam(String key, Iterable<String> values){
+        initParams();
+        for (String value : values) {
+            this.params.put(key , value);
+        }
+        return this;
+    }
+    public Request addParam(Parameter... headers){
+        for (Parameter parameter : headers) {
+            addParam(parameter.getKey() , parameter.getValues());
+        }
+        return this;
+    }
     private void initParams(){
         if(null == this.params){
             this.params = new ArrayListMultimap<>();
@@ -176,30 +193,54 @@ public class Request {
         this.headers.put(key, value);
         return this;
     }
-
-    public Request addContentType(String contentType){
+    public Request addHeader(String key, String... values){
         initHeaders();
-        this.headers.put(Header.CONTENT_TYPE.name() , contentType);
+        for (String value : values) {
+            this.headers.put(key , value);
+        }
         return this;
     }
-    public Request addFormHeader(){
-        return addContentType(HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET);
+    public Request addHeader(String key, Iterable<String> values){
+        initHeaders();
+        for (String value : values) {
+            this.headers.put(key , value);
+        }
+        return this;
     }
-    public Request addJsonHeader(){
-        return addContentType(HttpConstants.JSON_WITH_DEFAULT_CHARSET);
+    public Request addHeader(Header... headers){
+        for (Header header : headers) {
+            addHeader(header.getKey() , header.getValues());
+        }
+        return this;
     }
-    public Request addXmlHeader(){
-        return addContentType(HttpConstants.TEXT_XML_WITH_DEFAULT_CHARSET);
-    }
-
     private void initHeaders(){
         if(null == this.headers){
             this.headers = new ArrayListMultimap<>();
         }
     }
 
+    public Request addFormHeader(){
+        return setContentType(HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET);
+    }
+    public Request addJsonHeader(){
+        return setContentType(HttpConstants.JSON_WITH_DEFAULT_CHARSET);
+    }
+    public Request addXmlHeader(){
+        return setContentType(HttpConstants.TEXT_XML_WITH_DEFAULT_CHARSET);
+    }
+
+
+
+    /**
+     * 设置body,最好是调用{@link this#setBody(String, String)}同时设置Content-Type
+     */
     public Request setBody(String body) {
         this.body = body;
+        return this;
+    }
+    public Request setBody(String body , String contentType) {
+        this.body = body;
+        this.contentType = contentType;
         return this;
     }
 

@@ -23,6 +23,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.CharsetUtils;
 import org.apache.http.util.EntityUtils;
+import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
@@ -371,7 +372,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
             keySet.forEach((k)->headers.get(k).forEach((v)->request.addHeader(k,v)));
         }
         if(null != contentType){
-            request.setHeader(top.jfunc.common.http.Header.CONTENT_TYPE.toString(), contentType);
+            request.setHeader(HeaderRegular.CONTENT_TYPE.toString(), contentType);
         }
     }
 
