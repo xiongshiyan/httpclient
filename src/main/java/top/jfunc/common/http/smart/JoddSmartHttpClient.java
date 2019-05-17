@@ -2,6 +2,7 @@ package top.jfunc.common.http.smart;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
+import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
@@ -88,9 +89,11 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
                 Response::with);*/
         String body = request.getBodyIfNullWithParams();
         Response response = template(request, Method.POST,
-                httpRequest ->
-                    httpRequest.body(body.getBytes(getBodyCharsetWithDefault(request.getBodyCharset())), request.getContentType())
-                ,Response::with);
+                httpRequest -> {
+                    String bodyCharsetWithDefault = getBodyCharsetWithDefault(request.getBodyCharset());
+                    String contentType = null == request.getContentType() ? HttpConstants.JSON + ";charset="+bodyCharsetWithDefault : request.getContentType();
+                    httpRequest.body(body.getBytes(bodyCharsetWithDefault), contentType);
+                },Response::with);
 
         return afterTemplate(request , response);
     }

@@ -48,41 +48,12 @@ public class ParamUtil {
      * @param value 键值对
      */
     public static String contactMap(Map<String, String> value , final String valueCharset){
-        if(null == value){return "";}
-        ///
-		/*value.forEach((k,v)->{
-            try {
-                value.put(k,URLEncoder.encode(v, CharsetUtil.UTF_8));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        });*/
-        Editor<String> editor = (v)->{
-            try {
-                return URLEncoder.encode(v, valueCharset);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            return null;
-        };
+        if(null == value || value.isEmpty()){return "";}
+
+        Editor<String> editor = (v)-> urlEncode(v , valueCharset);
         return Joiner.on("&").withKeyValueSeparator("=",editor).useForNull("").join(value);
-		/*try {
-			String params;
-			params = "";
-			Iterator<String> iterator = value.keySet().iterator();
-			while(iterator.hasNext()){
-                String key = iterator.next().toString();
-                params += key + "=" + URLEncoder.encode(value.get(key), "UTF8") + "&";
-            }
-			if(params.length() > 0){
-                params = params.substring(0, params.length() - 1);
-            }
-			return params;
-		} catch (UnsupportedEncodingException e){
-			e.printStackTrace();
-			return "";
-		}*/
     }
+    
     public static String contactMap(ArrayListMultimap<String, String> value){
         return contactMap(value , HttpConstants.DEFAULT_CHARSET);
     }
@@ -90,26 +61,38 @@ public class ParamUtil {
      * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
      * @param value 键值对
      */
-    public static String contactMap(ArrayListMultimap<String, String> value , String valueCharset){
+    public static String contactMap(ArrayListMultimap<String, String> value , final String valueCharset){
         if(null == value){return "";}
+
+        StringBuilder params = new StringBuilder();
+
+        Iterator<String> iterator = value.keySet().iterator();
+
+        while(iterator.hasNext()){
+            String key = iterator.next();
+            List<String> vList = value.get(key);
+
+            for (String v : vList) {
+                params.append(key).append("=").append(urlEncode(v, valueCharset)).append("&");
+            }
+        }
+        if(params.length() > 0){
+            params = params.deleteCharAt(params.length() - 1);
+        }
+        return params.toString();
+    }
+
+    /**
+     * 对字符串进行URL编码
+     * @param valueCharset 字符编码,字符编码不对原样返回
+     * @param src 原字符串
+     * @return 编码后的字符串
+     */
+    private static String urlEncode(String src, String valueCharset) {
         try {
-            StringBuilder params = new StringBuilder();
-            Iterator<String> iterator = value.keySet().iterator();
-            while(iterator.hasNext()){
-                String key = iterator.next();
-                List<String> vList = value.get(key);
-                int len = vList.size();
-                for (int i = 0; i < len; i++) {
-                    params.append(key).append("=").append(URLEncoder.encode(vList.get(i), valueCharset)).append("&");
-                }
-            }
-            if(params.length() > 0){
-                params = params.deleteCharAt(params.length() - 1);
-            }
-            return params.toString();
-        } catch (UnsupportedEncodingException e){
-            e.printStackTrace();
-            return "";
+            return URLEncoder.encode(src, valueCharset);
+        }catch (UnsupportedEncodingException e){
+            return src;
         }
     }
 
