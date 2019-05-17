@@ -71,11 +71,6 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET,
-                request.getContentType(), null, request.getHeaders(),
-                request.getConnectionTimeout(), request.getReadTimeout(),
-                request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);*/
         Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
@@ -83,10 +78,6 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     @Override
     public Response post(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(),
-                r -> setRequestBody(r, request.getBodyIfNullWithParams(), request.getBodyCharset()), request.getHeaders(),
-                request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);*/
         String body = request.getBodyIfNullWithParams();
         Response response = template(request, Method.POST,
                 httpRequest -> {
@@ -113,32 +104,18 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     @Override
     public byte[] getAsBytes(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders(),
-                request.getConnectionTimeout(),request.getReadTimeout() , request.getResultCharset(),request.isIncludeHeaders(),
-                (s,b,r,h)-> IoUtil.stream2Bytes(b));*/
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
     public File getAsFile(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*return template(request.getUrl(), Method.GET, request.getContentType(),null, request.getHeaders() ,
-                request.getConnectionTimeout(),request.getReadTimeout() , request.getResultCharset(),request.isIncludeHeaders(),
-                (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));*/
         return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override
     public Response upload(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), r -> addFormFiles(r, request.getFormFiles()),
-                request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);*/
-        /*使用更全的 ，支持文件和参数一起上传 */
-
-        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), r -> addFormFiles(r, request.getParams() , request.getFormFiles()),
-                request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);*/
         Response response = template(request , Method.POST ,
                 r -> upload0(r, request.getParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);

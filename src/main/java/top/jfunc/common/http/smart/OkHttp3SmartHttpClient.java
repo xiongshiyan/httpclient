@@ -79,8 +79,6 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
             int statusCode = response.code();
             return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), parseHeaders(response , request.isIncludeHeaders()));
-            /*return top.jfunc.common.http.smart.Response.with(statusCode , inputStream , request.getResultCharset() ,
-                    request.isIncludeHeaders() ? parseHeaders(response) : new HashMap<>(0));*/
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
@@ -96,11 +94,6 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        ////
-        /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET, request.getContentType(), null, request.getHeaders(),
-                request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);
-        return afterTemplate(request , response);*/
         Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
@@ -110,9 +103,6 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public Response post(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, stringBody(request.getBodyIfNullWithParams(), request.getContentType())),
-                request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);*/
         String body = request.getBodyIfNullWithParams();
         Response response = template(request, Method.POST ,
                 d -> setRequestBody(d, Method.POST, stringBody(body, request.getContentType())), Response::with);
@@ -136,31 +126,22 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public byte[] getAsBytes(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*return template(request.getUrl(),Method.GET,request.getContentType() ,null, request.getHeaders() ,
-                request.getConnectionTimeout(),request.getReadTimeout(),request.getResultCharset(),request.isIncludeHeaders(),
-                (s,b,r,h)-> IoUtil.stream2Bytes(b));*/
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
     public File getAsFile(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*return template(request.getUrl(),Method.GET,request.getContentType(),null, request.getHeaders() ,
-                request.getConnectionTimeout(),request.getConnectionTimeout(),request.getResultCharset(),request.isIncludeHeaders(),
-                (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));*/
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override
     public Response upload(Request req) throws IOException {
         Request request = beforeTemplate(req);
-
         MultipartBody requestBody = filesBody(request.getParams() , request.getFormFiles());
-
-        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(), d -> setRequestBody(d, Method.POST, requestBody), request.getHeaders(),
-                request.getConnectionTimeout(), request.getConnectionTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);*/
-        Response response = template(request, Method.POST , d -> setRequestBody(d, Method.POST, requestBody) , Response::with);
+        Response response = template(request, Method.POST ,
+                d -> setRequestBody(d, Method.POST, requestBody) ,
+                Response::with);
         return afterTemplate(request , response);
     }
 

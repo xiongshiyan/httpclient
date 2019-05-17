@@ -22,18 +22,4 @@ public interface SmartHttpTemplate<C> extends HttpTemplate<C>{
      * @return <R> R
      */
     <R> R  template(Request request, Method method, ContentCallback<C> contentCallback, ResultCallback<R> resultCallback) throws IOException;
-/*
-    default <R> R  template(Request request, Method method, ContentCallback<C> contentCallback, ResultCallback<R> resultCallback) throws IOException{
-        return template(request.getUrl() ,
-                method ,
-                request.getContentType() ,
-                contentCallback ,
-                request.getHeaders() ,
-                request.getConnectionTimeout() ,
-                request.getReadTimeout() ,
-                request.getResultCharset() ,
-                request.isIncludeHeaders() ,
-                resultCallback);
-    }
-*/
 }

@@ -76,25 +76,6 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
 
             //6.获取返回值
             int statusCode = connect.getResponseCode();
-            ///保留起非200抛异常的方式
-//            if( HttpStatus.HTTP_OK == statusCode){
-//                //6.1获取body
-//                /*InputStream is = connect.getInputStream();
-//                byte[] result = IoUtil.stream2Bytes(is);
-//                is.close();
-//
-//                String s = new String(result, resultCharset);*/
-//
-//                //6.2获取header
-//
-//                inputStream = connect.getInputStream();
-//
-//                return resultCallback.convert(inputStream, resultCharset, includeHeaders ? connect.getHeaderFields() : new HashMap<>(0));
-//
-//            } else{
-//                String err = errMessage(connect);
-//                throw new HttpException(statusCode,err,connect.getHeaderFields());
-//            }
 
             inputStream = getStreamFrom(connect , statusCode , false);
 
@@ -337,34 +318,6 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
 
 
 
-    /**
-     * 获取输出流中的错误信息，针对HttpURLConnection
-     * @param connect HttpURLConnection
-     * @return 错误信息
-     * @see HttpURLConnection
-     * @throws IOException IO异常
-     */
-    protected String errMessage(HttpURLConnection connect) throws IOException {
-        //如果服务器返回的HTTP状态不是HTTP_OK，则表示发生了错误，此时可以通过如下方法了解错误原因。
-        // 通过getErrorStream了解错误的详情
-        InputStream is = connect.getErrorStream();
-        if(null==is){return "";}
-        InputStreamReader isr = new InputStreamReader(is, HttpConstants.DEFAULT_CHARSET);
-        BufferedReader in = new BufferedReader(isr);
-        String inputLine;
-        StringWriter bw = new StringWriter();
-        while ((inputLine = in.readLine()) != null)
-        {
-            bw.write(inputLine);
-            bw.write("\n");
-        }
-        bw.close();
-        in.close();
-
-        //disconnectQuietly(connect);
-
-        return bw.getBuffer().toString();
-    }
 
     public static void disconnectQuietly(HttpURLConnection connect) {
         if(null != connect){
@@ -373,6 +326,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             } catch (Exception e) {}
         }
     }
+    ///
     /*
     protected void initDefaultSSL(String sslVer) {
         try {

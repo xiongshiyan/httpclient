@@ -1,7 +1,6 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
@@ -74,8 +73,6 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             inputStream = getStreamFrom(connection , statusCode , request.isIgnoreResponseBody());
 
             return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), parseHeaders(connection , request.isIncludeHeaders()));
-            ///返回Response
-            //return Response.with(statusCode , inputStream , request.getResultCharset() , request.isIncludeHeaders() ? connection.getHeaderFields() : new HashMap<>(0));
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
@@ -94,9 +91,6 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     @Override
     public Response get(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*Response response = template(ParamUtil.contactUrlParams(request.getUrl(), request.getParams() , request.getBodyCharset()), Method.GET,
-                request.getContentType(), null, request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
-                request.getResultCharset(), request.isIncludeHeaders(), Response::with);*/
         Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
@@ -104,10 +98,6 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     @Override
     public Response post(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*Response response = template(request.getUrl(), Method.POST, request.getContentType(),
-                connection -> writeContent(connection, request.getBodyIfNullWithParams(), request.getBodyCharset()),
-                request.getHeaders(), request.getConnectionTimeout(), request.getReadTimeout(),
-                request.getResultCharset(), request.isIncludeHeaders(), Response::with);*/
         String body = request.getBodyIfNullWithParams();
         Response response = template(request, Method.POST ,
                 connection -> writeContent(connection, body, getBodyCharsetWithDefault(request.getBodyCharset())),
@@ -130,34 +120,19 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     @Override
     public byte[] getAsBytes(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*return template(request.getUrl(), Method.GET, request.getContentType(), null,request.getHeaders(),
-                request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders() ,
-                (s,b,r,h)-> IoUtil.stream2Bytes(b));*/
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
     public File getAsFile(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*return template(request.getUrl(), Method.GET, request.getContentType(), null,request.getHeaders(),
-                request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders() ,
-                (s,b,r,h)-> IoUtil.copy2File(b, request.getFile()));*/
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override
     public Response upload(Request req) throws IOException {
         Request request = beforeTemplate(req);
-        /*ArrayListMultimap<String, String> headers = mergeHeaders(request.getHeaders(), request.getFormFiles());
-        Response response = template(request.getUrl(), Method.POST, null, connect -> this.upload0(connect, request.getFormFiles()),
-                headers, request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);*/
-        /*使用更全的 ，支持文件和参数一起上传 */
-
         ArrayListMultimap<String, String> headers = mergeHeaders(request.getHeaders());
-        /*Response response = template(request.getUrl(), Method.POST, null, connect -> this.upload0(connect, request.getParams() ,request.getFormFiles()),
-                headers, request.getConnectionTimeout(), request.getReadTimeout(), request.getResultCharset(), request.isIncludeHeaders(),
-                Response::with);*/
         Response response = template(request.setHeaders(headers), Method.POST ,
                 connect -> this.upload0(connect, request.getParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);

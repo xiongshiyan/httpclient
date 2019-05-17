@@ -1,9 +1,8 @@
 package top.jfunc.common.http;
 
 /**
- * Http 头域
+ * Http常用头域
  * @author Looly
- *
  */
 public enum HeaderRegular {
 	
