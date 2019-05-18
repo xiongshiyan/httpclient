@@ -7,11 +7,22 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
+import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
+import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
+import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
 import top.jfunc.common.http.kv.Header;
 import top.jfunc.common.http.kv.Parameter;
+import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.StrUtil;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.util.*;
 
@@ -19,10 +30,23 @@ import java.util.*;
  * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
  * @see top.jfunc.common.http.basic.HttpClient
  * @see SmartHttpClient
- * @see SSLRequest
+ *
+ * @deprecated  !!此类作为以前的大杂烩，什么样的请求都放到一起，给设置参数的时候造成困扰，已经不适应快速发展的需要
+ * 现将其一拆为多，针对不同的请求使用不同的请求即可
+ *
+ * @see top.jfunc.common.http.request.HttpRequest
+ *
+ * @see top.jfunc.common.http.request.impl.BaseRequest
+ * @see top.jfunc.common.http.request.impl.PostBodyRequest
+ * @see top.jfunc.common.http.request.impl.FormBodyRequest
+ * @see top.jfunc.common.http.request.impl.FileParamUploadRequest
+ * @see top.jfunc.common.http.request.impl.DownLoadRequest
  * @author xiongshiyan at 2017/12/9
+ *
+ * @since 1.0.5就废弃此类了
  */
-public class Request {
+@Deprecated
+public class Request implements HttpRequest , StringBodyRequest , UploadRequest , DownLoadRequest{
     /**
      * 结果包含headers
      */
@@ -118,6 +142,29 @@ public class Request {
      * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
      */
     private ProxyInfo proxyInfo = null;
+
+
+
+    /**
+     * HostnameVerifier
+     * @see top.jfunc.common.http.base.Config#hostnameVerifier
+     */
+    private HostnameVerifier hostnameVerifier = new TrustAnyHostnameVerifier();
+    /**
+     * SSLContext
+     * @see top.jfunc.common.http.base.Config#sslContext
+     */
+    private SSLContext sslContext = SSLSocketFactoryBuilder.create().getSSLContext();
+    /**
+     * SSLSocketFactory
+     * @see top.jfunc.common.http.base.Config#sslSocketFactory
+     */
+    private SSLSocketFactory sslSocketFactory = null;
+    /**
+     * X509TrustManager
+     * @see top.jfunc.common.http.base.Config#x509TrustManager
+     */
+    private X509TrustManager x509TrustManager = new DefaultTrustManager2();
 
     public Request(String url){this.url = url;}
 
@@ -358,7 +405,9 @@ public class Request {
     public Request setRedirectable(boolean redirectable) {
         this.redirectable = redirectable;
         //要支持重定向必须header
-        this.includeHeaders = true;
+        if(redirectable){
+            this.includeHeaders = true;
+        }
         return this;
     }
 
@@ -384,32 +433,54 @@ public class Request {
         return this;
     }
 
+    public Request setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
+        return this;
+    }
+    public Request setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+        this.sslSocketFactory = sslSocketFactory;
+        return this;
+    }
+    public Request setSslContext(SSLContext sslContext) {
+        this.sslContext = sslContext;
+        return this;
+    }
+
+    public Request setX509TrustManager(X509TrustManager x509TrustManager) {
+        this.x509TrustManager = x509TrustManager;
+        return this;
+    }
+
+
     /****************************Getter**************************/
+    @Override
     public String getUrl() {
         return url;
     }
-
+    @Override
     public Map<String, String> getRouteParams() {
         return routeParams;
     }
-
+    @Override
     public ArrayListMultimap<String, String> getQueryParams() {
         return queryParams;
     }
-
+    @Override
     public ArrayListMultimap<String, String> getFormParams() {
         return formParams;
     }
-
+    @Override
     public ArrayListMultimap<String, String> getHeaders() {
         return headers;
     }
+
 
     /**
      * 如果没有显式设置body而是通过params添加的，此时一般认为是想发起form请求，最好设置Content-Type
      * @see this#setContentType(String)
      */
-    public String getBodyIfNullWithParams() {
+    @Override
+    public String getBody() {
         //如果没有Body就将params的参数拼接
         if(StrUtil.isBlank(body)){
             //没有显式设置就设置默认的
@@ -420,52 +491,48 @@ public class Request {
         }
         return body;
     }
-
-    public String getBody() {
-        return body;
-    }
-
+    @Override
     public String getContentType() {
         return contentType;
     }
-
+    @Override
     public Integer getConnectionTimeout() {
         return connectionTimeout;
     }
-
+    @Override
     public Integer getReadTimeout() {
         return readTimeout;
     }
-
+    @Override
     public String getBodyCharset() {
         return bodyCharset;
     }
-
+    @Override
     public String getResultCharset() {
         return resultCharset;
     }
-
+    @Override
     public boolean isIncludeHeaders() {
         return includeHeaders;
     }
-
+    @Override
     public boolean isIgnoreResponseBody() {
         return ignoreResponseBody;
     }
-
+    @Override
     public boolean isRedirectable() {
         return redirectable;
     }
-
+    @Override
     public FormFile[] getFormFiles() {
         initFormFiles();
         return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
     }
-
+    @Override
     public File getFile() {
         return file;
     }
-
+    @Override
     public ProxyInfo getProxyInfo() {
         return proxyInfo;
     }
@@ -475,4 +542,31 @@ public class Request {
             this.formFiles = new ArrayList<>(2);
         }
     }
+
+    @Override
+    public HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
+    /**
+     * 因为一般地 SslSocketFactory 都是从sslContext产生出来的 ， 所以如果没显式设置就从sslContext产生
+     */
+    @Override
+    public SSLSocketFactory getSslSocketFactory() {
+        if(null == sslSocketFactory && null != sslContext){
+            return sslContext.getSocketFactory();
+        }
+        return sslSocketFactory;
+    }
+
+    @Override
+    public SSLContext getSslContext() {
+        return sslContext;
+    }
+
+    @Override
+    public X509TrustManager getX509TrustManager() {
+        return x509TrustManager;
+    }
+
 }

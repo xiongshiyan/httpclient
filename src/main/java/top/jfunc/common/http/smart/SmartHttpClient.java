@@ -3,6 +3,10 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.basic.HttpClient;
+import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,14 +33,14 @@ public interface SmartHttpClient extends HttpClient {
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    Response get(Request request) throws IOException;
+    Response get(HttpRequest request) throws IOException;
     /**
      * POST方法
      * @param request 请求参数
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    Response post(Request request) throws IOException;
+    Response post(StringBodyRequest request) throws IOException;
 
     /**
      * 接口对其他http方法的支持
@@ -53,7 +57,7 @@ public interface SmartHttpClient extends HttpClient {
      * @return byte[]
      * @throws IOException IOException
      */
-    byte[] getAsBytes(Request request) throws IOException;
+    byte[] getAsBytes(HttpRequest request) throws IOException;
 
     /**
      * 下载文件
@@ -61,7 +65,7 @@ public interface SmartHttpClient extends HttpClient {
      * @return File 下载的文件
      * @throws IOException IOException
      */
-    File getAsFile(Request request) throws IOException;
+    File getAsFile(DownLoadRequest request) throws IOException;
 
     /**
      * 文件上传
@@ -69,14 +73,14 @@ public interface SmartHttpClient extends HttpClient {
      * @return Response
      * @throws IOException IOException
      */
-    Response upload(Request request) throws IOException;
+    Response upload(UploadRequest request) throws IOException;
 
     /**
      * 对请求参数拦截处理 , 比如统一添加header , 参数加密 , 默认不处理
      * @param request Request
      * @return Request
      */
-    default Request beforeTemplate(Request request){
+    default <T extends HttpRequest> T beforeTemplate(T request){
         return Objects.requireNonNull(request);
     }
 
@@ -87,7 +91,7 @@ public interface SmartHttpClient extends HttpClient {
      * @return Response
      * @throws IOException IOException
      */
-    default Response afterTemplate(Request request, Response response) throws IOException{
+    default Response afterTemplate(HttpRequest request, Response response) throws IOException{
         return response;
     }
 }

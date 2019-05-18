@@ -218,13 +218,13 @@ public class HttpSmartTest {
     public void testRequest(){
         Request request = Request.of("https://wwww.baidu.com")
                 .setBody(new SomeBean("ss"), SomeBean::getSs);
-        Assert.assertEquals("ss" , request.getBodyIfNullWithParams());
+        Assert.assertEquals("ss" , request.getBody());
     }
     @Test
     public void testRequest2(){
         Request request = Request.of("https://wwww.baidu.com")
                 .setBodyT(new SomeBean("ss"), (o)->"sssss");
-        Assert.assertEquals("sssss" , request.getBodyIfNullWithParams());
+        Assert.assertEquals("sssss" , request.getBody());
     }
 
     @Test

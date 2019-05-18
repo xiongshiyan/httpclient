@@ -42,7 +42,7 @@ public class Config {
     /**
      * HostnameVerifier
      */
-    private HostnameVerifier hostnameVerifier               = getDefaultHostnameVerifier();
+    private HostnameVerifier hostnameVerifier               = new TrustAnyHostnameVerifier();
     /**
      * SSLContext
      */
@@ -54,7 +54,7 @@ public class Config {
     /**
      * X509TrustManager
      */
-    private X509TrustManager x509TrustManager               = getDefaultX509TrustManager();
+    private X509TrustManager x509TrustManager               = new DefaultTrustManager2();
     /**
      * 默认的请求头,每个请求都会加上
      */
@@ -152,16 +152,32 @@ public class Config {
         return hostnameVerifier;
     }
 
+    public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
+        return null == hostnameVerifier ? this.hostnameVerifier : hostnameVerifier;
+    }
+
     public SSLContext getSSLContext() {
         return sslContext;
+    }
+
+    public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
+        return null == sslContext ? this.sslContext : sslContext;
     }
 
     public SSLSocketFactory getSSLSocketFactory() {
         return sslSocketFactory;
     }
 
+    public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
+        return null == sslSocketFactory ? this.sslSocketFactory : sslSocketFactory;
+    }
+
     public X509TrustManager getX509TrustManager() {
         return x509TrustManager;
+    }
+
+    public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
+        return null == x509TrustManager ? this.x509TrustManager : x509TrustManager;
     }
 
     public Config setDefaultHeaders(ArrayListMultimap<String, String> headers) {
@@ -187,20 +203,13 @@ public class Config {
         return defaultHeaders;
     }
 
-
-
-
-    private HostnameVerifier getDefaultHostnameVerifier(){
-        return new TrustAnyHostnameVerifier();
-    }
-    private X509TrustManager getDefaultX509TrustManager(){
-        return new DefaultTrustManager2();
-    }
     private SSLContext getDefaultSSLContext(){
         return SSLSocketFactoryBuilder.create().getSSLContext();
     }
     private SSLSocketFactory getDefaultSSLSocketFactory(){
-        SSLContext sslContext = getDefaultSSLContext();
+        if(null == sslContext){
+            return SSLSocketFactoryBuilder.create().getSSLContext().getSocketFactory();
+        }
         return sslContext.getSocketFactory();
     }
 }

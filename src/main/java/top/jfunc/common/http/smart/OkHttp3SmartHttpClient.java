@@ -8,6 +8,11 @@ import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.OkHttp3Client;
+import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 
 import java.io.File;
@@ -27,26 +32,26 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     }
 
     @Override
-    public <R> R template(top.jfunc.common.http.smart.Request request, Method method , ContentCallback<okhttp3.Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(HttpRequest httpRequest, Method method , ContentCallback<okhttp3.Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         okhttp3.Response response = null;
         InputStream inputStream = null;
         try {
-            String completedUrl = handleUrlIfNecessary(request.getUrl() , request.getRouteParams() ,request.getQueryParams() , request.getBodyCharset());
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() ,httpRequest.getQueryParams() , httpRequest.getBodyCharset());
 
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
-                    .connectTimeout(getConnectionTimeoutWithDefault(request.getConnectionTimeout()), TimeUnit.MILLISECONDS)
-                    .readTimeout(getReadTimeoutWithDefault(request.getReadTimeout()), TimeUnit.MILLISECONDS);
+                    .connectTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()), TimeUnit.MILLISECONDS)
+                    .readTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()), TimeUnit.MILLISECONDS);
             //1.1如果存在就设置代理
-            if(null != request.getProxyInfo()){
-                clientBuilder.proxy(request.getProxyInfo().getProxy());
+            if(null != httpRequest.getProxyInfo()){
+                clientBuilder.proxy(httpRequest.getProxyInfo().getProxy());
             }
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(ParamUtil.isHttps(completedUrl)){
-                initSSL(clientBuilder , RequestSSLUtil.getHostnameVerifier(request , getHostnameVerifier()) ,
-                        RequestSSLUtil.getSSLSocketFactory(request , getSSLSocketFactory()) ,
-                        RequestSSLUtil.getX509TrustManager(request , getX509TrustManager()));
+                initSSL(clientBuilder , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
+                        getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
+                        getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()));
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -61,7 +66,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(completedUrl);
 
             //2.2设置headers
-            setRequestHeaders(builder , request.getContentType() , mergeDefaultHeaders(request.getHeaders()));
+            setRequestHeaders(builder , httpRequest.getContentType() , mergeDefaultHeaders(httpRequest.getHeaders()));
 
             //2.3处理请求体
             if(null != contentCallback && method.hasContent()){
@@ -75,10 +80,10 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             response = client.newCall(okRequest).execute();
 
             //5.获取响应
-            inputStream = getStreamFrom(response , request.isIgnoreResponseBody());
+            inputStream = getStreamFrom(response , httpRequest.isIgnoreResponseBody());
 
             int statusCode = response.code();
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(request.getResultCharset()), parseHeaders(response , request.isIncludeHeaders()));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(httpRequest.getResultCharset()), parseHeaders(response , httpRequest.isIncludeHeaders()));
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
@@ -92,8 +97,8 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
 
     @Override
-    public Response get(Request req) throws IOException {
-        Request request = beforeTemplate(req);
+    public Response get(HttpRequest req) throws IOException {
+        HttpRequest request = beforeTemplate(req);
         Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
@@ -101,9 +106,9 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
      * @param req 请求体的编码，不支持，需要在contentType中指定
      */
     @Override
-    public Response post(Request req) throws IOException {
-        Request request = beforeTemplate(req);
-        String body = request.getBodyIfNullWithParams();
+    public Response post(StringBodyRequest req) throws IOException {
+        StringBodyRequest request = beforeTemplate(req);
+        String body = request.getBody();
         Response response = template(request, Method.POST ,
                 d -> setRequestBody(d, Method.POST, stringBody(body, request.getContentType())), Response::with);
         return afterTemplate(request , response);
@@ -115,7 +120,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         Request request = beforeTemplate(req);
         ContentCallback<okhttp3.Request.Builder> contentCallback = null;
         if(method.hasContent()){
-            String body = request.getBodyIfNullWithParams();
+            String body = request.getBody();
             contentCallback = d -> setRequestBody(d, method, stringBody(body, request.getContentType()));
         }
         Response response = template(request, method , contentCallback , Response::with);
@@ -124,20 +129,20 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
 
     @Override
-    public byte[] getAsBytes(Request req) throws IOException {
-        Request request = beforeTemplate(req);
+    public byte[] getAsBytes(HttpRequest req) throws IOException {
+        HttpRequest request = beforeTemplate(req);
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File getAsFile(Request req) throws IOException {
-        Request request = beforeTemplate(req);
+    public File getAsFile(DownLoadRequest req) throws IOException {
+        DownLoadRequest request = beforeTemplate(req);
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override
-    public Response upload(Request req) throws IOException {
-        Request request = beforeTemplate(req);
+    public Response upload(UploadRequest req) throws IOException {
+        UploadRequest request = beforeTemplate(req);
         MultipartBody requestBody = filesBody(request.getFormParams() , request.getFormFiles());
         Response response = template(request, Method.POST ,
                 d -> setRequestBody(d, Method.POST, requestBody) ,
@@ -146,9 +151,9 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     }
 
     @Override
-    public Response afterTemplate(Request request, Response response) throws IOException{
+    public Response afterTemplate(HttpRequest request, Response response) throws IOException{
         if(request.isRedirectable() && response.needRedirect()){
-            return get(Request.of(response.getRedirectUrl()));
+            return get(GetRequest.of(response.getRedirectUrl()));
         }
         return response;
     }

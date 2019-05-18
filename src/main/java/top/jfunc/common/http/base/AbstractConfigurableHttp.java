@@ -97,6 +97,23 @@ public abstract class AbstractConfigurableHttp {
         return getConfig().getX509TrustManager();
     }
 
+    public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
+        return getConfig().getHostnameVerifierWithDefault(hostnameVerifier);
+    }
+
+    public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
+        return getConfig().getSSLContextWithDefault(sslContext);
+    }
+
+    public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
+        return getConfig().getSSLSocketFactoryWithDefault(sslSocketFactory);
+    }
+
+    public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
+        return getConfig().getX509TrustManagerWithDefault(x509TrustManager);
+    }
+
+
     public ArrayListMultimap<String , String> getDefaultHeaders(){
         return getConfig().getDefaultHeaders();
     }

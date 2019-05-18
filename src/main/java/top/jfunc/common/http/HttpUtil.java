@@ -3,6 +3,10 @@ package top.jfunc.common.http;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.basic.HttpClient;
 import top.jfunc.common.http.basic.NativeHttpClient;
+import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.smart.NativeSmartHttpClient;
 import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.http.smart.Response;
@@ -85,19 +89,19 @@ public class HttpUtil {
      */
     /*****************************************Proxy the method of SmartHttpClient interface*************************************************/
 
-    public static Response get(Request request) throws IOException{
+    public static Response get(HttpRequest request) throws IOException{
         return getSmartHttpClient().get(request);
     }
-    public static Response post(Request request) throws IOException{
+    public static Response post(StringBodyRequest request) throws IOException{
         return getSmartHttpClient().post(request);
     }
-    public static byte[] getAsBytes(Request request) throws IOException{
+    public static byte[] getAsBytes(HttpRequest request) throws IOException{
         return getSmartHttpClient().getAsBytes(request);
     }
-    public static File getAsFile(Request request) throws IOException{
+    public static File getAsFile(DownLoadRequest request) throws IOException{
         return getSmartHttpClient().getAsFile(request);
     }
-    public static Response upload(Request request) throws IOException{
+    public static Response upload(UploadRequest request) throws IOException{
         return getSmartHttpClient().upload(request);
     }
     /*****************************************Proxy the method of HttpClient interface*************************************************/
