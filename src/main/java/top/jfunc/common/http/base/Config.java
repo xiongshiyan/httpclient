@@ -6,6 +6,7 @@ import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.StrUtil;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -112,7 +113,7 @@ public class Config {
     }
 
     public String getBodyCharsetWithDefault(String bodyCharset){
-        return null == bodyCharset ? defaultBodyCharset : bodyCharset;
+        return StrUtil.isEmpty(bodyCharset) ? defaultBodyCharset : bodyCharset;
     }
 
     public String getDefaultResultCharset() {
@@ -125,7 +126,7 @@ public class Config {
     }
 
     public String getResultCharsetWithDefault(String resultCharset){
-        return null == resultCharset ? defaultResultCharset : resultCharset;
+        return StrUtil.isEmpty(resultCharset) ? defaultResultCharset : resultCharset;
     }
     public Config setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = hostnameVerifier;

@@ -1,6 +1,8 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.*;
+import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.http.Method;
+import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.handler.ToString;
@@ -106,7 +108,7 @@ public class Request {
     /**
      * 2018-06-18为了文件上传增加的
      */
-    private List<FormFile> formFiles = new ArrayList<>();
+    private List<FormFile> formFiles = null;
     /**
      * 为文件下载确定信息
      */
@@ -189,7 +191,7 @@ public class Request {
     }
     private void initFormParams(){
         if(null == this.formParams){
-            this.formParams = new ArrayListMultimap<>();
+            this.formParams = new ArrayListMultimap<>(2);
         }
     }
     public Request setQueryParams(ArrayListMultimap<String, String> queryParams) {
@@ -234,7 +236,7 @@ public class Request {
     }
     private void initQueryParams(){
         if(null == this.queryParams){
-            this.queryParams = new ArrayListMultimap<>();
+            this.queryParams = new ArrayListMultimap<>(2);
         }
     }
     public Request setHeaders(ArrayListMultimap<String, String> headers) {
@@ -273,7 +275,7 @@ public class Request {
     }
     private void initHeaders(){
         if(null == this.headers){
-            this.headers = new ArrayListMultimap<>();
+            this.headers = new ArrayListMultimap<>(2);
         }
     }
 
@@ -362,6 +364,7 @@ public class Request {
 
     public Request addFormFile(FormFile... formFiles) {
         if(null != formFiles){
+            initFormFiles();
             this.formFiles.addAll(Arrays.asList(formFiles));
         }
         return this;
@@ -455,6 +458,7 @@ public class Request {
     }
 
     public FormFile[] getFormFiles() {
+        initFormFiles();
         return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
     }
 
@@ -464,5 +468,11 @@ public class Request {
 
     public ProxyInfo getProxyInfo() {
         return proxyInfo;
+    }
+
+    private void initFormFiles(){
+        if(null == this.formFiles){
+            this.formFiles = new ArrayList<>(2);
+        }
     }
 }
