@@ -160,11 +160,11 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     protected InputStream getStreamFrom(HttpEntity entity , boolean ignoreResponseBody) throws IOException {
         //忽略返回body的情况下，直接返回空的
         if(ignoreResponseBody){
-            return top.jfunc.common.http.IoUtil.emptyInputStream();
+            return emptyInputStream();
         }
         InputStream inputStream = entity.getContent();
         if(null == inputStream){
-            inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
+            inputStream = emptyInputStream();
         }
         return inputStream;
     }

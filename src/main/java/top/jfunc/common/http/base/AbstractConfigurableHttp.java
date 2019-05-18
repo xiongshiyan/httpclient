@@ -7,6 +7,8 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,7 +27,12 @@ public abstract class AbstractConfigurableHttp {
         this.config = Objects.requireNonNull(config);
         return this;
     }
-
+    /**
+     * 获取一个空的，防止空指针
+     */
+    protected InputStream emptyInputStream() {
+        return new ByteArrayInputStream(new byte[]{});
+    }
     /**
      * 处理路径参数、Query参数
      * @param originUrl 原始URL

@@ -174,11 +174,11 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
     protected InputStream getStreamFrom(HttpResponse httpResponse , boolean ignoreResponseBody) throws IOException{
         //忽略返回body的情况下，直接返回空的
         if(ignoreResponseBody){
-            return top.jfunc.common.http.IoUtil.emptyInputStream();
+            return emptyInputStream();
         }
         byte[] bodyBytes = httpResponse.bodyBytes();
         if(null == bodyBytes || 0 == bodyBytes.length){
-            return top.jfunc.common.http.IoUtil.emptyInputStream();
+            return emptyInputStream();
         }
         return new ByteArrayInputStream(bodyBytes);
     }

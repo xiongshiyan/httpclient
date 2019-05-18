@@ -142,12 +142,12 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
     protected InputStream getStreamFrom(Response response , boolean ignoreResponseBody) {
         //忽略返回body的情况下，直接返回空的
         if(ignoreResponseBody){
-            return top.jfunc.common.http.IoUtil.emptyInputStream();
+            return emptyInputStream();
         }
         ResponseBody body = response.body();
-        InputStream inputStream = (body != null) ? body.byteStream() : top.jfunc.common.http.IoUtil.emptyInputStream();
+        InputStream inputStream = (body != null) ? body.byteStream() : emptyInputStream();
         if(null == inputStream){
-            inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
+            inputStream = emptyInputStream();
         }
         return inputStream;
     }

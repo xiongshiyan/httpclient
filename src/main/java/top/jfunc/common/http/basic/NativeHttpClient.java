@@ -248,7 +248,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
     protected InputStream getStreamFrom(HttpURLConnection connect , int statusCode , boolean ignoreResponseBody) throws IOException{
         //忽略返回body的情况下，直接返回空的
         if(ignoreResponseBody){
-            return top.jfunc.common.http.IoUtil.emptyInputStream();
+            return emptyInputStream();
         }
 
         InputStream inputStream;
@@ -258,7 +258,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             inputStream = connect.getErrorStream();
         }
         if(null == inputStream){
-            inputStream = top.jfunc.common.http.IoUtil.emptyInputStream();
+            inputStream = emptyInputStream();
         }
         return inputStream;
     }
