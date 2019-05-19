@@ -49,12 +49,6 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             String completedUrl = addBaseUrlIfNecessary(url);
             connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
 
-            //2.处理header
-            setConnectProperty(connect, method, contentType,
-                    mergeDefaultHeaders(headers),
-                    getConnectionTimeoutWithDefault(connectTimeout),
-                    getReadTimeoutWithDefault(readTimeout));
-
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(connect instanceof HttpsURLConnection){
                 //默认设置这些
@@ -63,15 +57,20 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
-            //3.留给子类复写的机会:给connection设置更多参数
+            //2.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connect);
 
-            //5.写入内容，只对post有效
+            //3.写入内容，只对post有效
             if(contentCallback != null && method.hasContent()){
                 contentCallback.doWriteWith(connect);
             }
 
-            //4.连接
+            //4.处理header
+            setConnectProperty(connect, method, contentType,
+                    mergeDefaultHeaders(headers),
+                    getConnectionTimeoutWithDefault(connectTimeout),
+                    getReadTimeoutWithDefault(readTimeout));
+            //5.连接
             connect.connect();
 
             //6.获取返回值

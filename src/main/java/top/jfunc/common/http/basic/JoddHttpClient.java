@@ -44,21 +44,21 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
         request.method(method.name());
         request.set(completedUrl);
 
-        //2.设置header
-        setRequestHeaders(request , contentType , mergeDefaultHeaders(headers));
-
-        //3.超时设置
+        //2.超时设置
         request.connectionTimeout(getConnectionTimeoutWithDefault(connectTimeout));
         request.timeout(getReadTimeoutWithDefault(readTimeout));
 
 
-        //4.SSL处理
+        //3.SSL处理
         initSSL(request , getHostnameVerifier() , getSSLSocketFactory() , getX509TrustManager() , null);
 
-        //5.处理body
+        //4.处理body
         if(contentCallback != null && method.hasContent()){
             contentCallback.doWriteWith(request);
         }
+
+        //5.设置header
+        setRequestHeaders(request , contentType , mergeDefaultHeaders(headers));
 
         //6.子类可以复写
         doWithHttpRequest(request);

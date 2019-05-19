@@ -65,20 +65,21 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         //URI uri = builder.build();*/
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl , method);
 
-        //2.设置请求头
-        setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers));
 
-        //3.设置请求参数
+        //2.设置请求参数
         setRequestProperty((HttpRequestBase) httpUriRequest,
                 getConnectionTimeoutWithDefault(connectTimeout),
                 getReadTimeoutWithDefault(readTimeout));
 
-        //4.创建请求内容，如果有的话
+        //3.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
             if(contentCallback != null){
                 contentCallback.doWriteWith((HttpEntityEnclosingRequest)httpUriRequest);
             }
         }
+
+        //4.设置请求头
+        setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers));
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
