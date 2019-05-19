@@ -1,9 +1,9 @@
 package top.jfunc.common.http.base;
 
+import top.jfunc.common.utils.MultiValueMap;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 结果封装，更通用的封装方式，输入更通用，自己转化成需要的数据结构string、bytes、file...
@@ -21,5 +21,5 @@ public interface ResultCallback<R> {
      * @throws IOException IOException
      * @see top.jfunc.common.http.smart.Response
      */
-    R convert(int statusCode , InputStream stream, String resultCharset, Map<String, List<String>> headers) throws IOException;
+    R convert(int statusCode , InputStream stream, String resultCharset, MultiValueMap<String, String> headers) throws IOException;
 }

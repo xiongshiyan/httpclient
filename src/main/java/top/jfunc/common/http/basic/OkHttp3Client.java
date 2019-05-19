@@ -225,14 +225,14 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
     /**
      * 获取响应中的headers
      */
-    protected Map<String, List<String>> parseHeaders(Response response , boolean includeHeaders) {
+    protected MultiValueMap<String , String> parseHeaders(Response response , boolean includeHeaders) {
         if(!includeHeaders){
-            return new HashMap<>(0);
+            return new ArrayListMultiValueMap<>(0);
         }
         Headers resHeaders = response.headers();
         MultiValueMap<String , String> headers = new ArrayListMultiValueMap<>(resHeaders.size());
         resHeaders.names().forEach((key)-> headers.add(key,resHeaders.get(key)) );
-        return headers.getMap();
+        return headers;
     }
 
     /**

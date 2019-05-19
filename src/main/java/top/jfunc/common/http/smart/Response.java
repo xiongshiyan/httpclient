@@ -5,7 +5,9 @@ import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.base.handler.FromString;
 import top.jfunc.common.http.base.handler.FromStringHandler;
+import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.*;
 import java.util.*;
@@ -31,9 +33,9 @@ public class Response implements Closeable{
     /**
      * 返回的header
      */
-    private Map<String,List<String>> headers = new HashMap<>();
+    private MultiValueMap<String, String> headers = null;
 
-    private Response(int statusCode, byte[] bodyBytes, String resultCharset, Map<String, List<String>> headers) {
+    private Response(int statusCode, byte[] bodyBytes, String resultCharset, MultiValueMap<String, String> headers) {
         this.statusCode = statusCode;
         this.bodyBytes = bodyBytes;
         this.resultCharset = resultCharset;
@@ -56,7 +58,7 @@ public class Response implements Closeable{
         return with(HttpStatus.HTTP_OK , body , resultCharset , headers);
     }*/
 
-    public static Response with(int statusCode , InputStream inputStream , String resultCharset , Map<String , List<String>> headers){
+    public static Response with(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers){
         ///
         /*String read = null;
         try {
@@ -116,7 +118,7 @@ public class Response implements Closeable{
      *
      * 提供此方法的主要目的是在既想要将内容保存为文件，
      * 又需要header等信息的时候，返回Response代表响应的所有信息。
-     * 如果只需要保存为文件，那么请调用 {@link SmartHttpClient#getAsFile(Request)}
+     * 如果只需要保存为文件，那么请调用 {@link SmartHttpClient#getAsFile(DownLoadRequest)}
      *
      */
     public File asFile(File fileToSave){
@@ -128,33 +130,27 @@ public class Response implements Closeable{
     }
 
 
-    public Map<String, List<String>> getHeaders() {
+    /**
+     * 可能为空
+     */
+    public MultiValueMap<String, String> getHeaders() {
         return headers;
     }
 
     public List<String> getHeader(String key) {
+        if(null == headers || headers.isEmpty()){
+            return null;
+        }
         return headers.get(key);
     }
     public String getOneHeader(String key) {
-        List<String> list = headers.get(key);
-        if(null == list){return null;}
-        return list.get(0);
+        return getFirstHeader(key);
     }
-
-    public Response addHeader(String key,String value){
-        List<String> list = headers.get(key);
-        if(list == null){
-            list = new ArrayList<>();
-            if(list.add(value)){
-                headers.put(key, list);
-                return this;
-            } else{
-                throw new AssertionError("New list violated the list spec");
-            }
-        } else {
-            list.add(value);
-            return this;
+    public String getFirstHeader(String key) {
+        if(null == headers || headers.isEmpty()){
+            return null;
         }
+        return headers.getFirst(key);
     }
 
     public String getResultCharset() {

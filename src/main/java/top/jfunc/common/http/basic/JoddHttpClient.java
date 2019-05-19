@@ -11,7 +11,6 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -133,9 +132,9 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
 
     protected void doWithHttpRequest(HttpRequest httpRequest){}
 
-    protected Map<String , List<String>> parseHeaders(HttpResponse response , boolean isIncludeHeaders) {
+    protected MultiValueMap<String , String> parseHeaders(HttpResponse response , boolean isIncludeHeaders) {
         if(!isIncludeHeaders){
-            return new HashMap<>(0);
+            return new ArrayListMultiValueMap<>(0);
         }
 
         Collection<String> headerNames = response.headerNames();
@@ -146,7 +145,7 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
                 arrayListMultimap.add(headerName , headerValue);
             }
         }
-        return arrayListMultimap.getMap();
+        return arrayListMultimap;
     }
 
     /**

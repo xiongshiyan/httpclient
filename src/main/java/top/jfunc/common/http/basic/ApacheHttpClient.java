@@ -40,8 +40,6 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -360,15 +358,15 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         }
     }
 
-    protected Map<String , List<String>> parseHeaders(CloseableHttpResponse response, boolean isIncludeHeaders) {
+    protected MultiValueMap<String , String> parseHeaders(CloseableHttpResponse response, boolean isIncludeHeaders) {
         if(!isIncludeHeaders){
-            return new HashMap<>(0);
+            return new ArrayListMultiValueMap<>(0);
         }
         Header[] allHeaders = response.getAllHeaders();
         MultiValueMap<String,String> arrayListMultimap = new ArrayListMultiValueMap<>(allHeaders.length);
         for (Header header : allHeaders) {
             arrayListMultimap.add(header.getName() , header.getValue());
         }
-        return arrayListMultimap.getMap();
+        return arrayListMultimap;
     }
 }
