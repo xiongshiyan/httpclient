@@ -28,7 +28,6 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -44,7 +43,6 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 使用Apache HttpClient 实现的Http请求类
@@ -367,9 +365,9 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
             return new HashMap<>(0);
         }
         Header[] allHeaders = response.getAllHeaders();
-        ArrayListMultimap<String,String> arrayListMultimap = new ArrayListMultimap<>(allHeaders.length);
+        MultiValueMap<String,String> arrayListMultimap = new ArrayListMultiValueMap<>(allHeaders.length);
         for (Header header : allHeaders) {
-            arrayListMultimap.put(header.getName() , header.getValue());
+            arrayListMultimap.add(header.getName() , header.getValue());
         }
         return arrayListMultimap.getMap();
     }

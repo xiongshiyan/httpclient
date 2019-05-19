@@ -139,11 +139,11 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
         }
 
         Collection<String> headerNames = response.headerNames();
-        ArrayListMultimap<String,String> arrayListMultimap = new ArrayListMultimap<>(headerNames.size());
+        MultiValueMap<String,String> arrayListMultimap = new ArrayListMultiValueMap<>(headerNames.size());
         for (String headerName : headerNames) {
             List<String> headers = response.headers(headerName);
             for (String headerValue : headers) {
-                arrayListMultimap.put(headerName , headerValue);
+                arrayListMultimap.add(headerName , headerValue);
             }
         }
         return arrayListMultimap.getMap();

@@ -3,7 +3,6 @@ package top.jfunc.common.http.basic;
 import top.jfunc.common.http.*;
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 

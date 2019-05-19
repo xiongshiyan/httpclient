@@ -9,7 +9,6 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -231,8 +230,8 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
             return new HashMap<>(0);
         }
         Headers resHeaders = response.headers();
-        ArrayListMultimap<String , String> headers = new ArrayListMultimap<>(resHeaders.size());
-        resHeaders.names().forEach((key)-> headers.put(key,resHeaders.get(key)) );
+        MultiValueMap<String , String> headers = new ArrayListMultiValueMap<>(resHeaders.size());
+        resHeaders.names().forEach((key)-> headers.add(key,resHeaders.get(key)) );
         return headers.getMap();
     }
 
