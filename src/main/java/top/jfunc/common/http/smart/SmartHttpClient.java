@@ -44,12 +44,12 @@ public interface SmartHttpClient extends HttpClient {
 
     /**
      * 接口对其他http方法的支持
-     * @param request Request
+     * @param httpRequest Request
      * @param method Method
      * @return Response
      * @throws IOException IOException
      */
-    Response httpMethod(Request request, Method method) throws IOException;
+    Response httpMethod(HttpRequest httpRequest, Method method) throws IOException;
 
     /**
      * 下载为字节数组

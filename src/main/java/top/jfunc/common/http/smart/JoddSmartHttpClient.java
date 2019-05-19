@@ -92,11 +92,11 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public Response httpMethod(Request req, Method method) throws IOException {
-        Request request = beforeTemplate(req);
+    public Response httpMethod(top.jfunc.common.http.request.HttpRequest req, Method method) throws IOException {
+        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(req);
         ContentCallback<HttpRequest> contentCallback = null;
-        if(method.hasContent()){
-            String body = request.getBody();
+        if(method.hasContent() && request instanceof StringBodyRequest){
+            String body = ((StringBodyRequest)request).getBody();
             contentCallback = httpRequest -> httpRequest.body(body.getBytes(getBodyCharsetWithDefault(request.getBodyCharset())), request.getContentType());
         }
         Response response = template(request, method , contentCallback, Response::with);

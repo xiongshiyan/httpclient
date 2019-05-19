@@ -111,15 +111,15 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     }
 
     @Override
-    public Response httpMethod(Request req, Method method) throws IOException {
-        Request request = beforeTemplate(req);
+    public Response httpMethod(HttpRequest req, Method method) throws IOException {
+        HttpRequest httpRequest = beforeTemplate(req);
         ContentCallback<HttpURLConnection> contentCallback = null;
-        if(method.hasContent()){
-            String body = request.getBody();
-            contentCallback = connection -> writeContent(connection, body, getBodyCharsetWithDefault(request.getBodyCharset()));
+        if(method.hasContent() && httpRequest instanceof StringBodyRequest){
+            String body = ((StringBodyRequest)httpRequest).getBody();
+            contentCallback = connection -> writeContent(connection, body, getBodyCharsetWithDefault(httpRequest.getBodyCharset()));
         }
-        Response response = template(request, method , contentCallback , Response::with);
-        return afterTemplate(request , response);
+        Response response = template(httpRequest, method , contentCallback , Response::with);
+        return afterTemplate(httpRequest , response);
     }
 
     @Override

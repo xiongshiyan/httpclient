@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 使用OkHttp3 实现的Http请求类
  * @author xiongshiyan at 2018/1/11
  */
 public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpClient , SmartHttpTemplate<okhttp3.Request.Builder>{
@@ -116,11 +117,11 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
 
     @Override
-    public Response httpMethod(Request req, Method method) throws IOException {
-        Request request = beforeTemplate(req);
+    public Response httpMethod(HttpRequest req, Method method) throws IOException {
+        HttpRequest request = beforeTemplate(req);
         ContentCallback<okhttp3.Request.Builder> contentCallback = null;
-        if(method.hasContent()){
-            String body = request.getBody();
+        if(method.hasContent() && request instanceof StringBodyRequest){
+            String body = ((StringBodyRequest)request).getBody();
             contentCallback = d -> setRequestBody(d, method, stringBody(body, request.getContentType()));
         }
         Response response = template(request, method , contentCallback , Response::with);
