@@ -2,7 +2,10 @@ package top.jfunc.common.http;
 
 import org.junit.Assert;
 import org.junit.Test;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.LinkedMultiValueMap;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +62,22 @@ public class ParamUtilTest {
         Map<String , String> map = new HashMap<>();
         map.put("xx" , "xx");
         map.put("yy" , "yy");
+        String contactMap = ParamUtil.contactMap(map);
+        Assert.assertThat(contactMap , is("xx=xx&yy=yy"));
+    }
+    @Test
+    public void testConcatParam3(){
+        MultiValueMap<String , String> map = new LinkedMultiValueMap<>();
+        map.add("xx" , "xx");
+        map.add("yy" , "yy");
+        String contactMap = ParamUtil.contactMap(map);
+        Assert.assertThat(contactMap , is("xx=xx&yy=yy"));
+    }
+    @Test
+    public void testConcatParam4(){
+        MultiValueMap<String , String> map = new ArrayListMultiValueMap<>();
+        map.add("xx" , "xx");
+        map.add("yy" , "yy");
         String contactMap = ParamUtil.contactMap(map);
         Assert.assertThat(contactMap , is("xx=xx&yy=yy"));
     }

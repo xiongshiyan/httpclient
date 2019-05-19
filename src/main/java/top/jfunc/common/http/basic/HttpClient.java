@@ -3,7 +3,6 @@ package top.jfunc.common.http.basic;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.ArrayListMultimap;
 
@@ -31,7 +30,7 @@ public interface HttpClient {
      *HTTP GET请求
      * @param url URL，可以帶参数
      * @param params 参数列表，可以为 null, 此系列get方法的params按照URLEncoder(UTF-8)拼装,
-     *               如果是其他的编码请使用{@link SmartHttpClient#get(Request)},然后Request中设置bodyCharset
+     *               如果是其他的编码请使用{@link SmartHttpClient#get(top.jfunc.common.http.request.HttpRequest)},然后Request中设置bodyCharset
      * @param headers HTTP header 可以为 null
      * @param connectTimeout 连接超时时间
      * @param readTimeout 读超时时间

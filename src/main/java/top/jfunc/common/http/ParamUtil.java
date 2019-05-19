@@ -3,17 +3,16 @@ package top.jfunc.common.http;
 import top.jfunc.common.Editor;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.Joiner;
+import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author xiongshiyan at 2017/12/11
+ * @since 1.1.1新增MultiValueMap的支持
  */
 public class ParamUtil {
     private ParamUtil(){}
@@ -57,6 +56,9 @@ public class ParamUtil {
     public static String contactMap(ArrayListMultimap<String, String> value){
         return contactMap(value , HttpConstants.DEFAULT_CHARSET);
     }
+    public static String contactMap(MultiValueMap<String, String> value){
+        return contactMap(value , HttpConstants.DEFAULT_CHARSET);
+    }
     /**
      * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
      * @param value 键值对
@@ -72,6 +74,27 @@ public class ParamUtil {
             String key = iterator.next();
             List<String> vList = value.get(key);
 
+            for (String v : vList) {
+                params.append(key).append("=").append(urlEncode(v, valueCharset)).append("&");
+            }
+        }
+        if(params.length() > 0){
+            params = params.deleteCharAt(params.length() - 1);
+        }
+        return params.toString();
+    }
+    /**
+     * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
+     * @param value 键值对
+     */
+    public static String contactMap(MultiValueMap<String, String> value , final String valueCharset){
+        if(null == value){return "";}
+
+        StringBuilder params = new StringBuilder();
+        Set<Map.Entry<String, List<String>>> entries = value.entrySet();
+        for (Map.Entry<String, List<String>> entry : entries) {
+            String key = entry.getKey();
+            List<String> vList = entry.getValue();
             for (String v : vList) {
                 params.append(key).append("=").append(urlEncode(v, valueCharset)).append("&");
             }
@@ -114,11 +137,19 @@ public class ParamUtil {
         Objects.requireNonNull(actionName);
         return contactUrlParams(actionName , contactMap(params , HttpConstants.DEFAULT_CHARSET));
     }
+    public static String contactUrlParams(String actionName, MultiValueMap<String , String> params) {
+        Objects.requireNonNull(actionName);
+        return contactUrlParams(actionName , contactMap(params , HttpConstants.DEFAULT_CHARSET));
+    }
     /**
      * @see ParamUtil#contactMap(ArrayListMultimap,String)
      * @see ParamUtil#contactUrlParams(String, String)
      */
     public static String contactUrlParams(String actionName, ArrayListMultimap<String , String> params , String valueCharset) {
+        Objects.requireNonNull(actionName);
+        return contactUrlParams(actionName , contactMap(params , valueCharset));
+    }
+    public static String contactUrlParams(String actionName, MultiValueMap<String , String> params , String valueCharset) {
         Objects.requireNonNull(actionName);
         return contactUrlParams(actionName , contactMap(params , valueCharset));
     }
