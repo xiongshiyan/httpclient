@@ -3,7 +3,9 @@ package top.jfunc.common.http.request.impl;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.*;
 
@@ -23,14 +25,14 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
     /**
      * form参数
      */
-    private ArrayListMultimap<String,String> formParams;
+    private MultiValueMap<String,String> formParams;
     /**
      * 2018-06-18为了文件上传增加的
      */
     private List<FormFile> formFiles = null;
 
     @Override
-    public ArrayListMultimap<String, String> getFormParams() {
+    public MultiValueMap<String, String> getFormParams() {
         return formParams;
     }
 
@@ -40,31 +42,36 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
         return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
     }
 
-    public FileParamUploadRequest setFormParams(ArrayListMultimap<String, String> formParams) {
+    public FileParamUploadRequest setFormParams(MultiValueMap<String, String> formParams) {
         this.formParams = Objects.requireNonNull(formParams);
         return this;
     }
+    public FileParamUploadRequest setFormParams(ArrayListMultimap<String, String> formParams) {
+        Objects.requireNonNull(formParams);
+        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
+        return this;
+    }
     public FileParamUploadRequest setFormParams(Map<String, String> formParams) {
-        initFormParams();
-        formParams.forEach((k,v)->this.formParams.put(k,v));
+        Objects.requireNonNull(formParams);
+        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
         return this;
     }
     public FileParamUploadRequest addFormParam(String key, String value){
         initFormParams();
-        this.formParams.put(key, value);
+        this.formParams.add(key, value);
         return this;
     }
     public FileParamUploadRequest addFormParam(String key, String... values){
         initFormParams();
         for (String value : values) {
-            this.formParams.put(key , value);
+            this.formParams.add(key , value);
         }
         return this;
     }
     public FileParamUploadRequest addFormParam(String key, Iterable<String> values){
         initFormParams();
         for (String value : values) {
-            this.formParams.put(key , value);
+            this.formParams.add(key , value);
         }
         return this;
     }
@@ -82,7 +89,7 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
     }
     private void initFormParams(){
         if(null == this.formParams){
-            this.formParams = new ArrayListMultimap<>(2);
+            this.formParams = new ArrayListMultiValueMap<>(2);
         }
     }
 

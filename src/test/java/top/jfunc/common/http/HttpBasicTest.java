@@ -2,9 +2,11 @@ package top.jfunc.common.http;
 
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.basic.*;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import org.junit.Ignore;
 import org.junit.Test;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +51,7 @@ public class HttpBasicTest {
             s = http.get(url,null,headers);
             System.out.println(s);
 
-            byte[] bytes = http.getAsBytes(url , ArrayListMultimap.fromMap(headers));
+            byte[] bytes = http.getAsBytes(url , ArrayListMultiValueMap.fromMap(headers));
             System.out.println(bytes.length);
             System.out.println(new String(bytes));
             File asFile = http.getAsFile(url, new File("C:\\Users\\xiongshiyan\\Desktop\\xxxx.txt"));
@@ -123,9 +125,9 @@ public class HttpBasicTest {
         String url = "http://localhost:8080/http-server-test/upload/only";
         try {
             FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "file",null);
-            ArrayListMultimap<String , String> headers = new ArrayListMultimap<>(2);
-            headers.put("empCode" , "ahg0023");
-            headers.put("phone" , "15208384257");
+            MultiValueMap<String , String> headers = new ArrayListMultiValueMap<>(2);
+            headers.add("empCode" , "ahg0023");
+            headers.add("phone" , "15208384257");
             String s = httpClient.upload(url , headers, formFile);
             System.out.println(s);
         }catch (IOException e){
@@ -163,12 +165,12 @@ public class HttpBasicTest {
         String url = "http://localhost:8080/http-server-test/upload/withParam";
         try {
             FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "file",null);
-            ArrayListMultimap<String , String> headers = new ArrayListMultimap<>(2);
-            headers.put("empCode" , "ahg0023");
-            headers.put("phone" , "15208384257");
-            ArrayListMultimap<String , String> params = new ArrayListMultimap<>(2);
-            params.put("k1" , "v1");
-            params.put("k2" , "v2");
+            MultiValueMap<String , String> headers = new ArrayListMultiValueMap<>(2);
+            headers.add("empCode" , "ahg0023");
+            headers.add("phone" , "15208384257");
+            MultiValueMap<String , String> params = new ArrayListMultiValueMap<>(2);
+            params.add("k1" , "v1");
+            params.add("k2" , "v2");
             String s = httpClient.upload(url , params , headers, formFile);
             System.out.println(s);
         }catch (IOException e){

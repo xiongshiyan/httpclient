@@ -1,7 +1,7 @@
 package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -43,7 +43,7 @@ public abstract class AbstractConfigurableHttp {
      */
     protected String handleUrlIfNecessary(String originUrl ,
                                           Map<String , String> routeParams ,
-                                          ArrayListMultimap<String,String> queryParams,
+                                          MultiValueMap<String,String> queryParams,
                                           String charset){
         //1.处理路径参数
         String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , routeParams);
@@ -114,15 +114,15 @@ public abstract class AbstractConfigurableHttp {
     }
 
 
-    public ArrayListMultimap<String , String> getDefaultHeaders(){
+    public MultiValueMap<String , String> getDefaultHeaders(){
         return getConfig().getDefaultHeaders();
     }
 
     /**
      * 合并默认的header
      */
-    protected ArrayListMultimap<String , String> mergeDefaultHeaders(final ArrayListMultimap<String , String> headers){
-        ArrayListMultimap<String, String> defaultHeaders = getDefaultHeaders();
+    protected MultiValueMap<String , String> mergeDefaultHeaders(final MultiValueMap<String , String> headers){
+        MultiValueMap<String, String> defaultHeaders = getDefaultHeaders();
         if(null == headers){
             return defaultHeaders;
         }
@@ -130,10 +130,12 @@ public abstract class AbstractConfigurableHttp {
             return headers;
         }
 
-        //合并两个
-        for (String key : defaultHeaders.keySet()) {
-            defaultHeaders.get(key).forEach((v)-> headers.put(key , v));
-        }
+        ///合并两个
+        /*for (String key : defaultHeaders.keySet()) {
+            defaultHeaders.get(key).forEach((v)-> headers.add(key , v));
+        }*/
+        //defaultHeaders.forEach((k,l)->l.forEach(v->headers.add(k , v)));
+        defaultHeaders.forEachKeyValue(headers::add);
 
         return headers;
     }

@@ -10,8 +10,8 @@ import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.smart.NativeSmartHttpClient;
 import top.jfunc.common.http.smart.Response;
 import top.jfunc.common.http.smart.SmartHttpClient;
-import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.ClassUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -178,39 +178,39 @@ public class HttpUtil {
         return getSmartHttpClient().post(url, params);
     }
 
-    public static byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static byte[] getAsBytes(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException{
         return getSmartHttpClient().getAsBytes(url, headers, connectTimeout, readTimeout);
     }
     public static byte[] getAsBytes(String url, Integer connectTimeout, Integer readTimeout) throws IOException{
         return getSmartHttpClient().getAsBytes(url, connectTimeout , readTimeout);
     }
-    public static byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers) throws IOException{
+    public static byte[] getAsBytes(String url, MultiValueMap<String, String> headers) throws IOException{
         return getSmartHttpClient().getAsBytes(url , headers);
     }
     public static byte[] getAsBytes(String url) throws IOException{
         return getSmartHttpClient().getAsBytes(url);
     }
 
-    public static File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static File getAsFile(String url, MultiValueMap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException{
         return getSmartHttpClient().getAsFile(url, headers, file, connectTimeout, readTimeout);
     }
     public static File getAsFile(String url, File file, Integer connectTimeout, Integer readTimeout) throws IOException{
         return getSmartHttpClient().getAsFile(url, file , connectTimeout , readTimeout);
     }
-    public static File getAsFile(String url, ArrayListMultimap<String, String> headers, File file) throws IOException{
+    public static File getAsFile(String url, MultiValueMap<String, String> headers, File file) throws IOException{
         return getSmartHttpClient().getAsFile(url, headers  , file);
     }
     public static File getAsFile(String url, File file) throws IOException{
         return getSmartHttpClient().getAsFile(url, file);
     }
 
-    public static String upload(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, headers, connectTimeout, readTimeout, resultCharset, files);
     }
-    public static String upload(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, headers ,connectTimeout , readTimeout , files);
     }
-    public static String upload(String url, ArrayListMultimap<String, String> headers, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, headers ,files);
     }
     public static String upload(String url, Integer connectTimeout, Integer readTimeout, FormFile... files) throws IOException{
@@ -220,16 +220,16 @@ public class HttpUtil {
         return getSmartHttpClient().upload(url, files);
     }
 
-    public static String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, params, headers, connectTimeout, readTimeout, resultCharset, files);
     }
-    public static String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, params ,headers ,connectTimeout , readTimeout, files);
     }
-    public static String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, params ,headers , files);
     }
-    public static String upload(String url, Integer connectTimeout, Integer readTimeout, ArrayListMultimap<String, String> params, FormFile... files) throws IOException{
+    public static String upload(String url, Integer connectTimeout, Integer readTimeout, MultiValueMap<String, String> params, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, params,connectTimeout , readTimeout, files);
     }
     public static String upload(String url, Map<String, String> params, FormFile... files) throws IOException{

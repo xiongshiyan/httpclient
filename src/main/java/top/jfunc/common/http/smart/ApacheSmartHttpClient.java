@@ -46,21 +46,21 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
 
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
 
-        //2.设置请求头
-        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), mergeDefaultHeaders(httpRequest.getHeaders()));
-
-        //3.设置请求参数
+        //2.设置请求参数
         setRequestProperty((HttpRequestBase) httpUriRequest,
                 getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()),
                 getReadTimeoutWithDefault(httpRequest.getReadTimeout()),
                 httpRequest.getProxyInfo());
 
-        //4.创建请求内容，如果有的话
+        //3.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
             if(contentCallback != null){
                 contentCallback.doWriteWith((HttpEntityEnclosingRequest)httpUriRequest);
             }
         }
+
+        //4.设置请求头
+        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), mergeDefaultHeaders(httpRequest.getHeaders()));
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;

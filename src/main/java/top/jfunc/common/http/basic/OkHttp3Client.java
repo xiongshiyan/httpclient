@@ -8,8 +8,10 @@ import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -33,7 +35,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
     }
 
     @Override
-    public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
+    public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
         Objects.requireNonNull(url);
         Response response = null;
         InputStream inputStream = null;
@@ -92,7 +94,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException {
         return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()),Method.GET,null,null,
-                ArrayListMultimap.fromMap(headers),
+                ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout,readTimeout,resultCharset,false,(s,b,r,h)-> IoUtil.read(b ,r));
     }
 
@@ -102,27 +104,27 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
         return template(url, Method.POST, contentType, d->setRequestBody(d , Method.POST , stringBody(body , contentType)) ,
-                ArrayListMultimap.fromMap(headers),
+                ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout,readTimeout,resultCharset,false,
                 (s,b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
-    public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException {
+    public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url,Method.GET,null,null, headers ,
                 connectTimeout,readTimeout,null,false,
                 (s,b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
+    public File getAsFile(String url, MultiValueMap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url,Method.GET,null,null, headers ,
                 connectTimeout,readTimeout,null,false,
                 (s,b,r,h)-> IoUtil.copy2File(b, file));
     }
 
     @Override
-    public String upload(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
+    public String upload(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
         MultipartBody requestBody = filesBody(null , files);
 
         return template(url, Method.POST, null , d->setRequestBody(d, Method.POST , requestBody), headers,
@@ -131,7 +133,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
     }
 
     @Override
-    public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , FormFile... files) throws IOException {
+    public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , FormFile... files) throws IOException {
         MultipartBody requestBody = filesBody(params , files);
 
         return template(url, Method.POST, null , d->setRequestBody(d, Method.POST , requestBody), headers,
@@ -190,11 +192,12 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
      * @param params 伴随文件上传的参数key=value，可以为空
      * @param files 上传文件信息
      */
-    protected MultipartBody filesBody(ArrayListMultimap<String, String> params , FormFile... files) {
+    protected MultipartBody filesBody(MultiValueMap<String, String> params , FormFile... files) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
         if(null != params){
-            params.keySet().forEach(key->params.get(key).forEach(value->builder.addFormDataPart(key , value)));
+            /*params.keySet().forEach(key->params.get(key).forEach(value->builder.addFormDataPart(key , value)));*/
+            params.forEachKeyValue(builder::addFormDataPart);
         }
 
         for (FormFile formFile : files) {
@@ -208,10 +211,12 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
         return new InputStreamRequestBody(contentType , inputStream , length);
     }
 
-    protected void setRequestHeaders(Request.Builder builder, String contentType, ArrayListMultimap<String, String> headers) {
+    protected void setRequestHeaders(Request.Builder builder, String contentType, MultiValueMap<String, String> headers) {
         if(null != headers) {
-            Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));
+            ///
+            /*Set<String> keySet = headers.keySet();
+            keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));*/
+            headers.forEachKeyValue(builder::addHeader);
         }
         if(null != contentType){
             builder.addHeader(HeaderRegular.CONTENT_TYPE.toString(), contentType);

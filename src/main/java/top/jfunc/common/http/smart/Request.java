@@ -16,7 +16,9 @@ import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import javax.net.ssl.HostnameVerifier;
@@ -43,7 +45,7 @@ import java.util.*;
  * @see top.jfunc.common.http.request.impl.DownLoadRequest
  * @author xiongshiyan at 2017/12/9
  *
- * @since 1.1就废弃此类了
+ * @since 从1.1开始建议不要用此类了,而是使用以上的一些意义更明确的
  */
 public class Request implements HttpRequest , StringBodyRequest , UploadRequest , DownLoadRequest{
     /**
@@ -73,16 +75,16 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
      * 查询参数，拼装在URL后面 ?
      * @since 1.0.4
      */
-    private ArrayListMultimap<String,String> queryParams;
+    private MultiValueMap<String,String> queryParams;
     /**
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
      */
-    private ArrayListMultimap<String,String> formParams;
+    private MultiValueMap<String,String> formParams;
     /**
      * 请求头
      */
-    private ArrayListMultimap<String,String> headers;
+    private MultiValueMap<String,String> headers;
     /**
      * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
      * @see Method#hasContent()
@@ -195,31 +197,36 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
         return this;
     }
 
-    public Request setFormParams(ArrayListMultimap<String, String> formParams) {
+    public Request setFormParams(MultiValueMap<String, String> formParams) {
         this.formParams = Objects.requireNonNull(formParams);
         return this;
     }
+    public Request setFormParams(ArrayListMultimap<String, String> formParams) {
+        Objects.requireNonNull(formParams);
+        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
+        return this;
+    }
     public Request setFormParams(Map<String, String> formParams) {
-        initFormParams();
-        formParams.forEach((k,v)->this.formParams.put(k,v));
+        Objects.requireNonNull(formParams);
+        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
         return this;
     }
     public Request addFormParam(String key, String value){
         initFormParams();
-        this.formParams.put(key, value);
+        this.formParams.add(key, value);
         return this;
     }
     public Request addFormParam(String key, String... values){
         initFormParams();
         for (String value : values) {
-            this.formParams.put(key , value);
+            this.formParams.add(key , value);
         }
         return this;
     }
     public Request addFormParam(String key, Iterable<String> values){
         initFormParams();
         for (String value : values) {
-            this.formParams.put(key , value);
+            this.formParams.add(key , value);
         }
         return this;
     }
@@ -237,34 +244,39 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
     }
     private void initFormParams(){
         if(null == this.formParams){
-            this.formParams = new ArrayListMultimap<>(2);
+            this.formParams = new ArrayListMultiValueMap<>(2);
         }
     }
-    public Request setQueryParams(ArrayListMultimap<String, String> queryParams) {
+    public Request setQueryParams(MultiValueMap<String, String> queryParams) {
         this.queryParams = Objects.requireNonNull(queryParams);
         return this;
     }
+    public Request setQueryParams(ArrayListMultimap<String, String> queryParams) {
+        Objects.requireNonNull(queryParams);
+        this.queryParams = ArrayListMultiValueMap.fromMap(queryParams);
+        return this;
+    }
     public Request setQueryParams(Map<String, String> queryParams) {
-        initQueryParams();
-        queryParams.forEach((k,v)->this.queryParams.put(k,v));
+        Objects.requireNonNull(queryParams);
+        this.queryParams = ArrayListMultiValueMap.fromMap(queryParams);
         return this;
     }
     public Request addQueryParam(String key, String value){
         initQueryParams();
-        this.queryParams.put(key, value);
+        this.queryParams.add(key, value);
         return this;
     }
     public Request addQueryParam(String key, String... values){
         initQueryParams();
         for (String value : values) {
-            this.queryParams.put(key , value);
+            this.queryParams.add(key , value);
         }
         return this;
     }
     public Request addQueryParam(String key, Iterable<String> values){
         initQueryParams();
         for (String value : values) {
-            this.queryParams.put(key , value);
+            this.queryParams.add(key , value);
         }
         return this;
     }
@@ -282,35 +294,40 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
     }
     private void initQueryParams(){
         if(null == this.queryParams){
-            this.queryParams = new ArrayListMultimap<>(2);
+            this.queryParams = new ArrayListMultiValueMap<>(2);
         }
     }
     @Override
-    public Request setHeaders(ArrayListMultimap<String, String> headers) {
+    public Request setHeaders(MultiValueMap<String, String> headers) {
         this.headers = Objects.requireNonNull(headers);
         return this;
     }
+    public Request setHeaders(ArrayListMultimap<String, String> headers) {
+        Objects.requireNonNull(headers);
+        this.headers = ArrayListMultiValueMap.fromMap(headers);
+        return this;
+    }
     public Request setHeaders(Map<String, String> headers) {
-        initHeaders();
-        headers.forEach((k,v)->this.headers.put(k,v));
+        Objects.requireNonNull(headers);
+        this.headers = ArrayListMultiValueMap.fromMap(headers);
         return this;
     }
     public Request addHeader(String key, String value){
         initHeaders();
-        this.headers.put(key, value);
+        this.headers.add(key, value);
         return this;
     }
     public Request addHeader(String key, String... values){
         initHeaders();
         for (String value : values) {
-            this.headers.put(key , value);
+            this.headers.add(key , value);
         }
         return this;
     }
     public Request addHeader(String key, Iterable<String> values){
         initHeaders();
         for (String value : values) {
-            this.headers.put(key , value);
+            this.headers.add(key , value);
         }
         return this;
     }
@@ -322,7 +339,7 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
     }
     private void initHeaders(){
         if(null == this.headers){
-            this.headers = new ArrayListMultimap<>(2);
+            this.headers = new ArrayListMultiValueMap<>(2);
         }
     }
 
@@ -462,15 +479,15 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
         return routeParams;
     }
     @Override
-    public ArrayListMultimap<String, String> getQueryParams() {
+    public MultiValueMap<String, String> getQueryParams() {
         return queryParams;
     }
     @Override
-    public ArrayListMultimap<String, String> getFormParams() {
+    public MultiValueMap<String, String> getFormParams() {
         return formParams;
     }
     @Override
-    public ArrayListMultimap<String, String> getHeaders() {
+    public MultiValueMap<String, String> getHeaders() {
         return headers;
     }
 

@@ -12,6 +12,7 @@ import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
@@ -46,10 +47,6 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                     (HttpURLConnection)url.openConnection(httpRequest.getProxyInfo().getProxy()) :
                     (HttpURLConnection) url.openConnection();
 
-            //2.处理header
-            setConnectProperty(connection, method, httpRequest.getContentType(), mergeDefaultHeaders(httpRequest.getHeaders()),
-                    getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()),
-                    getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
 
             ////////////////////////////////////ssl处理///////////////////////////////////
@@ -61,15 +58,23 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            //2.处理header
+            setConnectProperty(connection, method, httpRequest.getContentType(), mergeDefaultHeaders(httpRequest.getHeaders()),
+                    getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()),
+                    getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
+
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection);
 
-            //5.写入内容，只对post有效
+            //4.写入内容，只对post有效
             if(contentCallback != null && method.hasContent()){
                 contentCallback.doWriteWith(connection);
             }
 
-            //4.连接
+            //5.连接
             connection.connect();
 
             //6.获取返回值
@@ -137,7 +142,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     @Override
     public Response upload(UploadRequest req) throws IOException {
         UploadRequest request = beforeTemplate(req);
-        ArrayListMultimap<String, String> headers = mergeHeaders(request.getHeaders());
+        MultiValueMap<String, String> headers = mergeHeaders(request.getHeaders());
         Response response = template(request.setHeaders(headers), Method.POST ,
                 connect -> this.upload0(connect, request.getFormParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);

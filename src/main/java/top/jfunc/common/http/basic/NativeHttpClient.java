@@ -2,8 +2,10 @@ package top.jfunc.common.http.basic;
 
 import top.jfunc.common.http.*;
 import top.jfunc.common.http.base.*;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -38,55 +40,61 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
     @Override
-    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
         //默认的https校验
         // 后面会处理的，这里就不需要了 initDefaultSSL(sslVer);
 
-        HttpURLConnection connect = null;
+        HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
             //1.获取连接
             String completedUrl = addBaseUrlIfNecessary(url);
-            connect = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
+            connection = (HttpURLConnection)new java.net.URL(completedUrl).openConnection();
 
             ////////////////////////////////////ssl处理///////////////////////////////////
-            if(connect instanceof HttpsURLConnection){
+            if(connection instanceof HttpsURLConnection){
                 //默认设置这些
-                HttpsURLConnection con = (HttpsURLConnection)connect;
+                HttpsURLConnection con = (HttpsURLConnection)connection;
                 initSSL(con , getHostnameVerifier() , getSSLSocketFactory());
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
-            //2.留给子类复写的机会:给connection设置更多参数
-            doWithConnection(connect);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
 
-            //3.写入内容，只对post有效
-            if(contentCallback != null && method.hasContent()){
-                contentCallback.doWriteWith(connect);
-            }
-
-            //4.处理header
-            setConnectProperty(connect, method, contentType,
+            //2.处理header
+            setConnectProperty(connection, method, contentType,
                     mergeDefaultHeaders(headers),
                     getConnectionTimeoutWithDefault(connectTimeout),
                     getReadTimeoutWithDefault(readTimeout));
+
+            //3.留给子类复写的机会:给connection设置更多参数
+            doWithConnection(connection);
+
+            //4.写入内容，只对post有效
+            if(contentCallback != null && method.hasContent()){
+                contentCallback.doWriteWith(connection);
+            }
+
             //5.连接
-            connect.connect();
+            connection.connect();
 
             //6.获取返回值
-            int statusCode = connect.getResponseCode();
+            int statusCode = connection.getResponseCode();
 
-            inputStream = getStreamFrom(connect , statusCode , false);
+            inputStream = getStreamFrom(connection , statusCode , false);
 
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), parseHeaders(connect, includeHeaders));
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), parseHeaders(connection, includeHeaders));
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接
-            disconnectQuietly(connect);
+            disconnectQuietly(connection);
             //2 . 关闭流
             IoUtil.close(inputStream);
         }
@@ -98,25 +106,25 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException {
-        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET, null, null, ArrayListMultimap.fromMap(headers),  connectTimeout, readTimeout,
+        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET, null, null, ArrayListMultiValueMap.fromMap(headers),  connectTimeout, readTimeout,
                 resultCharset, false , (s, b,r,h)-> IoUtil.read(b , r));
     }
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
         return template(url, Method.POST, contentType, connect -> writeContent(connect , body , getBodyCharsetWithDefault(bodyCharset)),
-                ArrayListMultimap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));
+                ArrayListMultiValueMap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     @Override
-    public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers,Integer connectTimeout,Integer readTimeout) throws IOException {
+    public byte[] getAsBytes(String url, MultiValueMap<String, String> headers,Integer connectTimeout,Integer readTimeout) throws IOException {
         return template(url, Method.GET, null, null, headers,
                 connectTimeout, readTimeout, null, false ,
                 (s, b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
+    public File getAsFile(String url, MultiValueMap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url, Method.GET, null, null, headers,
                 connectTimeout, readTimeout, null, false ,
                 (s, b,r,h)-> IoUtil.copy2File(b, file));
@@ -126,8 +134,8 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
      * 上传文件
      */
     @Override
-    public String upload(String url , ArrayListMultimap<String,String> headers , Integer connectTimeout , Integer readTimeout , String resultCharset ,FormFile... files) throws IOException{
-        ArrayListMultimap<String, String> multimap = mergeHeaders(headers);
+    public String upload(String url , MultiValueMap<String,String> headers , Integer connectTimeout , Integer readTimeout , String resultCharset ,FormFile... files) throws IOException{
+        MultiValueMap<String, String> multimap = mergeHeaders(headers);
         return template(url, Method.POST, null, connect -> this.upload0(connect , files), multimap ,
                 connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
@@ -137,8 +145,8 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
      * 上传文件和params参数传递，form-data类型的完全支持
      */
     @Override
-    public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , FormFile... files) throws IOException {
-        ArrayListMultimap<String, String> multimap = mergeHeaders(headers);
+    public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , FormFile... files) throws IOException {
+        MultiValueMap<String, String> multimap = mergeHeaders(headers);
         return template(url, Method.POST, null, connect -> this.upload0(connect , params , files), multimap ,
                 connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
@@ -158,7 +166,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         //ds.close();
     }
 
-    protected void upload0(HttpURLConnection connection , ArrayListMultimap<String, String> params, FormFile... files) throws IOException{
+    protected void upload0(HttpURLConnection connection , MultiValueMap<String, String> params, FormFile... files) throws IOException{
         int fileDataLength = getFormFilesLen(files);
 
         String textEntity = getTextEntity(params);
@@ -218,11 +226,12 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         return fileDataLength;
     }
 
-    private String getTextEntity(ArrayListMultimap<String, String> params) {
+    private String getTextEntity(MultiValueMap<String, String> params) {
         StringBuilder textEntity = new StringBuilder();
         // 构造文本类型参数的实体数据
         if(null != params){
-            Set<String> keySet = params.keySet();
+            ///
+            /*Set<String> keySet = params.keySet();
             for(String key : keySet){
                 List<String> list = params.get(key);
                 for(String value : list){
@@ -230,17 +239,22 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
                     textEntity.append("Content-Disposition: form-data; name=\"" + key + "\"" + END + END);
                     textEntity.append(value).append(END);
                 }
-            }
+            }*/
+            params.forEachKeyValue((key,value)->{
+                textEntity.append(PART_BEGIN_LINE);
+                textEntity.append("Content-Disposition: form-data; name=\"" + key + "\"" + END + END);
+                textEntity.append(value).append(END);
+            });
         }
         return textEntity.toString();
     }
-    protected ArrayListMultimap<String, String> mergeHeaders(ArrayListMultimap<String, String> headers) {
+    protected MultiValueMap<String, String> mergeHeaders(MultiValueMap<String, String> headers) {
         if(null == headers){
-            headers = new ArrayListMultimap<>();
+            headers = new ArrayListMultiValueMap<>(2);
         }
         ///headers.put("Connection" , "Keep-Alive");
-        headers.put("Charset" , "UTF-8");
-        headers.put("Content-Type" , "multipart/form-data; boundary=" + BOUNDARY);
+        headers.add("Charset" , "UTF-8");
+        headers.add("Content-Type" , "multipart/form-data; boundary=" + BOUNDARY);
         return headers;
     }
 
@@ -281,19 +295,19 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         }
     }
 
-    protected void setConnectProperty(HttpURLConnection connect, Method method, String contentType, ArrayListMultimap<String,String> headers, int connectTimeout, int readTimeout) throws ProtocolException {
+    protected void setConnectProperty(HttpURLConnection connect, Method method, String contentType, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout) throws ProtocolException {
         connect.setRequestMethod(method.name());
-        connect.setDoOutput(true);
-        connect.setUseCaches(false);
         setRequestHeaders(connect , contentType , headers);
         connect.setConnectTimeout(connectTimeout);
         connect.setReadTimeout(readTimeout);
     }
 
-    protected void setRequestHeaders(HttpURLConnection connection, String contentType, ArrayListMultimap<String, String> headers) {
+    protected void setRequestHeaders(HttpURLConnection connection, String contentType, MultiValueMap<String, String> headers) {
         if(null != headers) {
-            Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)->connection.addRequestProperty(k,v)));
+            ///
+            /*Set<String> keySet = headers.keySet();
+            keySet.forEach((k)->headers.get(k).forEach((v)->connection.addRequestProperty(k,v)));*/
+            headers.forEachKeyValue(connection::addRequestProperty);
         }
         if(null != contentType){
             connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString(), contentType);

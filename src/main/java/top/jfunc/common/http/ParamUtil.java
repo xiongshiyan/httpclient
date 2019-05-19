@@ -61,18 +61,18 @@ public class ParamUtil {
     }
     /**
      * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
-     * @param value 键值对
+     * @param multimap 键值对
      */
-    public static String contactMap(ArrayListMultimap<String, String> value , final String valueCharset){
-        if(null == value){return "";}
+    public static String contactMap(ArrayListMultimap<String, String> multimap , final String valueCharset){
+        if(null == multimap || multimap.keySet().isEmpty()){return "";}
 
         StringBuilder params = new StringBuilder();
 
-        Iterator<String> iterator = value.keySet().iterator();
+        Iterator<String> iterator = multimap.keySet().iterator();
 
         while(iterator.hasNext()){
             String key = iterator.next();
-            List<String> vList = value.get(key);
+            List<String> vList = multimap.get(key);
 
             for (String v : vList) {
                 params.append(key).append("=").append(urlEncode(v, valueCharset)).append("&");
@@ -85,13 +85,13 @@ public class ParamUtil {
     }
     /**
      * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
-     * @param value 键值对
+     * @param multiValueMap 键值对
      */
-    public static String contactMap(MultiValueMap<String, String> value , final String valueCharset){
-        if(null == value){return "";}
+    public static String contactMap(MultiValueMap<String, String> multiValueMap , final String valueCharset){
+        if(null == multiValueMap || multiValueMap.isEmpty()){return "";}
 
         StringBuilder params = new StringBuilder();
-        Set<Map.Entry<String, List<String>>> entries = value.entrySet();
+        Set<Map.Entry<String, List<String>>> entries = multiValueMap.entrySet();
         for (Map.Entry<String, List<String>> entry : entries) {
             String key = entry.getKey();
             List<String> vList = entry.getValue();
@@ -205,7 +205,7 @@ public class ParamUtil {
      * @return 处理过后的URL
      */
     public static String replaceRouteParamsIfNecessary(String originUrl , Map<String , String> routeParams){
-        if(null == routeParams || 0 == routeParams.size()){
+        if(null == routeParams || routeParams.isEmpty()){
             return originUrl;
         }
         String url = originUrl;

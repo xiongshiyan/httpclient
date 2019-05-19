@@ -1,7 +1,7 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -44,20 +44,20 @@ public interface HttpRequest {
      * Query参数
      * @return Query参数
      */
-    ArrayListMultimap<String, String> getQueryParams();
+    MultiValueMap<String, String> getQueryParams();
 
     /**
      * 请求的Header
      * @return 请求的Header
      */
-    ArrayListMultimap<String, String> getHeaders();
+    MultiValueMap<String, String> getHeaders();
 
     /**
      * 有些请求可能经过一些处理之后需要改变header重新设置回去
      * @param headers 处理过后的header
      * @return this
      */
-    HttpRequest setHeaders(ArrayListMultimap<String, String> headers);
+    HttpRequest setHeaders(MultiValueMap<String, String> headers);
 
     /**
      * Content-Type

@@ -5,7 +5,9 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import javax.net.ssl.HostnameVerifier;
@@ -58,7 +60,7 @@ public class Config {
     /**
      * 默认的请求头,每个请求都会加上
      */
-    private ArrayListMultimap<String,String> defaultHeaders = null;
+    private MultiValueMap<String,String> defaultHeaders = null;
 
     public static Config defaultConfig(){
         return new Config();
@@ -180,26 +182,27 @@ public class Config {
         return null == x509TrustManager ? this.x509TrustManager : x509TrustManager;
     }
 
-    public Config setDefaultHeaders(ArrayListMultimap<String, String> headers) {
+    public Config setDefaultHeaders(MultiValueMap<String, String> headers) {
         this.defaultHeaders = headers;
         return this;
     }
+    public Config setDefaultHeaders(ArrayListMultimap<String, String> headers) {
+        this.defaultHeaders = ArrayListMultiValueMap.fromMap(headers);
+        return this;
+    }
     public Config setDefaultHeaders(Map<String, String> headers) {
-        if(null == defaultHeaders){
-            defaultHeaders = new ArrayListMultimap<>();
-        }
-        headers.forEach((k,v)->this.defaultHeaders.put(k,v));
+        this.defaultHeaders = ArrayListMultiValueMap.fromMap(headers);
         return this;
     }
     public Config addDefaultHeader(String key, String value){
         if(null == defaultHeaders){
-            defaultHeaders = new ArrayListMultimap<>();
+            defaultHeaders = new ArrayListMultiValueMap<>();
         }
-        this.defaultHeaders.put(key, value);
+        this.defaultHeaders.add(key, value);
         return this;
     }
 
-    public ArrayListMultimap<String, String> getDefaultHeaders() {
+    public MultiValueMap<String, String> getDefaultHeaders() {
         return defaultHeaders;
     }
 

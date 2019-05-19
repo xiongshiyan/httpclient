@@ -38,24 +38,25 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         request.method(method.name());
         request.set(completedUrl);
 
-        //2.设置header
-        setRequestHeaders(request , httpRequest.getContentType() , mergeDefaultHeaders(httpRequest.getHeaders()));
 
-        //3.超时设置
+        //2.超时设置
         request.connectionTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
         request.timeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
-        //4.SSL设置
+        //3.SSL设置
         initSSL(request , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
                 getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
                 getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()),
                 httpRequest.getProxyInfo());
 
 
-        //5.处理body
+        //4.处理body
         if(contentCallback != null && method.hasContent()){
             contentCallback.doWriteWith(request);
         }
+
+        //5.设置header
+        setRequestHeaders(request , httpRequest.getContentType() , mergeDefaultHeaders(httpRequest.getHeaders()));
 
         //6.子类可以复写
         doWithHttpRequest(request);

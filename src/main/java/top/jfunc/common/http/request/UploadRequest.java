@@ -1,7 +1,7 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 
 /**
  * 文件上传请求
@@ -12,7 +12,7 @@ public interface UploadRequest extends HttpRequest{
      * Form参数
      * @return Form参数
      */
-    ArrayListMultimap<String, String> getFormParams();
+    MultiValueMap<String, String> getFormParams();
 
     /**
      * 上传文件信息

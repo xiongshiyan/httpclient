@@ -27,8 +27,10 @@ import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -58,7 +60,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
     @Override
-    public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
+    public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
         //1.获取完成的URL，创建请求
         String completedUrl = addBaseUrlIfNecessary(url);
         ///*URIBuilder builder = new URIBuilder(url);
@@ -117,26 +119,26 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException{
         return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET,null,null,
-                ArrayListMultimap.fromMap(headers),
+                ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout,readTimeout , resultCharset,false,(s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
         return template(url,Method.POST, contentType, (request -> setRequestBody(request , body ,getBodyCharsetWithDefault(bodyCharset))),
-                ArrayListMultimap.fromMap(headers),
+                ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
-    public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException {
+    public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url, Method.GET,null,null, headers,
                 connectTimeout,readTimeout , null,false,
                 (s, b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
+    public File getAsFile(String url, MultiValueMap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url, Method.GET,null,null, headers ,
                 connectTimeout,readTimeout , null,false,
                 (s, b,r,h)-> IoUtil.copy2File(b, file));
@@ -144,13 +146,13 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
 
 
     @Override
-    public String upload(String url, ArrayListMultimap<String,String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
+    public String upload(String url, MultiValueMap<String,String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
         return template(url,Method.POST, null, (request -> addFormFiles(request, null , files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
-    public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
+    public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
         return template(url,Method.POST, null, (request -> addFormFiles(request, params ,files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
@@ -303,13 +305,14 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
 
-    protected void addFormFiles(HttpEntityEnclosingRequest request, ArrayListMultimap<String, String> params ,FormFile[] files) throws UnsupportedEncodingException {
+    protected void addFormFiles(HttpEntityEnclosingRequest request, MultiValueMap<String, String> params ,FormFile[] files) throws UnsupportedEncodingException {
         final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                 .setCharset(CharsetUtils.get(getDefaultBodyCharset()));
 
         if(null != params){
-            params.keySet().forEach(key->params.get(key).forEach(value->multipartEntityBuilder.addTextBody(key , value)));
+            ///params.keySet().forEach(key->params.get(key).forEach(value->multipartEntityBuilder.addTextBody(key , value)));
+            params.forEachKeyValue(multipartEntityBuilder::addTextBody);
         }
 
         for (FormFile formFile : files) {
@@ -345,10 +348,14 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         request.setConfig(builder.build());
     }
 
-    protected void setRequestHeaders(HttpUriRequest request, String contentType, ArrayListMultimap<String, String> headers) {
+    protected void setRequestHeaders(HttpUriRequest request, String contentType, MultiValueMap<String, String> headers) {
         if(null != headers) {
-            Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)->request.addHeader(k,v)));
+            ///
+            /*Set<String> keySet = headers.keySet();
+            keySet.forEach((k)->headers.get(k).forEach((v)->request.addHeader(k,v)));*/
+            /*Set<Map.Entry<String, List<String>>> entries = headers.entrySet();
+            entries.forEach(entry -> entry.getValue().forEach(v->request.addHeader(entry.getKey() , v)));*/
+            headers.forEachKeyValue(request::addHeader);
         }
         if(null != contentType){
             request.setHeader(HeaderRegular.CONTENT_TYPE.toString(), contentType);

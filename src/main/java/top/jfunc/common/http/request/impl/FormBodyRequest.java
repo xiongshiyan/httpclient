@@ -4,7 +4,9 @@ import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
 import java.util.Objects;
@@ -28,7 +30,7 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements Str
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
      */
-    private ArrayListMultimap<String,String> formParams;
+    private MultiValueMap<String,String> formParams;
 
     @Override
     public String getBody() {
@@ -40,35 +42,40 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements Str
         return ParamUtil.contactMap(formParams, bodyCharset);
     }
 
-    public ArrayListMultimap<String, String> getFormParams() {
+    public MultiValueMap<String, String> getFormParams() {
         return formParams;
     }
 
-    public FormBodyRequest setFormParams(ArrayListMultimap<String, String> formParams) {
+    public FormBodyRequest setFormParams(MultiValueMap<String, String> formParams) {
         this.formParams = Objects.requireNonNull(formParams);
         return this;
     }
+    public FormBodyRequest setFormParams(ArrayListMultimap<String, String> formParams) {
+        Objects.requireNonNull(formParams);
+        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
+        return this;
+    }
     public FormBodyRequest setFormParams(Map<String, String> formParams) {
-        initFormParams();
-        formParams.forEach((k,v)->this.formParams.put(k,v));
+        Objects.requireNonNull(formParams);
+        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
         return this;
     }
     public FormBodyRequest addFormParam(String key, String value){
         initFormParams();
-        this.formParams.put(key, value);
+        this.formParams.add(key, value);
         return this;
     }
     public FormBodyRequest addFormParam(String key, String... values){
         initFormParams();
         for (String value : values) {
-            this.formParams.put(key , value);
+            this.formParams.add(key , value);
         }
         return this;
     }
     public FormBodyRequest addFormParam(String key, Iterable<String> values){
         initFormParams();
         for (String value : values) {
-            this.formParams.put(key , value);
+            this.formParams.add(key , value);
         }
         return this;
     }
@@ -86,7 +93,7 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements Str
     }
     private void initFormParams(){
         if(null == this.formParams){
-            this.formParams = new ArrayListMultimap<>(2);
+            this.formParams = new ArrayListMultiValueMap<>(2);
         }
     }
 }

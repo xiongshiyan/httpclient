@@ -1,7 +1,7 @@
 package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 
@@ -28,6 +28,6 @@ public interface HttpTemplate<C>{
      * @throws IOException IOException
      */
     <R> R template(String url, Method method, String contentType, ContentCallback<C> contentCallback,
-                   ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout,
+                   MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout,
                    String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException;
 }

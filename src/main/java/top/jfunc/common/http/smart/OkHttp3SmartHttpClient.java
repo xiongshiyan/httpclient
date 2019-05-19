@@ -66,13 +66,13 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             //2.1设置URL
             okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(completedUrl);
 
-            //2.2设置headers
-            setRequestHeaders(builder , httpRequest.getContentType() , mergeDefaultHeaders(httpRequest.getHeaders()));
-
             //2.3处理请求体
             if(null != contentCallback && method.hasContent()){
                 contentCallback.doWriteWith(builder);
             }
+
+            //2.2设置headers
+            setRequestHeaders(builder , httpRequest.getContentType() , mergeDefaultHeaders(httpRequest.getHeaders()));
 
             //3.构造请求
             okhttp3.Request okRequest = builder.build();

@@ -10,8 +10,10 @@ import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -37,7 +39,7 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
     }
 
     @Override
-    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpRequest> contentCallback, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {
         //1.获取完成的URL，创建请求
         String completedUrl = addBaseUrlIfNecessary(url);
         HttpRequest request = new HttpRequest();
@@ -75,7 +77,7 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException {
-        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET, null, null, ArrayListMultimap.fromMap(headers),  connectTimeout, readTimeout,
+        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET, null, null, ArrayListMultiValueMap.fromMap(headers),  connectTimeout, readTimeout,
                 resultCharset, false , (s, b, r, h)-> IoUtil.read(b , r));
     }
 
@@ -86,41 +88,43 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
                     String type = null == contentType ? HttpConstants.JSON + ";charset="+bodyCharset : contentType;
                     httpRequest.body(body.getBytes(getBodyCharsetWithDefault(bodyCharset)), type);
                 },
-                ArrayListMultimap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));
+                ArrayListMultiValueMap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     @Override
-    public byte[] getAsBytes(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException {
+    public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url, Method.GET, null, null, headers,
                 connectTimeout, readTimeout, null, false ,
                 (s, b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File getAsFile(String url, ArrayListMultimap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
+    public File getAsFile(String url, MultiValueMap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
         return template(url, Method.GET, null, null, headers,
                 connectTimeout, readTimeout, null, false ,
                 (s, b,r,h)-> IoUtil.copy2File(b, file));
     }
 
     @Override
-    public String upload(String url, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
+    public String upload(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
         return template(url, Method.POST, null, httpRequest -> this.upload0(httpRequest , null , files), headers ,
                 connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     @Override
-    public String upload(String url, ArrayListMultimap<String, String> params, ArrayListMultimap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
+    public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
         return template(url, Method.POST, null, httpRequest -> this.upload0(httpRequest , params , files), headers ,
                 connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
     }
 
-    protected void setRequestHeaders(HttpRequest httpRequest, String contentType, ArrayListMultimap<String, String> headers) {
+    protected void setRequestHeaders(HttpRequest httpRequest, String contentType, MultiValueMap<String, String> headers) {
         if(null != headers) {
-            Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)-> httpRequest.header(k , v)));
+            ///
+            /*Set<String> keySet = headers.keySet();
+            keySet.forEach((k)->headers.get(k).forEach((v)-> httpRequest.header(k , v)));*/
+            headers.forEachKeyValue(httpRequest::header);
         }
         if(null != contentType){
             httpRequest.contentType(contentType);
@@ -183,10 +187,11 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
         return new ByteArrayInputStream(bodyBytes);
     }
 
-    protected void upload0(HttpRequest httpRequest , ArrayListMultimap<String, String> params,FormFile...formFiles){
+    protected void upload0(HttpRequest httpRequest , MultiValueMap<String, String> params,FormFile...formFiles){
         httpRequest.multipart(true);
         if(null != params){
-            params.getMap().forEach((k , l) ->l.forEach(v->httpRequest.form(k , v)));
+            /*params.getMap().forEach((k , l) ->l.forEach(v->httpRequest.form(k , v)));*/
+            params.forEachKeyValue(httpRequest::form);
         }
         for (FormFile formFile : formFiles) {
             httpRequest.form(formFile.getParameterName() , new FormFileUploadable(formFile));

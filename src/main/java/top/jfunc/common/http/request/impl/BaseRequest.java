@@ -5,7 +5,9 @@ import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.kv.Header;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -34,11 +36,11 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
      * 查询参数，拼装在URL后面 ?
      * @since 1.0.4
      */
-    private ArrayListMultimap<String,String> queryParams;
+    private MultiValueMap<String,String> queryParams;
     /**
      * 请求头
      */
-    private ArrayListMultimap<String,String> headers;
+    private MultiValueMap<String,String> headers;
     /**
      * 资源类型
      */
@@ -137,31 +139,36 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         return myself();
     }
 
-    public T setQueryParams(ArrayListMultimap<String, String> queryParams) {
+    public T setQueryParams(MultiValueMap<String, String> queryParams) {
         this.queryParams = Objects.requireNonNull(queryParams);
         return myself();
     }
+    public T setQueryParams(ArrayListMultimap<String, String> queryParams) {
+        Objects.requireNonNull(queryParams);
+        this.queryParams = ArrayListMultiValueMap.fromMap(queryParams);
+        return myself();
+    }
     public T setQueryParams(Map<String, String> queryParams) {
-        initQueryParams();
-        queryParams.forEach((k,v)->this.queryParams.put(k,v));
+        Objects.requireNonNull(queryParams);
+        this.queryParams = ArrayListMultiValueMap.fromMap(queryParams);
         return myself();
     }
     public T addQueryParam(String key, String value){
         initQueryParams();
-        this.queryParams.put(key, value);
+        this.queryParams.add(key, value);
         return myself();
     }
     public T addQueryParam(String key, String... values){
         initQueryParams();
         for (String value : values) {
-            this.queryParams.put(key , value);
+            this.queryParams.add(key , value);
         }
         return myself();
     }
     public T addQueryParam(String key, Iterable<String> values){
         initQueryParams();
         for (String value : values) {
-            this.queryParams.put(key , value);
+            this.queryParams.add(key , value);
         }
         return myself();
     }
@@ -179,30 +186,35 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     }
     private void initQueryParams(){
         if(null == this.queryParams){
-            this.queryParams = new ArrayListMultimap<>(2);
+            this.queryParams = new ArrayListMultiValueMap<>(2);
         }
     }
+    public T setHeaders(ArrayListMultimap<String, String> headers) {
+        Objects.requireNonNull(headers);
+        this.headers = ArrayListMultiValueMap.fromMap(headers);
+        return myself();
+    }
     public T setHeaders(Map<String, String> headers) {
-        initHeaders();
-        headers.forEach((k,v)->this.headers.put(k,v));
+        Objects.requireNonNull(headers);
+        this.headers = ArrayListMultiValueMap.fromMap(headers);
         return myself();
     }
     public T addHeader(String key, String value){
         initHeaders();
-        this.headers.put(key, value);
+        this.headers.add(key, value);
         return myself();
     }
     public T addHeader(String key, String... values){
         initHeaders();
         for (String value : values) {
-            this.headers.put(key , value);
+            this.headers.add(key , value);
         }
         return myself();
     }
     public T addHeader(String key, Iterable<String> values){
         initHeaders();
         for (String value : values) {
-            this.headers.put(key , value);
+            this.headers.add(key , value);
         }
         return myself();
     }
@@ -214,7 +226,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     }
     private void initHeaders(){
         if(null == this.headers){
-            this.headers = new ArrayListMultimap<>(2);
+            this.headers = new ArrayListMultiValueMap<>(2);
         }
     }
     public T addFormHeader(){
@@ -226,7 +238,6 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     public T addXmlHeader(){
         return setContentType(HttpConstants.TEXT_XML_WITH_DEFAULT_CHARSET);
     }
-
     public T setContentType(String contentType) {
         this.contentType = contentType;
         return myself();
@@ -246,11 +257,11 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         this.bodyCharset = bodyCharset;
         return myself();
     }
+
     public T setResultCharset(String resultCharset) {
         this.resultCharset = resultCharset;
         return myself();
     }
-
     public T setIncludeHeaders(boolean includeHeaders) {
         this.includeHeaders = includeHeaders;
         return myself();
@@ -307,17 +318,17 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     }
 
     @Override
-    public ArrayListMultimap<String, String> getQueryParams() {
+    public MultiValueMap<String, String> getQueryParams() {
         return queryParams;
     }
 
     @Override
-    public ArrayListMultimap<String, String> getHeaders() {
+    public MultiValueMap<String, String> getHeaders() {
         return headers;
     }
 
     @Override
-    public BaseRequest setHeaders(ArrayListMultimap<String, String> headers) {
+    public T setHeaders(MultiValueMap<String, String> headers) {
         this.headers = Objects.requireNonNull(headers);
         return myself();
     }
