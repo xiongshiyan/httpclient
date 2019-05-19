@@ -31,7 +31,7 @@ import java.util.*;
  * @see top.jfunc.common.http.basic.HttpClient
  * @see SmartHttpClient
  *
- * @deprecated  !!此类作为以前的大杂烩，什么样的请求都放到一起，给设置参数的时候造成困扰，已经不适应快速发展的需要
+ * !!!此类作为以前的大杂烩，什么样的请求都放到一起，给设置参数的时候造成困扰，已经不适应快速发展的需要
  * 现将其一拆为多，针对不同的请求使用不同的请求即可
  *
  * @see top.jfunc.common.http.request.HttpRequest
@@ -43,9 +43,8 @@ import java.util.*;
  * @see top.jfunc.common.http.request.impl.DownLoadRequest
  * @author xiongshiyan at 2017/12/9
  *
- * @since 1.0.5就废弃此类了
+ * @since 1.1就废弃此类了
  */
-@Deprecated
 public class Request implements HttpRequest , StringBodyRequest , UploadRequest , DownLoadRequest{
     /**
      * 结果包含headers
@@ -286,6 +285,7 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
             this.queryParams = new ArrayListMultimap<>(2);
         }
     }
+    @Override
     public Request setHeaders(ArrayListMultimap<String, String> headers) {
         this.headers = Objects.requireNonNull(headers);
         return this;
