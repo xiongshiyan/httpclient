@@ -195,4 +195,31 @@ public class MultiRequestTest {
         Response response = smartHttpClient.get(request);
         Assert.assertEquals("xx" , response.getOneHeader("xx"));
     }
+
+    @Test
+    public void testAllApache() throws Exception{
+        testAll(new ApacheSmartHttpClient());
+    }
+    @Test
+    public void testAllNative() throws Exception{
+        testAll(new NativeSmartHttpClient());
+    }
+    @Test
+    public void testAllJodd() throws Exception{
+        testAll(new JoddSmartHttpClient());
+    }
+    @Test
+    public void testAllOkHttp() throws Exception{
+        testAll(new OkHttp3SmartHttpClient());
+    }
+    private void testAll(SmartHttpClient smartHttpClient) throws Exception{
+
+        StringBodyRequest request = PostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
+                .addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx").setIncludeHeaders(true)
+                .setBody("xxxxx" , HttpConstants.JSON_WITH_DEFAULT_CHARSET)
+                .addQueryParam("sa" , "sa").addQueryParam("ds" , "ds");
+        Response response = smartHttpClient.post(request);
+        Assert.assertEquals("success" , response.asString());
+        System.out.println(response.getHeaders());
+    }
 }
