@@ -3,6 +3,8 @@ package top.jfunc.common.http;
 import org.junit.Assert;
 import top.jfunc.common.http.base.handler.FromString;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.impl.PostBodyRequest;
 import top.jfunc.common.http.smart.*;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -212,6 +214,32 @@ public class HttpSmartTest {
 
 
 
+    @Test
+    public void testAllApache() throws Exception{
+        testAll(new ApacheSmartHttpClient());
+    }
+    @Test
+    public void testAllNative() throws Exception{
+        testAll(new NativeSmartHttpClient());
+    }
+    @Test
+    public void testAllJodd() throws Exception{
+        testAll(new JoddSmartHttpClient());
+    }
+    @Test
+    public void testAllOkHttp() throws Exception{
+        testAll(new OkHttp3SmartHttpClient());
+    }
+    private void testAll(SmartHttpClient smartHttpClient) throws Exception{
+
+        StringBodyRequest request = PostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
+                .addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx").setIncludeHeaders(true)
+                .setBody("xxxxx" , HttpConstants.JSON_WITH_DEFAULT_CHARSET)
+                .addQueryParam("sa" , "sa").addQueryParam("ds" , "ds");
+        Response response = smartHttpClient.post(request);
+        Assert.assertEquals("success" , response.asString());
+        System.out.println(response.getHeaders());
+    }
 
 
     @Test
