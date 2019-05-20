@@ -1,6 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -19,7 +20,6 @@ import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
-import org.apache.http.HttpEntityEnclosingRequest;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -31,7 +31,7 @@ import java.io.InputStream;
  * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttpClient , SmartHttpTemplate<HttpEntityEnclosingRequest> {
+public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpEntityEnclosingRequest> {
 
     @Override
     public ApacheSmartHttpClient setConfig(Config config) {
@@ -136,7 +136,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     }
 
     @Override
-    public File getAsFile(DownLoadRequest req) throws IOException {
+    public File download(DownLoadRequest req) throws IOException {
         DownLoadRequest request = beforeTemplate(req);
         return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }

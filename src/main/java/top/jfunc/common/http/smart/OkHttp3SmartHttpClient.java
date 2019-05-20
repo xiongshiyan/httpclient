@@ -2,6 +2,7 @@ package top.jfunc.common.http.smart;
 
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * 使用OkHttp3 实现的Http请求类
  * @author xiongshiyan at 2018/1/11
  */
-public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpClient , SmartHttpTemplate<okhttp3.Request.Builder>{
+public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpClient, SmartHttpTemplate<Request.Builder> {
 
     @Override
     public OkHttp3SmartHttpClient setConfig(Config config) {
@@ -33,7 +34,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     }
 
     @Override
-    public <R> R template(HttpRequest httpRequest, Method method , ContentCallback<okhttp3.Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         okhttp3.Response response = null;
         InputStream inputStream = null;
         try {
@@ -64,18 +65,18 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             doWithClient(client);
 
             //2.1设置URL
-            okhttp3.Request.Builder builder = new okhttp3.Request.Builder().url(completedUrl);
+            Request.Builder builder = new Request.Builder().url(completedUrl);
 
-            //2.3处理请求体
+            //2.2处理请求体
             if(null != contentCallback && method.hasContent()){
                 contentCallback.doWriteWith(builder);
             }
 
-            //2.2设置headers
+            //2.3设置headers
             setRequestHeaders(builder , httpRequest.getContentType() , mergeDefaultHeaders(httpRequest.getHeaders()));
 
             //3.构造请求
-            okhttp3.Request okRequest = builder.build();
+            Request okRequest = builder.build();
 
             //4.执行请求
             response = client.newCall(okRequest).execute();
@@ -119,7 +120,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public Response httpMethod(HttpRequest req, Method method) throws IOException {
         HttpRequest request = beforeTemplate(req);
-        ContentCallback<okhttp3.Request.Builder> contentCallback = null;
+        ContentCallback<Request.Builder> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
             String body = ((StringBodyRequest)request).getBody();
             contentCallback = d -> setRequestBody(d, method, stringBody(body, request.getContentType()));
@@ -136,7 +137,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     }
 
     @Override
-    public File getAsFile(DownLoadRequest req) throws IOException {
+    public File download(DownLoadRequest req) throws IOException {
         DownLoadRequest request = beforeTemplate(req);
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }

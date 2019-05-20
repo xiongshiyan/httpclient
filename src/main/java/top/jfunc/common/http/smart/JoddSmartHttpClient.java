@@ -21,7 +21,7 @@ import java.io.IOException;
  * 使用Jodd-http 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient , SmartHttpTemplate<HttpRequest> {
+public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpRequest> {
 
     @Override
     public JoddSmartHttpClient setConfig(Config config) {
@@ -87,7 +87,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
                     String bodyCharsetWithDefault = getBodyCharsetWithDefault(request.getBodyCharset());
                     String contentType = null == request.getContentType() ? HttpConstants.JSON + ";charset="+bodyCharsetWithDefault : request.getContentType();
                     httpRequest.body(body.getBytes(bodyCharsetWithDefault), contentType);
-                },Response::with);
+                }, Response::with);
 
         return afterTemplate(request , response);
     }
@@ -111,7 +111,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public File getAsFile(DownLoadRequest req) throws IOException {
+    public File download(DownLoadRequest req) throws IOException {
         DownLoadRequest request = beforeTemplate(req);
         return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }

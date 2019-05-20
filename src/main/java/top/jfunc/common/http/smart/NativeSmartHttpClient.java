@@ -24,7 +24,7 @@ import java.net.URL;
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttpClient  , SmartHttpTemplate<HttpURLConnection>{
+public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpURLConnection> {
 
     @Override
     public NativeSmartHttpClient setConfig(Config config) {
@@ -133,7 +133,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     }
 
     @Override
-    public File getAsFile(DownLoadRequest req) throws IOException {
+    public File download(DownLoadRequest req) throws IOException {
         DownLoadRequest request = beforeTemplate(req);
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }

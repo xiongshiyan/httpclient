@@ -65,7 +65,16 @@ public interface SmartHttpClient extends HttpClient {
      * @return File 下载的文件
      * @throws IOException IOException
      */
-    File getAsFile(DownLoadRequest request) throws IOException;
+    default File getAsFile(DownLoadRequest request) throws IOException{
+        return download(request);
+    }
+    /**
+     * 下载文件
+     * @param request 请求参数
+     * @return File 下载的文件
+     * @throws IOException IOException
+     */
+    File download(DownLoadRequest request) throws IOException;
 
     /**
      * 文件上传
