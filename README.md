@@ -44,9 +44,11 @@ JoddHttp实现主线：
 ![JoddHttp实现主线](https://gitee.com/uploads/images/2019/0507/133655_65f3d31a_1507575.png "JoddSmartHttpClient.png")
 
 代表所有参数的Request类：
+
 ![代表所有参数的Request类](https://images.gitee.com/uploads/images/2019/0520/112801_a06944a0_1507575.png "Request.png")
 
 HttpRequest接口体系，使用这些请求类意义更明确：
+
 ![HttpRequest接口体系，使用这些请求类意义更明确](https://images.gitee.com/uploads/images/2019/0520/112919_c07cf56e_1507575.png "HttpRequest体系.png")
 
 
