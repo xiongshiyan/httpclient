@@ -8,7 +8,9 @@ import top.jfunc.common.utils.LinkedMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 
@@ -79,6 +81,15 @@ public class ParamUtilTest {
         map.add("xx" , "xx");
         map.add("yy" , "yy");
         String contactMap = ParamUtil.contactMap(map);
+        Assert.assertThat(contactMap , is("xx=xx&yy=yy"));
+    }
+    @Test
+    public void testConcatParam5(){
+        MultiValueMap<String , String> map = new ArrayListMultiValueMap<>();
+        map.add("xx" , "xx");
+        map.add("yy" , "yy");
+        Set<Map.Entry<String, List<String>>> entries = map.entrySet();
+        String contactMap = ParamUtil.contactIterable(entries , "UTF-8");
         Assert.assertThat(contactMap , is("xx=xx&yy=yy"));
     }
 }
