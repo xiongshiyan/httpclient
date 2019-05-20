@@ -231,7 +231,8 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
         }
         Headers resHeaders = response.headers();
         MultiValueMap<String , String> headers = new ArrayListMultiValueMap<>(resHeaders.size());
-        resHeaders.names().forEach((key)-> headers.add(key,resHeaders.get(key)) );
+        Map<String, List<String>> stringListMap = resHeaders.toMultimap();
+        stringListMap.forEach((k,l)->l.forEach(v->headers.add(k,v)));
         return headers;
     }
 

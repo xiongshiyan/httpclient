@@ -8,7 +8,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.CookieHandler;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,6 +32,18 @@ public abstract class AbstractConfigurableHttp {
         this.config = Objects.requireNonNull(config);
         return this;
     }
+
+    protected List<String> getCookies(String completedUrl) throws IOException {
+        if(null != getCookieHandler()){
+            CookieHandler cookieHandler = getCookieHandler();
+            Map<String, List<String>> cookies = cookieHandler.get(URI.create(completedUrl), new HashMap<>(0));
+            if(null != cookies && !cookies.isEmpty()){
+                return cookies.get("Cookie");
+            }
+        }
+        return null;
+    }
+
     /**
      * 获取一个空的，防止空指针
      */
@@ -138,5 +155,9 @@ public abstract class AbstractConfigurableHttp {
         defaultHeaders.forEachKeyValue(headers::add);
 
         return headers;
+    }
+
+    public CookieHandler getCookieHandler(){
+        return getConfig().getCookieHandler();
     }
 }
