@@ -85,8 +85,14 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements Str
         }
         return this;
     }
-    public FormBodyRequest addFormParam(Map.Entry<String , Iterable<String>>... parameters){
+    public FormBodyRequest addFormParam(Iterable<Parameter> parameters){
         for (Map.Entry<String , Iterable<String>> parameter : parameters) {
+            addFormParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
+    public FormBodyRequest addFormParam(Map.Entry<String , Iterable<String>>... entries){
+        for (Map.Entry<String , Iterable<String>> parameter : entries) {
             addFormParam(parameter.getKey() , parameter.getValue());
         }
         return this;

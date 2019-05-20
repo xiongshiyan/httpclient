@@ -178,8 +178,14 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         }
         return myself();
     }
-    public T addQueryParam(Map.Entry<String , Iterable<String>>... parameters){
+    public T addQueryParam(Iterable<Parameter> parameters){
         for (Map.Entry<String , Iterable<String>> parameter : parameters) {
+            addQueryParam(parameter.getKey() , parameter.getValue());
+        }
+        return myself();
+    }
+    public T addQueryParam(Map.Entry<String , Iterable<String>>... entries){
+        for (Map.Entry<String , Iterable<String>> parameter : entries) {
             addQueryParam(parameter.getKey() , parameter.getValue());
         }
         return myself();
@@ -220,6 +226,18 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     }
     public T addHeader(Header... headers){
         for (Header header : headers) {
+            addHeader(header.getKey() , header.getValue());
+        }
+        return myself();
+    }
+    public T addHeader(Iterable<Header> headers){
+        for (Header header : headers) {
+            addHeader(header.getKey() , header.getValue());
+        }
+        return myself();
+    }
+    public T addHeader(Map.Entry<String , Iterable<String>>... entries){
+        for (Map.Entry<String , Iterable<String>> header : entries) {
             addHeader(header.getKey() , header.getValue());
         }
         return myself();

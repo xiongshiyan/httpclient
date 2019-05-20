@@ -81,6 +81,12 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
         }
         return this;
     }
+    public FileParamUploadRequest addFormParam(Iterable<Parameter> parameters){
+        for (Parameter parameter : parameters) {
+            addFormParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
     public FileParamUploadRequest addFormParam(Map.Entry<String , Iterable<String>>... parameters){
         for (Map.Entry<String , Iterable<String>> parameter : parameters) {
             addFormParam(parameter.getKey() , parameter.getValue());

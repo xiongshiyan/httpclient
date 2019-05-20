@@ -236,6 +236,12 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
         }
         return this;
     }
+    public Request addFormParam(Iterable<Parameter> parameters){
+        for (Parameter parameter : parameters) {
+            addFormParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
     public Request addFormParam(Map.Entry<String , Iterable<String>>... parameters){
         for (Map.Entry<String , Iterable<String>> parameter : parameters) {
             addFormParam(parameter.getKey() , parameter.getValue());
@@ -281,6 +287,12 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
         return this;
     }
     public Request addQueryParam(Parameter... parameters){
+        for (Parameter parameter : parameters) {
+            addQueryParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
+    public Request addQueryParam(Iterable<Parameter> parameters){
         for (Parameter parameter : parameters) {
             addQueryParam(parameter.getKey() , parameter.getValue());
         }
@@ -333,6 +345,18 @@ public class Request implements HttpRequest , StringBodyRequest , UploadRequest 
     }
     public Request addHeader(Header... headers){
         for (Header header : headers) {
+            addHeader(header.getKey() , header.getValue());
+        }
+        return this;
+    }
+    public Request addHeader(Iterable<Header> headers){
+        for (Header header : headers) {
+            addHeader(header.getKey() , header.getValue());
+        }
+        return this;
+    }
+    public Request addHeader(Map.Entry<String , Iterable<String>>... entries){
+        for (Map.Entry<String , Iterable<String>> header : entries) {
             addHeader(header.getKey() , header.getValue());
         }
         return this;
