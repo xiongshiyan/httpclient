@@ -8,7 +8,10 @@ import top.jfunc.common.utils.StrUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author xiongshiyan at 2017/12/11
@@ -66,23 +69,11 @@ public class ParamUtil {
     public static String contactMap(ArrayListMultimap<String, String> multimap , final String valueCharset){
         if(null == multimap || multimap.keySet().isEmpty()){return "";}
 
-        StringBuilder params = new StringBuilder();
+        Set<Map.Entry<String, List<String>>> entries = multimap.getMap().entrySet();
 
-        Iterator<String> iterator = multimap.keySet().iterator();
-
-        while(iterator.hasNext()){
-            String key = iterator.next();
-            List<String> vList = multimap.get(key);
-
-            for (String v : vList) {
-                params.append(key).append("=").append(urlEncode(v, valueCharset)).append("&");
-            }
-        }
-        if(params.length() > 0){
-            params = params.deleteCharAt(params.length() - 1);
-        }
-        return params.toString();
+        return buildFrom(entries, valueCharset);
     }
+
     /**
      * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
      * @param multiValueMap 键值对
@@ -90,8 +81,13 @@ public class ParamUtil {
     public static String contactMap(MultiValueMap<String, String> multiValueMap , final String valueCharset){
         if(null == multiValueMap || multiValueMap.isEmpty()){return "";}
 
-        StringBuilder params = new StringBuilder();
         Set<Map.Entry<String, List<String>>> entries = multiValueMap.entrySet();
+
+        return buildFrom(entries, valueCharset);
+    }
+
+    public static String buildFrom(Set<Map.Entry<String, List<String>>> entries, String valueCharset) {
+        StringBuilder params = new StringBuilder();
         for (Map.Entry<String, List<String>> entry : entries) {
             String key = entry.getKey();
             List<String> vList = entry.getValue();
@@ -99,6 +95,7 @@ public class ParamUtil {
                 params.append(key).append("=").append(urlEncode(v, valueCharset)).append("&");
             }
         }
+
         if(params.length() > 0){
             params = params.deleteCharAt(params.length() - 1);
         }
@@ -111,7 +108,7 @@ public class ParamUtil {
      * @param src 原字符串
      * @return 编码后的字符串
      */
-    private static String urlEncode(String src, String valueCharset) {
+    public static String urlEncode(String src, String valueCharset) {
         try {
             return URLEncoder.encode(src, valueCharset);
         }catch (UnsupportedEncodingException e){
