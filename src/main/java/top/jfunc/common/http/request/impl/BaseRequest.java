@@ -117,6 +117,7 @@ public class BaseRequest<T extends BaseRequest> implements HttpRequest {
      * 返回自己，便于链式调用
      * @return this
      */
+    @SuppressWarnings("unchecked")
     protected T myself(){
         return (T)this;
     }
