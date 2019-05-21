@@ -3,6 +3,7 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.NativeHttpClient;
 import top.jfunc.common.http.request.DownLoadRequest;
@@ -43,8 +44,9 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
             URL url = new URL(completedUrl);
             //1.1如果需要则设置代理
-            connection = (null != httpRequest.getProxyInfo()) ?
-                    (HttpURLConnection)url.openConnection(httpRequest.getProxyInfo().getProxy()) :
+            ProxyInfo proxyInfo = getProxyInfoWithDefault(httpRequest.getProxyInfo());
+            connection = (null != proxyInfo) ?
+                    (HttpURLConnection)url.openConnection(proxyInfo.getProxy()) :
                     (HttpURLConnection) url.openConnection();
 
 

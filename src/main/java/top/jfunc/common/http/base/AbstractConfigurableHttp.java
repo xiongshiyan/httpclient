@@ -138,6 +138,11 @@ public abstract class AbstractConfigurableHttp {
     public String getDefaultResultCharset() {
         return getConfig().getDefaultResultCharset();
     }
+
+    public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
+        return getConfig().getProxyInfoWithDefault(proxyInfo);
+    }
+
     public HostnameVerifier getHostnameVerifier() {
         return getConfig().getHostnameVerifier();
     }

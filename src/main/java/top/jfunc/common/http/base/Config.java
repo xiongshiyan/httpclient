@@ -45,6 +45,11 @@ public class Config {
      */
     private String defaultResultCharset                     = HttpConstants.DEFAULT_CHARSET;
     /**
+     * 代理设置,如果有就设置
+     * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
+     */
+    private ProxyInfo proxyInfo = null;
+    /**
      * HostnameVerifier
      */
     private HostnameVerifier hostnameVerifier               = new TrustAnyHostnameVerifier();
@@ -136,6 +141,19 @@ public class Config {
     public Config setDefaultResultCharset(String defaultResultCharset) {
         this.defaultResultCharset = defaultResultCharset;
         return this;
+    }
+
+    public ProxyInfo getProxyInfo() {
+        return proxyInfo;
+    }
+
+    public Config setProxyInfo(ProxyInfo proxyInfo) {
+        this.proxyInfo = proxyInfo;
+        return this;
+    }
+
+    public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
+        return null == proxyInfo ? this.proxyInfo : proxyInfo;
     }
 
     public String getResultCharsetWithDefault(String resultCharset){

@@ -7,6 +7,7 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.OkHttp3Client;
 import top.jfunc.common.http.request.DownLoadRequest;
@@ -48,8 +49,9 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
                     .connectTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()), TimeUnit.MILLISECONDS)
                     .readTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()), TimeUnit.MILLISECONDS);
             //1.1如果存在就设置代理
-            if(null != httpRequest.getProxyInfo()){
-                clientBuilder.proxy(httpRequest.getProxyInfo().getProxy());
+            ProxyInfo proxyInfo = getProxyInfoWithDefault(httpRequest.getProxyInfo());
+            if(null != proxyInfo){
+                clientBuilder.proxy(proxyInfo.getProxy());
             }
 
             ////////////////////////////////////ssl处理///////////////////////////////////
