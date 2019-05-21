@@ -218,7 +218,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
             headers.forEachKeyValue(builder::addHeader);
         }
         if(null != contentType){
-            builder.addHeader(HeaderRegular.CONTENT_TYPE.toString(), contentType);
+            builder.header(HeaderRegular.CONTENT_TYPE.toString(), contentType);
         }
     }
 
