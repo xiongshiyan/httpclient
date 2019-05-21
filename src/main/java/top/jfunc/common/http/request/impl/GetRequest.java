@@ -8,8 +8,6 @@ public class GetRequest extends BaseRequest<GetRequest>{
     public GetRequest(String url){
         super(url);
     }
-    public GetRequest(){}
-
     public static GetRequest of(String url){
         return new GetRequest(url);
     }

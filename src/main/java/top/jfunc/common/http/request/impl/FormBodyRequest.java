@@ -20,8 +20,6 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements Str
     public FormBodyRequest(String url){
         super(url);
     }
-    public FormBodyRequest(){}
-
     public static FormBodyRequest of(String url){
         return new FormBodyRequest(url);
     }

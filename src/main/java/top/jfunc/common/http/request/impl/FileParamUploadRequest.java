@@ -17,8 +17,6 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
     public FileParamUploadRequest(String url){
         super(url);
     }
-    public FileParamUploadRequest(){}
-
     public static FileParamUploadRequest of(String url){
         return new FileParamUploadRequest(url);
     }
