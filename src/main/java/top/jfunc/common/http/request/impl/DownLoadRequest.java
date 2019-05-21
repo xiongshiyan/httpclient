@@ -24,15 +24,15 @@ public class DownLoadRequest extends BaseRequest<DownLoadRequest> implements top
         return downLoadFileRequest;
     }
 
-    @Override
-    public File getFile() {
-        return file;
-    }
-
     /**
      * 为文件下载确定信息
      */
     private File file = null;
+
+    @Override
+    public File getFile() {
+        return file;
+    }
 
     public DownLoadRequest setDownLoadFile(File file) {
         this.file = file;
