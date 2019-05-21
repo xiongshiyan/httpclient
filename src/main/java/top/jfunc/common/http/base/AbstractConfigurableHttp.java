@@ -105,6 +105,9 @@ public abstract class AbstractConfigurableHttp {
         //2.处理BaseUrl
         String urlWithBase = addBaseUrlIfNecessary(routeUrl);
 
+        //3.合并默认的Query参数
+        queryParams = ParamUtil.mergeMap(queryParams , getDefaultQueryParams());
+
         //3.处理Query参数
         return ParamUtil.contactUrlParams(urlWithBase, queryParams, getBodyCharsetWithDefault(charset));
     }
@@ -167,31 +170,19 @@ public abstract class AbstractConfigurableHttp {
         return getConfig().getX509TrustManagerWithDefault(x509TrustManager);
     }
 
-
     public MultiValueMap<String , String> getDefaultHeaders(){
         return getConfig().getDefaultHeaders();
+    }
+
+    public MultiValueMap<String , String> getDefaultQueryParams(){
+        return getConfig().getDefaultQueryParams();
     }
 
     /**
      * 合并默认的header
      */
     protected MultiValueMap<String , String> mergeDefaultHeaders(final MultiValueMap<String , String> headers){
-        MultiValueMap<String, String> defaultHeaders = getDefaultHeaders();
-        if(null == headers){
-            return defaultHeaders;
-        }
-        if(null == defaultHeaders){
-            return headers;
-        }
-
-        ///合并两个
-        /*for (String key : defaultHeaders.keySet()) {
-            defaultHeaders.get(key).forEach((v)-> headers.add(key , v));
-        }*/
-        //defaultHeaders.forEach((k,l)->l.forEach(v->headers.add(k , v)));
-        defaultHeaders.forEachKeyValue(headers::add);
-
-        return headers;
+        return ParamUtil.mergeMap(headers , getDefaultHeaders());
     }
 
     public CookieHandler getCookieHandler(){

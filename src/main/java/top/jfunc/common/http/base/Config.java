@@ -5,6 +5,8 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
+import top.jfunc.common.http.kv.Header;
+import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.MultiValueMap;
@@ -62,6 +64,10 @@ public class Config {
      * 默认的请求头,每个请求都会加上
      */
     private MultiValueMap<String,String> defaultHeaders = null;
+    /**
+     * 默认的请求Query参数,每个请求都会加上
+     */
+    private MultiValueMap<String,String> defaultQueryParams = null;
     /**
      * CookieHandler，只要设置了就表示支持Cookie
      */
@@ -200,15 +206,109 @@ public class Config {
         return this;
     }
     public Config addDefaultHeader(String key, String value){
-        if(null == defaultHeaders){
-            defaultHeaders = new ArrayListMultiValueMap<>();
-        }
+        initHeaders();
         this.defaultHeaders.add(key, value);
         return this;
+    }
+    public Config addHeader(String key, String... values){
+        initHeaders();
+        for (String value : values) {
+            this.defaultHeaders.add(key , value);
+        }
+        return this;
+    }
+    public Config addHeader(String key, Iterable<String> values){
+        initHeaders();
+        for (String value : values) {
+            this.defaultHeaders.add(key , value);
+        }
+        return this;
+    }
+    public Config addHeader(Header... headers){
+        for (Header header : headers) {
+            addHeader(header.getKey() , header.getValue());
+        }
+        return this;
+    }
+    public Config addHeader(Iterable<Header> headers){
+        for (Header header : headers) {
+            addHeader(header.getKey() , header.getValue());
+        }
+        return this;
+    }
+    public Config addHeader(Map.Entry<String , Iterable<String>>... entries){
+        for (Map.Entry<String , Iterable<String>> header : entries) {
+            addHeader(header.getKey() , header.getValue());
+        }
+        return this;
+    }
+    private void initHeaders(){
+        if(null == this.defaultHeaders){
+            this.defaultHeaders = new ArrayListMultiValueMap<>(2);
+        }
     }
 
     public MultiValueMap<String, String> getDefaultHeaders() {
         return defaultHeaders;
+    }
+
+    public Config setDefaultQueryParams(MultiValueMap<String, String> defaultQueryParams) {
+        this.defaultQueryParams = defaultQueryParams;
+        return this;
+    }
+    public Config setDefaultQueryParams(ArrayListMultimap<String, String> defaultQueryParams) {
+        this.defaultQueryParams = ArrayListMultiValueMap.fromMap(defaultQueryParams);
+        return this;
+    }
+    public Config setDefaultQueryParams(Map<String, String> defaultQueryParams) {
+        this.defaultQueryParams = ArrayListMultiValueMap.fromMap(defaultQueryParams);
+        return this;
+    }
+    public Config addDefaultQueryParams(String key, String value){
+        initQueryParams();
+        this.defaultQueryParams.add(key, value);
+        return this;
+    }
+    public Config addQueryParam(String key, String... values){
+        initQueryParams();
+        for (String value : values) {
+            this.defaultQueryParams.add(key , value);
+        }
+        return this;
+    }
+    public Config addQueryParam(String key, Iterable<String> values){
+        initQueryParams();
+        for (String value : values) {
+            this.defaultQueryParams.add(key , value);
+        }
+        return this;
+    }
+    public Config addQueryParam(Parameter... parameters){
+        for (Parameter parameter : parameters) {
+            addQueryParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
+    public Config addQueryParam(Iterable<Parameter> parameters){
+        for (Map.Entry<String , Iterable<String>> parameter : parameters) {
+            addQueryParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
+    public Config addQueryParam(Map.Entry<String , Iterable<String>>... entries){
+        for (Map.Entry<String , Iterable<String>> parameter : entries) {
+            addQueryParam(parameter.getKey() , parameter.getValue());
+        }
+        return this;
+    }
+    private void initQueryParams(){
+        if(null == this.defaultQueryParams){
+            this.defaultQueryParams = new ArrayListMultiValueMap<>(2);
+        }
+    }
+
+    public MultiValueMap<String, String> getDefaultQueryParams() {
+        return defaultQueryParams;
     }
 
     private SSLContext getDefaultSSLContext(){
