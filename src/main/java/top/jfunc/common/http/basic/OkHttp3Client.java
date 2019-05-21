@@ -211,7 +211,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
     }
 
     protected void setRequestHeaders(Request.Builder builder, String contentType, MultiValueMap<String, String> headers) {
-        if(null != headers) {
+        if(null != headers && !headers.isEmpty()) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));*/

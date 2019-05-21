@@ -302,7 +302,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
     protected void setRequestHeaders(HttpURLConnection connection, String contentType, MultiValueMap<String, String> headers) {
-        if(null != headers) {
+        if(null != headers && !headers.isEmpty()) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)->connection.addRequestProperty(k,v)));*/

@@ -345,7 +345,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
     protected void setRequestHeaders(HttpUriRequest request, String contentType, MultiValueMap<String, String> headers) {
-        if(null != headers) {
+        if(null != headers && !headers.isEmpty()) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)->request.addHeader(k,v)));*/

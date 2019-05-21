@@ -13,9 +13,12 @@ import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.URI;
 
 /**
  * 使用Jodd-http 实现的Http请求类
@@ -56,7 +59,11 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         }
 
         //5.设置header
-        setRequestHeaders(request , httpRequest.getContentType() , mergeDefaultHeaders(httpRequest.getHeaders()));
+        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+
+        headers = handleCookieIfNecessary(completedUrl, headers);
+
+        setRequestHeaders(request , httpRequest.getContentType() , headers);
 
         //6.子类可以复写
         doWithHttpRequest(request);
@@ -64,11 +71,25 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         //7.真正请求
         HttpResponse response = request.send();
 
-        //8.返回处理
+        //8.返回header,包括Cookie处理
+        boolean includeHeaders = httpRequest.isIncludeHeaders();
+        if(supportCookie()){
+            includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
+        }
+        MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
+
+        //存入Cookie
+        if(supportCookie()){
+            if(null != getCookieHandler() && null != parseHeaders){
+                CookieHandler cookieHandler = getCookieHandler();
+                cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+            }
+        }
+
         return resultCallback.convert(response.statusCode() ,
                 getStreamFrom(response , httpRequest.isIgnoreResponseBody()),
                 getResultCharsetWithDefault(httpRequest.getResultCharset()) ,
-                parseHeaders(response , httpRequest.isIncludeHeaders()));
+                parseHeaders);
     }
 
     @Override

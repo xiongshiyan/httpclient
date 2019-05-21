@@ -119,7 +119,7 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
     }
 
     protected void setRequestHeaders(HttpRequest httpRequest, String contentType, MultiValueMap<String, String> headers) {
-        if(null != headers) {
+        if(null != headers && !headers.isEmpty()) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)-> httpRequest.header(k , v)));*/

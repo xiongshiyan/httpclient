@@ -17,6 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -61,7 +62,19 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             connection.setDoOutput(true);
             connection.setUseCaches(false);
             //2.处理header
-            setConnectProperty(connection, method, httpRequest.getContentType(), mergeDefaultHeaders(httpRequest.getHeaders()),
+            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+
+            ///HttpURLConnection不能用以下方法处理，会出现重复Cookie，即同样的Cookie框架自己弄了一份，我们手动又弄了一份
+            /*headers = handleCookieIfNecessary(completedUrl, headers);*/
+
+            //在需要开启Cookie功能的时候，只需要确保设置了CookieHandler的CookieHandler即可，HttpURLConnection会自动管理
+            if(null != getCookieHandler()){
+                if(null == CookieHandler.getDefault()){
+                    CookieHandler.setDefault(getCookieHandler());
+                }
+            }
+
+            setConnectProperty(connection, method, httpRequest.getContentType(), headers,
                     getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()),
                     getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
@@ -81,7 +94,22 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
             inputStream = getStreamFrom(connection , statusCode , httpRequest.isIgnoreResponseBody());
 
-            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(httpRequest.getResultCharset()), parseHeaders(connection , httpRequest.isIncludeHeaders()));
+            //7.返回header,包括Cookie处理
+            boolean includeHeaders = httpRequest.isIncludeHeaders();
+            if(null != getCookieHandler()){
+                includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
+            }
+            MultiValueMap<String, String> parseHeaders = parseHeaders(connection, includeHeaders);
+
+            ///存入Cookie
+            /*if(null != getCookieHandler() && null != parseHeaders){
+                CookieHandler cookieHandler = getCookieHandler();
+                cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+            }*/
+
+            return resultCallback.convert(statusCode , inputStream,
+                    getResultCharsetWithDefault(httpRequest.getResultCharset()),
+                    parseHeaders);
         } catch (IOException e) {
             throw e;
         } catch (Exception e){

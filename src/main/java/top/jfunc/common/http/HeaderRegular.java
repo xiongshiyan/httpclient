@@ -51,6 +51,7 @@ public enum HeaderRegular {
 	//------------------------------------------------------------- 响应头域
 	/**Cookie*/
 	SET_COOKIE("Set-Cookie"),
+	SET_COOKIE2("Set-Cookie2"),
 	/**Content-Encoding*/
 	CONTENT_ENCODING("Content-Encoding"),
 	/**ETag*/

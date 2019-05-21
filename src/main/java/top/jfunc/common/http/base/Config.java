@@ -14,6 +14,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
+import java.net.CookieHandler;
 import java.util.Map;
 
 /**
@@ -61,6 +62,10 @@ public class Config {
      * 默认的请求头,每个请求都会加上
      */
     private MultiValueMap<String,String> defaultHeaders = null;
+    /**
+     * CookieHandler，只要设置了就表示支持Cookie
+     */
+    private CookieHandler cookieHandler = null;
 
     public static Config defaultConfig(){
         return new Config();
@@ -214,5 +219,14 @@ public class Config {
             return SSLSocketFactoryBuilder.create().getSSLContext().getSocketFactory();
         }
         return sslContext.getSocketFactory();
+    }
+
+    public CookieHandler getCookieHandler() {
+        return cookieHandler;
+    }
+
+    public Config setCookieHandler(CookieHandler cookieHandler) {
+        this.cookieHandler = cookieHandler;
+        return this;
     }
 }
