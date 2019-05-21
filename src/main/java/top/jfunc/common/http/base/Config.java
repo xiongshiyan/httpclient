@@ -63,7 +63,7 @@ public class Config {
      */
     private MultiValueMap<String,String> defaultHeaders = null;
     /**
-     * CookieHandler
+     * CookieHandler，只要设置了就表示支持Cookie
      */
     private CookieHandler cookieHandler = null;
 

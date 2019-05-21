@@ -14,9 +14,7 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.GetRequest;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.Joiner;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
@@ -24,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.URI;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -81,13 +78,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             //2.3设置headers
             MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
-            List<String> cookies = getCookies(completedUrl);
-            if(null != cookies && !cookies.isEmpty()){
-                if(null == headers){
-                    headers = new ArrayListMultiValueMap<>();
-                }
-                headers.add("Cookie" , Joiner.on(";").join(cookies));
-            }
+            headers = handleCookieIfNecessary(completedUrl, headers);
 
             setRequestHeaders(builder , httpRequest.getContentType() , headers);
 
@@ -102,19 +93,22 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
             //6.处理header，包括Cookie的处理
             boolean includeHeaders = httpRequest.isIncludeHeaders();
-            if(null != getCookieHandler()){
+            if(supportCookie()){
                 includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
 
             //存入Cookie
-            if(null != getCookieHandler() && null != parseHeaders){
-                CookieHandler cookieHandler = getCookieHandler();
-                cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+            if(supportCookie()){
+                if(null != getCookieHandler() && null != parseHeaders){
+                    CookieHandler cookieHandler = getCookieHandler();
+                    cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+                }
             }
 
             return resultCallback.convert(response.code() , inputStream,
-                    getResultCharsetWithDefault(httpRequest.getResultCharset()), parseHeaders);
+                    getResultCharsetWithDefault(httpRequest.getResultCharset()),
+                    parseHeaders);
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
@@ -124,8 +118,6 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             IoUtil.close(response);
         }
     }
-
-
 
     @Override
     public Response get(HttpRequest req) throws IOException {

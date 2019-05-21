@@ -19,9 +19,7 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.GetRequest;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.Joiner;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -31,9 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 使用Apache HttpClient 实现的Http请求类
@@ -69,13 +64,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
 
         MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
-        List<String> cookies = getCookies(completedUrl);
-        if(null != cookies && !cookies.isEmpty()){
-            if(null == headers){
-                headers = new ArrayListMultiValueMap<>();
-            }
-            headers.add("Cookie" , Joiner.on(";").join(cookies));
-        }
+        //支持Cookie的话
+        headers = handleCookieIfNecessary(completedUrl, headers);
 
         //4.设置请求头
         setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers);
@@ -103,18 +93,22 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             InputStream inputStream = getStreamFrom(entity , httpRequest.isIgnoreResponseBody());
 
             boolean includeHeaders = httpRequest.isIncludeHeaders();
-            if(null != getCookieHandler()){
+            if(supportCookie()){
                 includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
 
             //存入Cookie
-            if(null != getCookieHandler() && null != parseHeaders){
-                CookieHandler cookieHandler = getCookieHandler();
-                cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+            if(supportCookie()){
+                if(null != getCookieHandler() && null != parseHeaders){
+                    CookieHandler cookieHandler = getCookieHandler();
+                    cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+                }
             }
 
-            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(httpRequest.getResultCharset()), parseHeaders);
+            R convert = resultCallback.convert(statusCode , inputStream,
+                    getResultCharsetWithDefault(httpRequest.getResultCharset()),
+                    parseHeaders);
 
             IoUtil.close(inputStream);
 

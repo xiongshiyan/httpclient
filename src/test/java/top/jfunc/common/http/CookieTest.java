@@ -1,6 +1,7 @@
 package top.jfunc.common.http;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
@@ -14,6 +15,7 @@ import java.util.Map;
 /**
  * @author xiongshiyan at 2019/5/20 , contact me with email yanshixiong@126.com or phone 15208384257
  */
+@Ignore
 public class CookieTest {
     @Test
     public void testAddCookie() throws Exception{
