@@ -85,7 +85,6 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         } catch (IOException e) {
             throw e;
         } catch (Exception e){
-            e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接

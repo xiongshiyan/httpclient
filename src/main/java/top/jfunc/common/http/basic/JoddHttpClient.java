@@ -39,39 +39,50 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
 
     @Override
     public <R> R template(String url, Method method, String contentType, ContentCallback<HttpRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {
-        //1.获取完成的URL，创建请求
-        String completedUrl = addBaseUrlIfNecessary(url);
-        HttpRequest request = new HttpRequest();
-        request.method(method.name());
-        request.set(completedUrl);
+        HttpResponse response = null;
+        try {
+            //1.获取完成的URL，创建请求
+            String completedUrl = addBaseUrlIfNecessary(url);
+            HttpRequest request = new HttpRequest();
+            request.method(method.name());
+            request.set(completedUrl);
 
-        //2.超时设置
-        request.connectionTimeout(getConnectionTimeoutWithDefault(connectTimeout));
-        request.timeout(getReadTimeoutWithDefault(readTimeout));
+            //2.超时设置
+            request.connectionTimeout(getConnectionTimeoutWithDefault(connectTimeout));
+            request.timeout(getReadTimeoutWithDefault(readTimeout));
 
 
-        //3.SSL处理
-        initSSL(request , getHostnameVerifier() , getSSLSocketFactory() , getX509TrustManager() , null);
+            //3.SSL处理
+            initSSL(request , getHostnameVerifier() , getSSLSocketFactory() , getX509TrustManager() , null);
 
-        //4.处理body
-        if(contentCallback != null && method.hasContent()){
-            contentCallback.doWriteWith(request);
+            //4.处理body
+            if(contentCallback != null && method.hasContent()){
+                contentCallback.doWriteWith(request);
+            }
+
+            //5.设置header
+            setRequestHeaders(request , contentType , mergeDefaultHeaders(headers));
+
+            //6.子类可以复写
+            doWithHttpRequest(request);
+
+            //7.真正请求
+            response = request.send();
+
+            //8.返回处理
+            return resultCallback.convert(response.statusCode() ,
+                    getStreamFrom(response , false),
+                    getResultCharsetWithDefault(resultCharset) ,
+                    parseHeaders(response , includeHeaders));
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        } finally {
+            if(null != response){
+                response.close();
+            }
         }
-
-        //5.设置header
-        setRequestHeaders(request , contentType , mergeDefaultHeaders(headers));
-
-        //6.子类可以复写
-        doWithHttpRequest(request);
-
-        //7.真正请求
-        HttpResponse response = request.send();
-
-        //8.返回处理
-        return resultCallback.convert(response.statusCode() ,
-                getStreamFrom(response , false),
-                getResultCharsetWithDefault(resultCharset) ,
-                parseHeaders(response , includeHeaders));
     }
 
     @Override

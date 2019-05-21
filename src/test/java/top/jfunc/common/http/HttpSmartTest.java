@@ -198,6 +198,11 @@ public class HttpSmartTest {
         SmartHttpClient http = new NativeSmartHttpClient();
         testHttpMethod(http);
     }
+    @Test
+    public void testHttpMethodJoddHttp(){
+        SmartHttpClient http = new JoddSmartHttpClient();
+        testHttpMethod(http);
+    }
     public void testHttpMethod(SmartHttpClient http){
 //        String url = "https://dzg.palmte.cn/dzdsds";
         String url = "http://localhost:8080/http-server-test/put/body";

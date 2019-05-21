@@ -34,62 +34,73 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
 
     @Override
     public <R> R template(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        //1.获取完成的URL，创建请求
-        String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() ,httpRequest.getQueryParams() , httpRequest.getBodyCharset());
+        HttpResponse response = null;
+        try {
+            //1.获取完成的URL，创建请求
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() ,httpRequest.getQueryParams() , httpRequest.getBodyCharset());
 
-        HttpRequest request = new HttpRequest();
-        request.method(method.name());
-        request.set(completedUrl);
-
-
-        //2.超时设置
-        request.connectionTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
-        request.timeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
-
-        //3.SSL设置
-        initSSL(request , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
-                getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()),
-                httpRequest.getProxyInfo());
+            HttpRequest request = new HttpRequest();
+            request.method(method.name());
+            request.set(completedUrl);
 
 
-        //4.处理body
-        if(contentCallback != null && method.hasContent()){
-            contentCallback.doWriteWith(request);
-        }
+            //2.超时设置
+            request.connectionTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
+            request.timeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
-        //5.设置header
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+            //3.SSL设置
+            initSSL(request , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
+                    getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
+                    getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()),
+                    httpRequest.getProxyInfo());
 
-        headers = handleCookieIfNecessary(completedUrl, headers);
 
-        setRequestHeaders(request , httpRequest.getContentType() , headers);
-
-        //6.子类可以复写
-        doWithHttpRequest(request);
-
-        //7.真正请求
-        HttpResponse response = request.send();
-
-        //8.返回header,包括Cookie处理
-        boolean includeHeaders = httpRequest.isIncludeHeaders();
-        if(supportCookie()){
-            includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
-        }
-        MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
-
-        //存入Cookie
-        if(supportCookie()){
-            if(null != getCookieHandler() && null != parseHeaders){
-                CookieHandler cookieHandler = getCookieHandler();
-                cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+            //4.处理body
+            if(contentCallback != null && method.hasContent()){
+                contentCallback.doWriteWith(request);
             }
-        }
 
-        return resultCallback.convert(response.statusCode() ,
-                getStreamFrom(response , httpRequest.isIgnoreResponseBody()),
-                getResultCharsetWithDefault(httpRequest.getResultCharset()) ,
-                parseHeaders);
+            //5.设置header
+            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+
+            headers = handleCookieIfNecessary(completedUrl, headers);
+
+            setRequestHeaders(request , httpRequest.getContentType() , headers);
+
+            //6.子类可以复写
+            doWithHttpRequest(request);
+
+            //7.真正请求
+            response = request.send();
+
+            //8.返回header,包括Cookie处理
+            boolean includeHeaders = httpRequest.isIncludeHeaders();
+            if(supportCookie()){
+                includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
+            }
+            MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
+
+            //存入Cookie
+            if(supportCookie()){
+                if(null != getCookieHandler() && null != parseHeaders){
+                    CookieHandler cookieHandler = getCookieHandler();
+                    cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+                }
+            }
+
+            return resultCallback.convert(response.statusCode() ,
+                    getStreamFrom(response , httpRequest.isIgnoreResponseBody()),
+                    getResultCharsetWithDefault(httpRequest.getResultCharset()) ,
+                    parseHeaders);
+    } catch (IOException e) {
+        throw e;
+    } catch (Exception e){
+        throw new RuntimeException(e);
+    } finally {
+        if(null != response){
+            response.close();
+        }
+    }
     }
 
     @Override
