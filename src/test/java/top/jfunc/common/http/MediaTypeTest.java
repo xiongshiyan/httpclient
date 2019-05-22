@@ -3,6 +3,8 @@ package top.jfunc.common.http;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+
 import static org.hamcrest.core.Is.is;
 
 /**
@@ -11,12 +13,12 @@ import static org.hamcrest.core.Is.is;
 public class MediaTypeTest {
     @Test
     public void testToString(){
-        Assert.assertThat(MediaType.TXT_PLAIN.toString() , is("text/plain;charset=utf-8"));
-        Assert.assertThat(MediaType.TXT_XML.toString() , is("text/xml;charset=utf-8"));
-        Assert.assertThat(MediaType.TXT_HTML.toString() , is("text/html;charset=utf-8"));
-        Assert.assertThat(MediaType.TXT_JAVASCRIPT.toString() , is("text/javascript;charset=utf-8"));
-        Assert.assertThat(MediaType.TXT_CSS.toString() , is("text/css;charset=utf-8"));
-        Assert.assertThat(MediaType.TXT_CSV.toString() , is("text/csv;charset=utf-8"));
+        Assert.assertThat(MediaType.TXT_PLAIN.withCharset("utf-8").toString() , is("text/plain;charset=utf-8"));
+        Assert.assertThat(MediaType.TXT_XML.withCharset("utf-8").toString() , is("text/xml;charset=utf-8"));
+        Assert.assertThat(MediaType.TXT_HTML.withCharset("utf-8").toString() , is("text/html;charset=utf-8"));
+        Assert.assertThat(MediaType.TXT_JAVASCRIPT.withCharset("utf-8").toString() , is("text/javascript;charset=utf-8"));
+        Assert.assertThat(MediaType.TXT_CSS.withCharset("utf-8").toString() , is("text/css;charset=utf-8"));
+        Assert.assertThat(MediaType.TXT_CSV.withCharset("utf-8").toString() , is("text/csv;charset=utf-8"));
         Assert.assertThat(MediaType.IMAGE_BMP.toString() , is("image/bmp"));
         Assert.assertThat(MediaType.IMAGE_GIF.toString() , is("image/gif"));
         Assert.assertThat(MediaType.IMAGE_JPEG.toString() , is("image/jpeg"));
@@ -55,5 +57,7 @@ public class MediaTypeTest {
         Assert.assertThat(MediaType.APPLICATIPON_XHTML.toString() , is("application/xhtml+xml"));
         Assert.assertThat(MediaType.APPLICATIPON_ZIP.toString() , is("application/zip"));
         Assert.assertThat(MediaType.MULTIPART_FORM_DATA.toString() , is("multipart/form-data"));
+
+        Assert.assertEquals("UTF-8" , Charset.forName("utf-8").name());
     }
 }

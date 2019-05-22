@@ -1,6 +1,6 @@
 package top.jfunc.common.http.request.impl;
 
-import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.http.request.StringBodyRequest;
@@ -35,7 +35,7 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements Str
         String bodyCharset = getBodyCharset();
         //没有显式设置就设置默认的
         if(null == getContentType()){
-            setContentType(HttpConstants.FORM_URLENCODED + ";charset=" + bodyCharset);
+            setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
         }
         return ParamUtil.contactMap(formParams, bodyCharset);
     }

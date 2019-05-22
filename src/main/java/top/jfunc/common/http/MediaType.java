@@ -31,25 +31,23 @@ public final class MediaType {
     private static final Pattern PARAMETER = Pattern.compile(
     ";\\s*(?:" + TOKEN + "=(?:" + TOKEN + "|" + QUOTED + "))?");
 
-    private final String mediaType;
     private final String type;
     private final String subtype;
-    private final String charset;
+    private String charset;
 
-    public MediaType(String mediaType, String type, String subtype, String charset) {
-    this.mediaType = mediaType;
-    this.type = type;
-    this.subtype = subtype;
-    this.charset = charset;
+    public MediaType(String type, String subtype, String charset) {
+        this.type = type;
+        this.subtype = subtype;
+        this.charset = charset;
     }
 
     /**常见的MediaType-TEXT*/
-    public static final MediaType TXT_PLAIN                     = parse("text/plain;charset=utf-8");
-    public static final MediaType TXT_XML                       = parse("text/xml;charset=utf-8");
-    public static final MediaType TXT_HTML                      = parse("text/html;charset=utf-8");
-    public static final MediaType TXT_JAVASCRIPT                = parse("text/javascript;charset=utf-8");
-    public static final MediaType TXT_CSS                       = parse("text/css;charset=utf-8");
-    public static final MediaType TXT_CSV                       = parse("text/csv;charset=utf-8");
+    public static final MediaType TXT_PLAIN                     = parse("text/plain");
+    public static final MediaType TXT_XML                       = parse("text/xml");
+    public static final MediaType TXT_HTML                      = parse("text/html");
+    public static final MediaType TXT_JAVASCRIPT                = parse("text/javascript");
+    public static final MediaType TXT_CSS                       = parse("text/css");
+    public static final MediaType TXT_CSV                       = parse("text/csv");
     /**常见的MediaType-IMAGE*/
     public static final MediaType IMAGE_BMP                     = parse("image/bmp");
     public static final MediaType IMAGE_GIF                     = parse("image/gif");
@@ -124,7 +122,9 @@ public final class MediaType {
       }
 
       String name = parameter.group(1);
-      if (name == null || !"charset".equalsIgnoreCase(name)) continue;
+      if (name == null || !"charset".equalsIgnoreCase(name)) {
+          continue;
+      }
       String charsetParameter;
       String token = parameter.group(2);
       if (token != null) {
@@ -148,7 +148,7 @@ public final class MediaType {
       charset = charsetParameter;
     }
 
-    return new MediaType(string, type, subtype, charset);
+    return new MediaType(type, subtype, charset);
     }
 
     /**
@@ -198,19 +198,42 @@ public final class MediaType {
         }
     }
 
+    /**设置字符编码*/
+    public MediaType withCharset(String charset){
+        this.charset = charset;
+        return this;
+    }
+    /**设置字符编码*/
+    public MediaType withCharset(Charset charset){
+        this.charset = charset.name();
+        return this;
+    }
+
     /**
     * Returns the encoded media type, like "text/plain; charset=utf-8", appropriate for use in a
     * Content-Type header.
     */
     @Override public String toString() {
-    return mediaType;
+        String base = type + "/" + subtype;
+        return null == charset ? base : (base + ";charset=" + charset);
     }
 
     @Override public boolean equals(Object other) {
-        return other instanceof MediaType && ((MediaType) other).mediaType.equals(mediaType);
+        if(!(other instanceof MediaType)){
+            return false;
+        }
+        MediaType o = (MediaType)other;
+        if(null == charset){
+            return type.equalsIgnoreCase(o.type) &&
+                    subtype.equalsIgnoreCase(o.subtype);
+        }else {
+            return type.equalsIgnoreCase(o.type) &&
+                    subtype.equalsIgnoreCase(o.subtype) &&
+                    charset.equalsIgnoreCase(o.charset);
+        }
     }
 
     @Override public int hashCode() {
-    return mediaType.hashCode();
+    return toString().hashCode();
   }
 }
