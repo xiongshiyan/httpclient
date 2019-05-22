@@ -98,10 +98,11 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest ,
         this.formParams.add(key, value);
         return this;
     }
-    public Request addFormParam(String key, String... values){
+    public Request addFormParam(String key, String value , String... values){
         initFormParams();
-        for (String value : values) {
-            this.formParams.add(key , value);
+        this.formParams.add(key , value);
+        for (String val : values) {
+            this.formParams.add(key , val);
         }
         return this;
     }
@@ -112,9 +113,10 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest ,
         }
         return this;
     }
-    public Request addFormParam(Parameter... parameters){
-        for (Parameter parameter : parameters) {
-            addFormParam(parameter.getKey() , parameter.getValue());
+    public Request addFormParam(Parameter parameter , Parameter... parameters){
+        addFormParam(parameter.getKey() , parameter.getValue());
+        for (Parameter param : parameters) {
+            addFormParam(param.getKey() , param.getValue());
         }
         return this;
     }
@@ -124,9 +126,10 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest ,
         }
         return this;
     }
-    public Request addFormParam(Map.Entry<String , Iterable<String>>... parameters){
-        for (Map.Entry<String , Iterable<String>> parameter : parameters) {
-            addFormParam(parameter.getKey() , parameter.getValue());
+    public Request addFormParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters){
+        addFormParam(parameter.getKey() , parameter.getValue());
+        for (Map.Entry<String , Iterable<String>> param : parameters) {
+            addFormParam(param.getKey() , param.getValue());
         }
         return this;
     }

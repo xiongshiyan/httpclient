@@ -59,10 +59,11 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
         this.formParams.add(key, value);
         return this;
     }
-    public FileParamUploadRequest addFormParam(String key, String... values){
+    public FileParamUploadRequest addFormParam(String key, String value , String... values){
         initFormParams();
-        for (String value : values) {
-            this.formParams.add(key , value);
+        this.formParams.add(key , value);
+        for (String val : values) {
+            this.formParams.add(key , val);
         }
         return this;
     }
@@ -73,9 +74,10 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
         }
         return this;
     }
-    public FileParamUploadRequest addFormParam(Parameter... parameters){
-        for (Parameter parameter : parameters) {
-            addFormParam(parameter.getKey() , parameter.getValue());
+    public FileParamUploadRequest addFormParam(Parameter parameter , Parameter... parameters){
+        addFormParam(parameter.getKey() , parameter.getValue());
+        for (Parameter param : parameters) {
+            addFormParam(param.getKey() , param.getValue());
         }
         return this;
     }
@@ -85,9 +87,10 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
         }
         return this;
     }
-    public FileParamUploadRequest addFormParam(Map.Entry<String , Iterable<String>>... parameters){
-        for (Map.Entry<String , Iterable<String>> parameter : parameters) {
-            addFormParam(parameter.getKey() , parameter.getValue());
+    public FileParamUploadRequest addFormParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters){
+        addFormParam(parameter.getKey() , parameter.getValue());
+        for (Map.Entry<String , Iterable<String>> param : parameters) {
+            addFormParam(param.getKey() , param.getValue());
         }
         return this;
     }

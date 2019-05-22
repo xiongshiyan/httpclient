@@ -164,10 +164,11 @@ public class BaseRequest<T extends BaseRequest> implements HttpRequest {
         this.queryParams.add(key, value);
         return myself();
     }
-    public T addQueryParam(String key, String... values){
+    public T addQueryParam(String key, String value, String... values){
         initQueryParams();
-        for (String value : values) {
-            this.queryParams.add(key , value);
+        this.queryParams.add(key , value);
+        for (String val : values) {
+            this.queryParams.add(key , val);
         }
         return myself();
     }
@@ -178,9 +179,10 @@ public class BaseRequest<T extends BaseRequest> implements HttpRequest {
         }
         return myself();
     }
-    public T addQueryParam(Parameter... parameters){
-        for (Parameter parameter : parameters) {
-            addQueryParam(parameter.getKey() , parameter.getValue());
+    public T addQueryParam(Parameter parameter , Parameter... parameters){
+        addQueryParam(parameter.getKey() , parameter.getValue());
+        for (Parameter param : parameters) {
+            addQueryParam(param.getKey() , param.getValue());
         }
         return myself();
     }
@@ -190,9 +192,10 @@ public class BaseRequest<T extends BaseRequest> implements HttpRequest {
         }
         return myself();
     }
-    public T addQueryParam(Map.Entry<String , Iterable<String>>... entries){
-        for (Map.Entry<String , Iterable<String>> parameter : entries) {
-            addQueryParam(parameter.getKey() , parameter.getValue());
+    public T addQueryParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters){
+        addQueryParam(parameter.getKey() , parameter.getValue());
+        for (Map.Entry<String , Iterable<String>> param : parameters) {
+            addQueryParam(param.getKey() , param.getValue());
         }
         return myself();
     }
@@ -216,10 +219,11 @@ public class BaseRequest<T extends BaseRequest> implements HttpRequest {
         this.headers.add(key, value);
         return myself();
     }
-    public T addHeader(String key, String... values){
+    public T addHeader(String key, String value , String... values){
         initHeaders();
-        for (String value : values) {
-            this.headers.add(key , value);
+        this.headers.add(key , value);
+        for (String val : values) {
+            this.headers.add(key , val);
         }
         return myself();
     }
@@ -230,9 +234,10 @@ public class BaseRequest<T extends BaseRequest> implements HttpRequest {
         }
         return myself();
     }
-    public T addHeader(Header... headers){
-        for (Header header : headers) {
-            addHeader(header.getKey() , header.getValue());
+    public T addHeader(Header header , Header... headers){
+        addHeader(header.getKey() , header.getValue());
+        for (Header h : headers) {
+            addHeader(h.getKey() , h.getValue());
         }
         return myself();
     }
@@ -242,9 +247,9 @@ public class BaseRequest<T extends BaseRequest> implements HttpRequest {
         }
         return myself();
     }
-    public T addHeader(Map.Entry<String , Iterable<String>>... entries){
-        for (Map.Entry<String , Iterable<String>> header : entries) {
-            addHeader(header.getKey() , header.getValue());
+    public T addHeader(Map.Entry<String , Iterable<String>> header , Map.Entry<String , Iterable<String>>... headers){
+        for (Map.Entry<String , Iterable<String>> h : headers) {
+            addHeader(h.getKey() , h.getValue());
         }
         return myself();
     }
