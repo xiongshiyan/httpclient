@@ -49,8 +49,8 @@ public class MediaTypeTest {
         Assert.assertThat(MediaType.APPLICATIPON_OCTET_STREAM.toString() , is("application/octet-stream"));
         Assert.assertThat(MediaType.APPLICATIPON_PDF.toString() , is("application/pdf"));
         Assert.assertThat(MediaType.APPLICATIPON_RTF.toString() , is("application/rtf"));
-        Assert.assertThat(MediaType.APPLICATIPON_RDF.withCharset("UTF-8").toString() , is("application/rdf+xml;charset=utf-8"));
-        Assert.assertThat(MediaType.APPLICATIPON_SOAP_XML.withCharset("UTF-8").toString() , is("application/soap+xml;charset=utf-8"));
+        Assert.assertThat(MediaType.APPLICATIPON_RDF.withCharset("utf-8").toString() , is("application/rdf+xml;charset=utf-8"));
+        Assert.assertThat(MediaType.APPLICATIPON_SOAP_XML.withCharset("utf-8").toString() , is("application/soap+xml;charset=utf-8"));
         Assert.assertThat(MediaType.APPLICATIPON_TAR.toString() , is("application/x-tar"));
         Assert.assertThat(MediaType.APPLICATIPON_WOFF.toString() , is("application/font-woff"));
         Assert.assertThat(MediaType.APPLICATIPON_WOFF2.toString() , is("application/font-woff2"));
