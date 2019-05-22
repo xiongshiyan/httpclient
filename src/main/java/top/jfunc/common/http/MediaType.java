@@ -82,8 +82,8 @@ public final class MediaType {
     public static final MediaType APPLICATIPON_OCTET_STREAM     = parse("application/octet-stream");
     public static final MediaType APPLICATIPON_PDF              = parse("application/pdf");
     public static final MediaType APPLICATIPON_RTF              = parse("application/rtf");
-    public static final MediaType APPLICATIPON_RDF              = parse("application/rdf+xml;charset=utf-8");
-    public static final MediaType APPLICATIPON_SOAP_XML         = parse("application/soap+xml;charset=utf-8");
+    public static final MediaType APPLICATIPON_RDF              = parse("application/rdf+xml");
+    public static final MediaType APPLICATIPON_SOAP_XML         = parse("application/soap+xml");
     public static final MediaType APPLICATIPON_TAR              = parse("application/x-tar");
     public static final MediaType APPLICATIPON_WOFF             = parse("application/font-woff");
     public static final MediaType APPLICATIPON_WOFF2            = parse("application/font-woff2");
