@@ -23,7 +23,7 @@ import java.util.Objects;
  * T泛型为了变种的setter返回this便于链式调用
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class BaseRequest<T extends BaseRequest> implements HttpRequest {
+public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest {
     /**
      * 请求的URL
      */
