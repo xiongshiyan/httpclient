@@ -58,7 +58,8 @@ public class CookieTest {
         // 接受所有的Cookie
         manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         // 保存这个定制的CookieManager
-        CookieHandler.setDefault(manager);
+        //可调可不调
+        // CookieHandler.setDefault(manager);
     }
 
     @Test

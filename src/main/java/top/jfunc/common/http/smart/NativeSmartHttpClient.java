@@ -18,7 +18,6 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -63,6 +62,11 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             connection.setDoInput(true);
             connection.setDoOutput(true);
             connection.setUseCaches(false);
+
+            connection.setRequestMethod(method.name());
+            connection.setConnectTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
+            connection.setReadTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
+
             //2.处理header
             MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
@@ -70,15 +74,14 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             /*headers = handleCookieIfNecessary(completedUrl, headers);*/
 
             //在需要开启Cookie功能的时候，只需要确保设置了CookieHandler的CookieHandler即可，HttpURLConnection会自动管理
-            if(null != getCookieHandler()){
+            ///这段代码放到设置CookieHandler的时候，不必每次都执行一下
+            /*if(null != getCookieHandler()){
                 if(null == CookieHandler.getDefault()){
                     CookieHandler.setDefault(getCookieHandler());
                 }
-            }
+            }*/
 
-            setConnectProperty(connection, method, httpRequest.getContentType(), headers,
-                    getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()),
-                    getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
+            setRequestHeaders(connection, httpRequest.getContentType(), headers);
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection);
@@ -98,7 +101,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
             //7.返回header,包括Cookie处理
             boolean includeHeaders = httpRequest.isIncludeHeaders();
-            if(null != getCookieHandler()){
+            if(supportCookie()){
                 includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(connection, includeHeaders);

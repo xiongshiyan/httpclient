@@ -9,7 +9,6 @@ import top.jfunc.common.utils.MultiValueMap;
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.util.Map;
 
 /**
@@ -59,11 +58,12 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             connection.setDoOutput(true);
             connection.setUseCaches(false);
 
+            connection.setRequestMethod(method.name());
+            connection.setConnectTimeout(getConnectionTimeoutWithDefault(connectTimeout));
+            connection.setReadTimeout(getReadTimeoutWithDefault(readTimeout));
+
             //2.处理header
-            setConnectProperty(connection, method, contentType,
-                    mergeDefaultHeaders(headers),
-                    getConnectionTimeoutWithDefault(connectTimeout),
-                    getReadTimeoutWithDefault(readTimeout));
+            setRequestHeaders(connection, contentType, mergeDefaultHeaders(headers));
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection);
@@ -291,13 +291,6 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         if(null != sslSocketFactory){
             con.setSSLSocketFactory(sslSocketFactory);
         }
-    }
-
-    protected void setConnectProperty(HttpURLConnection connect, Method method, String contentType, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout) throws ProtocolException {
-        connect.setRequestMethod(method.name());
-        setRequestHeaders(connect , contentType , headers);
-        connect.setConnectTimeout(connectTimeout);
-        connect.setReadTimeout(readTimeout);
     }
 
     protected void setRequestHeaders(HttpURLConnection connection, String contentType, MultiValueMap<String, String> headers) {

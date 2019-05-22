@@ -228,10 +228,11 @@ public class Config {
         this.defaultHeaders.add(key, value);
         return this;
     }
-    public Config addHeader(String key, String... values){
+    public Config addHeader(String key, String value , String... values){
         initHeaders();
-        for (String value : values) {
-            this.defaultHeaders.add(key , value);
+        this.defaultHeaders.add(key, value);
+        for (String val : values) {
+            this.defaultHeaders.add(key , val);
         }
         return this;
     }
@@ -242,9 +243,10 @@ public class Config {
         }
         return this;
     }
-    public Config addHeader(Header... headers){
-        for (Header header : headers) {
-            addHeader(header.getKey() , header.getValue());
+    public Config addHeader(Header header , Header... headers){
+        addHeader(header.getKey() , header.getValue());
+        for (Header h : headers) {
+            addHeader(h.getKey() , h.getValue());
         }
         return this;
     }
@@ -254,7 +256,8 @@ public class Config {
         }
         return this;
     }
-    public Config addHeader(Map.Entry<String , Iterable<String>>... entries){
+    public Config addHeader(Map.Entry<String , Iterable<String>> entry , Map.Entry<String , Iterable<String>>... entries){
+        addHeader(entry.getKey() , entry.getValue());
         for (Map.Entry<String , Iterable<String>> header : entries) {
             addHeader(header.getKey() , header.getValue());
         }
@@ -287,10 +290,11 @@ public class Config {
         this.defaultQueryParams.add(key, value);
         return this;
     }
-    public Config addQueryParam(String key, String... values){
+    public Config addQueryParam(String key, String value , String... values){
         initQueryParams();
-        for (String value : values) {
-            this.defaultQueryParams.add(key , value);
+        this.defaultQueryParams.add(key , value);
+        for (String val : values) {
+            this.defaultQueryParams.add(key , val);
         }
         return this;
     }
@@ -301,9 +305,10 @@ public class Config {
         }
         return this;
     }
-    public Config addQueryParam(Parameter... parameters){
-        for (Parameter parameter : parameters) {
-            addQueryParam(parameter.getKey() , parameter.getValue());
+    public Config addQueryParam(Parameter parameter , Parameter... parameters){
+        addQueryParam(parameter.getKey() , parameter.getValue());
+        for (Parameter param : parameters) {
+            addQueryParam(param.getKey() , param.getValue());
         }
         return this;
     }
@@ -313,7 +318,8 @@ public class Config {
         }
         return this;
     }
-    public Config addQueryParam(Map.Entry<String , Iterable<String>>... entries){
+    public Config addQueryParam(Map.Entry<String , Iterable<String>> entry , Map.Entry<String , Iterable<String>>... entries){
+        addQueryParam(entry.getKey() , entry.getValue());
         for (Map.Entry<String , Iterable<String>> parameter : entries) {
             addQueryParam(parameter.getKey() , parameter.getValue());
         }
@@ -345,6 +351,9 @@ public class Config {
 
     public Config setCookieHandler(CookieHandler cookieHandler) {
         this.cookieHandler = cookieHandler;
+        if(null == CookieHandler.getDefault()){
+            CookieHandler.setDefault(cookieHandler);
+        }
         return this;
     }
 }
