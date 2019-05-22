@@ -1,6 +1,7 @@
 package top.jfunc.common.http.request.impl;
 
 import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.kv.Header;
 import top.jfunc.common.http.kv.Parameter;
@@ -267,8 +268,13 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     public T addXmlHeader(){
         return setContentType(HttpConstants.TEXT_XML_WITH_DEFAULT_CHARSET);
     }
+
     public T setContentType(String contentType) {
         this.contentType = contentType;
+        return myself();
+    }
+    public T setContentType(MediaType mediaType) {
+        this.contentType = mediaType.toString();
         return myself();
     }
 

@@ -1,5 +1,7 @@
 package top.jfunc.common.http.base;
 
+import top.jfunc.common.http.MediaType;
+
 import java.io.*;
 
 /**
@@ -16,7 +18,7 @@ public class FormFile{
     /**请求参数名称 */
     private String      parameterName;
     /**内容类型 */
-    private String      contentType = "application/octet-stream";
+    private String      contentType = MediaType.APPLICATIPON_OCTET_STREAM.toString();
 
     public FormFile(String filName, byte[] data, String parameterName, String contentType){
         this.inStream = new ByteArrayInputStream(data);

@@ -54,4 +54,17 @@ public class MultiValueMapTest {
         Assert.assertThat(contactMap , is("xx=xx&yy=yy"));
         Assert.assertThat(ParamUtil.contactMap(ArrayListMultimap.fromMap(map)) , is("xx=xx&yy=yy"));
     }
+    @Test
+    public void testInit(){
+        MultiValueMap<String, String> multiValueMap =
+                new ArrayListMultiValueMap<String, String>(){
+            {
+                add("charset" , "utf-8");
+                add("charset2" , "gbk");
+            }
+        };
+        Assert.assertThat(multiValueMap.size() , is(2));
+        Assert.assertThat(multiValueMap.getFirst("charset") , is("utf-8"));
+        Assert.assertThat(multiValueMap.getLast("charset2") , is("gbk"));
+    }
 }
