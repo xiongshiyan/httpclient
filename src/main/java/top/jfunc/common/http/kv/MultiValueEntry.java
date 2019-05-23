@@ -1,6 +1,8 @@
 package top.jfunc.common.http.kv;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,9 +15,12 @@ public class MultiValueEntry implements Map.Entry<String , Iterable<String>>{
     private String key;
     private Iterable<String> value;
 
-    public MultiValueEntry(String key, String... values) {
+    public MultiValueEntry(String key, String value , String... values) {
         this.key = key;
-        this.value = Arrays.asList(values);
+        List<String> temp = new ArrayList<>(values.length + 1);
+        temp.add(value);
+        temp.addAll(Arrays.asList(values));
+        this.value = temp;
     }
     public MultiValueEntry(String key, Iterable<String> values) {
         this.key = key;
@@ -56,5 +61,13 @@ public class MultiValueEntry implements Map.Entry<String , Iterable<String>>{
         int result = key != null ? key.hashCode() : 0;
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MultiValueEntry{" +
+                "key='" + key + '\'' +
+                ", value=" + value +
+                '}';
     }
 }
