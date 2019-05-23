@@ -59,5 +59,7 @@ public class MediaTypeTest {
         Assert.assertThat(MediaType.MULTIPART_FORM_DATA.toString() , is("multipart/form-data"));
 
         Assert.assertEquals("UTF-8" , Charset.forName("utf-8").name());
+
+        System.out.println(MediaType.APPLICATIPON_FORM_DATA.withCharset("UTF-8").toString());
     }
 }

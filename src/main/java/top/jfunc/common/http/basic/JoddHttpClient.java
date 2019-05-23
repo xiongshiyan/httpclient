@@ -6,7 +6,7 @@ import jodd.http.ProxyInfo;
 import jodd.http.net.SSLSocketHttpConnectionProvider;
 import jodd.http.net.SocketHttpConnectionProvider;
 import jodd.http.up.Uploadable;
-import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
@@ -95,7 +95,8 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
         return template(url, Method.POST, contentType,
                 httpRequest -> {
-                    String type = null == contentType ? HttpConstants.JSON + ";charset="+bodyCharset : contentType;
+                    String type = null == contentType ?
+                            MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : contentType;
                     httpRequest.body(body.getBytes(getBodyCharsetWithDefault(bodyCharset)), type);
                 },
                 ArrayListMultiValueMap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));

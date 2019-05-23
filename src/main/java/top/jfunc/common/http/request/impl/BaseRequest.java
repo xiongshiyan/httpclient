@@ -260,13 +260,13 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         }
     }
     public T addFormHeader(){
-        return setContentType(HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET);
+        return setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(HttpConstants.DEFAULT_CHARSET));
     }
     public T addJsonHeader(){
-        return setContentType(HttpConstants.JSON_WITH_DEFAULT_CHARSET);
+        return setContentType(MediaType.APPLICATIPON_JSON.withCharset(HttpConstants.DEFAULT_CHARSET));
     }
     public T addXmlHeader(){
-        return setContentType(HttpConstants.TEXT_XML_WITH_DEFAULT_CHARSET);
+        return setContentType(MediaType.TXT_XML.withCharset(HttpConstants.DEFAULT_CHARSET));
     }
 
     public T setContentType(String contentType) {
