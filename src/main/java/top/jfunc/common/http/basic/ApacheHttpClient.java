@@ -46,7 +46,7 @@ import java.util.Map;
  * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTemplate<HttpEntityEnclosingRequest> , HttpClient {
+public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTemplate<HttpEntityEnclosingRequest>, HttpClient {
     protected int _maxRetryTimes = 1;
 
     @Override
@@ -121,7 +121,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        return template(url,Method.POST, contentType, (request -> setRequestBody(request , body ,getBodyCharsetWithDefault(bodyCharset))),
+        return template(url, Method.POST, contentType, (request -> setRequestBody(request , body ,getBodyCharsetWithDefault(bodyCharset))),
                 ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
@@ -143,13 +143,13 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
 
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
-        return template(url,Method.POST, null, (request -> addFormFiles(request, null , files)),
+        return template(url, Method.POST, null, (request -> addFormFiles(request, null , files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
-        return template(url,Method.POST, null, (request -> addFormFiles(request, params ,files)),
+        return template(url, Method.POST, null, (request -> addFormFiles(request, params ,files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
@@ -368,5 +368,10 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
             arrayListMultimap.add(header.getName() , header.getValue());
         }
         return arrayListMultimap;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpClient implemented by Apache's httpcomponents";
     }
 }

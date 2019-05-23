@@ -6,7 +6,9 @@ import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.Map;
@@ -15,7 +17,7 @@ import java.util.Map;
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTemplate<HttpURLConnection> , HttpClient {
+public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTemplate<HttpURLConnection>, HttpClient {
     private static final String END = "\r\n";
     private static final String TWO_HYPHENS = "--";
     private static final String BOUNDARY = "*****xsyloveyou******";
@@ -372,4 +374,8 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
 
 */
 
+    @Override
+    public String toString() {
+        return "HttpClient implemented by JDK's HttpURLConnection";
+    }
 }

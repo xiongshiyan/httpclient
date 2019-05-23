@@ -23,13 +23,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 使用Jodd-Http 实现的Http请求类
  * @author xiongshiyan at 2019/5/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemplate<HttpRequest> , HttpClient{
+public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemplate<HttpRequest>, HttpClient {
 
     @Override
     public JoddHttpClient setConfig(Config config) {
@@ -248,5 +250,10 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
         public InputStream openInputStream() throws IOException {
             return this.formFile.getInStream();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "HttpClient implemented by Jodd-http";
     }
 }

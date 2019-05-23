@@ -18,14 +18,16 @@ import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
  * 使用OkHttp3实现的Http请求类
  * @author xiongshiyan at 2018/1/11
  */
-public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTemplate<Request.Builder> , HttpClient {
+public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTemplate<Request.Builder>, HttpClient {
 
     @Override
     public OkHttp3Client setConfig(Config config) {
@@ -92,7 +94,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException {
-        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()),Method.GET,null,null,
+        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET,null,null,
                 ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout,readTimeout,resultCharset,false,(s,b,r,h)-> IoUtil.read(b ,r));
     }
@@ -110,14 +112,14 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
 
     @Override
     public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException {
-        return template(url,Method.GET,null,null, headers ,
+        return template(url, Method.GET,null,null, headers ,
                 connectTimeout,readTimeout,null,false,
                 (s,b,r,h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException {
-        return template(url,Method.GET,null,null, headers ,
+        return template(url, Method.GET,null,null, headers ,
                 connectTimeout,readTimeout,null,false,
                 (s,b,r,h)-> IoUtil.copy2File(b, file));
     }
@@ -269,5 +271,10 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
             IoUtil.close(stream);
             IoUtil.close(source);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "HttpClient implemented by square's OkHttp3";
     }
 }
