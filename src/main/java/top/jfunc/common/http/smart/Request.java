@@ -1,6 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
@@ -39,7 +40,7 @@ import java.util.*;
  *
  * @since 从1.1开始建议不要用此类了,而是使用以上的一些意义更明确的
  */
-public class Request extends BaseRequest<Request> implements StringBodyRequest , UploadRequest , DownLoadRequest{
+public class Request extends BaseRequest<Request> implements StringBodyRequest, UploadRequest, DownLoadRequest {
     /**
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
@@ -75,6 +76,45 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest ,
      */
     public static Request of(String url){
         return new Request(url);
+    }
+
+    /****************************Getter**************************/
+    @Override
+    public MultiValueMap<String, String> getFormParams() {
+        return formParams;
+    }
+
+    /**
+     * 如果没有显式设置body而是通过params添加的，此时一般认为是想发起form请求，最好设置Content-Type
+     * @see this#setContentType(String)
+     */
+    @Override
+    public String getBody() {
+        //如果没有Body就将params的参数拼接
+        if(StrUtil.isBlank(body)){
+            //没有显式设置就设置默认的
+            if(null == getContentType()){
+                setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
+            }
+            return ParamUtil.contactMap(formParams, bodyCharset);
+        }
+        //直接返回设置的body
+        return body;
+    }
+    @Override
+    public FormFile[] getFormFiles() {
+        initFormFiles();
+        return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
+    }
+    private void initFormFiles(){
+        if(null == this.formFiles){
+            this.formFiles = new ArrayList<>(2);
+        }
+    }
+
+    @Override
+    public File getFile() {
+        return file;
     }
 
     /**************************变种的Setter*******************************/
@@ -146,6 +186,11 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest ,
         this.body = body;
         return this;
     }
+
+    /**
+     * 设置body的同时设置Content-Type
+     * @see MediaType
+     */
     public Request setBody(String body , String contentType) {
         this.body = body;
         setContentType(contentType);
@@ -184,43 +229,5 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest ,
     public Request setFile(String filePath) {
         this.file = new File(filePath);
         return this;
-    }
-
-    /****************************Getter**************************/
-    @Override
-    public MultiValueMap<String, String> getFormParams() {
-        return formParams;
-    }
-
-    /**
-     * 如果没有显式设置body而是通过params添加的，此时一般认为是想发起form请求，最好设置Content-Type
-     * @see this#setContentType(String)
-     */
-    @Override
-    public String getBody() {
-        //如果没有Body就将params的参数拼接
-        if(StrUtil.isBlank(body)){
-            //没有显式设置就设置默认的
-            if(null == getContentType()){
-                setContentType(HttpConstants.FORM_URLENCODED + ";charset=" + bodyCharset);
-            }
-            return ParamUtil.contactMap(formParams, bodyCharset);
-        }
-        return body;
-    }
-    @Override
-    public FormFile[] getFormFiles() {
-        initFormFiles();
-        return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
-    }
-    private void initFormFiles(){
-        if(null == this.formFiles){
-            this.formFiles = new ArrayList<>(2);
-        }
-    }
-
-    @Override
-    public File getFile() {
-        return file;
     }
 }

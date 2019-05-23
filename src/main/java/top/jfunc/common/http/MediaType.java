@@ -215,13 +215,14 @@ public final class MediaType {
     */
     @Override public String toString() {
         String base = type + "/" + subtype;
-        return null == charset ? base : (base + ";charset=" + charset);
+        return null == charset ? base : (base + ";charset=" + charset.toLowerCase());
     }
 
     @Override public boolean equals(Object other) {
         if(!(other instanceof MediaType)){
             return false;
         }
+        //type/subtype;charset完全一致
         MediaType o = (MediaType)other;
         if(null == charset){
             return type.equalsIgnoreCase(o.type) &&
