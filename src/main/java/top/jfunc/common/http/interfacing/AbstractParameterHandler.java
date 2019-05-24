@@ -3,6 +3,7 @@ package top.jfunc.common.http.interfacing;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.*;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.Objects;
@@ -203,6 +204,21 @@ abstract class AbstractParameterHandler<P>{
             }
             //支持URL和String
             httpRequest.setUrl(value.toString());
+        }
+    }
+    /**
+     * 处理请求URL的
+     * @see top.jfunc.common.http.annotation.method.Download
+     */
+    static final class Download  extends AbstractParameterHandler<File> {
+
+        @Override
+        public void apply(HttpRequest httpRequest, File value) {
+            if (value == null) {
+                return; // Skip null values.
+            }
+            //支持File和String
+            ((DownLoadRequest)httpRequest).setFile(value);
         }
     }
 }

@@ -5,10 +5,7 @@ import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.impl.CommonBodyRequest;
-import top.jfunc.common.http.request.impl.CommonRequest;
-import top.jfunc.common.http.request.impl.FileParamUploadRequest;
-import top.jfunc.common.http.request.impl.FormBodyRequest;
+import top.jfunc.common.http.request.impl.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -234,6 +231,9 @@ class HttpRequestFactory implements RequestFactory{
             formEncoded = true;
 
             httpRequest = FormBodyRequest.of(relativeUrl);
+        } else if (annotation instanceof Download) {
+
+            httpRequest = DownLoadRequest.of(relativeUrl);
         }
     }
 

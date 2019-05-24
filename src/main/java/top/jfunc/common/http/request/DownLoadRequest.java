@@ -12,4 +12,6 @@ public interface DownLoadRequest extends HttpRequest{
      * @return file
      */
     File getFile();
+
+    DownLoadRequest setFile(File file);
 }

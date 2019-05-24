@@ -222,10 +222,12 @@ public class Request extends BaseRequest<Request> implements ChangeableStringBod
         return this;
     }
 
+    @Override
     public Request setFile(File file) {
         this.file = file;
         return this;
     }
+
     public Request setFile(String filePath) {
         this.file = new File(filePath);
         return this;

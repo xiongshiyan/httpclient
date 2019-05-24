@@ -15,12 +15,12 @@ public class DownLoadRequest extends BaseRequest<DownLoadRequest> implements top
     }
     public static DownLoadRequest of(String url , String filePath){
         DownLoadRequest downLoadFileRequest = new DownLoadRequest(url);
-        downLoadFileRequest.setDownLoadFile(filePath);
+        downLoadFileRequest.setFile(filePath);
         return downLoadFileRequest;
     }
     public static DownLoadRequest of(String url , File file){
         DownLoadRequest downLoadFileRequest = new DownLoadRequest(url);
-        downLoadFileRequest.setDownLoadFile(file);
+        downLoadFileRequest.setFile(file);
         return downLoadFileRequest;
     }
 
@@ -34,11 +34,13 @@ public class DownLoadRequest extends BaseRequest<DownLoadRequest> implements top
         return file;
     }
 
-    public DownLoadRequest setDownLoadFile(File file) {
+    @Override
+    public DownLoadRequest setFile(File file) {
         this.file = file;
         return this;
     }
-    public DownLoadRequest setDownLoadFile(String filePath) {
+
+    public DownLoadRequest setFile(String filePath) {
         this.file = new File(filePath);
         return this;
     }
