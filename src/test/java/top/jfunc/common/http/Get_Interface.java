@@ -1,7 +1,7 @@
 package top.jfunc.common.http;
 
 import top.jfunc.common.http.annotation.method.GET;
-import top.jfunc.common.http.annotation.method.HEAD;
+import top.jfunc.common.http.annotation.method.POST;
 import top.jfunc.common.http.annotation.parameter.Body;
 import top.jfunc.common.http.annotation.parameter.Path;
 import top.jfunc.common.http.annotation.parameter.Query;
@@ -19,6 +19,6 @@ public interface Get_Interface {
     @GET("/list/{id}")
     Response list(@Path("id") int id, @Query("xx") String xx);
 
-    @HEAD.POST("/list/{id}")
+    @POST("/list/{id}")
     Response post(@Path("id") int id, @Body String xx);
 }
