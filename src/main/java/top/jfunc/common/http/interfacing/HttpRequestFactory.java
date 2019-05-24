@@ -15,6 +15,7 @@ import top.jfunc.common.utils.MultiValueMap;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,13 +44,12 @@ class HttpRequestFactory implements RequestFactory{
     private final Annotation[][] parameterAnnotationsArray;
 
     private boolean multiPart = false;
-    boolean hasBody;
-    boolean formEncoded;
+    private boolean hasBody;
+    private boolean formEncoded;
     private MediaType contentType;
     private MultiValueMap<String , String> headers;
     private String relativeUrl;
     private Set<String> relativeUrlParamNames;
-    AbstractParameterHandler<?>[] parameterHandlers;
 
     /**
      * 根据Method等信息生成的
@@ -95,31 +95,71 @@ class HttpRequestFactory implements RequestFactory{
         }
 
         int parameterCount = parameterAnnotationsArray.length;
-        parameterHandlers = new AbstractParameterHandler<?>[parameterCount];
-        AbstractParameterHandler<Object>[] handlers = (AbstractParameterHandler<Object>[]) parameterHandlers;
+        AbstractParameterHandler<?>[] parameterHandlers = new AbstractParameterHandler<?>[parameterCount];
         for (int p = 0; p < parameterCount; p++) {
-            handlers[p] = parseParameter(p, parameterTypes[p], parameterAnnotationsArray[p]);
+            parameterHandlers[p] = parseParameter(p, parameterTypes[p], parameterAnnotationsArray[p]);
         }
 
         int argumentCount = args.length;
-        if (argumentCount != handlers.length) {
+        if (argumentCount != parameterHandlers.length) {
             throw new IllegalArgumentException("Argument count (" + argumentCount
-                    + ") doesn't match expected count (" + handlers.length + ")");
+                    + ") doesn't match expected count (" + parameterHandlers.length + ")");
         }
 
-        //List<Object> argumentList = new ArrayList<>(argumentCount);
+        AbstractParameterHandler<Object>[] handlers = (AbstractParameterHandler<Object>[]) parameterHandlers;
         for (int p = 0; p < argumentCount; p++) {
-            //argumentList.add(args[p]);
             handlers[p].apply(httpRequest, args[p]);
         }
+
+        validateRouteParams();
+
+        //处理方法上的Headers
+        if(null != headers && !headers.isEmpty()){
+            headers.forEachKeyValue(httpRequest::addHeader);
+        }
+        if(null != contentType){
+            httpRequest.addHeader(HeaderRegular.CONTENT_TYPE.toString() , contentType.toString());
+        }
+
+
         return httpRequest;
     }
-    private AbstractParameterHandler<Object> parseParameter(
+
+    protected void validateRouteParams() {
+        Map<String, String> routeParams = httpRequest.getRouteParams();
+        //校验路径参数是否一致
+        int size = 0;
+        if(null != routeParams && !routeParams.isEmpty()){
+            size = routeParams.size();
+            if(size != relativeUrlParamNames.size()){
+                httpRequest = null;
+                throw new IllegalArgumentException("路径参数个数不匹配");
+            }
+
+            int x= 0;
+            for (String paramName : relativeUrlParamNames) {
+                for (Map.Entry<String, String> entry : routeParams.entrySet()) {
+                    if (entry.getKey().equals(paramName)) {
+                        x ++;
+                    }
+                }
+            }
+            if(x != size){
+                httpRequest = null;
+                throw new IllegalArgumentException("路径参数名称对应不上");
+            }
+        }
+    }
+
+    /**
+     * 多个参数注解解析
+     */
+    private AbstractParameterHandler<?> parseParameter(
             int p, Type parameterType, Annotation[] annotations) {
-        AbstractParameterHandler<Object> result = null;
+        AbstractParameterHandler<?> result = null;
         if (annotations != null) {
             for (Annotation annotation : annotations) {
-                AbstractParameterHandler<Object> annotationAction =
+                AbstractParameterHandler<?> annotationAction =
                         parseParameterAnnotation(p, parameterType, annotations, annotation);
 
                 if (annotationAction == null) {
@@ -128,7 +168,7 @@ class HttpRequestFactory implements RequestFactory{
 
                 if (result != null) {
                     throw parameterError(method, p,
-                            "Multiple Retrofit annotations found, only one allowed.");
+                            "Multiple Jfunc annotations found, only one allowed.");
                 }
 
                 result = annotationAction;
@@ -136,12 +176,16 @@ class HttpRequestFactory implements RequestFactory{
         }
 
         if (result == null) {
-            throw parameterError(method, p, "No Retrofit annotation found.");
+            throw parameterError(method, p, "No Jfunc annotation found.");
         }
 
         return result;
     }
-    private AbstractParameterHandler<Object> parseParameterAnnotation(
+
+    /**
+     * 一个参数上的注解解析
+     */
+    private AbstractParameterHandler<?> parseParameterAnnotation(
             int p, Type type, Annotation[] annotations, Annotation annotation) {
         //TODO 根据注解生成参数处理器
         return null;
