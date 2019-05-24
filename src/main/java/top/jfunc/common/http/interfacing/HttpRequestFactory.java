@@ -1,6 +1,5 @@
 package top.jfunc.common.http.interfacing;
 
-import com.sun.istack.internal.Nullable;
 import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
@@ -116,7 +115,7 @@ class HttpRequestFactory implements RequestFactory{
         return httpRequest;
     }
     private AbstractParameterHandler<Object> parseParameter(
-            int p, Type parameterType, @Nullable Annotation[] annotations) {
+            int p, Type parameterType, Annotation[] annotations) {
         AbstractParameterHandler<Object> result = null;
         if (annotations != null) {
             for (Annotation annotation : annotations) {
