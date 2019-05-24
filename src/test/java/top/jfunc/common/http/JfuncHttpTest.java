@@ -14,7 +14,7 @@ public class JfuncHttpTest {
     @Test
     public void testGetInterface(){
         JfuncHttp jfuncHttp = new JfuncHttp().setSmartHttpClient(new ApacheSmartHttpClient());
-        Get_Interface getInterface = jfuncHttp.create(Get_Interface.class);
+        InterfaceForTestJfunc getInterface = jfuncHttp.create(InterfaceForTestJfunc.class);
         //Response zzzzzz = getInterface.request(GetRequest.of("https://www.baidu.com"));
         //System.out.println(zzzzzz);
 

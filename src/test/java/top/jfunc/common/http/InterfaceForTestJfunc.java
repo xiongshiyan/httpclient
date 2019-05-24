@@ -11,7 +11,7 @@ import top.jfunc.common.http.smart.Response;
 /**
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface Get_Interface {
+public interface InterfaceForTestJfunc {
 
     @GET
     Response request(HttpRequest httpRequest);
