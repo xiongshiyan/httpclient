@@ -71,20 +71,6 @@ class HttpRequestFactory implements RequestFactory{
         for (Annotation annotation : methodAnnotations) {
             parseMethodAnnotation(annotation);
         }
-        if (httpMethod == null) {
-            throw methodError(method, "HTTP method annotation is required (e.g., @GET, @POST, etc.).");
-        }
-
-        if (!hasBody) {
-            if (multiPart) {
-                throw methodError(method,
-                        "Multipart can only be specified on HTTP methods with request body (e.g., @POST).");
-            }
-            if (formEncoded) {
-                throw methodError(method, "FormUrlEncoded can only be specified on HTTP methods with "
-                        + "request body (e.g., @POST).");
-            }
-        }
 
         //如果直接传递的是HttpRequest，就忽略其他的注解，因为他已经包含了请求所需的所有信息
         if(args.length==1 && args[0] instanceof HttpRequest){
@@ -234,6 +220,22 @@ class HttpRequestFactory implements RequestFactory{
         } else if (annotation instanceof Download) {
 
             httpRequest = DownLoadRequest.of(relativeUrl);
+        }
+
+
+        if (httpMethod == null) {
+            throw methodError(method, "HTTP method annotation is required (e.g., @GET, @POST, etc.).");
+        }
+
+        if (!hasBody) {
+            if (multiPart) {
+                throw methodError(method,
+                        "Multipart can only be specified on HTTP methods with request body (e.g., @POST).");
+            }
+            if (formEncoded) {
+                throw methodError(method, "FormUrlEncoded can only be specified on HTTP methods with "
+                        + "request body (e.g., @POST).");
+            }
         }
     }
 
