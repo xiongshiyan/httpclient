@@ -3,7 +3,6 @@ package top.jfunc.common.http.interfacing;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.*;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.Objects;
@@ -13,7 +12,7 @@ import java.util.Objects;
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 abstract class AbstractParameterHandler<P>{
-    abstract void apply(HttpRequest r, P p) throws IOException;
+    abstract void apply(HttpRequest r, P p);
 
     /**
      * 处理header的
@@ -26,7 +25,7 @@ abstract class AbstractParameterHandler<P>{
         }
 
         @Override
-        public void apply(HttpRequest httpRequest, String value) throws IOException {
+        public void apply(HttpRequest httpRequest, String value) {
             if (value == null) {
                 return; // Skip null values.
             }
@@ -40,7 +39,7 @@ abstract class AbstractParameterHandler<P>{
     static final class HeaderMap  extends AbstractParameterHandler<Map<String , String>> {
 
         @Override
-        public void apply(HttpRequest httpRequest, Map<String , String> headers) throws IOException {
+        public void apply(HttpRequest httpRequest, Map<String , String> headers) {
             if (headers == null || headers.isEmpty()) {
                 return; // Skip null values.
             }
@@ -59,7 +58,7 @@ abstract class AbstractParameterHandler<P>{
         }
 
         @Override
-        public void apply(HttpRequest httpRequest, String value) throws IOException {
+        public void apply(HttpRequest httpRequest, String value) {
             if (value == null) {
                 return; // Skip null values.
             }
@@ -73,7 +72,7 @@ abstract class AbstractParameterHandler<P>{
     static final class QueryMap  extends AbstractParameterHandler<Map<String , String>> {
 
         @Override
-        public void apply(HttpRequest httpRequest, Map<String , String> querys) throws IOException {
+        public void apply(HttpRequest httpRequest, Map<String , String> querys) {
             if (querys == null || querys.isEmpty()) {
                 return; // Skip null values.
             }
@@ -91,7 +90,7 @@ abstract class AbstractParameterHandler<P>{
         }
 
         @Override
-        public void apply(HttpRequest httpRequest, String value) throws IOException {
+        public void apply(HttpRequest httpRequest, String value) {
             if (value == null) {
                 return; // Skip null values.
             }
@@ -105,7 +104,7 @@ abstract class AbstractParameterHandler<P>{
     static final class RouteMap  extends AbstractParameterHandler<Map<String , String>> {
 
         @Override
-        public void apply(HttpRequest httpRequest, Map<String , String> routes) throws IOException {
+        public void apply(HttpRequest httpRequest, Map<String , String> routes) {
             if (routes == null || routes.isEmpty()) {
                 return; // Skip null values.
             }
@@ -123,7 +122,7 @@ abstract class AbstractParameterHandler<P>{
         }
 
         @Override
-        public void apply(HttpRequest httpRequest, Object value) throws IOException {
+        public void apply(HttpRequest httpRequest, Object value)  {
             if (value == null) {
                 return; // Skip null values.
             }
@@ -156,7 +155,7 @@ abstract class AbstractParameterHandler<P>{
         }
 
         @Override
-        public void apply(HttpRequest httpRequest, String value) throws IOException {
+        public void apply(HttpRequest httpRequest, String value) {
             if (value == null) {
                 return; // Skip null values.
             }
@@ -169,7 +168,7 @@ abstract class AbstractParameterHandler<P>{
      */
     static final class FieldMap  extends AbstractParameterHandler<Map<String , String>> {
         @Override
-        public void apply(HttpRequest httpRequest, Map<String , String> fields) throws IOException {
+        public void apply(HttpRequest httpRequest, Map<String , String> fields) {
             if (fields == null || fields.isEmpty()) {
                 return; // Skip null values.
             }
@@ -184,7 +183,7 @@ abstract class AbstractParameterHandler<P>{
     static final class Body  extends AbstractParameterHandler<String> {
 
         @Override
-        public void apply(HttpRequest httpRequest, String value) throws IOException {
+        public void apply(HttpRequest httpRequest, String value) {
             if (value == null) {
                 return; // Skip null values.
             }
@@ -198,7 +197,7 @@ abstract class AbstractParameterHandler<P>{
     static final class Url  extends AbstractParameterHandler<Object> {
 
         @Override
-        public void apply(HttpRequest httpRequest, Object value) throws IOException {
+        public void apply(HttpRequest httpRequest, Object value) {
             if (value == null) {
                 return; // Skip null values.
             }

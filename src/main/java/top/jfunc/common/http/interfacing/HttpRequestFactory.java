@@ -1,10 +1,15 @@
 package top.jfunc.common.http.interfacing;
 
+import com.sun.istack.internal.Nullable;
 import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.impl.CommonBodyRequest;
+import top.jfunc.common.http.request.impl.CommonRequest;
+import top.jfunc.common.http.request.impl.FileParamUploadRequest;
+import top.jfunc.common.http.request.impl.FormBodyRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -45,6 +50,12 @@ class HttpRequestFactory implements RequestFactory{
     private MultiValueMap<String , String> headers;
     private String relativeUrl;
     private Set<String> relativeUrlParamNames;
+    AbstractParameterHandler<?>[] parameterHandlers;
+
+    /**
+     * 根据Method等信息生成的
+     */
+    private HttpRequest httpRequest;
 
     public HttpRequestFactory(java.lang.reflect.Method method) {
         this.method = method;
@@ -84,13 +95,58 @@ class HttpRequestFactory implements RequestFactory{
             return (HttpRequest) (args[0]);
         }
 
-        HttpRequest httpRequest = null;
+        int parameterCount = parameterAnnotationsArray.length;
+        parameterHandlers = new AbstractParameterHandler<?>[parameterCount];
+        AbstractParameterHandler<Object>[] handlers = (AbstractParameterHandler<Object>[]) parameterHandlers;
+        for (int p = 0; p < parameterCount; p++) {
+            handlers[p] = parseParameter(p, parameterTypes[p], parameterAnnotationsArray[p]);
+        }
 
+        int argumentCount = args.length;
+        if (argumentCount != handlers.length) {
+            throw new IllegalArgumentException("Argument count (" + argumentCount
+                    + ") doesn't match expected count (" + handlers.length + ")");
+        }
 
-        //TODO 通过注解获取接口信息用于生成HttpRequest[细致入微但是又是决定性的]
+        //List<Object> argumentList = new ArrayList<>(argumentCount);
+        for (int p = 0; p < argumentCount; p++) {
+            //argumentList.add(args[p]);
+            handlers[p].apply(httpRequest, args[p]);
+        }
         return httpRequest;
     }
+    private AbstractParameterHandler<Object> parseParameter(
+            int p, Type parameterType, @Nullable Annotation[] annotations) {
+        AbstractParameterHandler<Object> result = null;
+        if (annotations != null) {
+            for (Annotation annotation : annotations) {
+                AbstractParameterHandler<Object> annotationAction =
+                        parseParameterAnnotation(p, parameterType, annotations, annotation);
 
+                if (annotationAction == null) {
+                    continue;
+                }
+
+                if (result != null) {
+                    throw parameterError(method, p,
+                            "Multiple Retrofit annotations found, only one allowed.");
+                }
+
+                result = annotationAction;
+            }
+        }
+
+        if (result == null) {
+            throw parameterError(method, p, "No Retrofit annotation found.");
+        }
+
+        return result;
+    }
+    private AbstractParameterHandler<Object> parseParameterAnnotation(
+            int p, Type type, Annotation[] annotations, Annotation annotation) {
+        //TODO 根据注解生成参数处理器
+        return null;
+    }
     /**
      * 解析方法上的注解
      */
@@ -118,16 +174,23 @@ class HttpRequestFactory implements RequestFactory{
                 throw methodError(method, "@Headers annotation is empty.");
             }
             headers = parseHeaders(headersToParse);
-        } else if (annotation instanceof Multipart) {
+        }
+
+
+        if (annotation instanceof Multipart) {
             if (formEncoded) {
                 throw methodError(method, "Only one encoding annotation is allowed.");
             }
             multiPart = true;
+            httpRequest = FileParamUploadRequest.of(relativeUrl);
+
         } else if (annotation instanceof FormUrlEncoded) {
             if (multiPart) {
                 throw methodError(method, "Only one encoding annotation is allowed.");
             }
             formEncoded = true;
+
+            httpRequest = FormBodyRequest.of(relativeUrl);
         }
     }
 
@@ -192,6 +255,12 @@ class HttpRequestFactory implements RequestFactory{
 
         this.relativeUrl = value;
         this.relativeUrlParamNames = parsePathParameters(value);
+
+        if(hasBody){
+            httpRequest = CommonBodyRequest.of(relativeUrl);
+        }else {
+            httpRequest = CommonRequest.of(relativeUrl);
+        }
     }
     /**
      * Gets the set of unique path parameters used in the given URI. If a parameter is used twice
@@ -222,5 +291,14 @@ class HttpRequestFactory implements RequestFactory{
                 + method.getDeclaringClass().getSimpleName()
                 + "."
                 + method.getName(), cause);
+    }
+
+    static RuntimeException parameterError(java.lang.reflect.Method method,
+                                           Throwable cause, int p, String message, Object... args) {
+        return methodError(method, cause, message + " (parameter #" + (p + 1) + ")", args);
+    }
+
+    static RuntimeException parameterError(java.lang.reflect.Method method, int p, String message, Object... args) {
+        return methodError(method, message + " (parameter #" + (p + 1) + ")", args);
     }
 }
