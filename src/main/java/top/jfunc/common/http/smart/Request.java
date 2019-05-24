@@ -8,10 +8,7 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
 import top.jfunc.common.http.kv.Parameter;
-import top.jfunc.common.http.request.DownLoadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.request.*;
 import top.jfunc.common.http.request.impl.BaseRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
@@ -40,7 +37,7 @@ import java.util.*;
  *
  * @since 从1.1开始建议不要用此类了,而是使用以上的一些意义更明确的
  */
-public class Request extends BaseRequest<Request> implements StringBodyRequest, UploadRequest, DownLoadRequest {
+public class Request extends BaseRequest<Request> implements ChangeableStringBodyRequest, UploadRequest, DownLoadRequest {
     /**
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
@@ -138,6 +135,7 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest, 
         this.formParams.add(key, value);
         return this;
     }
+    @Override
     public Request addFormParam(String key, String value , String... values){
         initFormParams();
         this.formParams.add(key , value);
@@ -182,6 +180,7 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest, 
     /**
      * 设置body,最好是调用{@link this#setBody(String, String)}同时设置Content-Type
      */
+    @Override
     public Request setBody(String body) {
         this.body = body;
         return this;
@@ -214,6 +213,7 @@ public class Request extends BaseRequest<Request> implements StringBodyRequest, 
         return this;
     }
 
+    @Override
     public Request addFormFile(FormFile... formFiles) {
         if(null != formFiles){
             initFormFiles();

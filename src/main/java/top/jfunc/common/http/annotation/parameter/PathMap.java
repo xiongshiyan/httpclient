@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Square, Inc.
+ * Copyright (C) 2013 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 package top.jfunc.common.http.annotation.parameter;
 
-import top.jfunc.common.http.annotation.method.Multipart;
-import top.jfunc.common.http.annotation.parameter.Part;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -26,27 +23,10 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Denotes name and value parts of a multi-part request.
- * <p>
- * Values of the map on which this annotation exists will be processed in one of two ways:
- * <p>
- * <pre><code>
- * &#64;Multipart
- * &#64;POST("/upload")
- * Call&lt;ResponseBody&gt; upload(
- *     &#64;Part("file") RequestBody file,
- *     &#64;PartMap Map&lt;String, RequestBody&gt; params);
- * </code></pre>
- * <p>
- * A {@code null} value for the map, as a key, or as a value is not allowed.
- *
- * @see Multipart
- * @see Part
+ * 路径参数Map
  */
 @Documented
-@Target(PARAMETER)
 @Retention(RUNTIME)
-public @interface PartMap {
-  /** The {@code Content-Transfer-Encoding} of the parts. */
-  String encoding() default "binary";
+@Target(PARAMETER)
+public @interface PathMap {
 }

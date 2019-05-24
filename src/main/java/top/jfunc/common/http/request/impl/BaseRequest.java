@@ -124,6 +124,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     }
 
     /**************************变种的Setter*******************************/
+    @Override
     public T setUrl(String url) {
         this.url = url;
         return myself();
@@ -138,6 +139,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         return myself();
     }
 
+    @Override
     public T addRouteParam(String key , String value){
         if(null == this.routeParams){
             this.routeParams = new HashMap<>(2);
@@ -165,6 +167,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         this.queryParams.add(key, value);
         return myself();
     }
+    @Override
     public T addQueryParam(String key, String value, String... values){
         initQueryParams();
         this.queryParams.add(key , value);
@@ -220,6 +223,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         this.headers.add(key, value);
         return myself();
     }
+    @Override
     public T addHeader(String key, String value , String... values){
         initHeaders();
         this.headers.add(key , value);

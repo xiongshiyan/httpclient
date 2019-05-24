@@ -59,6 +59,7 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
         this.formParams.add(key, value);
         return this;
     }
+    @Override
     public FileParamUploadRequest addFormParam(String key, String value , String... values){
         initFormParams();
         this.formParams.add(key , value);
@@ -105,6 +106,7 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
         return this;
     }
 
+    @Override
     public FileParamUploadRequest addFormFile(FormFile... formFiles) {
         if(null != formFiles){
             initFormFiles();
