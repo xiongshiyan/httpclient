@@ -47,6 +47,4 @@ public @interface Part {
    * The name of the part. Required for all parameter types except
    */
   String value() default "";
-  /** The {@code Content-Transfer-Encoding} of this part. */
-  String encoding() default "binary";
 }
