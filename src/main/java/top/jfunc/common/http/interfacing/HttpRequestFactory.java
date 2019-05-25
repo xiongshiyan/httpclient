@@ -21,8 +21,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static top.jfunc.common.http.interfacing.Utils.methodError;
-import static top.jfunc.common.http.interfacing.Utils.parameterError;
+import static top.jfunc.common.http.interfacing.TypeUtils.methodError;
+import static top.jfunc.common.http.interfacing.TypeUtils.parameterError;
 
 /**
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -55,14 +55,13 @@ class HttpRequestFactory implements RequestFactory{
     private String relativeUrl;
     private Set<String> relativeUrlParamNames;
 
-    boolean gotField;
-    boolean gotPart;
-    boolean gotBody;
-    boolean gotPath;
-    boolean gotQuery;
-    boolean gotQueryName;
-    boolean gotQueryMap;
-    boolean gotUrl;
+    private boolean gotField;
+    private boolean gotPart;
+    private boolean gotBody;
+    private boolean gotPath;
+    private boolean gotQuery;
+    private boolean gotQueryMap;
+    private boolean gotUrl;
 
     public HttpRequestFactory(java.lang.reflect.Method method) {
         this.method = method;
@@ -245,9 +244,6 @@ class HttpRequestFactory implements RequestFactory{
             if (gotQuery) {
                 throw parameterError(method, p, "A @Url parameter must not come after a @Query.");
             }
-            if (gotQueryName) {
-                throw parameterError(method, p, "A @Url parameter must not come after a @QueryName.");
-            }
             if (gotQueryMap) {
                 throw parameterError(method, p, "A @Url parameter must not come after a @QueryMap.");
             }
@@ -259,8 +255,7 @@ class HttpRequestFactory implements RequestFactory{
 
             if (type == String.class
                     || type == URL.class
-                    || type == URI.class
-                    || (type instanceof Class && "android.net.Uri".equals(((Class<?>) type).getName()))) {
+                    || type == URI.class) {
                 return new AbstractParameterHandler.Url();
             } else {
                 throw parameterError(method, p,
@@ -271,9 +266,6 @@ class HttpRequestFactory implements RequestFactory{
             validateResolvableType(p, type);
             if (gotQuery) {
                 throw parameterError(method, p, "A @Path parameter must not come after a @Query.");
-            }
-            if (gotQueryName) {
-                throw parameterError(method, p, "A @Path parameter must not come after a @QueryName.");
             }
             if (gotQueryMap) {
                 throw parameterError(method, p, "A @Path parameter must not come after a @QueryMap.");
@@ -294,17 +286,17 @@ class HttpRequestFactory implements RequestFactory{
             return new AbstractParameterHandler.Route(name);
         } else if (annotation instanceof PathMap) {
             validateResolvableType(p, type);
-            Class<?> rawParameterType = Utils.getRawType(type);
+            Class<?> rawParameterType = TypeUtils.getRawType(type);
             if (!Map.class.isAssignableFrom(rawParameterType)) {
                 throw parameterError(method, p, "@PathMap parameter type must be Map.");
             }
-            Type mapType = Utils.getSupertype(type, rawParameterType, Map.class);
+            Type mapType = TypeUtils.getSupertype(type, rawParameterType, Map.class);
             if (!(mapType instanceof ParameterizedType)) {
                 throw parameterError(method, p,
                         "Map must include generic types (e.g., Map<String, String>)");
             }
             ParameterizedType parameterizedType = (ParameterizedType) mapType;
-            Type keyType = Utils.getParameterUpperBound(0, parameterizedType);
+            Type keyType = TypeUtils.getParameterUpperBound(0, parameterizedType);
             if (String.class != keyType) {
                 throw parameterError(method, p, "@PathMap keys must be of type String: " + keyType);
             }
@@ -317,18 +309,18 @@ class HttpRequestFactory implements RequestFactory{
             return new AbstractParameterHandler.Query(name);
         } else if (annotation instanceof QueryMap) {
             validateResolvableType(p, type);
-            Class<?> rawParameterType = Utils.getRawType(type);
+            Class<?> rawParameterType = TypeUtils.getRawType(type);
             gotQueryMap = true;
             if (!Map.class.isAssignableFrom(rawParameterType)) {
                 throw parameterError(method, p, "@QueryMap parameter type must be Map.");
             }
-            Type mapType = Utils.getSupertype(type, rawParameterType, Map.class);
+            Type mapType = TypeUtils.getSupertype(type, rawParameterType, Map.class);
             if (!(mapType instanceof ParameterizedType)) {
                 throw parameterError(method, p,
                         "Map must include generic types (e.g., Map<String, String>)");
             }
             ParameterizedType parameterizedType = (ParameterizedType) mapType;
-            Type keyType = Utils.getParameterUpperBound(0, parameterizedType);
+            Type keyType = TypeUtils.getParameterUpperBound(0, parameterizedType);
             if (String.class != keyType) {
                 throw parameterError(method, p, "@QueryMap keys must be of type String: " + keyType);
             }
@@ -343,17 +335,17 @@ class HttpRequestFactory implements RequestFactory{
 
         } else if (annotation instanceof HeaderMap) {
             validateResolvableType(p, type);
-            Class<?> rawParameterType = Utils.getRawType(type);
+            Class<?> rawParameterType = TypeUtils.getRawType(type);
             if (!Map.class.isAssignableFrom(rawParameterType)) {
                 throw parameterError(method, p, "@HeaderMap parameter type must be Map.");
             }
-            Type mapType = Utils.getSupertype(type, rawParameterType, Map.class);
+            Type mapType = TypeUtils.getSupertype(type, rawParameterType, Map.class);
             if (!(mapType instanceof ParameterizedType)) {
                 throw parameterError(method, p,
                         "Map must include generic types (e.g., Map<String, String>)");
             }
             ParameterizedType parameterizedType = (ParameterizedType) mapType;
-            Type keyType = Utils.getParameterUpperBound(0, parameterizedType);
+            Type keyType = TypeUtils.getParameterUpperBound(0, parameterizedType);
             if (String.class != keyType) {
                 throw parameterError(method, p, "@HeaderMap keys must be of type String: " + keyType);
             }
@@ -375,17 +367,17 @@ class HttpRequestFactory implements RequestFactory{
                 throw parameterError(method, p,
                         "@FieldMap parameters can only be used with form encoding.");
             }
-            Class<?> rawParameterType = Utils.getRawType(type);
+            Class<?> rawParameterType = TypeUtils.getRawType(type);
             if (!Map.class.isAssignableFrom(rawParameterType)) {
                 throw parameterError(method, p, "@FieldMap parameter type must be Map.");
             }
-            Type mapType = Utils.getSupertype(type, rawParameterType, Map.class);
+            Type mapType = TypeUtils.getSupertype(type, rawParameterType, Map.class);
             if (!(mapType instanceof ParameterizedType)) {
                 throw parameterError(method, p,
                         "Map must include generic types (e.g., Map<String, String>)");
             }
             ParameterizedType parameterizedType = (ParameterizedType) mapType;
-            Type keyType = Utils.getParameterUpperBound(0, parameterizedType);
+            Type keyType = TypeUtils.getParameterUpperBound(0, parameterizedType);
             if (String.class != keyType) {
                 throw parameterError(method, p, "@FieldMap keys must be of type String: " + keyType);
             }
@@ -419,7 +411,7 @@ class HttpRequestFactory implements RequestFactory{
     }
 
     private void validateResolvableType(int p, Type type) {
-        if (Utils.hasUnresolvableType(type)) {
+        if (TypeUtils.hasUnresolvableType(type)) {
             throw parameterError(method, p,
                     "Parameter type must not include a type variable or wildcard: %s", type);
         }

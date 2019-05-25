@@ -15,7 +15,6 @@
  */
 package top.jfunc.common.http.interfacing;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -28,10 +27,10 @@ import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-final class Utils {
+final class TypeUtils {
   static final Type[] EMPTY_TYPE_ARRAY = new Type[0];
 
-  private Utils() {
+  private TypeUtils() {
     // No instances.
   }
 
@@ -409,7 +408,7 @@ final class Utils {
     }
 
     @Override public boolean equals(Object other) {
-      return other instanceof ParameterizedType && Utils.equals(this, (ParameterizedType) other);
+      return other instanceof ParameterizedType && TypeUtils.equals(this, (ParameterizedType) other);
     }
 
     @Override public int hashCode() {
@@ -443,7 +442,7 @@ final class Utils {
 
     @Override public boolean equals(Object o) {
       return o instanceof GenericArrayType
-          && Utils.equals(this, (GenericArrayType) o);
+          && TypeUtils.equals(this, (GenericArrayType) o);
     }
 
     @Override public int hashCode() {
@@ -491,7 +490,7 @@ final class Utils {
     }
 
     @Override public boolean equals(Object other) {
-      return other instanceof WildcardType && Utils.equals(this, (WildcardType) other);
+      return other instanceof WildcardType && TypeUtils.equals(this, (WildcardType) other);
     }
 
     @Override public int hashCode() {
