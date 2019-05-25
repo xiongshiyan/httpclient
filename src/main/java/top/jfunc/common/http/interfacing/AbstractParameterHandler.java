@@ -2,6 +2,7 @@ package top.jfunc.common.http.interfacing;
 
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.*;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -44,6 +45,10 @@ abstract class AbstractParameterHandler<P>{
             if (headers == null || headers.isEmpty()) {
                 return; // Skip null values.
             }
+            if(headers instanceof MultiValueMap){
+                MultiValueMap<String, String> multiValueMap = (MultiValueMap) headers;
+                multiValueMap.forEachKeyValue(httpRequest::addHeader);
+            }
             headers.forEach(httpRequest::addHeader);
         }
     }
@@ -76,6 +81,10 @@ abstract class AbstractParameterHandler<P>{
         public void apply(HttpRequest httpRequest, Map<String , String> querys) {
             if (querys == null || querys.isEmpty()) {
                 return; // Skip null values.
+            }
+            if(querys instanceof MultiValueMap){
+                MultiValueMap<String, String> multiValueMap = (MultiValueMap) querys;
+                multiValueMap.forEachKeyValue(httpRequest::addQueryParam);
             }
             querys.forEach(httpRequest::addQueryParam);
         }
@@ -173,7 +182,12 @@ abstract class AbstractParameterHandler<P>{
             if (fields == null || fields.isEmpty()) {
                 return; // Skip null values.
             }
-            fields.forEach(((FormRequest)httpRequest)::addFormParam);
+            FormRequest formRequest = (FormRequest) httpRequest;
+            if(fields instanceof MultiValueMap){
+                MultiValueMap<String, String> multiValueMap = (MultiValueMap) fields;
+                multiValueMap.forEachKeyValue(formRequest::addFormParam);
+            }
+            fields.forEach(formRequest::addFormParam);
         }
     }
 

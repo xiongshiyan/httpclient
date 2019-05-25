@@ -299,7 +299,23 @@ class HttpRequestFactory implements RequestFactory{
             validatePathName(p, name);
 
             return new AbstractParameterHandler.Route(name);
-
+        } else if (annotation instanceof PathMap) {
+            validateResolvableType(p, type);
+            Class<?> rawParameterType = Utils.getRawType(type);
+            if (!Map.class.isAssignableFrom(rawParameterType)) {
+                throw parameterError(method, p, "@PathMap parameter type must be Map.");
+            }
+            Type mapType = Utils.getSupertype(type, rawParameterType, Map.class);
+            if (!(mapType instanceof ParameterizedType)) {
+                throw parameterError(method, p,
+                        "Map must include generic types (e.g., Map<String, String>)");
+            }
+            ParameterizedType parameterizedType = (ParameterizedType) mapType;
+            Type keyType = Utils.getParameterUpperBound(0, parameterizedType);
+            if (String.class != keyType) {
+                throw parameterError(method, p, "@PathMap keys must be of type String: " + keyType);
+            }
+            new AbstractParameterHandler.RouteMap();
         } else if (annotation instanceof Query) {
             validateResolvableType(p, type);
             Query query = (Query) annotation;
