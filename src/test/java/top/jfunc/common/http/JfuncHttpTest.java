@@ -5,7 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.interfacing.JfuncHttp;
+import top.jfunc.common.http.interfacing.JFuncHttp;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.http.smart.ApacheSmartHttpClient;
 import top.jfunc.common.http.smart.Response;
@@ -28,7 +28,7 @@ public class JfuncHttpTest {
     @Before
     public void init(){
         Config config = Config.defaultConfig().setBaseUrl("http://localhost:8080/http-server-test/");
-        JfuncHttp jfuncHttp = new JfuncHttp().setSmartHttpClient(new ApacheSmartHttpClient().setConfig(config));
+        JFuncHttp jfuncHttp = new JFuncHttp().setSmartHttpClient(new ApacheSmartHttpClient().setConfig(config));
         jfunc = jfuncHttp.create(InterfaceForTestJfunc.class);
     }
 
