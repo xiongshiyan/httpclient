@@ -52,8 +52,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Calling with {@code foo.friends("coworker", "bowling")} yields
  * {@code /friends?group=coworker&group=bowling}.
  * <p>
- * Parameter names and values are URL encoded by default. Specify {@link #encoded() encoded=true}
- * to change this behavior.
+ * Parameter names and values are URL encoded by default.
  * <pre><code>
  * &#64;GET("/friends")
  * Call&lt;ResponseBody&gt; friends(@Query(value="group", encoded=true) String group);
@@ -61,7 +60,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Calling with {@code foo.friends("foo+bar"))} yields {@code /friends?group=foo+bar}.
  *
  * @see QueryMap
- * @see QueryName
  */
 @Documented
 @Target(PARAMETER)
@@ -69,9 +67,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Query {
   /** The query parameter name. */
   String value();
-
-  /**
-   * Specifies whether the parameter {@linkplain #value() name} and value are already URL encoded.
-   */
-  boolean encoded() default false;
 }

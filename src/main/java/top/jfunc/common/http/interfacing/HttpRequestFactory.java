@@ -4,18 +4,25 @@ import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
+import top.jfunc.common.http.annotation.parameter.*;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.impl.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static top.jfunc.common.http.interfacing.Utils.methodError;
+import static top.jfunc.common.http.interfacing.Utils.parameterError;
 
 /**
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -48,6 +55,15 @@ class HttpRequestFactory implements RequestFactory{
     private MultiValueMap<String , String> headers;
     private String relativeUrl;
     private Set<String> relativeUrlParamNames;
+
+    boolean gotField;
+    boolean gotPart;
+    boolean gotBody;
+    boolean gotPath;
+    boolean gotQuery;
+    boolean gotQueryName;
+    boolean gotQueryMap;
+    boolean gotUrl;
 
     public HttpRequestFactory(java.lang.reflect.Method method) {
         this.method = method;
@@ -95,6 +111,20 @@ class HttpRequestFactory implements RequestFactory{
         for (int p = 0; p < parameterCount; p++) {
             parameterHandlers[p] = parseParameter(p, parameterTypes[p], parameterAnnotationsArray[p]);
         }
+
+        if (relativeUrl == null && !gotUrl) {
+            throw methodError(method, "Missing either @%s URL or @Url parameter.", httpMethod);
+        }
+        if (!formEncoded && !multiPart && !hasBody && gotBody) {
+            throw methodError(method, "Non-body HTTP method cannot contain @Body.");
+        }
+        if (formEncoded && !gotField) {
+            throw methodError(method, "Form-encoded method must contain at least one @Field.");
+        }
+        if (multiPart && !gotPart) {
+            throw methodError(method, "Multipart method must contain at least one @Part.");
+        }
+
 
         int argumentCount = args.length;
         if (argumentCount != parameterHandlers.length) {
@@ -210,9 +240,191 @@ class HttpRequestFactory implements RequestFactory{
     /**
      * 一个参数上的注解解析
      */
-    private AbstractParameterHandler<?> parseParameterAnnotation(int pos, Type type, Annotation[] annotations, Annotation annotation) {
-        //TODO 根据注解生成参数处理器
-        return null;
+    private AbstractParameterHandler<?> parseParameterAnnotation(int p, Type type, Annotation[] annotations, Annotation annotation) {
+        if (annotation instanceof Url) {
+            validateResolvableType(p, type);
+            if (gotUrl) {
+                throw parameterError(method, p, "Multiple @Url method annotations found.");
+            }
+            if (gotPath) {
+                throw parameterError(method, p, "@Path parameters may not be used with @Url.");
+            }
+            if (gotQuery) {
+                throw parameterError(method, p, "A @Url parameter must not come after a @Query.");
+            }
+            if (gotQueryName) {
+                throw parameterError(method, p, "A @Url parameter must not come after a @QueryName.");
+            }
+            if (gotQueryMap) {
+                throw parameterError(method, p, "A @Url parameter must not come after a @QueryMap.");
+            }
+            if (relativeUrl != null) {
+                throw parameterError(method, p, "@Url cannot be used with @%s URL", httpMethod);
+            }
+
+            gotUrl = true;
+
+            if (type == String.class
+                    || type == URL.class
+                    || type == URI.class
+                    || (type instanceof Class && "android.net.Uri".equals(((Class<?>) type).getName()))) {
+                return new AbstractParameterHandler.Url();
+            } else {
+                throw parameterError(method, p,
+                        "@Url must be okhttp3.HttpUrl, String, java.net.URI, or android.net.Uri type.");
+            }
+
+        } else if (annotation instanceof Path) {
+            validateResolvableType(p, type);
+            if (gotQuery) {
+                throw parameterError(method, p, "A @Path parameter must not come after a @Query.");
+            }
+            if (gotQueryName) {
+                throw parameterError(method, p, "A @Path parameter must not come after a @QueryName.");
+            }
+            if (gotQueryMap) {
+                throw parameterError(method, p, "A @Path parameter must not come after a @QueryMap.");
+            }
+            if (gotUrl) {
+                throw parameterError(method, p, "@Path parameters may not be used with @Url.");
+            }
+            if (relativeUrl == null) {
+                throw parameterError(method, p, "@Path can only be used with relative url on @%s",
+                        httpMethod);
+            }
+            gotPath = true;
+
+            Path path = (Path) annotation;
+            String name = path.value();
+            validatePathName(p, name);
+
+            return new AbstractParameterHandler.Route(name);
+
+        } else if (annotation instanceof Query) {
+            validateResolvableType(p, type);
+            Query query = (Query) annotation;
+            String name = query.value();
+            gotQuery = true;
+            return new AbstractParameterHandler.Query(name);
+        } else if (annotation instanceof QueryMap) {
+            validateResolvableType(p, type);
+            Class<?> rawParameterType = Utils.getRawType(type);
+            gotQueryMap = true;
+            if (!Map.class.isAssignableFrom(rawParameterType)) {
+                throw parameterError(method, p, "@QueryMap parameter type must be Map.");
+            }
+            Type mapType = Utils.getSupertype(type, rawParameterType, Map.class);
+            if (!(mapType instanceof ParameterizedType)) {
+                throw parameterError(method, p,
+                        "Map must include generic types (e.g., Map<String, String>)");
+            }
+            ParameterizedType parameterizedType = (ParameterizedType) mapType;
+            Type keyType = Utils.getParameterUpperBound(0, parameterizedType);
+            if (String.class != keyType) {
+                throw parameterError(method, p, "@QueryMap keys must be of type String: " + keyType);
+            }
+            return new AbstractParameterHandler.QueryMap();
+
+        } else if (annotation instanceof Header) {
+            validateResolvableType(p, type);
+            Header header = (Header) annotation;
+            String name = header.value();
+
+            return new AbstractParameterHandler.Header(name);
+
+        } else if (annotation instanceof HeaderMap) {
+            validateResolvableType(p, type);
+            Class<?> rawParameterType = Utils.getRawType(type);
+            if (!Map.class.isAssignableFrom(rawParameterType)) {
+                throw parameterError(method, p, "@HeaderMap parameter type must be Map.");
+            }
+            Type mapType = Utils.getSupertype(type, rawParameterType, Map.class);
+            if (!(mapType instanceof ParameterizedType)) {
+                throw parameterError(method, p,
+                        "Map must include generic types (e.g., Map<String, String>)");
+            }
+            ParameterizedType parameterizedType = (ParameterizedType) mapType;
+            Type keyType = Utils.getParameterUpperBound(0, parameterizedType);
+            if (String.class != keyType) {
+                throw parameterError(method, p, "@HeaderMap keys must be of type String: " + keyType);
+            }
+            new AbstractParameterHandler.HeaderMap();
+
+        } else if (annotation instanceof Field) {
+            validateResolvableType(p, type);
+            if (!formEncoded) {
+                throw parameterError(method, p, "@Field parameters can only be used with form encoding.");
+            }
+            Field field = (Field) annotation;
+            String name = field.value();
+            gotField = true;
+
+            return new AbstractParameterHandler.Field(name);
+
+        } else if (annotation instanceof FieldMap) {
+            validateResolvableType(p, type);
+            if (!formEncoded) {
+                throw parameterError(method, p,
+                        "@FieldMap parameters can only be used with form encoding.");
+            }
+            Class<?> rawParameterType = Utils.getRawType(type);
+            if (!Map.class.isAssignableFrom(rawParameterType)) {
+                throw parameterError(method, p, "@FieldMap parameter type must be Map.");
+            }
+            Type mapType = Utils.getSupertype(type, rawParameterType, Map.class);
+            if (!(mapType instanceof ParameterizedType)) {
+                throw parameterError(method, p,
+                        "Map must include generic types (e.g., Map<String, String>)");
+            }
+            ParameterizedType parameterizedType = (ParameterizedType) mapType;
+            Type keyType = Utils.getParameterUpperBound(0, parameterizedType);
+            if (String.class != keyType) {
+                throw parameterError(method, p, "@FieldMap keys must be of type String: " + keyType);
+            }
+            gotField = true;
+            return new AbstractParameterHandler.FieldMap();
+
+        } else if (annotation instanceof Part) {
+            validateResolvableType(p, type);
+            if (!multiPart) {
+                throw parameterError(method, p,
+                        "@Part parameters can only be used with multipart encoding.");
+            }
+            Part part = (Part) annotation;
+            gotPart = true;
+
+            return new AbstractParameterHandler.Part(part.value());
+        } else if (annotation instanceof Body) {
+            validateResolvableType(p, type);
+            if (formEncoded || multiPart) {
+                throw parameterError(method, p,
+                        "@Body parameters cannot be used with form or multi-part encoding.");
+            }
+            if (gotBody) {
+                throw parameterError(method, p, "Multiple @Body method annotations found.");
+            }
+            gotBody = true;
+            return new AbstractParameterHandler.Body();
+        }
+
+        return null; // Not a Retrofit annotation.
+    }
+
+    private void validateResolvableType(int p, Type type) {
+        if (Utils.hasUnresolvableType(type)) {
+            throw parameterError(method, p,
+                    "Parameter type must not include a type variable or wildcard: %s", type);
+        }
+    }
+    private void validatePathName(int p, String name) {
+        if (!PARAM_NAME_REGEX.matcher(name).matches()) {
+            throw parameterError(method, p, "@Path parameter name must match %s. Found: %s",
+                    PARAM_URL_REGEX.pattern(), name);
+        }
+        // Verify URL replacement name is actually present in the URL path.
+        if (!relativeUrlParamNames.contains(name)) {
+            throw parameterError(method, p, "URL \"%s\" does not contain \"{%s}\".", relativeUrl, name);
+        }
     }
     /**
      * 解析方法上的注解
@@ -329,32 +541,5 @@ class HttpRequestFactory implements RequestFactory{
             patterns.add(m.group(1));
         }
         return patterns;
-    }
-    static RuntimeException methodError(java.lang.reflect.Method method, String message,
-                                        Object... args) {
-        message = String.format(message, args);
-        return new IllegalArgumentException(message
-                + "\n    for method "
-                + method.getDeclaringClass().getSimpleName()
-                + "."
-                + method.getName(), null);
-    }
-    static RuntimeException methodError(java.lang.reflect.Method method, Throwable cause, String message,
-                                        Object... args) {
-        message = String.format(message, args);
-        return new IllegalArgumentException(message
-                + "\n    for method "
-                + method.getDeclaringClass().getSimpleName()
-                + "."
-                + method.getName(), cause);
-    }
-
-    static RuntimeException parameterError(java.lang.reflect.Method method,
-                                           Throwable cause, int p, String message, Object... args) {
-        return methodError(method, cause, message + " (parameter #" + (p + 1) + ")", args);
-    }
-
-    static RuntimeException parameterError(java.lang.reflect.Method method, int p, String message, Object... args) {
-        return methodError(method, message + " (parameter #" + (p + 1) + ")", args);
     }
 }

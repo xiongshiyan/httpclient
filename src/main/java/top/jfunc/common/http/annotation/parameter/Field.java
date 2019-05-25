@@ -60,7 +60,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface Field {
   String value();
-
-  /** Specifies whether the {@linkplain #value() name} and value are already URL encoded. */
-  boolean encoded() default false;
 }

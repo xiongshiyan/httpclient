@@ -35,8 +35,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Calling with {@code foo.friends(ImmutableMap.of("group", "coworker", "age", "42"))} yields
  * {@code /friends?group=coworker&age=42}.
  * <p>
- * Map keys and values representing parameter values are URL encoded by default. Specify
- * {@link #encoded() encoded=true} to change this behavior.
+ * Map keys and values representing parameter values are URL encoded by default.
  * <pre><code>
  * &#64;GET("/friends")
  * Call&lt;ResponseBody&gt; friends(@QueryMap(encoded=true) Map&lt;String, String&gt; filters);
@@ -47,12 +46,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * A {@code null} value for the map, as a key, or as a value is not allowed.
  *
  * @see Query
- * @see QueryName
  */
 @Documented
 @Target(PARAMETER)
 @Retention(RUNTIME)
 public @interface QueryMap {
-  /** Specifies whether parameter names and values are already URL encoded. */
-  boolean encoded() default false;
 }
