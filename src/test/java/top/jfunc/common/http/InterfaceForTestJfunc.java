@@ -1,17 +1,18 @@
 package top.jfunc.common.http;
 
+import top.jfunc.common.http.annotation.HttpService;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.smart.Response;
 
-import java.io.File;
 import java.util.Map;
 
 /**
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
+@HttpService
 public interface InterfaceForTestJfunc {
 
     @GET
