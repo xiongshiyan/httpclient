@@ -17,30 +17,42 @@ public interface InterfaceForTestJfunc {
     @GET
     Response request(HttpRequest httpRequest);
 
-    @GET("/list/{id}")
-    Response list(@Path("id") int id, @Query("xx") String xx);
+    @GET("/get/{q}")
+    Response list(@Path("q") String q, @Query("xx") int xx);
+    @GET("/get/query")
+    Response queryMap(@QueryMap Map<String , String> map);
     @GET
     Response url(@Url String url);
-    @GET
+
+    @GET("get/query")
     Response header(@Header("naked") String naked);
 
+    @Headers({"xx:xiongshiyan","yy:xsy"})
+    @GET("get/query")
+    Response headers(@Header("naked") String naked);
 
-    @Download
-    @GET("/get/download")
-    Response download(File file);
+    @GET("get/query")
+    Response headerMap(@HeaderMap Map<String , String> map);
+
+
+
+    @GET("/get/query")
+    Response download();
 
     @POST("/post/{id}")
-    Response post(@Path("id") int id, @Body String xx);
+    Response post(@Path("id") String id, @Body String xx);
 
     @Multipart
-    @POST("/post/multipart")
-    Response multipart(@Part FormFile... formFiles);
+    @POST("/upload/only")
+    Response upload(@Part FormFile... formFiles);
     @Multipart
-    @POST("/post/multipart/param")
-    Response multipart2(@Part("name") String name , @Part FormFile... formFiles);
+    @POST("/upload/withParam")
+    Response uploadWithParam(@Part("name") String name , @Part("age") int age , @Part FormFile... formFiles);
 
+    @FormUrlEncoded
     @POST("/post/form")
     Response form(@Field("name") String name , @Field("age") int age);
-    @POST("/post/formMap")
+    @FormUrlEncoded
+    @POST("/post/form")
     Response formMap(@FieldMap Map<String  , String> params);
 }

@@ -1,10 +1,9 @@
 package top.jfunc.common.http.interfacing;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.http.request.impl.PostBodyRequest;
 import top.jfunc.common.http.smart.SmartHttpClient;
 
 import java.io.IOException;
@@ -32,16 +31,11 @@ class HttpServiceMethod implements ServiceMethod<Object> {
                 return smartHttpClient.upload((UploadRequest)httpRequest);
             }else {
                 //一般POST
-                return smartHttpClient.post((PostBodyRequest)httpRequest);
+                return smartHttpClient.post((StringBodyRequest) httpRequest);
             }
         }else if(Method.GET == httpMethod){
-            if(httpRequest instanceof DownLoadRequest){
-                //文件下载
-                return smartHttpClient.download((DownLoadRequest)httpRequest);
-            }else {
                 //一般GET
                 return smartHttpClient.get(httpRequest);
-            }
         }else {
             //其他方法Http请求
             return smartHttpClient.httpMethod(httpRequest , httpMethod);

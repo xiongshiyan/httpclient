@@ -4,7 +4,6 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.*;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.io.File;
 import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.Objects;
@@ -57,18 +56,18 @@ abstract class AbstractParameterHandler<P>{
      * 处理查询参数的
      * @see top.jfunc.common.http.annotation.parameter.Query
      */
-    static final class Query  extends AbstractParameterHandler<String> {
+    static final class Query  extends AbstractParameterHandler<Object> {
         private final String name;
         Query(String name) {
             this.name = Objects.requireNonNull(name);
         }
 
         @Override
-        public void apply(HttpRequest httpRequest, String value) {
+        public void apply(HttpRequest httpRequest, Object value) {
             if (value == null) {
                 return; // Skip null values.
             }
-            httpRequest.addQueryParam(name, value);
+            httpRequest.addQueryParam(name, value.toString());
         }
     }
     /**
@@ -93,18 +92,18 @@ abstract class AbstractParameterHandler<P>{
      * 处理路径参数的
      * @see top.jfunc.common.http.annotation.parameter.Path
      */
-    static final class Route extends AbstractParameterHandler<String> {
+    static final class Route extends AbstractParameterHandler<Object> {
         private final String name;
         Route(String name) {
             this.name = Objects.requireNonNull(name);
         }
 
         @Override
-        public void apply(HttpRequest httpRequest, String value) {
+        public void apply(HttpRequest httpRequest, Object value) {
             if (value == null) {
                 return; // Skip null values.
             }
-            httpRequest.addRouteParam(name, value);
+            httpRequest.addRouteParam(name, value.toString());
         }
     }
     /**
@@ -138,11 +137,9 @@ abstract class AbstractParameterHandler<P>{
             }
 
             UploadRequest uploadRequest = (UploadRequest)httpRequest;
-            if(value instanceof String){
-                uploadRequest.addFormParam(name, (String) value);
-            }else if(value instanceof FormFile){
+            if(value instanceof FormFile){
                 uploadRequest.addFormFile((FormFile)value);
-            }else if(value instanceof Array && Array.get(value , 0) instanceof FormFile){
+            }else if(value.getClass().isArray() && Array.get(value , 0) instanceof FormFile){
                 int length = Array.getLength(value);
                 FormFile[] formFiles = new FormFile[length];
                 System.arraycopy(value , 0 , formFiles , 0 , length);
@@ -150,26 +147,27 @@ abstract class AbstractParameterHandler<P>{
             }else if(value instanceof Iterable){
                 Iterable<FormFile> formFiles = (Iterable<FormFile>) value;
                 formFiles.forEach(uploadRequest::addFormFile);
+            }else {
+                uploadRequest.addFormParam(name, value.toString());
             }
-            throw new IllegalArgumentException("参数错误");
         }
     }
     /**
      * 处理field的
      * @see top.jfunc.common.http.annotation.parameter.Field
      */
-    static final class Field  extends AbstractParameterHandler<String> {
+    static final class Field  extends AbstractParameterHandler<Object> {
         private final String name;
         Field(String name) {
             this.name = Objects.requireNonNull(name);
         }
 
         @Override
-        public void apply(HttpRequest httpRequest, String value) {
+        public void apply(HttpRequest httpRequest, Object value) {
             if (value == null) {
                 return; // Skip null values.
             }
-            ((FormRequest)httpRequest).addFormParam(name, value);
+            ((FormRequest)httpRequest).addFormParam(name, value.toString());
         }
     }
     /**
@@ -218,21 +216,6 @@ abstract class AbstractParameterHandler<P>{
             }
             //支持URL和String
             httpRequest.setUrl(value.toString());
-        }
-    }
-    /**
-     * 处理请求URL的
-     * @see top.jfunc.common.http.annotation.method.Download
-     */
-    static final class Download  extends AbstractParameterHandler<File> {
-
-        @Override
-        public void apply(HttpRequest httpRequest, File value) {
-            if (value == null) {
-                return; // Skip null values.
-            }
-            //支持File和String
-            ((DownLoadRequest)httpRequest).setFile(value);
         }
     }
 }

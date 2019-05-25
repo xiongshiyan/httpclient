@@ -50,7 +50,6 @@ class HttpRequestFactory implements RequestFactory{
     private boolean multiPart = false;
     private boolean hasBody = false;
     private boolean formEncoded = false;
-    private boolean download = false;
     private MediaType contentType;
     private MultiValueMap<String , String> headers;
     private String relativeUrl;
@@ -173,12 +172,6 @@ class HttpRequestFactory implements RequestFactory{
          */
         if (formEncoded){
             httpRequest = FormBodyRequest.of(relativeUrl);
-        }
-        /**
-         * 文件下载
-         */
-        if(download){
-            httpRequest = DownLoadRequest.of(relativeUrl);
         }
 
         return httpRequest;
@@ -364,8 +357,7 @@ class HttpRequestFactory implements RequestFactory{
             if (String.class != keyType) {
                 throw parameterError(method, p, "@HeaderMap keys must be of type String: " + keyType);
             }
-            new AbstractParameterHandler.HeaderMap();
-
+            return new AbstractParameterHandler.HeaderMap();
         } else if (annotation instanceof Field) {
             validateResolvableType(p, type);
             if (!formEncoded) {
@@ -479,8 +471,6 @@ class HttpRequestFactory implements RequestFactory{
                 throw methodError(method, "Only one encoding annotation is allowed.");
             }
             formEncoded = true;
-        } else if (annotation instanceof Download) {
-            download = true;
         }
     }
 
