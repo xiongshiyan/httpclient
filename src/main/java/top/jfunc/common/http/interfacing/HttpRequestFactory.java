@@ -41,17 +41,13 @@ class HttpRequestFactory implements RequestFactory{
     private final Annotation[][] parameterAnnotationsArray;
 
     private boolean multiPart = false;
-    private boolean hasBody;
-    private boolean formEncoded;
+    private boolean hasBody = false;
+    private boolean formEncoded = false;
+    private boolean download = false;
     private MediaType contentType;
     private MultiValueMap<String , String> headers;
     private String relativeUrl;
     private Set<String> relativeUrlParamNames;
-
-    /**
-     * 根据Method等信息生成的
-     */
-    private HttpRequest httpRequest;
 
     public HttpRequestFactory(java.lang.reflect.Method method) {
         this.method = method;
@@ -71,6 +67,23 @@ class HttpRequestFactory implements RequestFactory{
         for (Annotation annotation : methodAnnotations) {
             parseMethodAnnotation(annotation);
         }
+
+        if (httpMethod == null) {
+            throw methodError(method, "HTTP method annotation is required (e.g., @GET, @POST, etc.).");
+        }
+
+        if (!hasBody) {
+            if (multiPart) {
+                throw methodError(method,
+                        "Multipart can only be specified on HTTP methods with request body (e.g., @POST).");
+            }
+            if (formEncoded) {
+                throw methodError(method, "FormUrlEncoded can only be specified on HTTP methods with "
+                        + "request body (e.g., @POST).");
+            }
+        }
+
+        HttpRequest httpRequest = initHttpRequest();
 
         //如果直接传递的是HttpRequest，就忽略其他的注解，因为他已经包含了请求所需的所有信息
         if(args.length==1 && args[0] instanceof HttpRequest){
@@ -94,7 +107,7 @@ class HttpRequestFactory implements RequestFactory{
             handlers[p].apply(httpRequest, args[p]);
         }
 
-        validateRouteParams();
+        validateRouteParams(httpRequest);
 
         //处理方法上的Headers
         if(null != headers && !headers.isEmpty()){
@@ -108,14 +121,45 @@ class HttpRequestFactory implements RequestFactory{
         return httpRequest;
     }
 
-    protected void validateRouteParams() {
+    /**
+     * 初始化HttpRequest
+     */
+    private HttpRequest initHttpRequest() {
+        HttpRequest httpRequest;
+        if(hasBody){
+            httpRequest = CommonBodyRequest.of(relativeUrl);
+        }else {
+            httpRequest = CommonRequest.of(relativeUrl);
+        }
+
+        /**
+         * 文件上传
+         */
+        if(multiPart){
+            httpRequest = FileParamUploadRequest.of(relativeUrl);
+        }
+        /**
+         * form表单上传
+         */
+        if (formEncoded){
+            httpRequest = FormBodyRequest.of(relativeUrl);
+        }
+        /**
+         * 文件下载
+         */
+        if(download){
+            httpRequest = DownLoadRequest.of(relativeUrl);
+        }
+
+        return httpRequest;
+    }
+
+    private void validateRouteParams(HttpRequest httpRequest) {
         Map<String, String> routeParams = httpRequest.getRouteParams();
         //校验路径参数是否一致
-        int size = 0;
         if(null != routeParams && !routeParams.isEmpty()){
-            size = routeParams.size();
+            int size = routeParams.size();
             if(size != relativeUrlParamNames.size()){
-                httpRequest = null;
                 throw new IllegalArgumentException("路径参数个数不匹配");
             }
 
@@ -128,30 +172,28 @@ class HttpRequestFactory implements RequestFactory{
                 }
             }
             if(x != size){
-                httpRequest = null;
                 throw new IllegalArgumentException("路径参数名称对应不上");
             }
         }
     }
 
     /**
-     * 多个参数注解解析
+     * 一个参数多个注解解析
      */
-    private AbstractParameterHandler<?> parseParameter(
-            int p, Type parameterType, Annotation[] annotations) {
+    private AbstractParameterHandler<?> parseParameter(int pos, Type parameterType, Annotation[] annotations) {
         AbstractParameterHandler<?> result = null;
         if (annotations != null) {
             for (Annotation annotation : annotations) {
                 AbstractParameterHandler<?> annotationAction =
-                        parseParameterAnnotation(p, parameterType, annotations, annotation);
+                        parseParameterAnnotation(pos, parameterType, annotations, annotation);
 
                 if (annotationAction == null) {
                     continue;
                 }
 
                 if (result != null) {
-                    throw parameterError(method, p,
-                            "Multiple Jfunc annotations found, only one allowed.");
+                    throw parameterError(method, pos,
+                            "Multiple jfunc annotations found, only one allowed.");
                 }
 
                 result = annotationAction;
@@ -159,7 +201,7 @@ class HttpRequestFactory implements RequestFactory{
         }
 
         if (result == null) {
-            throw parameterError(method, p, "No Jfunc annotation found.");
+            throw parameterError(method, pos, "No jfunc annotation found.");
         }
 
         return result;
@@ -168,8 +210,7 @@ class HttpRequestFactory implements RequestFactory{
     /**
      * 一个参数上的注解解析
      */
-    private AbstractParameterHandler<?> parseParameterAnnotation(
-            int p, Type type, Annotation[] annotations, Annotation annotation) {
+    private AbstractParameterHandler<?> parseParameterAnnotation(int pos, Type type, Annotation[] annotations, Annotation annotation) {
         //TODO 根据注解生成参数处理器
         return null;
     }
@@ -200,42 +241,18 @@ class HttpRequestFactory implements RequestFactory{
                 throw methodError(method, "@Headers annotation is empty.");
             }
             headers = parseHeaders(headersToParse);
-        }
-
-
-        if (annotation instanceof Multipart) {
+        }else if (annotation instanceof Multipart) {
             if (formEncoded) {
                 throw methodError(method, "Only one encoding annotation is allowed.");
             }
             multiPart = true;
-            httpRequest = FileParamUploadRequest.of(relativeUrl);
-
         } else if (annotation instanceof FormUrlEncoded) {
             if (multiPart) {
                 throw methodError(method, "Only one encoding annotation is allowed.");
             }
             formEncoded = true;
-
-            httpRequest = FormBodyRequest.of(relativeUrl);
         } else if (annotation instanceof Download) {
-
-            httpRequest = DownLoadRequest.of(relativeUrl);
-        }
-
-
-        if (httpMethod == null) {
-            throw methodError(method, "HTTP method annotation is required (e.g., @GET, @POST, etc.).");
-        }
-
-        if (!hasBody) {
-            if (multiPart) {
-                throw methodError(method,
-                        "Multipart can only be specified on HTTP methods with request body (e.g., @POST).");
-            }
-            if (formEncoded) {
-                throw methodError(method, "FormUrlEncoded can only be specified on HTTP methods with "
-                        + "request body (e.g., @POST).");
-            }
+            download = true;
         }
     }
 
@@ -300,12 +317,6 @@ class HttpRequestFactory implements RequestFactory{
 
         this.relativeUrl = value;
         this.relativeUrlParamNames = parsePathParameters(value);
-
-        if(hasBody){
-            httpRequest = CommonBodyRequest.of(relativeUrl);
-        }else {
-            httpRequest = CommonRequest.of(relativeUrl);
-        }
     }
     /**
      * Gets the set of unique path parameters used in the given URI. If a parameter is used twice
