@@ -1,24 +1,24 @@
 package top.jfunc.common.http.request;
 
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.utils.MultiValueMap;
 
 /**
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface UploadRequest extends HttpRequest {
+public interface FormRequest extends StringBodyRequest {
     /**
      * Form参数
      * @return Form参数
      */
     MultiValueMap<String, String> getFormParams();
-    UploadRequest addFormParam(String key, String value, String... values);
 
     /**
-     * 上传文件信息
-     * @return 上传文件信息
+     * 新增form参数
+     * @param key key
+     * @param value value
+     * @param values values
+     * @return this
      */
-    FormFile[] getFormFiles();
-    UploadRequest addFormFile(FormFile... formFiles);
+    FormRequest addFormParam(String key, String value, String... values);
 }

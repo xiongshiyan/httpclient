@@ -3,7 +3,7 @@ package top.jfunc.common.http.request.impl;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.kv.Parameter;
-import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.MultiValueMap;
@@ -15,7 +15,7 @@ import java.util.Objects;
  * Form表单请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements StringBodyRequest {
+public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements FormRequest {
 
     public FormBodyRequest(String url){
         super(url);
@@ -40,6 +40,7 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements Str
         return ParamUtil.contactMap(formParams, bodyCharset);
     }
 
+    @Override
     public MultiValueMap<String, String> getFormParams() {
         return formParams;
     }
@@ -63,6 +64,7 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements Str
         this.formParams.add(key, value);
         return this;
     }
+    @Override
     public FormBodyRequest addFormParam(String key, String value , String... values){
         initFormParams();
         this.formParams.add(key , value);

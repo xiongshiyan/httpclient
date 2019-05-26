@@ -35,16 +35,35 @@ public interface HttpRequest {
     String getUrl();
 
     /**
+     * 设置URL
+     */
+    HttpRequest setUrl(String url);
+
+    /**
      * 路径参数
      * @return 路径参数
      */
     Map<String, String> getRouteParams();
 
     /**
+     * 添加路径参数
+     * @param key key
+     * @param value value
+     */
+    HttpRequest addRouteParam(String key, String value);
+
+    /**
      * Query参数
      * @return Query参数
      */
     MultiValueMap<String, String> getQueryParams();
+
+    /**
+     * 添加查询参数
+     * @param key key
+     * @param value value
+     */
+    HttpRequest addQueryParam(String key, String value, String... values);
 
     /**
      * 请求的Header
@@ -58,6 +77,14 @@ public interface HttpRequest {
      * @return this
      */
     HttpRequest setHeaders(MultiValueMap<String, String> headers);
+
+    /**
+     * 添加header
+     * @param key key
+     * @param value value
+     * @param values values
+     */
+    HttpRequest addHeader(String key, String value, String... values);
 
     /**
      * Content-Type
