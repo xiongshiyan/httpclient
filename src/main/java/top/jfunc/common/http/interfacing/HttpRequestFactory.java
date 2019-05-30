@@ -116,15 +116,25 @@ class HttpRequestFactory implements RequestFactory {
             }
         }
 
-        //方法参数类型
-        Type[] parameterTypes = method.getGenericParameterTypes();
+        //方法泛型参数类型
+        Type[] genericParameterTypes = method.getGenericParameterTypes();
+        //方法的实际类型
+        Class<?>[] parameterTypes = method.getParameterTypes();
         //方法参数的注解
         Annotation[][] parameterAnnotationsArray = method.getParameterAnnotations();
 
         int parameterCount = parameterAnnotationsArray.length;
         parameterHandlers = new AbstractParameterHandler<?>[parameterCount];
         for (int p = 0; p < parameterCount; p++) {
-            parameterHandlers[p] = parseParameter(p, parameterTypes[p], parameterAnnotationsArray[p]);
+
+            if(HttpRequest.class.isAssignableFrom(parameterTypes[p])){
+                //HttpRequest已经有URL了
+                gotUrl = true;
+                parameterHandlers[p] = AbstractParameterHandler.DoNothing.INSTANCE;
+            }else {
+                parameterHandlers[p] = parseParameter(p, genericParameterTypes[p], parameterAnnotationsArray[p]);
+            }
+
         }
 
         if (relativeUrl == null && !gotUrl) {
@@ -159,8 +169,8 @@ class HttpRequestFactory implements RequestFactory {
         HttpRequest httpRequest = initHttpRequest();
 
         //如果直接传递的是HttpRequest，就忽略其他的注解，因为他已经包含了请求所需的所有信息
-        if(args.length==1 && args[0] instanceof HttpRequest){
-            return (HttpRequest) (args[0]);
+        if(args[0] instanceof HttpRequest){
+            httpRequest = (HttpRequest) (args[0]);
         }
 
 

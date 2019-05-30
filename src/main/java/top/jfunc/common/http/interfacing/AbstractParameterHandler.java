@@ -28,8 +28,26 @@ import java.util.Objects;
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 abstract class AbstractParameterHandler<P>{
+    /**
+     * 对HttpRequest应用实际参数
+     * @param r HttpRequest
+     * @param p 参数值
+     */
     abstract void apply(HttpRequest r, P p);
 
+    /**
+     * 什么都不干的处理器，比如处理 HttpRequest
+     * @see HttpRequest
+     */
+    static final class DoNothing  extends AbstractParameterHandler<Object> {
+        private DoNothing(){}
+        static final DoNothing INSTANCE = new DoNothing();
+
+        @Override
+        public void apply(HttpRequest httpRequest, Object value) {
+            //doNothing
+        }
+    }
     /**
      * 处理header的
      * @see top.jfunc.common.http.annotation.parameter.Header

@@ -5,6 +5,7 @@ import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.smart.Response;
 
 import java.util.Map;
@@ -17,6 +18,11 @@ public interface InterfaceForTestJfunc {
 
     @GET
     Response request(HttpRequest httpRequest);
+    @GET
+    Response request(HttpRequest httpRequest , @Header("kk") String kk);
+
+    @POST
+    Response post(StringBodyRequest stringBodyRequest);
 
     @GET("/get/{q}")
     Response list(@Path("q") String q, @Query("xx") int xx);

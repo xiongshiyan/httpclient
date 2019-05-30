@@ -7,6 +7,7 @@ import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.interfacing.HttpServiceCreator;
 import top.jfunc.common.http.request.impl.GetRequest;
+import top.jfunc.common.http.request.impl.PostBodyRequest;
 import top.jfunc.common.http.smart.ApacheSmartHttpClient;
 import top.jfunc.common.http.smart.Response;
 
@@ -35,6 +36,16 @@ public class HttpServiceCreatorTest {
     @Test
     public void testRequest(){
         Response zzzzzz = jfunc.request(GetRequest.of("https://www.baidu.com"));
+        System.out.println(zzzzzz);
+    }
+    @Test
+    public void testRequestHeader(){
+        Response zzzzzz = jfunc.request(GetRequest.of("/get/query") , "kkkk");
+        System.out.println(zzzzzz);
+    }
+    @Test
+    public void testRequestPost(){
+        Response zzzzzz = jfunc.post(PostBodyRequest.of("/post/body").setBody("xxsdasdadxx"));
         System.out.println(zzzzzz);
     }
     @Test
