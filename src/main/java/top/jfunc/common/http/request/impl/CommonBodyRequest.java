@@ -3,7 +3,7 @@ package top.jfunc.common.http.request.impl;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
-import top.jfunc.common.http.request.ChangeableStringBodyRequest;
+import top.jfunc.common.http.request.MutableStringBodyRequest;
 
 import java.util.Objects;
 
@@ -11,7 +11,7 @@ import java.util.Objects;
  * 通用的StringBody请求
  * @author xiongshiyan at 2019/5/21 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class CommonBodyRequest extends BaseRequest<CommonBodyRequest> implements ChangeableStringBodyRequest {
+public class CommonBodyRequest extends BaseRequest<CommonBodyRequest> implements MutableStringBodyRequest {
     public CommonBodyRequest(String url){
         super(url);
     }
@@ -42,6 +42,8 @@ public class CommonBodyRequest extends BaseRequest<CommonBodyRequest> implements
         this.body = body;
         return this;
     }
+
+    @Override
     public CommonBodyRequest setBody(String body , String contentType) {
         this.body = body;
         setContentType(contentType);

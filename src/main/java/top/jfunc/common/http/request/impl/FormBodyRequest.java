@@ -37,7 +37,7 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements For
         if(null == getContentType()){
             setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
         }
-        return ParamUtil.contactMap(formParams, bodyCharset);
+        return ParamUtil.contactMap(getFormParams(), bodyCharset);
     }
 
     @Override

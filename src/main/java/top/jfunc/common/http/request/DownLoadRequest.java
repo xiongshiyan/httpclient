@@ -13,5 +13,10 @@ public interface DownLoadRequest extends HttpRequest {
      */
     File getFile();
 
+    /**
+     * 设置下载到哪个文件
+     * @param file file
+     * @return this
+     */
     DownLoadRequest setFile(File file);
 }

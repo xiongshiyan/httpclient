@@ -13,6 +13,14 @@ public interface UploadRequest extends HttpRequest {
      * @return Form参数
      */
     MultiValueMap<String, String> getFormParams();
+
+    /**
+     * 新增form参数
+     * @param key key
+     * @param value value
+     * @param values values
+     * @return this
+     */
     UploadRequest addFormParam(String key, String value, String... values);
 
     /**
@@ -20,5 +28,11 @@ public interface UploadRequest extends HttpRequest {
      * @return 上传文件信息
      */
     FormFile[] getFormFiles();
+
+    /**
+     * 新增文件上传信息
+     * @param formFiles 上传的文件
+     * @return this
+     */
     UploadRequest addFormFile(FormFile... formFiles);
 }
