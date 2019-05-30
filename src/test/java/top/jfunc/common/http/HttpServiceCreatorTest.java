@@ -5,7 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.interfacing.JFuncHttp;
+import top.jfunc.common.http.interfacing.HttpServiceCreator;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.http.smart.ApacheSmartHttpClient;
 import top.jfunc.common.http.smart.Response;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 @Ignore
-public class JfuncHttpTest {
+public class HttpServiceCreatorTest {
     Map<String , String> map = new HashMap<>();
     {
         map.put("xx" , "xxx");
@@ -28,8 +28,8 @@ public class JfuncHttpTest {
     @Before
     public void init(){
         Config config = Config.defaultConfig().setBaseUrl("http://localhost:8080/http-server-test/");
-        JFuncHttp jfuncHttp = new JFuncHttp().setSmartHttpClient(new ApacheSmartHttpClient().setConfig(config));
-        jfunc = jfuncHttp.create(InterfaceForTestJfunc.class);
+        HttpServiceCreator httpServiceCreator = new HttpServiceCreator().setSmartHttpClient(new ApacheSmartHttpClient().setConfig(config));
+        jfunc = httpServiceCreator.create(InterfaceForTestJfunc.class);
     }
 
     @Test
