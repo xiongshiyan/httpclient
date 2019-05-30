@@ -1,7 +1,10 @@
 package top.jfunc.common.http.interfacing;
 
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.request.*;
+import top.jfunc.common.http.request.FormRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.MutableStringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.lang.reflect.Array;
@@ -10,6 +13,18 @@ import java.util.Objects;
 
 /**
  * 参数处理器定义及对应注解的实现
+ * @see Header
+ * @see HeaderMap
+ * @see Query
+ * @see QueryMap
+ * @see Route
+ * @see RouteMap
+ * @see Part
+ * @see Field
+ * @see FieldMap
+ * @see Body
+ * @see Url
+ *
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 abstract class AbstractParameterHandler<P>{
@@ -200,7 +215,7 @@ abstract class AbstractParameterHandler<P>{
             if (value == null) {
                 return; // Skip null values.
             }
-            ((ChangeableStringBodyRequest)httpRequest).setBody(value);
+            ((MutableStringBodyRequest)httpRequest).setBody(value);
         }
     }
     /**

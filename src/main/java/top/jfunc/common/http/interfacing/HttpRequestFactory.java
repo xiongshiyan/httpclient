@@ -6,7 +6,10 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.impl.*;
+import top.jfunc.common.http.request.impl.CommonBodyRequest;
+import top.jfunc.common.http.request.impl.CommonRequest;
+import top.jfunc.common.http.request.impl.FileParamUploadRequest;
+import top.jfunc.common.http.request.impl.FormBodyRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -27,32 +30,59 @@ import static top.jfunc.common.http.interfacing.TypeUtils.parameterError;
 /**
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-class HttpRequestFactory implements RequestFactory{
+class HttpRequestFactory implements RequestFactory {
     private static final String PARAM = "[a-zA-Z][a-zA-Z0-9_-]*";
     /**
      * 形如{id}这样的路径参数
      */
     private static final Pattern PARAM_URL_REGEX = Pattern.compile("\\{(" + PARAM + ")\\}");
     private static final Pattern PARAM_NAME_REGEX = Pattern.compile(PARAM);
+    /**
+     * 传入的方法
+     */
+    private java.lang.reflect.Method method;
 
     /**
      * 通过method计算获取请求方法
      */
     private Method httpMethod;
 
-    private java.lang.reflect.Method method;
+    /**
+     * 参数对应的处理器
+     */
+    private final AbstractParameterHandler<?>[] parameterHandlers;
 
-
-    private final Annotation[] methodAnnotations;
-    private final Type[] parameterTypes;
-    private final Annotation[][] parameterAnnotationsArray;
-
-    private boolean multiPart = false;
+    /**
+     * 是否有Body
+     * @see POST
+     * @see GET
+     */
     private boolean hasBody = false;
+    /**
+     * 是否是文件上传
+     * @see Multipart
+     */
+    private boolean multiPart = false;
+    /**
+     * 是否是FormUrlEncoded
+     * @see FormUrlEncoded
+     */
     private boolean formEncoded = false;
+    /**
+     * Content-Type
+     */
     private MediaType contentType;
+    /**
+     * <code>@Headers</code> 注解添加的header
+     */
     private MultiValueMap<String , String> headers;
+    /**
+     * 请求的相对URL
+     */
     private String relativeUrl;
+    /**
+     * 路径参数名称集合
+     */
     private Set<String> relativeUrlParamNames;
 
     private boolean gotField;
@@ -66,19 +96,8 @@ class HttpRequestFactory implements RequestFactory{
     public HttpRequestFactory(java.lang.reflect.Method method) {
         this.method = method;
 
-        this.methodAnnotations = method.getAnnotations();
-        this.parameterTypes = method.getGenericParameterTypes();
-        this.parameterAnnotationsArray = method.getParameterAnnotations();
-    }
-
-    @Override
-    public Method getHttpMethod() {
-        return httpMethod;
-    }
-
-    @Override
-    public HttpRequest httpRequest(Object[] args){
-        for (Annotation annotation : methodAnnotations) {
+        //处理方法上的注解
+        for (Annotation annotation : method.getAnnotations()) {
             parseMethodAnnotation(annotation);
         }
 
@@ -97,15 +116,13 @@ class HttpRequestFactory implements RequestFactory{
             }
         }
 
-        HttpRequest httpRequest = initHttpRequest();
-
-        //如果直接传递的是HttpRequest，就忽略其他的注解，因为他已经包含了请求所需的所有信息
-        if(args.length==1 && args[0] instanceof HttpRequest){
-            return (HttpRequest) (args[0]);
-        }
+        //方法参数类型
+        Type[] parameterTypes = method.getGenericParameterTypes();
+        //方法参数的注解
+        Annotation[][] parameterAnnotationsArray = method.getParameterAnnotations();
 
         int parameterCount = parameterAnnotationsArray.length;
-        AbstractParameterHandler<?>[] parameterHandlers = new AbstractParameterHandler<?>[parameterCount];
+        parameterHandlers = new AbstractParameterHandler<?>[parameterCount];
         for (int p = 0; p < parameterCount; p++) {
             parameterHandlers[p] = parseParameter(p, parameterTypes[p], parameterAnnotationsArray[p]);
         }
@@ -122,13 +139,31 @@ class HttpRequestFactory implements RequestFactory{
         if (multiPart && !gotPart) {
             throw methodError(method, "Multipart method must contain at least one @Part.");
         }
+    }
 
+    @Override
+    public Method getHttpMethod() {
+        return httpMethod;
+    }
+
+    @Override
+    public HttpRequest httpRequest(Object[] args){
 
         int argumentCount = args.length;
         if (argumentCount != parameterHandlers.length) {
             throw new IllegalArgumentException("Argument count (" + argumentCount
                     + ") doesn't match expected count (" + parameterHandlers.length + ")");
         }
+
+
+        HttpRequest httpRequest = initHttpRequest();
+
+        //如果直接传递的是HttpRequest，就忽略其他的注解，因为他已经包含了请求所需的所有信息
+        if(args.length==1 && args[0] instanceof HttpRequest){
+            return (HttpRequest) (args[0]);
+        }
+
+
 
         AbstractParameterHandler<Object>[] handlers = (AbstractParameterHandler<Object>[]) parameterHandlers;
         for (int p = 0; p < argumentCount; p++) {
@@ -160,15 +195,9 @@ class HttpRequestFactory implements RequestFactory{
             httpRequest = CommonRequest.of(relativeUrl);
         }
 
-        /**
-         * 文件上传
-         */
         if(multiPart){
             httpRequest = FileParamUploadRequest.of(relativeUrl);
         }
-        /**
-         * form表单上传
-         */
         if (formEncoded){
             httpRequest = FormBodyRequest.of(relativeUrl);
         }
@@ -215,7 +244,7 @@ class HttpRequestFactory implements RequestFactory{
 
                 if (result != null) {
                     throw parameterError(method, pos,
-                            "Multiple jfunc annotations found, only one allowed.");
+                            "Multiple HttpService annotations found, only one allowed.");
                 }
 
                 result = annotationAction;
@@ -223,7 +252,7 @@ class HttpRequestFactory implements RequestFactory{
         }
 
         if (result == null) {
-            throw parameterError(method, pos, "No jfunc annotation found.");
+            throw parameterError(method, pos, "No HttpService annotation found.");
         }
 
         return result;
@@ -407,7 +436,8 @@ class HttpRequestFactory implements RequestFactory{
             return new AbstractParameterHandler.Body();
         }
 
-        return null; // Not a Retrofit annotation.
+        // Not a HttpService annotation.
+        return null;
     }
 
     private void validateResolvableType(int p, Type type) {

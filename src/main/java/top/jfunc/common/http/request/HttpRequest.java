@@ -50,7 +50,7 @@ public interface HttpRequest {
      * @param key key
      * @param value value
      */
-    HttpRequest addRouteParam(String key , String value);
+    HttpRequest addRouteParam(String key, String value);
 
     /**
      * Query参数
@@ -84,7 +84,7 @@ public interface HttpRequest {
      * @param value value
      * @param values values
      */
-    HttpRequest addHeader(String key, String value , String... values);
+    HttpRequest addHeader(String key, String value, String... values);
 
     /**
      * Content-Type

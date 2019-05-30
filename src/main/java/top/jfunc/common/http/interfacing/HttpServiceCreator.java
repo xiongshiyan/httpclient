@@ -13,8 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 参照retrofit2的做法，直接http请求接口化
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
+ * @since 1.1.2
  */
-public class JFuncHttp {
+public class HttpServiceCreator {
     private final Map<Method, ServiceMethod<?>> serviceMethodCache = new ConcurrentHashMap<>();
     private SmartHttpClient smartHttpClient;
     /**
@@ -66,7 +67,7 @@ public class JFuncHttp {
         synchronized (serviceMethodCache) {
             result = serviceMethodCache.get(method);
             if (result == null) {
-                result = ServiceMethodUtil.parseAnnotations(this , method);
+                result = new HttpServiceMethod(getSmartHttpClient() , method);
                 serviceMethodCache.put(method, result);
             }
         }
@@ -77,7 +78,7 @@ public class JFuncHttp {
         return smartHttpClient;
     }
 
-    public JFuncHttp setSmartHttpClient(SmartHttpClient smartHttpClient) {
+    public HttpServiceCreator setSmartHttpClient(SmartHttpClient smartHttpClient) {
         this.smartHttpClient = smartHttpClient;
         return this;
     }

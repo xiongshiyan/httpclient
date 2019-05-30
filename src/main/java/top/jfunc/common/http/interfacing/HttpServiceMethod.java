@@ -9,21 +9,22 @@ import top.jfunc.common.http.smart.SmartHttpClient;
 import java.io.IOException;
 
 /**
+ * 一个方法对应一个HttpServiceMethod，也就相应的对应一个HttpRequestFactory
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 class HttpServiceMethod implements ServiceMethod<Object> {
     private final SmartHttpClient smartHttpClient;
-    private final RequestFactory httpRequestFactory;
+    private final RequestFactory requestFactory;
 
-    public HttpServiceMethod(SmartHttpClient smartHttpClient, RequestFactory httpRequestFactory) {
+    public HttpServiceMethod(SmartHttpClient smartHttpClient, java.lang.reflect.Method method) {
         this.smartHttpClient = smartHttpClient;
-        this.httpRequestFactory = httpRequestFactory;
+        this.requestFactory = new HttpRequestFactory(method);
     }
 
     @Override
     public Object invoke(Object[] args) throws IOException {
-        HttpRequest httpRequest = this.httpRequestFactory.httpRequest(args);
-        Method httpMethod = this.httpRequestFactory.getHttpMethod();
+        HttpRequest httpRequest = requestFactory.httpRequest(args);
+        Method httpMethod = requestFactory.getHttpMethod();
 
         if(Method.POST == httpMethod){
             if(httpRequest instanceof UploadRequest){

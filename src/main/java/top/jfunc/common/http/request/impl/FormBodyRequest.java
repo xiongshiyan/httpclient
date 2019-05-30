@@ -4,7 +4,6 @@ import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.http.request.FormRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.MultiValueMap;
@@ -38,7 +37,7 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements For
         if(null == getContentType()){
             setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
         }
-        return ParamUtil.contactMap(formParams, bodyCharset);
+        return ParamUtil.contactMap(getFormParams(), bodyCharset);
     }
 
     @Override
