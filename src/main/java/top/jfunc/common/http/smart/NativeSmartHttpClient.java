@@ -35,6 +35,8 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
     @Override
     public <R> R template(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        onBeforeIfNecessary(httpRequest, method);
+
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
@@ -112,14 +114,21 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                 cookieHandler.put(URI.create(completedUrl) , parseHeaders);
             }*/
 
-            return resultCallback.convert(statusCode , inputStream,
+            R convert = resultCallback.convert(statusCode, inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     parseHeaders);
+
+            onAfterReturnIfNecessary(httpRequest , convert);
+
+            return convert;
         } catch (IOException e) {
+            onErrorIfNecessary(httpRequest , e);
             throw e;
         } catch (Exception e){
+            onErrorIfNecessary(httpRequest , e);
             throw new RuntimeException(e);
         } finally {
+            onAfterIfNecessary(httpRequest);
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接
             disconnectQuietly(connection);

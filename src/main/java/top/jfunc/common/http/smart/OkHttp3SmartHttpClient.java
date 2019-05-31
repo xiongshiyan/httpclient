@@ -39,6 +39,8 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
     @Override
     public <R> R template(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        onBeforeIfNecessary(httpRequest, method);
+
         okhttp3.Response response = null;
         InputStream inputStream = null;
         try {
@@ -108,14 +110,21 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
                 }
             }
 
-            return resultCallback.convert(response.code() , inputStream,
+            R convert = resultCallback.convert(response.code(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     parseHeaders);
+
+            onAfterReturnIfNecessary(httpRequest , convert);
+
+            return convert;
         } catch (IOException e) {
+            onErrorIfNecessary(httpRequest , e);
             throw e;
         } catch (Exception e){
+            onErrorIfNecessary(httpRequest , e);
             throw new RuntimeException(e);
         } finally {
+            onAfterIfNecessary(httpRequest);
             IoUtil.close(inputStream);
             IoUtil.close(response);
         }

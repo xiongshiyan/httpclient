@@ -34,6 +34,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
 
     @Override
     public <R> R template(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        onBeforeIfNecessary(httpRequest, method);
+
         HttpResponse response = null;
         try {
             //1.获取完成的URL，创建请求
@@ -88,19 +90,26 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
                 }
             }
 
-            return resultCallback.convert(response.statusCode() ,
-                    getStreamFrom(response , httpRequest.isIgnoreResponseBody()),
-                    getResultCharsetWithDefault(httpRequest.getResultCharset()) ,
+            R convert = resultCallback.convert(response.statusCode(),
+                    getStreamFrom(response, httpRequest.isIgnoreResponseBody()),
+                    getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     parseHeaders);
-    } catch (IOException e) {
-        throw e;
-    } catch (Exception e){
-        throw new RuntimeException(e);
-    } finally {
-        if(null != response){
-            response.close();
+
+            onAfterReturnIfNecessary(httpRequest , convert);
+
+            return convert;
+        } catch (IOException e) {
+            onErrorIfNecessary(httpRequest , e);
+            throw e;
+        } catch (Exception e){
+            onErrorIfNecessary(httpRequest , e);
+            throw new RuntimeException(e);
+        } finally {
+            onAfterIfNecessary(httpRequest);
+            if(null != response){
+                response.close();
+            }
         }
-    }
     }
 
     @Override

@@ -5,6 +5,8 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
+import top.jfunc.common.http.interceptor.CompositeInterceptor;
+import top.jfunc.common.http.interceptor.Interceptor;
 import top.jfunc.common.http.kv.Header;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
@@ -77,6 +79,10 @@ public class Config {
      * CookieHandler，只要设置了就表示支持Cookie
      */
     private CookieHandler cookieHandler = null;
+    /**
+     * 拦截器链
+     */
+    private CompositeInterceptor compositeInterceptor;
 
     public static Config defaultConfig(){
         return new Config();
@@ -355,5 +361,27 @@ public class Config {
             CookieHandler.setDefault(cookieHandler);
         }
         return this;
+    }
+
+    public CompositeInterceptor getCompositeInterceptor() {
+        return compositeInterceptor;
+    }
+
+    public Config setCompositeInterceptor(CompositeInterceptor compositeInterceptor) {
+        this.compositeInterceptor = compositeInterceptor;
+        return this;
+    }
+    public Config addInterceptor(Interceptor... interceptors){
+        if(null == this.compositeInterceptor){
+            this.compositeInterceptor = new CompositeInterceptor(interceptors);
+        }else {
+            this.compositeInterceptor.add(interceptors);
+        }
+        return this;
+    }
+
+    public boolean hasInterceptors(){
+        return null != this.compositeInterceptor
+                && this.compositeInterceptor.hasInterceptors();
     }
 }

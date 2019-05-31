@@ -44,6 +44,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
 
     @Override
     public <R> R template(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+        onBeforeIfNecessary(httpRequest, method);
+
         //1.获取完整的URL
         String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() ,httpRequest.getQueryParams() , httpRequest.getBodyCharset());
 
@@ -112,13 +114,18 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
 
             IoUtil.close(inputStream);
 
+            onAfterReturnIfNecessary(httpRequest , convert);
+
             return convert;
 
         } catch (IOException e) {
+            onErrorIfNecessary(httpRequest , e);
             throw e;
         } catch (Exception e){
+            onErrorIfNecessary(httpRequest , e);
             throw new RuntimeException(e);
         }finally {
+            onAfterIfNecessary(httpRequest);
             EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);
             IoUtil.close(httpClient);

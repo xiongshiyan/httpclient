@@ -1,7 +1,9 @@
 package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.HeaderRegular;
+import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.Joiner;
 import top.jfunc.common.utils.MultiValueMap;
@@ -34,6 +36,32 @@ public abstract class AbstractConfigurableHttp {
         this.config = Objects.requireNonNull(config);
         return this;
     }
+
+    public void onBeforeIfNecessary(HttpRequest httpRequest , Method method){
+        Config config = getConfig();
+        if(config.hasInterceptors()){
+            config.getCompositeInterceptor().onBefore(httpRequest, method);
+        }
+    }
+    public void onAfterReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
+        Config config = getConfig();
+        if(config.hasInterceptors()){
+            config.getCompositeInterceptor().onAfterReturn(httpRequest, returnValue);
+        }
+    }
+    public void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
+        Config config = getConfig();
+        if(config.hasInterceptors()){
+            config.getCompositeInterceptor().onError(httpRequest, exception);
+        }
+    }
+    public void onAfterIfNecessary(HttpRequest httpRequest){
+        Config config = getConfig();
+        if(config.hasInterceptors()){
+            config.getCompositeInterceptor().onAfter(httpRequest);
+        }
+    }
+
 
     /**
      * 从CookieHandler中获取Cookies
