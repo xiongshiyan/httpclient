@@ -1,12 +1,15 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.ProxyInfo;
+import top.jfunc.common.http.kv.Header;
+import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -36,14 +39,28 @@ public interface HttpRequest {
 
     /**
      * 设置URL
+     * @return this
      */
     HttpRequest setUrl(String url);
+
+    /**
+     * 设置URL
+     * @return this
+     */
+    HttpRequest setUrl(URL url);
 
     /**
      * 路径参数
      * @return 路径参数
      */
     Map<String, String> getRouteParams();
+
+    /**
+     * 设置路径参数
+     * @param routeParams 路径参数映射
+     * @return this
+     */
+    HttpRequest setRouteParams(Map<String, String> routeParams);
 
     /**
      * 添加路径参数
@@ -59,11 +76,64 @@ public interface HttpRequest {
     MultiValueMap<String, String> getQueryParams();
 
     /**
-     * 添加查询参数
+     * 设置Query参数
+     * @param queryParams Query参数
+     * @return this
+     */
+    HttpRequest setQueryParams(MultiValueMap<String, String> queryParams);
+
+    /**
+     * 设置Query参数
+     * @param queryParams Query参数
+     * @return this
+     */
+    HttpRequest setQueryParams(Map<String, String> queryParams);
+
+    /**
+     * 添加Query参数
      * @param key key
      * @param value value
      */
+    HttpRequest addQueryParam(String key, String value);
+
+    /**
+     * 添加Query参数
+     * @param key key
+     * @param value value
+     * @param values values
+     */
     HttpRequest addQueryParam(String key, String value, String... values);
+
+    /**
+     * 添加Query参数
+     * @param key key
+     * @param values values
+     * @return this
+     */
+    HttpRequest addQueryParam(String key, Iterable<String> values);
+
+    /**
+     * 添加Query参数
+     * @param parameter parameter
+     * @param parameters parameters
+     * @return this
+     */
+    HttpRequest addQueryParam(Parameter parameter , Parameter... parameters);
+
+    /**
+     * 添加Query参数
+     * @param parameters parameters
+     * @return this
+     */
+    HttpRequest addQueryParam(Iterable<Parameter> parameters);
+
+    /**
+     * 添加Query参数
+     * @param parameter parameter
+     * @param parameters parameters
+     * @return this
+     */
+    HttpRequest addQueryParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters);
 
     /**
      * 请求的Header
@@ -79,12 +149,58 @@ public interface HttpRequest {
     HttpRequest setHeaders(MultiValueMap<String, String> headers);
 
     /**
+     * 设置header
+     * @param headers headers
+     * @return this
+     */
+    HttpRequest setHeaders(Map<String, String> headers);
+
+    /**
+     * 添加header
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    HttpRequest addHeader(String key, String value);
+
+    /**
      * 添加header
      * @param key key
      * @param value value
      * @param values values
      */
     HttpRequest addHeader(String key, String value, String... values);
+
+    /**
+     * 添加header
+     * @param key key
+     * @param values values
+     * @return this
+     */
+    HttpRequest addHeader(String key, Iterable<String> values);
+
+    /**
+     * 添加header
+     * @param header header
+     * @param headers headers
+     * @return this
+     */
+    HttpRequest addHeader(Header header , Header... headers);
+
+    /**
+     * 添加header
+     * @param headers headers
+     * @return this
+     */
+    HttpRequest addHeader(Iterable<Header> headers);
+
+    /**
+     * 添加header
+     * @param header header
+     * @param headers headers
+     * @return this
+     */
+    HttpRequest addHeader(Map.Entry<String , Iterable<String>> header , Map.Entry<String , Iterable<String>>... headers);
 
     /**
      * Content-Type

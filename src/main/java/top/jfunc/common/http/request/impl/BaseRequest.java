@@ -129,11 +129,13 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         this.url = url;
         return myself();
     }
+    @Override
     public T setUrl(URL url) {
         this.url = url.toString();
         return myself();
     }
 
+    @Override
     public T setRouteParams(Map<String, String> routeParams) {
         this.routeParams = Objects.requireNonNull(routeParams);
         return myself();
@@ -148,20 +150,24 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         return myself();
     }
 
+    @Override
     public T setQueryParams(MultiValueMap<String, String> queryParams) {
         this.queryParams = Objects.requireNonNull(queryParams);
         return myself();
     }
+
     public T setQueryParams(ArrayListMultimap<String, String> queryParams) {
         Objects.requireNonNull(queryParams);
         this.queryParams = ArrayListMultiValueMap.fromMap(queryParams);
         return myself();
     }
+    @Override
     public T setQueryParams(Map<String, String> queryParams) {
         Objects.requireNonNull(queryParams);
         this.queryParams = ArrayListMultiValueMap.fromMap(queryParams);
         return myself();
     }
+    @Override
     public T addQueryParam(String key, String value){
         initQueryParams();
         this.queryParams.add(key, value);
@@ -176,6 +182,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         }
         return myself();
     }
+    @Override
     public T addQueryParam(String key, Iterable<String> values){
         initQueryParams();
         for (String value : values) {
@@ -183,6 +190,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         }
         return myself();
     }
+    @Override
     public T addQueryParam(Parameter parameter , Parameter... parameters){
         addQueryParam(parameter.getKey() , parameter.getValue());
         for (Parameter param : parameters) {
@@ -190,12 +198,14 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         }
         return myself();
     }
+    @Override
     public T addQueryParam(Iterable<Parameter> parameters){
         for (Map.Entry<String , Iterable<String>> parameter : parameters) {
             addQueryParam(parameter.getKey() , parameter.getValue());
         }
         return myself();
     }
+    @Override
     public T addQueryParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters){
         addQueryParam(parameter.getKey() , parameter.getValue());
         for (Map.Entry<String , Iterable<String>> param : parameters) {
@@ -213,11 +223,13 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         this.headers = ArrayListMultiValueMap.fromMap(headers);
         return myself();
     }
+    @Override
     public T setHeaders(Map<String, String> headers) {
         Objects.requireNonNull(headers);
         this.headers = ArrayListMultiValueMap.fromMap(headers);
         return myself();
     }
+    @Override
     public T addHeader(String key, String value){
         initHeaders();
         this.headers.add(key, value);
@@ -232,6 +244,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         }
         return myself();
     }
+    @Override
     public T addHeader(String key, Iterable<String> values){
         initHeaders();
         for (String value : values) {
@@ -239,6 +252,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         }
         return myself();
     }
+    @Override
     public T addHeader(Header header , Header... headers){
         addHeader(header.getKey() , header.getValue());
         for (Header h : headers) {
@@ -246,13 +260,16 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         }
         return myself();
     }
+    @Override
     public T addHeader(Iterable<Header> headers){
         for (Header header : headers) {
             addHeader(header.getKey() , header.getValue());
         }
         return myself();
     }
+    @Override
     public T addHeader(Map.Entry<String , Iterable<String>> header , Map.Entry<String , Iterable<String>>... headers){
+        addHeader(header.getKey() , header.getValue());
         for (Map.Entry<String , Iterable<String>> h : headers) {
             addHeader(h.getKey() , h.getValue());
         }
