@@ -71,6 +71,8 @@ HttpRequest接口体系，使用这些请求类意义更明确：
 - [x] `HttpUtil`提供的静态方法完全代理`SmartHttpClient`接口，实现一句话完成Http请求
 - [x] 从1.1.1版本开始Request分裂为表达每种请求的不同Request
 - [x] 从1.1.1版本开始支持基于CookieHandler的Cookie支持,在全局设置中设置CookieHandler即可
+- [x] 从1.1.2版本开始类似Retrofit、MyBatis-Mapper的接口使用方式
+- [x] 从1.1.2版本开始支持全局拦截器拦截
 - [ ] 文件上传支持断点续传
 
 ### how to import it?
