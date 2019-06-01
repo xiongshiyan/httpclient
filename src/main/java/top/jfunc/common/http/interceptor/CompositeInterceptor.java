@@ -1,6 +1,7 @@
 package top.jfunc.common.http.interceptor;
 
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.util.ArrayList;
@@ -9,6 +10,9 @@ import java.util.List;
 
 /**
  * 提供对多个拦截器的管理，可以新增拦截器，实际拦截执行是委托给各个具体的拦截器
+ * @see top.jfunc.common.http.interceptor.Interceptor
+ * @see top.jfunc.common.http.interceptor.InterceptorAdapter
+ * @see Config#getCompositeInterceptor()
  * @author xiongshiyan at 2019/5/31 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class CompositeInterceptor implements Interceptor {

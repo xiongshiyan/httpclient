@@ -4,9 +4,10 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.HttpRequest;
 
 /**
+ * 拦截器适配器
  * @author xiongshiyan at 2019/5/31 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class InterceptorAdpter implements Interceptor {
+public class InterceptorAdapter implements Interceptor {
     @Override
     public void onBefore(HttpRequest httpRequest, Method method) {
 
