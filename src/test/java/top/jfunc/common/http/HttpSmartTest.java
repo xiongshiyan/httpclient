@@ -138,7 +138,8 @@ public class HttpSmartTest {
         String url = "http://localhost:8080/http-server-test/upload/only";
         try {
             FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "file",null);
-            Request request = Request.of(url).addFormFile(formFile).setIncludeHeaders(true);
+            Request request = Request.of(url).setIncludeHeaders(true);
+            request.formFileHolder().addFormFile(formFile);
             request.headerHolder().addHeader("empCode" , "ahg0023")
                     .addHeader("phone" , "15208384257");
             Response response = httpClient.upload(request);
@@ -177,7 +178,8 @@ public class HttpSmartTest {
         try {
             FormFile formFile = new FormFile(new File("E:\\BugReport.3png") , "file",null);
             FormFile formFile2 = new FormFile(new File("E:\\BugReport.png") , "file2",null);
-            Request request = Request.of(url).addFormFile(formFile2).addFormFile(formFile).setIncludeHeaders(true);
+            Request request = Request.of(url).setIncludeHeaders(true);
+            request.formFileHolder().addFormFile(formFile2).addFormFile(formFile);
             request.headerHolder().addHeader("empCode" , "ahg0023")
                     .addHeader("phone" , "15208384257");
             request.formParamHolder().addParam("k1", "v1").addParam("k2" , "v2");

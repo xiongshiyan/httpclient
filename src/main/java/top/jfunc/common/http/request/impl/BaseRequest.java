@@ -3,7 +3,10 @@ package top.jfunc.common.http.request.impl;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.kv.*;
+import top.jfunc.common.http.holder.DefaultHeaderHolder;
+import top.jfunc.common.http.holder.DefaultParamHolder;
+import top.jfunc.common.http.holder.HeaderHolder;
+import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.request.HttpRequest;
 
 import javax.net.ssl.HostnameVerifier;
@@ -31,15 +34,13 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
      */
     private Map<String , String> routeParams;
     /**
-     * 查询参数，拼装在URL后面 ?
+     * 查询参数，拼装在URL后面 ?//private MultiValueMap<String,String> queryParamHolder;
      * @since 1.0.4
      */
-    //private MultiValueMap<String,String> queryParamHolder;
     private ParamHolder queryParamHolder = new DefaultParamHolder();
     /**
-     * 请求头
+     * 请求头//private MultiValueMap<String,String> headerHolder;
      */
-    //private MultiValueMap<String,String> headerHolder;
     private HeaderHolder headerHolder = new DefaultHeaderHolder();
     /**
      * 资源类型

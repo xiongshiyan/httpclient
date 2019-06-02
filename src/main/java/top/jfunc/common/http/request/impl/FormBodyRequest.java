@@ -2,8 +2,8 @@ package top.jfunc.common.http.request.impl;
 
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.kv.DefaultParamHolder;
-import top.jfunc.common.http.kv.ParamHolder;
+import top.jfunc.common.http.holder.DefaultParamHolder;
+import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.request.FormRequest;
 
 /**
@@ -22,8 +22,8 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements For
     /**
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
+     * //private MultiValueMap<String,String> formParamHolder;
      */
-    //private MultiValueMap<String,String> formParamHolder;
     private ParamHolder formParamHolder = new DefaultParamHolder();
 
     @Override

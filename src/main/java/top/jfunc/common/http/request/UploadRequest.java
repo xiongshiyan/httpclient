@@ -1,7 +1,8 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.kv.ParamHolder;
+import top.jfunc.common.http.holder.FormFileHolder;
+import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
 /**
@@ -36,12 +37,20 @@ public interface UploadRequest extends HttpRequest {
      * 上传文件信息
      * @return 上传文件信息
      */
-    FormFile[] getFormFiles();
+    default FormFile[] getFormFiles(){
+        return formFileHolder().getFormFiles();
+    }
 
     /**
      * 新增文件上传信息
      * @param formFiles 上传的文件
      * @return this
      */
-    UploadRequest addFormFile(FormFile... formFiles);
+    //UploadRequest addFormFile(FormFile... formFiles);
+
+    /**
+     * 接管文件上传信息
+     * @return FormFileHolder must not be null
+     */
+    FormFileHolder formFileHolder();
 }

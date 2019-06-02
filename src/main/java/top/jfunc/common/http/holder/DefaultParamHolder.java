@@ -1,5 +1,6 @@
-package top.jfunc.common.http.kv;
+package top.jfunc.common.http.holder;
 
+import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.MultiValueMap;
@@ -9,8 +10,9 @@ import java.util.Objects;
 
 /**
  * wrap of {@link MultiValueMap} and impl ParamHolder
- * @see top.jfunc.common.http.kv.ParamHolder
+ * @see ParamHolder
  * @see MultiValueMap
+ * @author xiongshiyan
  */
 public class DefaultParamHolder implements ParamHolder{
     /**

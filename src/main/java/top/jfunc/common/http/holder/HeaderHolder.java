@@ -1,11 +1,13 @@
-package top.jfunc.common.http.kv;
+package top.jfunc.common.http.holder;
 
+import top.jfunc.common.http.kv.Header;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
 
 /**
  * 请求头处理器，新增、获取header
+ * @author xiongshiyan
  */
 public interface HeaderHolder {
     /**

@@ -4,11 +4,12 @@ import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
-import top.jfunc.common.http.kv.DefaultParamHolder;
-import top.jfunc.common.http.kv.ParamHolder;
+import top.jfunc.common.http.holder.DefaultFormFileHolder;
+import top.jfunc.common.http.holder.DefaultParamHolder;
+import top.jfunc.common.http.holder.FormFileHolder;
+import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -16,9 +17,6 @@ import top.jfunc.common.http.request.impl.BaseRequest;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -43,8 +41,8 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
     /**
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
+     * //private MultiValueMap<String,String> formParamHolder;
      */
-    //private MultiValueMap<String,String> formParamHolder;
     private ParamHolder formParamHolder = new DefaultParamHolder();
     /**
      * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
@@ -59,9 +57,10 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
 
 
     /**
-     * 2018-06-18为了文件上传增加的
+     * 2018-06-18为了文件上传增加的 private List<FormFile> formFiles = null;
      */
-    private List<FormFile> formFiles = null;
+    private FormFileHolder formFileHolder = new DefaultFormFileHolder();
+
     /**
      * 为文件下载确定信息
      */
@@ -96,15 +95,10 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
         //直接返回设置的body
         return body;
     }
+
     @Override
-    public FormFile[] getFormFiles() {
-        initFormFiles();
-        return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
-    }
-    private void initFormFiles(){
-        if(null == this.formFiles){
-            this.formFiles = new ArrayList<>(2);
-        }
+    public FormFileHolder formFileHolder() {
+        return formFileHolder;
     }
 
     @Override
@@ -154,15 +148,6 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
     public Request setBodyT(Object o , ToString handler){
         ToString toString = Objects.requireNonNull(handler, "handler不能为空");
         this.body = toString.toString(o);
-        return this;
-    }
-
-    @Override
-    public Request addFormFile(FormFile... formFiles) {
-        if(null != formFiles){
-            initFormFiles();
-            this.formFiles.addAll(Arrays.asList(formFiles));
-        }
         return this;
     }
 

@@ -1,8 +1,9 @@
 package top.jfunc.common.http.interfacing;
 
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.kv.HeaderHolder;
-import top.jfunc.common.http.kv.ParamHolder;
+import top.jfunc.common.http.holder.FormFileHolder;
+import top.jfunc.common.http.holder.HeaderHolder;
+import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
@@ -174,16 +175,17 @@ abstract class AbstractParameterHandler<P>{
             }
 
             UploadRequest uploadRequest = (UploadRequest)httpRequest;
+            FormFileHolder formFileHolder = uploadRequest.formFileHolder();
             if(value instanceof FormFile){
-                uploadRequest.addFormFile((FormFile)value);
+                formFileHolder.addFormFile((FormFile)value);
             }else if(value.getClass().isArray() && Array.get(value , 0) instanceof FormFile){
                 int length = Array.getLength(value);
                 FormFile[] formFiles = new FormFile[length];
                 System.arraycopy(value , 0 , formFiles , 0 , length);
-                uploadRequest.addFormFile(formFiles);
+                formFileHolder.addFormFile(formFiles);
             }else if(value instanceof Iterable){
                 Iterable<FormFile> formFiles = (Iterable<FormFile>) value;
-                formFiles.forEach(uploadRequest::addFormFile);
+                formFiles.forEach(formFileHolder::addFormFile);
             }else {
                 uploadRequest.formParamHolder().addParam(name, value.toString());
             }

@@ -1,11 +1,13 @@
-package top.jfunc.common.http.kv;
+package top.jfunc.common.http.holder;
 
+import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
 
 /**
  * Query参数、Form参数处理器
+ * @author xiongshiyan
  */
 public interface ParamHolder {
     /**

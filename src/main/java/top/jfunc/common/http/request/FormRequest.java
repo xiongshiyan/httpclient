@@ -1,6 +1,6 @@
 package top.jfunc.common.http.request;
 
-import top.jfunc.common.http.kv.ParamHolder;
+import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
 /**

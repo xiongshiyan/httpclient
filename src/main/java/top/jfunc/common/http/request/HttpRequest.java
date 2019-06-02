@@ -1,8 +1,8 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.kv.HeaderHolder;
-import top.jfunc.common.http.kv.ParamHolder;
+import top.jfunc.common.http.holder.HeaderHolder;
+import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
