@@ -1,6 +1,8 @@
 package top.jfunc.common.http.interfacing;
 
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.kv.HeaderHolder;
+import top.jfunc.common.http.kv.ParamHolder;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
@@ -63,7 +65,7 @@ abstract class AbstractParameterHandler<P>{
             if (value == null) {
                 return; // Skip null values.
             }
-            httpRequest.addHeader(name, value);
+            httpRequest.headerHolder().addHeader(name, value);
         }
     }
     /**
@@ -77,11 +79,12 @@ abstract class AbstractParameterHandler<P>{
             if (headers == null || headers.isEmpty()) {
                 return; // Skip null values.
             }
+            HeaderHolder headerHolder = httpRequest.headerHolder();
             if(headers instanceof MultiValueMap){
                 MultiValueMap<String, String> multiValueMap = (MultiValueMap) headers;
-                multiValueMap.forEachKeyValue(httpRequest::addHeader);
+                multiValueMap.forEachKeyValue(headerHolder::addHeader);
             }
-            headers.forEach(httpRequest::addHeader);
+            headers.forEach(headerHolder::addHeader);
         }
     }
 
@@ -100,7 +103,7 @@ abstract class AbstractParameterHandler<P>{
             if (value == null) {
                 return; // Skip null values.
             }
-            httpRequest.addQueryParam(name, value.toString());
+            httpRequest.queryParamHolder().addParam(name, value.toString());
         }
     }
     /**
@@ -114,11 +117,12 @@ abstract class AbstractParameterHandler<P>{
             if (querys == null || querys.isEmpty()) {
                 return; // Skip null values.
             }
+            ParamHolder paramHolder = httpRequest.queryParamHolder();
             if(querys instanceof MultiValueMap){
                 MultiValueMap<String, String> multiValueMap = (MultiValueMap) querys;
-                multiValueMap.forEachKeyValue(httpRequest::addQueryParam);
+                multiValueMap.forEachKeyValue(paramHolder::addParam);
             }
-            querys.forEach(httpRequest::addQueryParam);
+            querys.forEach(paramHolder::addParam);
         }
     }
     /**
@@ -181,7 +185,7 @@ abstract class AbstractParameterHandler<P>{
                 Iterable<FormFile> formFiles = (Iterable<FormFile>) value;
                 formFiles.forEach(uploadRequest::addFormFile);
             }else {
-                uploadRequest.addFormParam(name, value.toString());
+                uploadRequest.formParamHolder().addParam(name, value.toString());
             }
         }
     }
@@ -200,7 +204,8 @@ abstract class AbstractParameterHandler<P>{
             if (value == null) {
                 return; // Skip null values.
             }
-            ((FormRequest)httpRequest).addFormParam(name, value.toString());
+            ParamHolder paramHolder = ((FormRequest) httpRequest).formParamHolder();
+            paramHolder.addParam(name, value.toString());
         }
     }
     /**
@@ -214,11 +219,12 @@ abstract class AbstractParameterHandler<P>{
                 return; // Skip null values.
             }
             FormRequest formRequest = (FormRequest) httpRequest;
+            ParamHolder paramHolder = formRequest.formParamHolder();
             if(fields instanceof MultiValueMap){
                 MultiValueMap<String, String> multiValueMap = (MultiValueMap) fields;
-                multiValueMap.forEachKeyValue(formRequest::addFormParam);
+                multiValueMap.forEachKeyValue(paramHolder::addParam);
             }
-            fields.forEach(formRequest::addFormParam);
+            fields.forEach(paramHolder::addParam);
         }
     }
 

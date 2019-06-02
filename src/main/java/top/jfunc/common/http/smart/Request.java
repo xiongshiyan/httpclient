@@ -7,31 +7,30 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
-import top.jfunc.common.http.kv.Parameter;
+import top.jfunc.common.http.kv.DefaultParamHolder;
+import top.jfunc.common.http.kv.ParamHolder;
 import top.jfunc.common.http.request.DownLoadRequest;
-import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.BaseRequest;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayListMultimap;
-import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
  * @see top.jfunc.common.http.basic.HttpClient
- * @see SmartHttpClient
+ * @see top.jfunc.common.http.smart.SmartHttpClient
  *
  * !!!此类作为以前的大杂烩，什么样的请求都放到一起，给设置参数的时候造成困扰，已经不适应快速发展的需要
  * 现将其一拆为多，针对不同的请求使用不同的请求即可
  *
- * @see HttpRequest
- *
- * @see BaseRequest
+ * @see top.jfunc.common.http.request.HttpRequest
+ * @see top.jfunc.common.http.request.impl.BaseRequest
  * @see top.jfunc.common.http.request.impl.PostBodyRequest
  * @see top.jfunc.common.http.request.impl.FormBodyRequest
  * @see top.jfunc.common.http.request.impl.FileParamUploadRequest
@@ -45,7 +44,8 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
      */
-    private MultiValueMap<String,String> formParams;
+    //private MultiValueMap<String,String> formParamHolder;
+    private ParamHolder formParamHolder = new DefaultParamHolder();
     /**
      * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
      * @see Method#hasContent()
@@ -79,11 +79,6 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
     }
 
     /****************************Getter**************************/
-    @Override
-    public MultiValueMap<String, String> getFormParams() {
-        return formParams;
-    }
-
     /**
      * 如果没有显式设置body而是通过params添加的，此时一般认为是想发起form请求，最好设置Content-Type
      * @see this#setContentType(String)
@@ -96,7 +91,7 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
             if(null == getContentType()){
                 setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
             }
-            return ParamUtil.contactMap(formParams, bodyCharset);
+            return ParamUtil.contactMap(getFormParams(), bodyCharset);
         }
         //直接返回设置的body
         return body;
@@ -119,65 +114,10 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
 
     /**************************变种的Setter*******************************/
 
-    public Request setFormParams(MultiValueMap<String, String> formParams) {
-        this.formParams = Objects.requireNonNull(formParams);
-        return this;
-    }
-    public Request setFormParams(ArrayListMultimap<String, String> formParams) {
-        Objects.requireNonNull(formParams);
-        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
-        return this;
-    }
-    public Request setFormParams(Map<String, String> formParams) {
-        Objects.requireNonNull(formParams);
-        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
-        return this;
-    }
-    public Request addFormParam(String key, String value){
-        initFormParams();
-        this.formParams.add(key, value);
-        return this;
-    }
+
     @Override
-    public Request addFormParam(String key, String value , String... values){
-        initFormParams();
-        this.formParams.add(key , value);
-        for (String val : values) {
-            this.formParams.add(key , val);
-        }
-        return this;
-    }
-    public Request addFormParam(String key, Iterable<String> values){
-        initFormParams();
-        for (String value : values) {
-            this.formParams.add(key , value);
-        }
-        return this;
-    }
-    public Request addFormParam(Parameter parameter , Parameter... parameters){
-        addFormParam(parameter.getKey() , parameter.getValue());
-        for (Parameter param : parameters) {
-            addFormParam(param.getKey() , param.getValue());
-        }
-        return this;
-    }
-    public Request addFormParam(Iterable<Parameter> parameters){
-        for (Parameter parameter : parameters) {
-            addFormParam(parameter.getKey() , parameter.getValue());
-        }
-        return this;
-    }
-    public Request addFormParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters){
-        addFormParam(parameter.getKey() , parameter.getValue());
-        for (Map.Entry<String , Iterable<String>> param : parameters) {
-            addFormParam(param.getKey() , param.getValue());
-        }
-        return this;
-    }
-    private void initFormParams(){
-        if(null == this.formParams){
-            this.formParams = new ArrayListMultiValueMap<>(2);
-        }
+    public ParamHolder formParamHolder() {
+        return formParamHolder;
     }
 
     /**

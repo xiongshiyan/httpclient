@@ -3,12 +3,8 @@ package top.jfunc.common.http.request.impl;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.kv.Header;
-import top.jfunc.common.http.kv.Parameter;
+import top.jfunc.common.http.kv.*;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayListMultimap;
-import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -38,11 +34,13 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
      * 查询参数，拼装在URL后面 ?
      * @since 1.0.4
      */
-    private MultiValueMap<String,String> queryParams;
+    //private MultiValueMap<String,String> queryParamHolder;
+    private ParamHolder queryParamHolder = new DefaultParamHolder();
     /**
      * 请求头
      */
-    private MultiValueMap<String,String> headers;
+    //private MultiValueMap<String,String> headerHolder;
+    private HeaderHolder headerHolder = new DefaultHeaderHolder();
     /**
      * 资源类型
      */
@@ -129,11 +127,6 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         this.url = url;
         return myself();
     }
-    @Override
-    public T setUrl(URL url) {
-        this.url = url.toString();
-        return myself();
-    }
 
     @Override
     public T setRouteParams(Map<String, String> routeParams) {
@@ -151,135 +144,15 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     }
 
     @Override
-    public T setQueryParams(MultiValueMap<String, String> queryParams) {
-        this.queryParams = Objects.requireNonNull(queryParams);
-        return myself();
+    public ParamHolder queryParamHolder() {
+        return queryParamHolder;
     }
 
-    public T setQueryParams(ArrayListMultimap<String, String> queryParams) {
-        Objects.requireNonNull(queryParams);
-        this.queryParams = ArrayListMultiValueMap.fromMap(queryParams);
-        return myself();
-    }
     @Override
-    public T setQueryParams(Map<String, String> queryParams) {
-        Objects.requireNonNull(queryParams);
-        this.queryParams = ArrayListMultiValueMap.fromMap(queryParams);
-        return myself();
+    public HeaderHolder headerHolder() {
+        return headerHolder;
     }
-    @Override
-    public T addQueryParam(String key, String value){
-        initQueryParams();
-        this.queryParams.add(key, value);
-        return myself();
-    }
-    @Override
-    public T addQueryParam(String key, String value, String... values){
-        initQueryParams();
-        this.queryParams.add(key , value);
-        for (String val : values) {
-            this.queryParams.add(key , val);
-        }
-        return myself();
-    }
-    @Override
-    public T addQueryParam(String key, Iterable<String> values){
-        initQueryParams();
-        for (String value : values) {
-            this.queryParams.add(key , value);
-        }
-        return myself();
-    }
-    @Override
-    public T addQueryParam(Parameter parameter , Parameter... parameters){
-        addQueryParam(parameter.getKey() , parameter.getValue());
-        for (Parameter param : parameters) {
-            addQueryParam(param.getKey() , param.getValue());
-        }
-        return myself();
-    }
-    @Override
-    public T addQueryParam(Iterable<Parameter> parameters){
-        for (Map.Entry<String , Iterable<String>> parameter : parameters) {
-            addQueryParam(parameter.getKey() , parameter.getValue());
-        }
-        return myself();
-    }
-    @Override
-    public T addQueryParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters){
-        addQueryParam(parameter.getKey() , parameter.getValue());
-        for (Map.Entry<String , Iterable<String>> param : parameters) {
-            addQueryParam(param.getKey() , param.getValue());
-        }
-        return myself();
-    }
-    private void initQueryParams(){
-        if(null == this.queryParams){
-            this.queryParams = new ArrayListMultiValueMap<>(2);
-        }
-    }
-    public T setHeaders(ArrayListMultimap<String, String> headers) {
-        Objects.requireNonNull(headers);
-        this.headers = ArrayListMultiValueMap.fromMap(headers);
-        return myself();
-    }
-    @Override
-    public T setHeaders(Map<String, String> headers) {
-        Objects.requireNonNull(headers);
-        this.headers = ArrayListMultiValueMap.fromMap(headers);
-        return myself();
-    }
-    @Override
-    public T addHeader(String key, String value){
-        initHeaders();
-        this.headers.add(key, value);
-        return myself();
-    }
-    @Override
-    public T addHeader(String key, String value , String... values){
-        initHeaders();
-        this.headers.add(key , value);
-        for (String val : values) {
-            this.headers.add(key , val);
-        }
-        return myself();
-    }
-    @Override
-    public T addHeader(String key, Iterable<String> values){
-        initHeaders();
-        for (String value : values) {
-            this.headers.add(key , value);
-        }
-        return myself();
-    }
-    @Override
-    public T addHeader(Header header , Header... headers){
-        addHeader(header.getKey() , header.getValue());
-        for (Header h : headers) {
-            addHeader(h.getKey() , h.getValue());
-        }
-        return myself();
-    }
-    @Override
-    public T addHeader(Iterable<Header> headers){
-        for (Header header : headers) {
-            addHeader(header.getKey() , header.getValue());
-        }
-        return myself();
-    }
-    @Override
-    public T addHeader(Map.Entry<String , Iterable<String>> header , Map.Entry<String , Iterable<String>>... headers){
-        addHeader(header.getKey() , header.getValue());
-        for (Map.Entry<String , Iterable<String>> h : headers) {
-            addHeader(h.getKey() , h.getValue());
-        }
-        return myself();
-    }
-    private void initHeaders(){
-        if(null == this.headers){
-            this.headers = new ArrayListMultiValueMap<>(2);
-        }
-    }
+
     public T addFormHeader(){
         return setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(HttpConstants.DEFAULT_CHARSET));
     }
@@ -371,22 +244,6 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     @Override
     public Map<String, String> getRouteParams() {
         return routeParams;
-    }
-
-    @Override
-    public MultiValueMap<String, String> getQueryParams() {
-        return queryParams;
-    }
-
-    @Override
-    public MultiValueMap<String, String> getHeaders() {
-        return headers;
-    }
-
-    @Override
-    public T setHeaders(MultiValueMap<String, String> headers) {
-        this.headers = Objects.requireNonNull(headers);
-        return myself();
     }
 
     @Override

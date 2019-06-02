@@ -1,5 +1,6 @@
 package top.jfunc.common.http.request;
 
+import top.jfunc.common.http.kv.ParamHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
 /**
@@ -11,7 +12,9 @@ public interface FormRequest extends StringBodyRequest {
      * Form参数
      * @return Form参数
      */
-    MultiValueMap<String, String> getFormParams();
+    default MultiValueMap<String, String> getFormParams(){
+        return formParamHolder().getParams();
+    }
 
     /**
      * 新增form参数
@@ -20,5 +23,11 @@ public interface FormRequest extends StringBodyRequest {
      * @param values values
      * @return this
      */
-    FormRequest addFormParam(String key, String value, String... values);
+    //FormRequest addFormParam(String key, String value, String... values);
+
+    /**
+     * 接管Form param的处理
+     * @return ParamHolder must not null
+     */
+    ParamHolder formParamHolder();
 }

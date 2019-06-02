@@ -73,7 +73,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
             ///HttpURLConnection不能用以下方法处理，会出现重复Cookie，即同样的Cookie框架自己弄了一份，我们手动又弄了一份
-            /*headers = handleCookieIfNecessary(completedUrl, headers);*/
+            /*headerHolder = handleCookieIfNecessary(completedUrl, headerHolder);*/
 
             //在需要开启Cookie功能的时候，只需要确保设置了CookieHandler的CookieHandler即可，HttpURLConnection会自动管理
             ///这段代码放到设置CookieHandler的时候，不必每次都执行一下
@@ -184,7 +184,8 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     public Response upload(UploadRequest req) throws IOException {
         UploadRequest request = beforeTemplate(req);
         MultiValueMap<String, String> headers = mergeHeaders(request.getHeaders());
-        Response response = template(request.setHeaders(headers), Method.POST ,
+        request.headerHolder().setHeaders(headers);
+        Response response = template(request, Method.POST ,
                 connect -> this.upload0(connect, request.getFormParams(), request.getFormFiles()) , Response::with);
         return afterTemplate(request , response);
     }

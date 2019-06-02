@@ -1,13 +1,14 @@
 package top.jfunc.common.http.request.impl;
 
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.kv.Parameter;
+import top.jfunc.common.http.kv.DefaultParamHolder;
+import top.jfunc.common.http.kv.ParamHolder;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayListMultimap;
-import top.jfunc.common.utils.MultiValueMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 多文件、参数同时支持的上传请求
@@ -23,82 +24,22 @@ public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> 
     /**
      * form参数
      */
-    private MultiValueMap<String,String> formParams;
+    //private MultiValueMap<String,String> formParamHolder;
+    private ParamHolder formParamHolder = new DefaultParamHolder();
     /**
      * 2018-06-18为了文件上传增加的
      */
     private List<FormFile> formFiles = null;
 
     @Override
-    public MultiValueMap<String, String> getFormParams() {
-        return formParams;
+    public ParamHolder formParamHolder() {
+        return formParamHolder;
     }
 
     @Override
     public FormFile[] getFormFiles() {
         initFormFiles();
         return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
-    }
-
-    public FileParamUploadRequest setFormParams(MultiValueMap<String, String> formParams) {
-        this.formParams = Objects.requireNonNull(formParams);
-        return this;
-    }
-    public FileParamUploadRequest setFormParams(ArrayListMultimap<String, String> formParams) {
-        Objects.requireNonNull(formParams);
-        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
-        return this;
-    }
-    public FileParamUploadRequest setFormParams(Map<String, String> formParams) {
-        Objects.requireNonNull(formParams);
-        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
-        return this;
-    }
-    public FileParamUploadRequest addFormParam(String key, String value){
-        initFormParams();
-        this.formParams.add(key, value);
-        return this;
-    }
-    @Override
-    public FileParamUploadRequest addFormParam(String key, String value , String... values){
-        initFormParams();
-        this.formParams.add(key , value);
-        for (String val : values) {
-            this.formParams.add(key , val);
-        }
-        return this;
-    }
-    public FileParamUploadRequest addFormParam(String key, Iterable<String> values){
-        initFormParams();
-        for (String value : values) {
-            this.formParams.add(key , value);
-        }
-        return this;
-    }
-    public FileParamUploadRequest addFormParam(Parameter parameter , Parameter... parameters){
-        addFormParam(parameter.getKey() , parameter.getValue());
-        for (Parameter param : parameters) {
-            addFormParam(param.getKey() , param.getValue());
-        }
-        return this;
-    }
-    public FileParamUploadRequest addFormParam(Iterable<Parameter> parameters){
-        for (Parameter parameter : parameters) {
-            addFormParam(parameter.getKey() , parameter.getValue());
-        }
-        return this;
-    }
-    public FileParamUploadRequest addFormParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters){
-        addFormParam(parameter.getKey() , parameter.getValue());
-        for (Map.Entry<String , Iterable<String>> param : parameters) {
-            addFormParam(param.getKey() , param.getValue());
-        }
-        return this;
-    }
-    private void initFormParams(){
-        if(null == this.formParams){
-            this.formParams = new ArrayListMultiValueMap<>(2);
-        }
     }
 
     public FileParamUploadRequest setFormFiles(List<FormFile> formFiles) {

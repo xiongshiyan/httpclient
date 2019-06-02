@@ -1,8 +1,8 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.kv.Header;
-import top.jfunc.common.http.kv.Parameter;
+import top.jfunc.common.http.kv.HeaderHolder;
+import top.jfunc.common.http.kv.ParamHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -47,7 +47,9 @@ public interface HttpRequest {
      * 设置URL
      * @return this
      */
-    HttpRequest setUrl(URL url);
+    default HttpRequest setUrl(URL url){
+        return setUrl(url.toString());
+    }
 
     /**
      * 路径参数
@@ -73,134 +75,29 @@ public interface HttpRequest {
      * Query参数
      * @return Query参数
      */
-    MultiValueMap<String, String> getQueryParams();
+    default MultiValueMap<String, String> getQueryParams(){
+        return queryParamHolder().getParams();
+    }
 
     /**
-     * 设置Query参数
-     * @param queryParams Query参数
-     * @return this
+     * 获取到 {@link ParamHolder} 可以对Query参数完全接管处理
+     * @return ParamHolder must not be null
      */
-    HttpRequest setQueryParams(MultiValueMap<String, String> queryParams);
-
-    /**
-     * 设置Query参数
-     * @param queryParams Query参数
-     * @return this
-     */
-    HttpRequest setQueryParams(Map<String, String> queryParams);
-
-    /**
-     * 添加Query参数
-     * @param key key
-     * @param value value
-     */
-    HttpRequest addQueryParam(String key, String value);
-
-    /**
-     * 添加Query参数
-     * @param key key
-     * @param value value
-     * @param values values
-     */
-    HttpRequest addQueryParam(String key, String value, String... values);
-
-    /**
-     * 添加Query参数
-     * @param key key
-     * @param values values
-     * @return this
-     */
-    HttpRequest addQueryParam(String key, Iterable<String> values);
-
-    /**
-     * 添加Query参数
-     * @param parameter parameter
-     * @param parameters parameters
-     * @return this
-     */
-    HttpRequest addQueryParam(Parameter parameter , Parameter... parameters);
-
-    /**
-     * 添加Query参数
-     * @param parameters parameters
-     * @return this
-     */
-    HttpRequest addQueryParam(Iterable<Parameter> parameters);
-
-    /**
-     * 添加Query参数
-     * @param parameter parameter
-     * @param parameters parameters
-     * @return this
-     */
-    HttpRequest addQueryParam(Map.Entry<String , Iterable<String>> parameter , Map.Entry<String , Iterable<String>>... parameters);
+    ParamHolder queryParamHolder();
 
     /**
      * 请求的Header
      * @return 请求的Header
      */
-    MultiValueMap<String, String> getHeaders();
+    default MultiValueMap<String, String> getHeaders(){
+        return headerHolder().getHeaders();
+    }
 
     /**
-     * 有些请求可能经过一些处理之后需要改变header重新设置回去
-     * @param headers 处理过后的header
-     * @return this
+     * 获取到 {@link HeaderHolder} 可以对Header完全接管处理
+     * @return HeaderHolder must not be null
      */
-    HttpRequest setHeaders(MultiValueMap<String, String> headers);
-
-    /**
-     * 设置header
-     * @param headers headers
-     * @return this
-     */
-    HttpRequest setHeaders(Map<String, String> headers);
-
-    /**
-     * 添加header
-     * @param key key
-     * @param value value
-     * @return this
-     */
-    HttpRequest addHeader(String key, String value);
-
-    /**
-     * 添加header
-     * @param key key
-     * @param value value
-     * @param values values
-     */
-    HttpRequest addHeader(String key, String value, String... values);
-
-    /**
-     * 添加header
-     * @param key key
-     * @param values values
-     * @return this
-     */
-    HttpRequest addHeader(String key, Iterable<String> values);
-
-    /**
-     * 添加header
-     * @param header header
-     * @param headers headers
-     * @return this
-     */
-    HttpRequest addHeader(Header header , Header... headers);
-
-    /**
-     * 添加header
-     * @param headers headers
-     * @return this
-     */
-    HttpRequest addHeader(Iterable<Header> headers);
-
-    /**
-     * 添加header
-     * @param header header
-     * @param headers headers
-     * @return this
-     */
-    HttpRequest addHeader(Map.Entry<String , Iterable<String>> header , Map.Entry<String , Iterable<String>>... headers);
+    HeaderHolder headerHolder();
 
     /**
      * Content-Type

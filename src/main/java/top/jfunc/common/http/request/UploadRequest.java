@@ -1,6 +1,7 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.kv.ParamHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
 /**
@@ -12,7 +13,9 @@ public interface UploadRequest extends HttpRequest {
      * Form参数
      * @return Form参数
      */
-    MultiValueMap<String, String> getFormParams();
+    default MultiValueMap<String, String> getFormParams(){
+        return formParamHolder().getParams();
+    }
 
     /**
      * 新增form参数
@@ -21,7 +24,13 @@ public interface UploadRequest extends HttpRequest {
      * @param values values
      * @return this
      */
-    UploadRequest addFormParam(String key, String value, String... values);
+    //UploadRequest addFormParam(String key, String value, String... values);
+
+    /**
+     * 接管Form param的处理
+     * @return ParamHolder must not null
+     */
+    ParamHolder formParamHolder();
 
     /**
      * 上传文件信息

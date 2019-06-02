@@ -7,8 +7,6 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.Header;
 import org.mockserver.model.Parameter;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.impl.BaseRequest;
 import top.jfunc.common.http.request.impl.FormBodyRequest;
 import top.jfunc.common.http.smart.Request;
 import top.jfunc.common.http.smart.Response;
@@ -58,7 +56,8 @@ public class MockServerTest {
         );
 
         Request request = Request.of("http://localhost:50000/hello/{name}")
-                .addRouteParam("name" , "John").addQueryParam("key1" , "value1").addQueryParam("key2" , "value2");
+                .addRouteParam("name" , "John");
+        request.queryParamHolder().addParam("key1" , "value1").addParam("key2" , "value2");
         Response response = HttpUtil.get(request);
         Assert.assertEquals(expected , response.asString());
     }
@@ -76,7 +75,8 @@ public class MockServerTest {
                         .withBody(expected)
         );
 
-        Request request = Request.of("http://localhost:50000/hello/{name}").addRouteParam("name" , "John").setBody(expected);
+        Request request = Request.of("http://localhost:50000/hello/{name}").addRouteParam("name" , "John");
+        request.setBody(expected);
         Response response = HttpUtil.post(request);
         Assert.assertEquals(expected , response.asString());
     }
@@ -97,8 +97,8 @@ public class MockServerTest {
         );
 
         FormBodyRequest request = FormBodyRequest.of("http://localhost:50000/hello/{name}")
-                .addRouteParam("name" , "John")
-                .addFormParam("key1" , "value1").addFormParam("key2" , "value2");
+                .addRouteParam("name" , "John");
+        request.formParamHolder().addParam("key1" , "value1").addParam("key2" , "value2");
 
         Response response = HttpUtil.post(request);
         Assert.assertEquals(expected , response.asString());
@@ -116,8 +116,8 @@ public class MockServerTest {
                         .withHeader(Header.header("xx" , "xx"))
         );
 
-        Request request = Request.of("http://localhost:50000/hello/{name}").addRouteParam("name" , "John")
-                .addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx").setIncludeHeaders(true);
+        Request request = Request.of("http://localhost:50000/hello/{name}").addRouteParam("name" , "John").setIncludeHeaders(true);
+        request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         Response response = HttpUtil.get(request);
         Assert.assertEquals("xx" , response.getOneHeader("xx"));
     }

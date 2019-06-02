@@ -5,6 +5,7 @@ import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
+import top.jfunc.common.http.kv.HeaderHolder;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.impl.CommonBodyRequest;
 import top.jfunc.common.http.request.impl.CommonRequest;
@@ -182,12 +183,13 @@ class HttpRequestFactory implements RequestFactory {
 
         validateRouteParams(httpRequest);
 
+        HeaderHolder headerHolder = httpRequest.headerHolder();
         //处理方法上的Headers
-        if(null != headers && !headers.isEmpty()){
-            headers.forEachKeyValue(httpRequest::addHeader);
+        if(null != this.headers && !this.headers.isEmpty()){
+            this.headers.forEachKeyValue(headerHolder::addHeader);
         }
         if(null != contentType){
-            httpRequest.addHeader(HeaderRegular.CONTENT_TYPE.toString() , contentType.toString());
+            headerHolder.addHeader(HeaderRegular.CONTENT_TYPE.toString() , contentType.toString());
         }
 
 

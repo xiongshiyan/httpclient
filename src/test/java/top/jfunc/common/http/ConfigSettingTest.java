@@ -27,20 +27,20 @@ public class ConfigSettingTest {
     }
     private void testGet(SmartHttpClient http){
 
-        http.setConfig(Config.defaultConfig()
-                        .setBaseUrl("https://fanyi.baidu.com/")
-                        .addDefaultHeader("xx" , "xx")
-                        .setDefaultBodyCharset("UTF-8")
-                        .setDefaultResultCharset("UTF-8")
-                        .setDefaultConnectionTimeout(15000)
-                        .setDefaultReadTimeout(15000)
-
-                //.....
-        );
+        Config config = Config.defaultConfig()
+                .setBaseUrl("https://fanyi.baidu.com/")
+                .setDefaultBodyCharset("UTF-8")
+                .setDefaultResultCharset("UTF-8")
+                .setDefaultConnectionTimeout(15000)
+                .setDefaultReadTimeout(15000);
+        config.headerHolder().addHeader("xx" , "xx");
+        http.setConfig(config);
 
         String url = "?aldtype=85#zh/en/%E5%AE%8C%E6%95%B4%E7%9A%84%E6%88%91";
         try {
-            Response response = http.get(Request.of(url).addHeader("saleType" , "2").setResultCharset("UTF-8"));
+            Request request = Request.of(url).setResultCharset("UTF-8");
+            request.headerHolder().addHeader("saleType" , "2");
+            Response response = http.get(request);
             System.out.println(response);
             System.out.println(response.getHeaders());
 
