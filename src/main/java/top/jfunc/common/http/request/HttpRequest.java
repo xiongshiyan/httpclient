@@ -4,6 +4,7 @@ import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.holder.HeaderHolder;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.RouteParamHolder;
+import top.jfunc.common.http.holder.SSLHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -154,23 +155,37 @@ public interface HttpRequest {
      * HostnameVerifier
      * @return HostnameVerifier
      */
-    HostnameVerifier getHostnameVerifier();
+    default HostnameVerifier getHostnameVerifier(){
+        return sslHolder().getHostnameVerifier();
+    }
 
     /**
      * SSLContext
      * @return SSLContext
      */
-    SSLContext getSslContext();
+    default SSLContext getSslContext(){
+        return sslHolder().getSslContext();
+    }
 
     /**
      * SSLSocketFactory
      * @return SSLSocketFactory
      */
-    SSLSocketFactory getSslSocketFactory();
+    default SSLSocketFactory getSslSocketFactory(){
+        return sslHolder().getSslSocketFactory();
+    }
 
     /**
      * X509TrustManager
      * @return X509TrustManager
      */
-    X509TrustManager getX509TrustManager();
+    default X509TrustManager getX509TrustManager(){
+        return sslHolder().getX509TrustManager();
+    }
+
+    /**
+     * SSL相关设置的处理器
+     * @return SSLHolder must not be null
+     */
+    SSLHolder sslHolder();
 }

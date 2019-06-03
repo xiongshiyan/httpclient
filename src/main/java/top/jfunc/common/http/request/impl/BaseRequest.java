@@ -77,32 +77,13 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
      */
     private boolean redirectable = !REDIRECTABLE;
 
+    private SSLHolder sslHolder = new DefaultSSLHolder();
+
     /**
      * 代理设置,如果有就设置
      * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
      */
     private ProxyInfo proxyInfo = null;
-
-    /**
-     * HostnameVerifier
-     * @see top.jfunc.common.http.base.Config#hostnameVerifier
-     */
-    private HostnameVerifier hostnameVerifier = null;
-    /**
-     * SSLContext
-     * @see top.jfunc.common.http.base.Config#sslContext
-     */
-    private SSLContext sslContext = null;
-    /**
-     * SSLSocketFactory
-     * @see top.jfunc.common.http.base.Config#sslSocketFactory
-     */
-    private SSLSocketFactory sslSocketFactory = null;
-    /**
-     * X509TrustManager
-     * @see top.jfunc.common.http.base.Config#x509TrustManager
-     */
-    private X509TrustManager x509TrustManager = null;
 
     public BaseRequest(String url){this.url = url;}
     public BaseRequest(URL url){this.url = url.toString();}
@@ -201,26 +182,6 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         return myself();
     }
 
-    public T setHostnameVerifier(HostnameVerifier hostnameVerifier) {
-        this.hostnameVerifier = hostnameVerifier;
-        return myself();
-    }
-
-    public T setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
-        return myself();
-    }
-
-    public T setSslContext(SSLContext sslContext) {
-        this.sslContext = sslContext;
-        return myself();
-    }
-
-    public T setX509TrustManager(X509TrustManager x509TrustManager) {
-        this.x509TrustManager = x509TrustManager;
-        return myself();
-    }
-
     /****************************Getter**************************/
     @Override
     public String getUrl() {
@@ -272,30 +233,8 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         return proxyInfo;
     }
 
-
     @Override
-    public HostnameVerifier getHostnameVerifier() {
-        return hostnameVerifier;
-    }
-
-    /**
-     * 因为一般地 SslSocketFactory 都是从sslContext产生出来的 ， 所以如果没显式设置就从sslContext产生
-     */
-    @Override
-    public SSLSocketFactory getSslSocketFactory() {
-        if(null == sslSocketFactory && null != sslContext){
-            return sslContext.getSocketFactory();
-        }
-        return sslSocketFactory;
-    }
-
-    @Override
-    public SSLContext getSslContext() {
-        return sslContext;
-    }
-
-    @Override
-    public X509TrustManager getX509TrustManager() {
-        return x509TrustManager;
+    public SSLHolder sslHolder() {
+        return sslHolder;
     }
 }

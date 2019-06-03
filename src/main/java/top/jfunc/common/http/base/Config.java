@@ -2,13 +2,7 @@ package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.ssl.DefaultTrustManager2;
-import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
-import top.jfunc.common.http.base.ssl.TrustAnyHostnameVerifier;
-import top.jfunc.common.http.holder.DefaultHeaderHolder;
-import top.jfunc.common.http.holder.DefaultParamHolder;
-import top.jfunc.common.http.holder.HeaderHolder;
-import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
 import top.jfunc.common.http.interceptor.Interceptor;
 import top.jfunc.common.utils.MultiValueMap;
@@ -51,21 +45,9 @@ public class Config {
      */
     private ProxyInfo proxyInfo = null;
     /**
-     * HostnameVerifier
+     * SSL相关设置处理器
      */
-    private HostnameVerifier hostnameVerifier               = new TrustAnyHostnameVerifier();
-    /**
-     * SSLContext
-     */
-    private SSLContext sslContext                           = getDefaultSSLContext();
-    /**
-     * SSLSocketFactory
-     */
-    private SSLSocketFactory sslSocketFactory               = getDefaultSSLSocketFactory();
-    /**
-     * X509TrustManager
-     */
-    private X509TrustManager x509TrustManager               = new DefaultTrustManager2();
+    private SSLHolder sslHolder = new DefaultSSLHolder2();
     /**
      * 默认的请求头,每个请求都会加上//private MultiValueMap<String,String> defaultHeaders = null;
      */
@@ -164,56 +146,41 @@ public class Config {
     public String getResultCharsetWithDefault(String resultCharset){
         return StrUtil.isEmpty(resultCharset) ? defaultResultCharset : resultCharset;
     }
-    public Config setHostnameVerifier(HostnameVerifier hostnameVerifier) {
-        this.hostnameVerifier = hostnameVerifier;
-        return this;
-    }
 
-    public Config setSslContext(SSLContext sslContext) {
-        this.sslContext = sslContext;
-        return this;
-    }
-
-    public Config setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
-        return this;
-    }
-
-    public Config setX509TrustManager(X509TrustManager x509TrustManager) {
-        this.x509TrustManager = x509TrustManager;
-        return this;
+    public SSLHolder sslHolder(){
+        return sslHolder;
     }
 
     public HostnameVerifier getHostnameVerifier() {
-        return hostnameVerifier;
+        return sslHolder.getHostnameVerifier();
     }
 
     public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
-        return null == hostnameVerifier ? this.hostnameVerifier : hostnameVerifier;
+        return null == hostnameVerifier ? getHostnameVerifier() : hostnameVerifier;
     }
 
     public SSLContext getSSLContext() {
-        return sslContext;
+        return sslHolder.getSslContext();
     }
 
     public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
-        return null == sslContext ? this.sslContext : sslContext;
+        return null == sslContext ? getSSLContext() : sslContext;
     }
 
     public SSLSocketFactory getSSLSocketFactory() {
-        return sslSocketFactory;
+        return sslHolder.getSslSocketFactory();
     }
 
     public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
-        return null == sslSocketFactory ? this.sslSocketFactory : sslSocketFactory;
+        return null == sslSocketFactory ? getSSLSocketFactory() : sslSocketFactory;
     }
 
     public X509TrustManager getX509TrustManager() {
-        return x509TrustManager;
+        return sslHolder.getX509TrustManager();
     }
 
     public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
-        return null == x509TrustManager ? this.x509TrustManager : x509TrustManager;
+        return null == x509TrustManager ? getX509TrustManager() : x509TrustManager;
     }
 
 
@@ -231,16 +198,6 @@ public class Config {
 
     public ParamHolder queryParamHolder(){
         return queryParamHolder;
-    }
-
-    private SSLContext getDefaultSSLContext(){
-        return SSLSocketFactoryBuilder.create().getSSLContext();
-    }
-    private SSLSocketFactory getDefaultSSLSocketFactory(){
-        if(null == sslContext){
-            return SSLSocketFactoryBuilder.create().getSSLContext().getSocketFactory();
-        }
-        return sslContext.getSocketFactory();
     }
 
     public CookieHandler getCookieHandler() {
