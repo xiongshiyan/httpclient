@@ -141,7 +141,7 @@ abstract class AbstractParameterHandler<P>{
             if (value == null) {
                 return; // Skip null values.
             }
-            httpRequest.addRouteParam(name, value.toString());
+            httpRequest.routeParamHolder().addRouteParam(name, value.toString());
         }
     }
     /**
@@ -155,7 +155,7 @@ abstract class AbstractParameterHandler<P>{
             if (routes == null || routes.isEmpty()) {
                 return; // Skip null values.
             }
-            routes.forEach(httpRequest::addRouteParam);
+            routes.forEach(httpRequest.routeParamHolder()::addRouteParam);
         }
     }
     /**

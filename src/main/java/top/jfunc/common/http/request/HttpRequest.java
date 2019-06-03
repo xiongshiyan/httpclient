@@ -3,6 +3,7 @@ package top.jfunc.common.http.request;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.holder.HeaderHolder;
 import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.holder.RouteParamHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -55,21 +56,15 @@ public interface HttpRequest {
      * 路径参数
      * @return 路径参数
      */
-    Map<String, String> getRouteParams();
+    default Map<String, String> getRouteParams(){
+        return routeParamHolder().getRouteParams();
+    }
 
     /**
-     * 设置路径参数
-     * @param routeParams 路径参数映射
-     * @return this
+     *获取到 {@link RouteParamHolder} 可以对路径参数完全接管处理
+     * @return RouteParamHolder must not be null
      */
-    HttpRequest setRouteParams(Map<String, String> routeParams);
-
-    /**
-     * 添加路径参数
-     * @param key key
-     * @param value value
-     */
-    HttpRequest addRouteParam(String key, String value);
+    RouteParamHolder routeParamHolder();
 
     /**
      * Query参数

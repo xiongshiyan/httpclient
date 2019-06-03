@@ -3,10 +3,7 @@ package top.jfunc.common.http.request.impl;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.holder.DefaultHeaderHolder;
-import top.jfunc.common.http.holder.DefaultParamHolder;
-import top.jfunc.common.http.holder.HeaderHolder;
-import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.request.HttpRequest;
 
 import javax.net.ssl.HostnameVerifier;
@@ -14,9 +11,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * 基本请求参数实现:可用于无请求体如Get等的请求
@@ -30,9 +25,9 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     private String url;
     /**
      * 路径参数，形如这种URL http://httpbin.org/book/{id}，保存id和id的值
-     * @since 1.0.4
+     * @since 1.0.4 //private Map<String , String> routeParams;
      */
-    private Map<String , String> routeParams;
+    private RouteParamHolder routeParamHolder = new DefaultRouteParamHolder();
     /**
      * 查询参数，拼装在URL后面 ?//private MultiValueMap<String,String> queryParamHolder;
      * @since 1.0.4
@@ -130,18 +125,8 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     }
 
     @Override
-    public T setRouteParams(Map<String, String> routeParams) {
-        this.routeParams = Objects.requireNonNull(routeParams);
-        return myself();
-    }
-
-    @Override
-    public T addRouteParam(String key , String value){
-        if(null == this.routeParams){
-            this.routeParams = new HashMap<>(2);
-        }
-        this.routeParams.put(key, value);
-        return myself();
+    public RouteParamHolder routeParamHolder() {
+        return routeParamHolder;
     }
 
     @Override
@@ -240,11 +225,6 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     @Override
     public String getUrl() {
         return url;
-    }
-
-    @Override
-    public Map<String, String> getRouteParams() {
-        return routeParams;
     }
 
     @Override
