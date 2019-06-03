@@ -50,13 +50,6 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
      */
     private String body;
     /**
-     * 请求体编码，不设置就使用系统默认的
-     * @see top.jfunc.common.http.base.Config#defaultBodyCharset
-     */
-    private String bodyCharset = HttpConstants.DEFAULT_CHARSET;
-
-
-    /**
      * 2018-06-18为了文件上传增加的 private List<FormFile> formFiles = null;
      */
     private FormFileHolder formFileHolder = new DefaultFormFileHolder();
@@ -87,6 +80,7 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
         //如果没有Body就将params的参数拼接
         if(StrUtil.isBlank(body)){
             //没有显式设置就设置默认的
+            String bodyCharset = getBodyCharset();
             if(null == getContentType()){
                 setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
             }
