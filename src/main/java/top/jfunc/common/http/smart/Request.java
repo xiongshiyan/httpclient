@@ -5,17 +5,13 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
-import top.jfunc.common.http.holder.DefaultFormFileHolder;
-import top.jfunc.common.http.holder.DefaultParamHolder;
-import top.jfunc.common.http.holder.FormFileHolder;
-import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.BaseRequest;
 import top.jfunc.common.utils.StrUtil;
 
-import java.io.File;
 import java.util.Objects;
 
 /**
@@ -56,7 +52,7 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
     /**
      * 为文件下载确定信息
      */
-    private File file = null;
+    private FileHolder fileHolder = new DefaultFileHolder();
 
     public Request(String url){super(url);}
 
@@ -94,17 +90,17 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
         return formFileHolder;
     }
 
-    @Override
-    public File getFile() {
-        return file;
-    }
-
     /**************************变种的Setter*******************************/
 
 
     @Override
     public ParamHolder formParamHolder() {
         return formParamHolder;
+    }
+
+    @Override
+    public FileHolder fileHolder() {
+        return this.fileHolder;
     }
 
     /**
@@ -141,17 +137,6 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
     public Request setBodyT(Object o , ToString handler){
         ToString toString = Objects.requireNonNull(handler, "handler不能为空");
         this.body = toString.toString(o);
-        return this;
-    }
-
-    @Override
-    public Request setFile(File file) {
-        this.file = file;
-        return this;
-    }
-
-    public Request setFile(String filePath) {
-        this.file = new File(filePath);
         return this;
     }
 }

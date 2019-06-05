@@ -1,5 +1,8 @@
 package top.jfunc.common.http.request.impl;
 
+import top.jfunc.common.http.holder.DefaultFileHolder;
+import top.jfunc.common.http.holder.FileHolder;
+
 import java.io.File;
 
 /**
@@ -15,33 +18,19 @@ public class DownLoadRequest extends BaseRequest<DownLoadRequest> implements top
     }
     public static DownLoadRequest of(String url , String filePath){
         DownLoadRequest downLoadFileRequest = new DownLoadRequest(url);
-        downLoadFileRequest.setFile(filePath);
+        downLoadFileRequest.fileHolder().setFile(filePath);
         return downLoadFileRequest;
     }
     public static DownLoadRequest of(String url , File file){
         DownLoadRequest downLoadFileRequest = new DownLoadRequest(url);
-        downLoadFileRequest.setFile(file);
+        downLoadFileRequest.fileHolder().setFile(file);
         return downLoadFileRequest;
     }
 
-    /**
-     * 为文件下载确定信息
-     */
-    private File file = null;
+    private FileHolder fileHolder = new DefaultFileHolder();
 
     @Override
-    public File getFile() {
-        return file;
-    }
-
-    @Override
-    public DownLoadRequest setFile(File file) {
-        this.file = file;
-        return this;
-    }
-
-    public DownLoadRequest setFile(String filePath) {
-        this.file = new File(filePath);
-        return this;
+    public FileHolder fileHolder() {
+        return this.fileHolder;
     }
 }
