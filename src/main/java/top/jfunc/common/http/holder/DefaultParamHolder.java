@@ -32,6 +32,7 @@ public class DefaultParamHolder implements ParamHolder{
         return this;
     }
 
+    @Override
     public ParamHolder setParams(ArrayListMultimap<String, String> queryParams) {
         Objects.requireNonNull(queryParams);
         this.params = ArrayListMultiValueMap.fromMap(queryParams);

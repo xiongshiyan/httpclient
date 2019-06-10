@@ -30,6 +30,8 @@ public class DefaultHeaderHolder implements HeaderHolder{
         this.headers = Objects.requireNonNull(headers);
         return this;
     }
+
+    @Override
     public HeaderHolder setHeaders(ArrayListMultimap<String, String> headers) {
         Objects.requireNonNull(headers);
         this.headers = ArrayListMultiValueMap.fromMap(headers);

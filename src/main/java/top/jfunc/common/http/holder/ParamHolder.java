@@ -1,6 +1,7 @@
 package top.jfunc.common.http.holder;
 
 import top.jfunc.common.http.kv.Parameter;
+import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
@@ -22,6 +23,13 @@ public interface ParamHolder {
      * @return this
      */
     ParamHolder setParams(MultiValueMap<String, String> params);
+
+    /**
+     * 设置Param参数
+     * @param params Param参数
+     * @return this
+     */
+    ParamHolder setParams(ArrayListMultimap<String, String> params);
 
     /**
      * 设置Param参数
