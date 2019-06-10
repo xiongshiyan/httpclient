@@ -220,12 +220,11 @@ public class Config {
         this.compositeInterceptor = compositeInterceptor;
         return this;
     }
-    public Config addInterceptor(Interceptor... interceptors){
+    public Config addInterceptor(Interceptor interceptor , Interceptor... interceptors){
         if(null == this.compositeInterceptor){
-            this.compositeInterceptor = new CompositeInterceptor(interceptors);
-        }else {
-            this.compositeInterceptor.add(interceptors);
+            this.compositeInterceptor = new CompositeInterceptor();
         }
+        this.compositeInterceptor.add(interceptor , interceptors);
         return this;
     }
 

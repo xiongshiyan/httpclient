@@ -28,17 +28,30 @@ public class CompositeInterceptor implements Interceptor {
         this.interceptors.addAll(interceptors);
     }
 
-    public void setInterceptors(List<Interceptor> interceptors) {
+    public CompositeInterceptor setInterceptors(List<Interceptor> interceptors) {
         this.interceptors = interceptors;
+        return this;
     }
 
-    public void add(Interceptor executeInterceptor){
+    /**
+     * 添加一个拦截器
+     */
+    public CompositeInterceptor add(Interceptor interceptor){
         init();
-        this.interceptors.add(executeInterceptor);
+        this.interceptors.add(interceptor);
+        return this;
     }
-    public void add(Interceptor... interceptor){
+
+    /**
+     * 添加至少一个拦截器
+     */
+    public CompositeInterceptor add(Interceptor interceptor , Interceptor... interceptors){
         init();
-        this.interceptors.addAll(Arrays.asList(interceptor));
+        this.interceptors.add(interceptor);
+        if(null != interceptors && interceptors.length > 0){
+            this.interceptors.addAll(Arrays.asList(interceptors));
+        }
+        return this;
     }
 
     public List<Interceptor> getInterceptors() {
