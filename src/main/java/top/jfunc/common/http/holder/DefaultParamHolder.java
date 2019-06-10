@@ -27,21 +27,21 @@ public class DefaultParamHolder implements ParamHolder{
     }
 
     @Override
-    public ParamHolder setParams(MultiValueMap<String, String> queryParams) {
-        this.params = Objects.requireNonNull(queryParams);
+    public ParamHolder setParams(MultiValueMap<String, String> params) {
+        this.params = Objects.requireNonNull(params);
         return this;
     }
 
     @Override
-    public ParamHolder setParams(ArrayListMultimap<String, String> queryParams) {
-        Objects.requireNonNull(queryParams);
-        this.params = ArrayListMultiValueMap.fromMap(queryParams);
+    public ParamHolder setParams(ArrayListMultimap<String, String> params) {
+        Objects.requireNonNull(params);
+        this.params = ArrayListMultiValueMap.fromMap(params);
         return this;
     }
     @Override
-    public ParamHolder setParams(Map<String, String> queryParams) {
-        Objects.requireNonNull(queryParams);
-        this.params = ArrayListMultiValueMap.fromMap(queryParams);
+    public ParamHolder setParams(Map<String, String> params) {
+        Objects.requireNonNull(params);
+        this.params = ArrayListMultiValueMap.fromMap(params);
         return this;
     }
     @Override
