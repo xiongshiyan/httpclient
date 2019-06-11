@@ -25,7 +25,7 @@ public class ParamUtil {
      * @return 是否https
      */
     public static boolean isHttps(String url) {
-        return url.trim().toLowerCase().startsWith("https://");
+        return url.trim().toLowerCase().startsWith(HTTPS_PREFIX);
     }
     /**
      * 检测是否http
@@ -33,14 +33,14 @@ public class ParamUtil {
      * @return 是否https
      */
     public static boolean isHttp(String url) {
-        return url.trim().toLowerCase().startsWith("http://");
+        return url.trim().toLowerCase().startsWith(HTTP_PREFIX);
     }
 
     /**
      * 默认UTF-8编码
      */
     public static String contactMap(Map<String, String> value){
-        return contactMap(value , HttpConstants.DEFAULT_CHARSET);
+        return contactMap(value , DEFAULT_CHARSET);
     }
     /**
      * key1=value1&key2=value2,如果value=null 或者 size=0 返回 ""
@@ -54,10 +54,10 @@ public class ParamUtil {
     }
     
     public static String contactMap(ArrayListMultimap<String, String> value){
-        return contactMap(value , HttpConstants.DEFAULT_CHARSET);
+        return contactMap(value , DEFAULT_CHARSET);
     }
     public static String contactMap(MultiValueMap<String, String> value){
-        return contactMap(value , HttpConstants.DEFAULT_CHARSET);
+        return contactMap(value , DEFAULT_CHARSET);
     }
     /**
      * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
@@ -137,11 +137,11 @@ public class ParamUtil {
     }
     public static String contactUrlParams(String actionName, ArrayListMultimap<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , HttpConstants.DEFAULT_CHARSET));
+        return contactUrlParams(actionName , contactMap(params , DEFAULT_CHARSET));
     }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , HttpConstants.DEFAULT_CHARSET));
+        return contactUrlParams(actionName , contactMap(params , DEFAULT_CHARSET));
     }
     /**
      * @see ParamUtil#contactMap(ArrayListMultimap,String)
@@ -165,7 +165,7 @@ public class ParamUtil {
     }
     public static String contactUrlParams(String actionName, Map<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , HttpConstants.DEFAULT_CHARSET));
+        return contactUrlParams(actionName , contactMap(params , DEFAULT_CHARSET));
     }
 
     /**
@@ -212,7 +212,11 @@ public class ParamUtil {
         }
         String url = originUrl;
         for (Map.Entry<String, String> entry : routeParams.entrySet()) {
-            url = url.replaceFirst("\\{" + entry.getKey() + "\\}", entry.getValue());
+            String key = entry.getKey();
+            url = url.replaceFirst("\\{" + key + "}", entry.getValue());
+            /*if(url.contains(key)){
+                //只替换那些url中包含key的，提升效率[一般map中应该很少有那么多冗余的]
+            }*/
         }
 
         return url;

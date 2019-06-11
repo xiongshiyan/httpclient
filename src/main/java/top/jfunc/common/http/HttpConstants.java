@@ -13,6 +13,11 @@ public class HttpConstants {
     public static final String QUESTION_MARK = "?";
     public static final String AND           = "&";
     public static final String EQUALS        = "=";
+    public static final String COLON         = ":";
+    public static final String HTTP_PREFIX   = "http://";
+    public static final String HTTPS_PREFIX  = "https://";
+    public static final String HTTP          = "http";
+    public static final String HTTPS         = "https";
 
 
 

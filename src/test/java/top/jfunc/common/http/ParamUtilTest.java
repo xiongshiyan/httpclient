@@ -130,4 +130,16 @@ public class ParamUtilTest {
         Assert.assertThat(mergeMap.size() , is(3));
         Assert.assertThat(mergeMap.get("xx") , is("cc"));
     }
+
+    @Test
+    public void testReplaceRoute(){
+        String url = "http://httpbin.org/book/{id}/{do}/{gg}";
+        Map<String , String> routes = new HashMap<>();
+        routes.put("id" , "121313");
+        routes.put("id2" , "12222221313");
+        routes.put("do" , "edit");
+        routes.put("gg" , "gg");
+        String necessary = ParamUtil.replaceRouteParamsIfNecessary(url, routes);
+        Assert.assertEquals("http://httpbin.org/book/121313/edit/gg" , necessary);
+    }
 }

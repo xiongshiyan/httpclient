@@ -42,6 +42,9 @@ import java.net.Proxy;
 import java.net.UnknownHostException;
 import java.util.Map;
 
+import static top.jfunc.common.http.HttpConstants.COLON;
+import static top.jfunc.common.http.HttpConstants.SPLASH;
+
 /**
  * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
@@ -229,11 +232,11 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
     protected CloseableHttpClient createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
-        String hostname = url.split("/")[2];
+        String hostname = url.split(SPLASH)[2];
         boolean isHttps = ParamUtil.isHttps(url);
         int port = isHttps ? 443 : 80;
-        if (hostname.contains(":")) {
-            String[] arr = hostname.split(":");
+        if (hostname.contains(COLON)) {
+            String[] arr = hostname.split(COLON);
             hostname = arr[0];
             port = Integer.parseInt(arr[1]);
         }
