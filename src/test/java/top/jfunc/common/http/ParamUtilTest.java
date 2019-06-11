@@ -92,44 +92,6 @@ public class ParamUtilTest {
         String contactMap = ParamUtil.contactIterable(entries , "UTF-8");
         Assert.assertThat(contactMap , is("xx=xx&yy=yy"));
     }
-    @Test
-    public void testMergeMultiMap(){
-        MultiValueMap<String , String> first = new ArrayListMultiValueMap<>();
-        first.add("xx" , "xx");
-        first.add("yy" , "yy");
-        MultiValueMap<String , String> second = new ArrayListMultiValueMap<>();
-        second.add("xx" , "xx");
-        second.add("zz" , "zz");
-
-        MultiValueMap<String, String> mergeMap = ParamUtil.mergeMap(first, second);
-        Assert.assertThat(mergeMap.size() , is(3));
-        Assert.assertThat(mergeMap.toString() , is("{xx=[xx, xx], yy=[yy], zz=[zz]}"));
-    }
-    @Test
-    public void testMergeMap1(){
-        Map<String , String> first = new HashMap<>();
-        first.put("xx" , "xx");
-        first.put("yy" , "yy");
-        Map<String , String> second = new HashMap<>();
-        second.put("xx" , "cc");
-        second.put("zz" , "zz");
-
-        Map<String, String> mergeMap = ParamUtil.mergeMap(first, second , true);
-        Assert.assertThat(mergeMap.size() , is(3));
-        Assert.assertThat(mergeMap.get("xx") , is("xx"));
-    }
-    @Test
-    public void testMergeMap2(){
-        Map<String , String> first = new HashMap<>();
-        first.put("xx" , "xx");
-        first.put("yy" , "yy");
-        Map<String , String> second = new HashMap<>();
-        second.put("xx" , "cc");
-        second.put("zz" , "zz");
-        Map<String, String> mergeMap = ParamUtil.mergeMap(first, second , false);
-        Assert.assertThat(mergeMap.size() , is(3));
-        Assert.assertThat(mergeMap.get("xx") , is("cc"));
-    }
 
     @Test
     public void testReplaceRoute(){

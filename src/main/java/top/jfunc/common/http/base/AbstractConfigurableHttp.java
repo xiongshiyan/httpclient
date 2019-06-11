@@ -6,6 +6,7 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.Joiner;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -134,7 +135,7 @@ public abstract class AbstractConfigurableHttp {
         String urlWithBase = addBaseUrlIfNecessary(routeUrl);
 
         //3.合并默认的Query参数
-        queryParams = ParamUtil.mergeMap(queryParams , getDefaultQueryParams());
+        queryParams = MapUtil.mergeMap(queryParams , getDefaultQueryParams());
 
         //3.处理Query参数
         return ParamUtil.contactUrlParams(urlWithBase, queryParams, getBodyCharsetWithDefault(charset));
@@ -232,7 +233,7 @@ public abstract class AbstractConfigurableHttp {
      * 合并默认的header
      */
     protected MultiValueMap<String , String> mergeDefaultHeaders(final MultiValueMap<String , String> headers){
-        return ParamUtil.mergeMap(headers , getDefaultHeaders());
+        return MapUtil.mergeMap(headers , getDefaultHeaders());
     }
 
     public CookieHandler getCookieHandler(){

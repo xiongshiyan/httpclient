@@ -18,7 +18,7 @@ buildscript {
     }
 
     ext{
-        CommonUtilVersion       = '1.8.2.2'
+        CommonUtilVersion       = '1.8.2.3'
         //SpringBootVersion       = '1.5.7.RELEASE'
         OkHttp3Version          = '3.11.0'
         JoddVersion             = '5.0.12'
