@@ -4,6 +4,7 @@ import java.io.File;
 
 /**
  * 默认的 FileHolder 实现
+ * @author xiongshiyan
  */
 public class DefaultFileHolder implements FileHolder{
     /**

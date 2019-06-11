@@ -5,6 +5,17 @@ package top.jfunc.common.http;
  * @author xiongshiyan
  */
 public class HttpConstants {
+    /**
+     * 一些常用字符串
+     */
+    public static final String BLANK         = "";
+    public static final String SPLASH        = "/";
+    public static final String QUESTION_MARK = "?";
+    public static final String AND           = "&";
+    public static final String EQUALS        = "=";
+
+
+
     public static final Integer DEFAULT_CONNECT_TIMEOUT;
     public static final Integer DEFAULT_READ_TIMEOUT;
     public static final String  DEFAULT_CHARSET;

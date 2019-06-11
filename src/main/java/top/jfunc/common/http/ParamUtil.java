@@ -10,14 +10,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
+import static top.jfunc.common.http.HttpConstants.*;
+
 /**
  * @author xiongshiyan at 2017/12/11
  * @since 1.1.1新增MultiValueMap的支持
  */
 public class ParamUtil {
     private ParamUtil(){}
-
-    private static final String SPLASH = "/";
 
     /**
      * 检测是否https
@@ -47,10 +47,10 @@ public class ParamUtil {
      * @param value 键值对
      */
     public static String contactMap(Map<String, String> value , final String valueCharset){
-        if(null == value || value.isEmpty()){return "";}
+        if(null == value || value.isEmpty()){return BLANK;}
 
         Editor<String> editor = (v)-> urlEncode(v , valueCharset);
-        return Joiner.on("&").withKeyValueSeparator("=",editor).useForNull("").join(value);
+        return Joiner.on(AND).withKeyValueSeparator(EQUALS,editor).useForNull(BLANK).join(value);
     }
     
     public static String contactMap(ArrayListMultimap<String, String> value){
@@ -64,7 +64,7 @@ public class ParamUtil {
      * @param multimap 键值对
      */
     public static String contactMap(ArrayListMultimap<String, String> multimap , final String valueCharset){
-        if(null == multimap || multimap.keySet().isEmpty()){return "";}
+        if(null == multimap || multimap.keySet().isEmpty()){return BLANK;}
 
         Set<Map.Entry<String, List<String>>> entries = multimap.getMap().entrySet();
 
@@ -76,7 +76,7 @@ public class ParamUtil {
      * @param multiValueMap 键值对
      */
     public static String contactMap(MultiValueMap<String, String> multiValueMap , final String valueCharset){
-        if(null == multiValueMap || multiValueMap.isEmpty()){return "";}
+        if(null == multiValueMap || multiValueMap.isEmpty()){return BLANK;}
 
         Set<Map.Entry<String, List<String>>> entries = multiValueMap.entrySet();
 
@@ -89,7 +89,7 @@ public class ParamUtil {
      */
     public static String contactIterable(Iterable<Map.Entry<String, List<String>>> entries, String valueCharset) {
         if(null == entries || !entries.iterator().hasNext()){
-            return "";
+            return BLANK;
         }
 
         StringBuilder params = new StringBuilder();
@@ -97,7 +97,7 @@ public class ParamUtil {
             String key = entry.getKey();
             List<String> vList = entry.getValue();
             for (String v : vList) {
-                params.append(key).append("=").append(urlEncode(v, valueCharset)).append("&");
+                params.append(key).append(EQUALS).append(urlEncode(v, valueCharset)).append(AND);
             }
         }
 
@@ -129,9 +129,9 @@ public class ParamUtil {
      */
     public static String contactUrlParams(String actionName, String paramString) {
         String url = actionName;
-        if(!"".equals(paramString)) {
+        if(!BLANK.equals(paramString)) {
             //如果包含?，則直接追加//不包含?，則用?追加
-            url = actionName.contains("?") ? actionName + "&" + paramString : actionName + "?" + paramString;
+            url = actionName.contains(QUESTION_MARK) ? actionName + AND + paramString : actionName + QUESTION_MARK + paramString;
         }
         return url;
     }
