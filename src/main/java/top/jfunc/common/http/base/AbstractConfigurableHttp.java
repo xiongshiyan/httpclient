@@ -140,75 +140,92 @@ public abstract class AbstractConfigurableHttp {
         return ParamUtil.contactUrlParams(urlWithBase, queryParams, getBodyCharsetWithDefault(charset));
     }
 
-    /////////////////////////////////////以下方法都由config代理，只是为了调用方便//////////////////////////////
 
     protected String addBaseUrlIfNecessary(String inputUrl){
-        return getConfig().addBaseUrlIfNecessary(inputUrl);
+        return ParamUtil.addBaseUrlIfNecessary(getConfig().getBaseUrl() , inputUrl);
     }
 
+    /**
+     * 统一的获取实际的值：逻辑是输入的不等于空就返回输入的，否则返回默认的
+     * @param input 输入值，可能为null
+     * @param defaultValue 默认值
+     * @param <T> 泛型参数
+     * @return 输入的值或者默认值
+     */
+    public <T> T getValueWithDefault(T input , T defaultValue){
+        return null == input ? defaultValue : input;
+    }
+
+
     public Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
-        return getConfig().getConnectionTimeoutWithDefault(connectionTimeout);
+        return getValueWithDefault(connectionTimeout ,
+                getConfig().getDefaultConnectionTimeout());
     }
 
     public Integer getReadTimeoutWithDefault(Integer readTimeout){
-        return getConfig().getReadTimeoutWithDefault(readTimeout);
+        return getValueWithDefault(readTimeout ,
+                getConfig().getDefaultReadTimeout());
     }
 
     public String getBodyCharsetWithDefault(String bodyCharset){
-        return getConfig().getBodyCharsetWithDefault(bodyCharset);
+        return getValueWithDefault(bodyCharset ,
+                getConfig().getDefaultBodyCharset());
     }
     public String getDefaultBodyCharset() {
         return getConfig().getDefaultBodyCharset();
     }
     public String getResultCharsetWithDefault(String resultCharset){
-        return getConfig().getResultCharsetWithDefault(resultCharset);
-    }
-    public String getDefaultResultCharset() {
-        return getConfig().getDefaultResultCharset();
+        return getValueWithDefault(resultCharset ,
+                getConfig().getDefaultResultCharset());
     }
 
     public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
-        return getConfig().getProxyInfoWithDefault(proxyInfo);
+        return getValueWithDefault(proxyInfo ,
+                getConfig().getProxyInfo());
     }
 
     public HostnameVerifier getHostnameVerifier() {
-        return getConfig().getHostnameVerifier();
+        return getConfig().sslHolder().getHostnameVerifier();
     }
 
     public SSLContext getSSLContext() {
-        return getConfig().getSSLContext();
+        return getConfig().sslHolder().getSslContext();
     }
 
     public SSLSocketFactory getSSLSocketFactory() {
-        return getConfig().getSSLSocketFactory();
+        return getConfig().sslHolder().getSslSocketFactory();
     }
 
     public X509TrustManager getX509TrustManager() {
-        return getConfig().getX509TrustManager();
+        return getConfig().sslHolder().getX509TrustManager();
     }
 
     public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
-        return getConfig().getHostnameVerifierWithDefault(hostnameVerifier);
+        return getValueWithDefault(hostnameVerifier ,
+                getConfig().sslHolder().getHostnameVerifier());
     }
 
     public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
-        return getConfig().getSSLContextWithDefault(sslContext);
+        return getValueWithDefault(sslContext ,
+                getConfig().sslHolder().getSslContext());
     }
 
     public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
-        return getConfig().getSSLSocketFactoryWithDefault(sslSocketFactory);
+        return getValueWithDefault(sslSocketFactory ,
+                getConfig().sslHolder().getSslSocketFactory());
     }
 
     public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
-        return getConfig().getX509TrustManagerWithDefault(x509TrustManager);
+        return getValueWithDefault(x509TrustManager ,
+                getConfig().sslHolder().getX509TrustManager());
     }
 
     public MultiValueMap<String , String> getDefaultHeaders(){
-        return getConfig().getDefaultHeaders();
+        return getConfig().headerHolder().getHeaders();
     }
 
     public MultiValueMap<String , String> getDefaultQueryParams(){
-        return getConfig().getDefaultQueryParams();
+        return getConfig().queryParamHolder().getParams();
     }
 
     /**
