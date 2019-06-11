@@ -87,7 +87,7 @@ HttpRequest接口体系，使用这些请求类意义更明确：
 
 ##### 项目管理工具导入 
 
-项目已经发布至 `jcenter` 和 `maven` 中央仓库 最新版本version: **1.1.2**
+项目已经发布至 `jcenter` 和 `maven` 中央仓库 最新版本version: **1.1.3**
 
 Gradle:
 
