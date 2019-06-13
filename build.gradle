@@ -1,4 +1,4 @@
-def VERSION = '1.1.4'
+def VERSION = '1.2.0'
 def ARTIFACT_ID = 'httpclient'
 def GROUP_ID = 'top.jfunc.network'
 def TYPE = 'jar'
@@ -18,7 +18,8 @@ buildscript {
     }
 
     ext{
-        CommonUtilVersion       = '1.8.2.3'
+        //CommonUtilVersion       = '1.8.2.3'
+        HttpClientCoreVersion   = '1.1.4'
         //SpringBootVersion       = '1.5.7.RELEASE'
         OkHttp3Version          = '3.11.0'
         JoddVersion             = '5.0.12'
@@ -53,6 +54,9 @@ repositories {
 }
 dependencies {
 
+    compile ("top.jfunc.network:httpclient-core:${HttpClientCoreVersion}")
+    //compile ("top.jfunc.common:utils:${CommonUtilVersion}")
+
     compile ("com.squareup.okhttp3:okhttp:${OkHttp3Version}")
     compile ("org.apache.httpcomponents:httpclient:${ApacheHttpCleintVersion}"){
         exclude group:'commons-logging'
@@ -63,12 +67,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jodd/jodd-http
     compile ("org.jodd:jodd-http:${JoddVersion}")
 
-    compile ("top.jfunc.common:utils:${CommonUtilVersion}")
-
     testCompile ("junit:junit:${JUnitVersion}")
     testCompile ("org.hamcrest:hamcrest-core:${HamcrestVersion}")
     testCompile ("org.hamcrest:hamcrest-library:${HamcrestVersion}")
-
     // https://mvnrepository.com/artifact/org.mock-server/mockserver-netty
     testCompile ("org.mock-server:mockserver-netty:${MockServerVersion}")
 }
