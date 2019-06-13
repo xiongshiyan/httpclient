@@ -6,10 +6,10 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.NativeHttpClient;
-import top.jfunc.common.http.request.DownLoadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.holder.RouteParamHolder;
+import top.jfunc.common.http.holder.SSLHolder;
+import top.jfunc.common.http.request.*;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -41,7 +41,9 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         InputStream inputStream = null;
         try {
             //1.获取连接
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() ,httpRequest.getQueryParams() , httpRequest.getBodyCharset());
+            ParamHolder queryParamHolder = httpRequest.queryParamHolder();
+            RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getRouteParams() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
 
             URL url = new URL(completedUrl);
             //1.1如果需要则设置代理
@@ -56,8 +58,9 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             if(connection instanceof HttpsURLConnection){
                 //默认设置这些
                 HttpsURLConnection con = (HttpsURLConnection)connection;
-                initSSL(con , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                        getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()));
+                SSLHolder sslHolder = httpRequest.sslHolder();
+                initSSL(con , getHostnameVerifierWithDefault(sslHolder.getHostnameVerifier()) ,
+                        getSSLSocketFactoryWithDefault(sslHolder.getSslSocketFactory()));
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -70,7 +73,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             connection.setReadTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
             //2.处理header
-            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.headerHolder().getHeaders());
 
             ///HttpURLConnection不能用以下方法处理，会出现重复Cookie，即同样的Cookie框架自己弄了一份，我们手动又弄了一份
             /*headerHolder = handleCookieIfNecessary(completedUrl, headerHolder);*/
@@ -150,8 +153,9 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     public Response post(StringBodyRequest req) throws IOException {
         StringBodyRequest request = beforeTemplate(req);
         String body = request.getBody();
+        final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(request);
         Response response = template(request, Method.POST ,
-                connection -> writeContent(connection, body, getBodyCharsetWithDefault(request.getBodyCharset())),
+                connection -> writeContent(connection, body, getBodyCharsetWithDefault(bodyCharset)),
                 Response::with);
         return afterTemplate(request , response);
     }
@@ -162,7 +166,8 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         ContentCallback<HttpURLConnection> contentCallback = null;
         if(method.hasContent() && httpRequest instanceof StringBodyRequest){
             String body = ((StringBodyRequest)httpRequest).getBody();
-            contentCallback = connection -> writeContent(connection, body, getBodyCharsetWithDefault(httpRequest.getBodyCharset()));
+            final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(httpRequest);
+            contentCallback = connection -> writeContent(connection, body, getBodyCharsetWithDefault(bodyCharset));
         }
         Response response = template(httpRequest, method , contentCallback , Response::with);
         return afterTemplate(httpRequest , response);
@@ -183,7 +188,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     @Override
     public Response upload(UploadRequest req) throws IOException {
         UploadRequest request = beforeTemplate(req);
-        MultiValueMap<String, String> headers = mergeHeaders(request.getHeaders());
+        MultiValueMap<String, String> headers = mergeHeaders(request.headerHolder().getHeaders());
         request.headerHolder().setHeaders(headers);
         Response response = template(request, Method.POST ,
                 connect -> this.upload0(connect, request.getFormParams(), request.getFormFiles()) , Response::with);

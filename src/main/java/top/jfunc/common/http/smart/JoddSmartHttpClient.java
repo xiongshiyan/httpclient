@@ -8,6 +8,10 @@ import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.JoddHttpClient;
+import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.holder.RouteParamHolder;
+import top.jfunc.common.http.holder.SSLHolder;
+import top.jfunc.common.http.request.CharsetUtil;
 import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -39,7 +43,9 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         HttpResponse response = null;
         try {
             //1.获取完成的URL，创建请求
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() ,httpRequest.getQueryParams() , httpRequest.getBodyCharset());
+            ParamHolder queryParamHolder = httpRequest.queryParamHolder();
+            RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getRouteParams() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
 
             HttpRequest request = new HttpRequest();
             request.method(method.name());
@@ -51,9 +57,10 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             request.timeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
             //3.SSL设置
-            initSSL(request , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                    getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
-                    getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()),
+            SSLHolder sslHolder = httpRequest.sslHolder();
+            initSSL(request , getHostnameVerifierWithDefault(sslHolder.getHostnameVerifier()) ,
+                    getSSLSocketFactoryWithDefault(sslHolder.getSslSocketFactory()) ,
+                    getX509TrustManagerWithDefault(sslHolder.getX509TrustManager()),
                     getProxyInfoWithDefault(httpRequest.getProxyInfo()));
 
 
@@ -63,7 +70,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             }
 
             //5.设置header
-            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.headerHolder().getHeaders());
 
             headers = handleCookieIfNecessary(completedUrl, headers);
 
@@ -123,9 +130,10 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     public Response post(StringBodyRequest req) throws IOException {
         StringBodyRequest request = beforeTemplate(req);
         String body = request.getBody();
+        final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(request);
         Response response = template(request, Method.POST,
                 httpRequest -> {
-                    String bodyCharsetWithDefault = getBodyCharsetWithDefault(request.getBodyCharset());
+                    String bodyCharsetWithDefault = getBodyCharsetWithDefault(bodyCharset);
                     String contentType = null == request.getContentType() ?
                             MediaType.APPLICATIPON_JSON.withCharset(bodyCharsetWithDefault).toString() : request.getContentType();
                     httpRequest.body(body.getBytes(bodyCharsetWithDefault), contentType);
@@ -140,7 +148,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         ContentCallback<HttpRequest> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
             String body = ((StringBodyRequest)request).getBody();
-            contentCallback = httpRequest -> httpRequest.body(body.getBytes(getBodyCharsetWithDefault(request.getBodyCharset())), request.getContentType());
+            final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(request);
+            contentCallback = httpRequest -> httpRequest.body(body.getBytes(getBodyCharsetWithDefault(bodyCharset)), request.getContentType());
         }
         Response response = template(request, method , contentCallback, Response::with);
         return afterTemplate(request , response);

@@ -5,14 +5,7 @@ import top.jfunc.common.http.holder.HeaderHolder;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.RouteParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
-import top.jfunc.common.utils.MultiValueMap;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 import java.net.URL;
-import java.util.Map;
 
 /**
  * Http请求的基本定义
@@ -54,25 +47,20 @@ public interface HttpRequest {
     }
 
     /**
-     * 路径参数
-     * @return 路径参数
-     */
-    default Map<String, String> getRouteParams(){
-        return routeParamHolder().getRouteParams();
-    }
-
-    /**
      *获取到 {@link RouteParamHolder} 可以对路径参数完全接管处理
      * @return RouteParamHolder must not be null
      */
     RouteParamHolder routeParamHolder();
 
     /**
-     * Query参数
-     * @return Query参数
+     * 还是提供一些便捷方法
+     * @param key key
+     * @param value value
+     * @return this
      */
-    default MultiValueMap<String, String> getQueryParams(){
-        return queryParamHolder().getParams();
+    default HttpRequest addRouteParam(String key, String value){
+        routeParamHolder().addRouteParam(key, value);
+        return this;
     }
 
     /**
@@ -82,11 +70,15 @@ public interface HttpRequest {
     ParamHolder queryParamHolder();
 
     /**
-     * 请求的Header
-     * @return 请求的Header
+     * 提供便捷方法
+     * @param key key
+     * @param value value
+     * @param values values
+     * @return this
      */
-    default MultiValueMap<String, String> getHeaders(){
-        return headerHolder().getHeaders();
+    default HttpRequest addQueryParam(String key, String value, String... values){
+        queryParamHolder().addParam(key, value, values);
+        return this;
     }
 
     /**
@@ -94,6 +86,18 @@ public interface HttpRequest {
      * @return HeaderHolder must not be null
      */
     HeaderHolder headerHolder();
+
+    /**
+     * 提供便捷方法
+     * @param key key
+     * @param value value
+     * @param values values
+     * @return this
+     */
+    default HttpRequest addHeader(String key, String value, String... values){
+        headerHolder().addHeader(key, value, values);
+        return this;
+    }
 
     /**
      * Content-Type
@@ -112,12 +116,6 @@ public interface HttpRequest {
      * @return 读超时时间 ms
      */
     Integer getReadTimeout();
-
-    /**
-     * 请求体编码，也可作为Query参数编码
-     * @return 编码字符串
-     */
-    String getBodyCharset();
 
     /**
      * 结果字符编码
@@ -149,39 +147,6 @@ public interface HttpRequest {
      * @return 代理信息
      */
     ProxyInfo getProxyInfo();
-
-
-    /**
-     * HostnameVerifier
-     * @return HostnameVerifier
-     */
-    default HostnameVerifier getHostnameVerifier(){
-        return sslHolder().getHostnameVerifier();
-    }
-
-    /**
-     * SSLContext
-     * @return SSLContext
-     */
-    default SSLContext getSslContext(){
-        return sslHolder().getSslContext();
-    }
-
-    /**
-     * SSLSocketFactory
-     * @return SSLSocketFactory
-     */
-    default SSLSocketFactory getSslSocketFactory(){
-        return sslHolder().getSslSocketFactory();
-    }
-
-    /**
-     * X509TrustManager
-     * @return X509TrustManager
-     */
-    default X509TrustManager getX509TrustManager(){
-        return sslHolder().getX509TrustManager();
-    }
 
     /**
      * SSL相关设置的处理器

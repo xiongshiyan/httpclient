@@ -137,8 +137,8 @@ public abstract class AbstractConfigurableHttp {
         //3.合并默认的Query参数
         queryParams = MapUtil.mergeMap(queryParams , getDefaultQueryParams());
 
-        //3.处理Query参数
-        return ParamUtil.contactUrlParams(urlWithBase, queryParams, getBodyCharsetWithDefault(charset));
+        //4.处理Query参数
+        return ParamUtil.contactUrlParams(urlWithBase, queryParams, getQueryCharsetWithDefault(charset));
     }
 
 
@@ -168,6 +168,13 @@ public abstract class AbstractConfigurableHttp {
                 getConfig().getDefaultReadTimeout());
     }
 
+    public String getQueryCharsetWithDefault(String queryCharset){
+        return getValueWithDefault(queryCharset ,
+                getConfig().getDefaultQueryCharset());
+    }
+    public String getDefaultQueryCharset() {
+        return getConfig().getDefaultQueryCharset();
+    }
     public String getBodyCharsetWithDefault(String bodyCharset){
         return getValueWithDefault(bodyCharset ,
                 getConfig().getDefaultBodyCharset());

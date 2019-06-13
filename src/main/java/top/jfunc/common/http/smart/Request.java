@@ -3,16 +3,12 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.handler.ToString;
-import top.jfunc.common.http.base.handler.ToStringHandler;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.BaseRequest;
 import top.jfunc.common.utils.StrUtil;
-
-import java.util.Objects;
 
 /**
  * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
@@ -39,11 +35,13 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
      * //private MultiValueMap<String,String> formParamHolder;
      */
     private ParamHolder formParamHolder = new DefaultParamHolder();
+
     /**
-     * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
+     * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里 private String body
      * @see Method#hasContent()
      */
-    private String body;
+    private BodyHolder bodyHolder = new DefaultBodyHolder();
+
     /**
      * 2018-06-18为了文件上传增加的 private List<FormFile> formFiles = null;
      */
@@ -72,14 +70,15 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
      */
     @Override
     public String getBody() {
+        String body = bodyHolder.getBody();
         //如果没有Body就将params的参数拼接
         if(StrUtil.isBlank(body)){
             //没有显式设置就设置默认的
-            String bodyCharset = getBodyCharset();
+            String bodyCharset = formParamHolder.getParamCharset();
             if(null == getContentType()){
                 setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
             }
-            return ParamUtil.contactMap(getFormParams(), bodyCharset);
+            return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
         }
         //直接返回设置的body
         return body;
@@ -103,13 +102,10 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
         return this.fileHolder;
     }
 
-    /**
-     * 设置body,最好是调用{@link this#setBody(String, String)}同时设置Content-Type
-     */
+
     @Override
-    public Request setBody(String body) {
-        this.body = body;
-        return this;
+    public BodyHolder bodyHolder() {
+        return bodyHolder;
     }
 
     /**
@@ -118,25 +114,8 @@ public class Request extends BaseRequest<Request> implements MutableStringBodyRe
      */
     @Override
     public Request setBody(String body , String contentType) {
-        this.body = body;
+        bodyHolder.setBody(body);
         setContentType(contentType);
-        return this;
-    }
-
-    /**
-     * 直接传输一个Java对象可以使用该方法
-     * @param o Java对象
-     * @param handler 将Java对象转换为String的策略接口
-     * @return this
-     */
-    public <T> Request setBody(T o , ToStringHandler<T> handler){
-        ToStringHandler<T> stringHandler = Objects.requireNonNull(handler, "handler不能为空");
-        this.body = stringHandler.toString(o);
-        return this;
-    }
-    public Request setBodyT(Object o , ToString handler){
-        ToString toString = Objects.requireNonNull(handler, "handler不能为空");
-        this.body = toString.toString(o);
         return this;
     }
 }

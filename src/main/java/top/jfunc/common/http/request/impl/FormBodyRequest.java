@@ -28,12 +28,12 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements For
 
     @Override
     public String getBody() {
-        String bodyCharset = getBodyCharset();
+        String bodyCharset = formParamHolder.getParamCharset();
         //没有显式设置就设置默认的
         if(null == getContentType()){
             setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
         }
-        return ParamUtil.contactMap(getFormParams(), bodyCharset);
+        return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
     }
 
     @Override

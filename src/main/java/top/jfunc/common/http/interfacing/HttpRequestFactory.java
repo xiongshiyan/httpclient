@@ -218,7 +218,7 @@ class HttpRequestFactory implements RequestFactory {
     }
 
     private void validateRouteParams(HttpRequest httpRequest) {
-        Map<String, String> routeParams = httpRequest.getRouteParams();
+        Map<String, String> routeParams = httpRequest.routeParamHolder().getRouteParams();
         //校验路径参数是否一致
         if(null != routeParams && !routeParams.isEmpty()){
             int size = routeParams.size();

@@ -10,6 +10,9 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.OkHttp3Client;
+import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.holder.RouteParamHolder;
+import top.jfunc.common.http.holder.SSLHolder;
 import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
@@ -44,7 +47,9 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         okhttp3.Response response = null;
         InputStream inputStream = null;
         try {
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() ,httpRequest.getQueryParams() , httpRequest.getBodyCharset());
+            ParamHolder queryParamHolder = httpRequest.queryParamHolder();
+            RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getRouteParams() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
 
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
@@ -58,9 +63,10 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(ParamUtil.isHttps(completedUrl)){
-                initSSL(clientBuilder , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                        getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
-                        getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()));
+                SSLHolder sslHolder = httpRequest.sslHolder();
+                initSSL(clientBuilder , getHostnameVerifierWithDefault(sslHolder.getHostnameVerifier()) ,
+                        getSSLSocketFactoryWithDefault(sslHolder.getSslSocketFactory()) ,
+                        getX509TrustManagerWithDefault(sslHolder.getX509TrustManager()));
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -80,7 +86,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             }
 
             //2.3设置headers
-            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.headerHolder().getHeaders());
 
             headers = handleCookieIfNecessary(completedUrl, headers);
 

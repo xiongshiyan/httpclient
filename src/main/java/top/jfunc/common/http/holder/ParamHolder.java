@@ -18,6 +18,19 @@ public interface ParamHolder {
     MultiValueMap<String, String> getParams();
 
     /**
+     * 参数编码
+     * @return 参数编码
+     */
+    String getParamCharset();
+
+    /**
+     * 设置参数编码
+     * @param charset 编码
+     * @return this
+     */
+    ParamHolder setParamCharset(String charset);
+
+    /**
      * 设置Param参数
      * @param params Param参数
      * @return this
@@ -42,6 +55,7 @@ public interface ParamHolder {
      * 添加Param参数
      * @param key key
      * @param value value
+     * @return this
      */
     ParamHolder addParam(String key, String value);
 
@@ -50,6 +64,7 @@ public interface ParamHolder {
      * @param key key
      * @param value value
      * @param values values
+     * @return this
      */
     ParamHolder addParam(String key, String value, String... values);
 

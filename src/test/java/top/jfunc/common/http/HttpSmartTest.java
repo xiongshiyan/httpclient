@@ -96,7 +96,7 @@ public class HttpSmartTest {
         try {
             String url = "http://localhost:8080/http-server-test/post/body";
             Request request = Request.of(url).setIncludeHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
-            request.setBody("{\"name\":\"熊诗言\"}");
+            request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
             Response post = http.post(request);
             System.out.println(post.getBody());
@@ -218,7 +218,7 @@ public class HttpSmartTest {
         String url = "http://localhost:8080/http-server-test/put/body";
         try {
             Request request = Request.of(url).setIncludeHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
-            request.setBody("{\"name\":\"熊诗言\"}");
+            request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
             Response response = http.httpMethod(request , Method.PUT);
             System.out.println(response.getStatusCode());
@@ -263,13 +263,13 @@ public class HttpSmartTest {
     @Test
     public void testRequest(){
         Request request = Request.of("https://wwww.baidu.com");
-        request.setBody(new SomeBean("ss"), SomeBean::getSs);
+        request.bodyHolder().setBodyT(new SomeBean("ss"), SomeBean::getSs);
         Assert.assertEquals("ss" , request.getBody());
     }
     @Test
     public void testRequest2(){
         Request request = Request.of("https://wwww.baidu.com");
-        request.setBodyT(new SomeBean("ss"), (o)->"sssss");
+        request.bodyHolder().setBody(new SomeBean("ss"), (o)->"sssss");
         Assert.assertEquals("sssss" , request.getBody());
     }
 

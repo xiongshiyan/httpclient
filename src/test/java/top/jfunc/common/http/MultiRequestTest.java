@@ -126,7 +126,7 @@ public class MultiRequestTest {
 
         MutableStringBodyRequest request = PostBodyRequest.of("http://localhost:50000/hello/{name}");
         request.routeParamHolder().addRouteParam("name" , "John");
-        request.setBody(expected);
+        request.bodyHolder().setBody(expected);
         Response response = smartHttpClient.post(request);
         Assert.assertEquals(expected , response.asString());
     }

@@ -14,10 +14,11 @@ import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.ApacheHttpClient;
-import top.jfunc.common.http.request.DownLoadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.holder.HeaderHolder;
+import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.holder.RouteParamHolder;
+import top.jfunc.common.http.holder.SSLHolder;
+import top.jfunc.common.http.request.*;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -47,7 +48,9 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         onBeforeIfNecessary(httpRequest, method);
 
         //1.获取完整的URL
-        String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() ,httpRequest.getQueryParams() , httpRequest.getBodyCharset());
+        ParamHolder queryParamHolder = httpRequest.queryParamHolder();
+        RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
+        String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getRouteParams() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
 
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
 
@@ -64,7 +67,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             }
         }
 
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+        HeaderHolder headerHolder = httpRequest.headerHolder();
+        MultiValueMap<String, String> headers = mergeDefaultHeaders(headerHolder.getHeaders());
 
         //支持Cookie的话
         headers = handleCookieIfNecessary(completedUrl, headers);
@@ -81,8 +85,9 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             SSLContext sslContext = null;
             //https默认设置这些
             if(ParamUtil.isHttps(completedUrl)){
-                hostnameVerifier = getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier());
-                sslContext = getSSLContextWithDefault(httpRequest.getSslContext());
+                SSLHolder sslHolder = httpRequest.sslHolder();
+                hostnameVerifier = getHostnameVerifierWithDefault(sslHolder.getHostnameVerifier());
+                sslContext = getSSLContextWithDefault(sslHolder.getSslContext());
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -143,8 +148,9 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     public Response post(StringBodyRequest req) throws IOException {
         StringBodyRequest request = beforeTemplate(req);
         String body = request.getBody();
+        final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(request);
         Response response = template(request, Method.POST ,
-                r -> setRequestBody(r, body, getBodyCharsetWithDefault(request.getBodyCharset())), Response::with);
+                r -> setRequestBody(r, body, getBodyCharsetWithDefault(bodyCharset)), Response::with);
         return afterTemplate(request , response);
     }
 
@@ -154,7 +160,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         ContentCallback<HttpEntityEnclosingRequest> contentCallback = null;
         if(method.hasContent() && httpRequest instanceof StringBodyRequest){
             String body = ((StringBodyRequest)httpRequest).getBody();
-            contentCallback = r -> setRequestBody(r, body, getBodyCharsetWithDefault(httpRequest.getBodyCharset()));
+            final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(httpRequest);
+            contentCallback = r -> setRequestBody(r, body, getBodyCharsetWithDefault(bodyCharset));
         }
         Response response = template(httpRequest, method , contentCallback, Response::with);
         return afterTemplate(httpRequest , response);

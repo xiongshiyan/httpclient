@@ -10,4 +10,10 @@ public interface StringBodyRequest extends HttpRequest {
      * @return 请求体
      */
     String getBody();
+
+    /**
+     * 获取body的编码
+     * @return charset
+     */
+    String getBodyCharset();
 }

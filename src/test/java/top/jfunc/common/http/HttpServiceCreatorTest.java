@@ -45,7 +45,9 @@ public class HttpServiceCreatorTest {
     }
     @Test
     public void testRequestPost(){
-        Response zzzzzz = jfunc.post(PostBodyRequest.of("/post/body").setBody("xxsdasdadxx"));
+        PostBodyRequest bodyRequest = PostBodyRequest.of("/post/body");
+        bodyRequest.bodyHolder().setBody("xxsdasdadxx");
+        Response zzzzzz = jfunc.post(bodyRequest);
         System.out.println(zzzzzz);
     }
     @Test

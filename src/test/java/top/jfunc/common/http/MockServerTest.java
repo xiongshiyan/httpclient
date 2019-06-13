@@ -78,7 +78,7 @@ public class MockServerTest {
 
         Request request = Request.of("http://localhost:50000/hello/{name}");
         request.routeParamHolder().addRouteParam("name" , "John");
-        request.setBody(expected);
+        request.bodyHolder().setBody(expected);
         Response response = HttpUtil.post(request);
         Assert.assertEquals(expected , response.asString());
     }

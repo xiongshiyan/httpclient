@@ -90,6 +90,15 @@ public class Config {
         return this;
     }
 
+    public String getDefaultQueryCharset() {
+        return queryParamHolder.getParamCharset();
+    }
+
+    public Config setDefaultQueryCharset(String defaultQueryCharset) {
+        this.queryParamHolder.setParamCharset(defaultQueryCharset);
+        return this;
+    }
+
     public String getDefaultBodyCharset() {
         return defaultBodyCharset;
     }

@@ -17,14 +17,35 @@ public interface FormRequest extends StringBodyRequest {
     }
 
     /**
-     * 新增form参数
+     * 新增form参数的便捷方法
      * @param key key
      * @param value value
      * @param values values
      * @return this
      */
-    //FormRequest addFormParam(String key, String value, String... values);
+    default FormRequest addFormParam(String key, String value, String... values){
+        formParamHolder().addParam(key, value, values);
+        return this;
+    }
 
+    /**
+     * 提供便捷设置编码的方法
+     * @param paramCharset 参数编码
+     * @return this
+     */
+    default FormRequest setParamCharset(String paramCharset){
+        formParamHolder().setParamCharset(paramCharset);
+        return this;
+    }
+
+    /**
+     * 获取请求体编码
+     * @return charset
+     */
+    @Override
+    default String getBodyCharset() {
+        return formParamHolder().getParamCharset();
+    }
     /**
      * 接管Form param的处理
      * @return ParamHolder must not null

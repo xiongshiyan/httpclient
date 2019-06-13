@@ -51,11 +51,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
      * @see top.jfunc.common.http.base.Config#defaultReadTimeout
      */
     private Integer readTimeout = null;
-    /**
-     * 请求体编码，不设置就使用系统默认的
-     * @see top.jfunc.common.http.base.Config#defaultBodyCharset
-     */
-    private String bodyCharset = HttpConstants.DEFAULT_CHARSET;
+
     /**
      * 返回体编码，不设置就使用系统默认的
      * @see top.jfunc.common.http.base.Config#defaultResultCharset
@@ -149,11 +145,6 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
         return myself();
     }
 
-    public T setBodyCharset(String bodyCharset) {
-        this.bodyCharset = bodyCharset;
-        return myself();
-    }
-
     public T setResultCharset(String resultCharset) {
         this.resultCharset = resultCharset;
         return myself();
@@ -201,11 +192,6 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest 
     @Override
     public Integer getReadTimeout() {
         return readTimeout;
-    }
-
-    @Override
-    public String getBodyCharset() {
-        return bodyCharset;
     }
 
     @Override

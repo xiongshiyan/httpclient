@@ -3,6 +3,8 @@ package top.jfunc.common.http.request.impl;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
+import top.jfunc.common.http.holder.BodyHolder;
+import top.jfunc.common.http.holder.DefaultBodyHolder;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
 
 import java.util.Objects;
@@ -26,44 +28,19 @@ public class CommonBodyRequest extends BaseRequest<CommonBodyRequest> implements
     /**
      * 针对POST等存在
      * @see Method#hasContent()
+     * //private String body;
      */
-    private String body;
-
-    @Override
-    public String getBody() {
-        return this.body;
-    }
-
-    /**
-     * 设置body,最好是调用{@link this#setBody(String, String)}同时设置Content-Type
-     */
-    @Override
-    public CommonBodyRequest setBody(String body) {
-        this.body = body;
-        return this;
-    }
+    private BodyHolder bodyHolder = new DefaultBodyHolder();
 
     @Override
     public CommonBodyRequest setBody(String body , String contentType) {
-        this.body = body;
+        this.bodyHolder.setBody(body);
         setContentType(contentType);
         return this;
     }
 
-    /**
-     * 直接传输一个Java对象可以使用该方法
-     * @param o Java对象
-     * @param handler 将Java对象转换为String的策略接口
-     * @return this
-     */
-    public <T> CommonBodyRequest setBody(T o , ToStringHandler<T> handler){
-        ToStringHandler<T> stringHandler = Objects.requireNonNull(handler, "handler不能为空");
-        this.body = stringHandler.toString(o);
-        return this;
-    }
-    public CommonBodyRequest setBodyT(Object o , ToString handler){
-        ToString toString = Objects.requireNonNull(handler, "handler不能为空");
-        this.body = toString.toString(o);
-        return this;
+    @Override
+    public BodyHolder bodyHolder() {
+        return bodyHolder;
     }
 }
