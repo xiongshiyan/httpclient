@@ -31,12 +31,6 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
     private static final String END_LINE = TWO_HYPHENS + BOUNDARY + TWO_HYPHENS + END;
 
     @Override
-    public NativeHttpClient setConfig(Config config) {
-        super.setConfig(config);
-        return this;
-    }
-
-    @Override
     public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
         //默认的https校验
         // 后面会处理的，这里就不需要了 initDefaultSSL(sslVer);

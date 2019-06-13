@@ -4,7 +4,6 @@ import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.JoddHttpClient;
@@ -29,12 +28,6 @@ import java.net.URI;
  * @author 熊诗言2017/12/01
  */
 public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpRequest> {
-
-    @Override
-    public JoddSmartHttpClient setConfig(Config config) {
-        super.setConfig(config);
-        return this;
-    }
 
     @Override
     public <R> R template(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {

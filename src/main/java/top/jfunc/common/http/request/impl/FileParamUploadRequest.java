@@ -10,7 +10,7 @@ import top.jfunc.common.http.request.UploadRequest;
  * 多文件、参数同时支持的上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> implements UploadRequest {
+public class FileParamUploadRequest extends BaseRequest<FileParamUploadRequest> implements UploadRequest<FileParamUploadRequest> {
     public FileParamUploadRequest(String url){
         super(url);
     }

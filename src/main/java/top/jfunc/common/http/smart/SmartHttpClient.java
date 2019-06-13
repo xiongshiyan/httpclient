@@ -20,13 +20,18 @@ import java.util.Objects;
  */
 public interface SmartHttpClient extends HttpClient {
     /**
-     * 注入全局配置信息
+     * 设置全局默认配置,不调用就用系统设置的
      * @param config config
-     * @return SmartHttpClient 链式调用
      */
     @Override
-    SmartHttpClient setConfig(Config config);
+    void setConfig(Config config);
 
+    /**
+     * 获取全局配置
+     * @return 全局配置的config
+     */
+    @Override
+    Config getConfig();
     /**
      * GET方法
      * @param request 请求参数

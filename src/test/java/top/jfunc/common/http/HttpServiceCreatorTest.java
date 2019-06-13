@@ -29,7 +29,9 @@ public class HttpServiceCreatorTest {
     @Before
     public void init(){
         Config config = Config.defaultConfig().setBaseUrl("http://localhost:8080/http-server-test/");
-        HttpServiceCreator httpServiceCreator = new HttpServiceCreator().setSmartHttpClient(new ApacheSmartHttpClient().setConfig(config));
+        ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
+        smartHttpClient.setConfig(config);
+        HttpServiceCreator httpServiceCreator = new HttpServiceCreator().setSmartHttpClient(smartHttpClient);
         jfunc = httpServiceCreator.create(InterfaceForTestJfunc.class);
     }
 

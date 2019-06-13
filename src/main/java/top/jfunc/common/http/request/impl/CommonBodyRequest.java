@@ -1,19 +1,15 @@
 package top.jfunc.common.http.request.impl;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.base.handler.ToString;
-import top.jfunc.common.http.base.handler.ToStringHandler;
 import top.jfunc.common.http.holder.BodyHolder;
 import top.jfunc.common.http.holder.DefaultBodyHolder;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
-
-import java.util.Objects;
 
 /**
  * 通用的StringBody请求
  * @author xiongshiyan at 2019/5/21 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class CommonBodyRequest extends BaseRequest<CommonBodyRequest> implements MutableStringBodyRequest {
+public class CommonBodyRequest<T extends CommonBodyRequest> extends BaseRequest<T> implements MutableStringBodyRequest<T> {
     public CommonBodyRequest(String url){
         super(url);
     }
@@ -26,17 +22,16 @@ public class CommonBodyRequest extends BaseRequest<CommonBodyRequest> implements
         return commonBodyRequest;
     }
     /**
-     * 针对POST等存在
+     * 针对POST等存在//private String body
      * @see Method#hasContent()
-     * //private String body;
      */
     private BodyHolder bodyHolder = new DefaultBodyHolder();
 
     @Override
-    public CommonBodyRequest setBody(String body , String contentType) {
+    public T setBody(String body , String contentType) {
         this.bodyHolder.setBody(body);
         setContentType(contentType);
-        return this;
+        return myself();
     }
 
     @Override

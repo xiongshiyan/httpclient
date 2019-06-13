@@ -7,7 +7,7 @@ import top.jfunc.common.utils.MultiValueMap;
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface FormRequest extends StringBodyRequest {
+public interface FormRequest<T extends FormRequest> extends StringBodyRequest<T> {
     /**
      * Form参数
      * @return Form参数
@@ -23,9 +23,9 @@ public interface FormRequest extends StringBodyRequest {
      * @param values values
      * @return this
      */
-    default FormRequest addFormParam(String key, String value, String... values){
+    default T addFormParam(String key, String value, String... values){
         formParamHolder().addParam(key, value, values);
-        return this;
+        return myself();
     }
 
     /**
@@ -33,9 +33,9 @@ public interface FormRequest extends StringBodyRequest {
      * @param paramCharset 参数编码
      * @return this
      */
-    default FormRequest setParamCharset(String paramCharset){
+    default T setParamCharset(String paramCharset){
         formParamHolder().setParamCharset(paramCharset);
-        return this;
+        return myself();
     }
 
     /**

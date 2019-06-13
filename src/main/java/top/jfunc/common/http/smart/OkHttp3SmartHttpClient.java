@@ -35,12 +35,6 @@ import java.util.concurrent.TimeUnit;
 public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpClient, SmartHttpTemplate<Request.Builder> {
 
     @Override
-    public OkHttp3SmartHttpClient setConfig(Config config) {
-        super.setConfig(config);
-        return this;
-    }
-
-    @Override
     public <R> R template(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         onBeforeIfNecessary(httpRequest, method);
 

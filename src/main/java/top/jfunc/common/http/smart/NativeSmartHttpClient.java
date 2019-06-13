@@ -1,7 +1,6 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
@@ -26,12 +25,6 @@ import java.net.URL;
  * @author 熊诗言2017/11/24
  */
 public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpURLConnection> {
-
-    @Override
-    public NativeSmartHttpClient setConfig(Config config) {
-        super.setConfig(config);
-        return this;
-    }
 
     @Override
     public <R> R template(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {

@@ -33,9 +33,8 @@ public abstract class AbstractConfigurableHttp {
         return config;
     }
 
-    public AbstractConfigurableHttp setConfig(Config config) {
+    public void setConfig(Config config) {
         this.config = Objects.requireNonNull(config);
-        return this;
     }
 
     public void onBeforeIfNecessary(HttpRequest httpRequest , Method method){

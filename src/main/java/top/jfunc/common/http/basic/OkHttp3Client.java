@@ -30,12 +30,6 @@ import java.util.concurrent.TimeUnit;
 public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTemplate<Request.Builder>, HttpClient {
 
     @Override
-    public OkHttp3Client setConfig(Config config) {
-        super.setConfig(config);
-        return this;
-    }
-
-    @Override
     public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
         Objects.requireNonNull(url);
         Response response = null;

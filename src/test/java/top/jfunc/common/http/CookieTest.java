@@ -65,29 +65,29 @@ public class CookieTest {
     @Test
     public void testCookieOkHttp3()throws Exception{
         //只要设置了CookieHandler就支持Cookie
-        SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient().
-                setConfig(Config.defaultConfig().setCookieHandler(manager));
+        SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
+        smartHttpClient.setConfig(Config.defaultConfig().setCookieHandler(manager));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieApacheHttp()throws Exception{
         //只要设置了CookieHandler就支持Cookie
-        SmartHttpClient smartHttpClient = new ApacheSmartHttpClient().
-                setConfig(Config.defaultConfig().setCookieHandler(manager));
+        SmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
+        smartHttpClient.setConfig(Config.defaultConfig().setCookieHandler(manager));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieNativeHttp()throws Exception{
         //只要设置了CookieHandler就支持Cookie
-        SmartHttpClient smartHttpClient = new NativeSmartHttpClient().
-                setConfig(Config.defaultConfig().setCookieHandler(manager));
+        SmartHttpClient smartHttpClient = new NativeSmartHttpClient();
+        smartHttpClient.setConfig(Config.defaultConfig().setCookieHandler(manager));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieJoddHttp() throws Exception{
         //只要设置了CookieHandler就支持Cookie
-        SmartHttpClient smartHttpClient = new JoddSmartHttpClient().
-                setConfig(Config.defaultConfig().setCookieHandler(manager));
+        SmartHttpClient smartHttpClient = new JoddSmartHttpClient();
+        smartHttpClient.setConfig(Config.defaultConfig().setCookieHandler(manager));
         testCookie(smartHttpClient);
     }
 

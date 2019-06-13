@@ -53,12 +53,6 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     protected int _maxRetryTimes = 1;
 
     @Override
-    public ApacheHttpClient setConfig(Config config) {
-        super.setConfig(config);
-        return this;
-    }
-
-    @Override
     public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
         //1.获取完成的URL，创建请求
         String completedUrl = addBaseUrlIfNecessary(url);

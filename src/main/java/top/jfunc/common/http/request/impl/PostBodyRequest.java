@@ -6,7 +6,7 @@ import top.jfunc.common.http.request.StringBodyRequest;
  * Post请求，包含请求体
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class PostBodyRequest extends CommonBodyRequest implements StringBodyRequest {
+public class PostBodyRequest extends CommonBodyRequest<PostBodyRequest> implements StringBodyRequest<PostBodyRequest> {
     public PostBodyRequest(String url){
         super(url);
     }

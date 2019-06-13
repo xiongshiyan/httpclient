@@ -10,7 +10,7 @@ import top.jfunc.common.http.request.FormRequest;
  * Form表单请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements FormRequest {
+public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements FormRequest<FormBodyRequest> {
 
     public FormBodyRequest(String url){
         super(url);

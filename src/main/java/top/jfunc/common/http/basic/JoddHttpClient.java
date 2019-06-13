@@ -34,12 +34,6 @@ import java.util.Map;
 public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemplate<HttpRequest>, HttpClient {
 
     @Override
-    public JoddHttpClient setConfig(Config config) {
-        super.setConfig(config);
-        return this;
-    }
-
-    @Override
     public <R> R template(String url, Method method, String contentType, ContentCallback<HttpRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {
         HttpResponse response = null;
         try {
