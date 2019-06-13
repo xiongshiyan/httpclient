@@ -8,7 +8,7 @@ import java.io.File;
  * 文件下载请求
  * @author xiongshiyan
  */
-public interface DownLoadRequest<T extends DownLoadRequest> extends HttpRequest<T> {
+public interface DownLoadRequest<THIS extends DownLoadRequest> extends HttpRequest<THIS> {
     /**
      * 下载到的文件
      * @return file
@@ -22,7 +22,7 @@ public interface DownLoadRequest<T extends DownLoadRequest> extends HttpRequest<
      * @param file file
      * @return this
      */
-    default T setFile(File file){
+    default THIS setFile(File file){
         fileHolder().setFile(file);
         return myself();
     }

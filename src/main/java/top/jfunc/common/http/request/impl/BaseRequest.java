@@ -13,7 +13,7 @@ import java.net.URL;
  * T泛型为了变种的setter返回this便于链式调用
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest<T> {
+public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest<THIS> {
     /**
      * 请求的URL
      */
@@ -80,7 +80,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest<
 
     /**************************变种的Setter*******************************/
     @Override
-    public T setUrl(String url) {
+    public THIS setUrl(String url) {
         this.url = url;
         return myself();
     }
@@ -100,50 +100,50 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest<
         return headerHolder;
     }
 
-    public T addFormHeader(){
+    public THIS addFormHeader(){
         return setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(HttpConstants.DEFAULT_CHARSET));
     }
-    public T addJsonHeader(){
+    public THIS addJsonHeader(){
         return setContentType(MediaType.APPLICATIPON_JSON.withCharset(HttpConstants.DEFAULT_CHARSET));
     }
-    public T addXmlHeader(){
+    public THIS addXmlHeader(){
         return setContentType(MediaType.TXT_XML.withCharset(HttpConstants.DEFAULT_CHARSET));
     }
 
-    public T setContentType(String contentType) {
+    public THIS setContentType(String contentType) {
         this.contentType = contentType;
         return myself();
     }
-    public T setContentType(MediaType mediaType) {
+    public THIS setContentType(MediaType mediaType) {
         this.contentType = mediaType.toString();
         return myself();
     }
 
-    public T setConnectionTimeout(int connectionTimeout) {
+    public THIS setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
         return myself();
     }
 
-    public T setReadTimeout(int readTimeout) {
+    public THIS setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
         return myself();
     }
 
-    public T setResultCharset(String resultCharset) {
+    public THIS setResultCharset(String resultCharset) {
         this.resultCharset = resultCharset;
         return myself();
     }
-    public T setIncludeHeaders(boolean includeHeaders) {
+    public THIS setIncludeHeaders(boolean includeHeaders) {
         this.includeHeaders = includeHeaders;
         return myself();
     }
 
-    public T setIgnoreResponseBody(boolean ignoreResponseBody) {
+    public THIS setIgnoreResponseBody(boolean ignoreResponseBody) {
         this.ignoreResponseBody = ignoreResponseBody;
         return myself();
     }
 
-    public T setRedirectable(boolean redirectable) {
+    public THIS setRedirectable(boolean redirectable) {
         this.redirectable = redirectable;
         //要支持重定向必须header
         if(redirectable){
@@ -152,7 +152,7 @@ public abstract class BaseRequest<T extends BaseRequest> implements HttpRequest<
         return myself();
     }
 
-    public T setProxy(ProxyInfo proxyInfo) {
+    public THIS setProxy(ProxyInfo proxyInfo) {
         this.proxyInfo = proxyInfo;
         return myself();
     }

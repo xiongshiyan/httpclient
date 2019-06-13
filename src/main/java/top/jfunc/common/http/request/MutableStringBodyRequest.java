@@ -5,7 +5,7 @@ import top.jfunc.common.http.holder.BodyHolder;
 /**
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface MutableStringBodyRequest<T extends MutableStringBodyRequest> extends StringBodyRequest<T> {
+public interface MutableStringBodyRequest<THIS extends MutableStringBodyRequest> extends StringBodyRequest<THIS> {
 
     /**
      * 获取body
@@ -27,7 +27,7 @@ public interface MutableStringBodyRequest<T extends MutableStringBodyRequest> ex
      * @param body body
      * @return this
      */
-    default T setBody(String body){
+    default THIS setBody(String body){
         bodyHolder().setBody(body);
         return myself();
     }
@@ -37,7 +37,7 @@ public interface MutableStringBodyRequest<T extends MutableStringBodyRequest> ex
      * @param bodyCharset bodyCharset
      * @return this
      */
-    default T setBodyCharset(String bodyCharset){
+    default THIS setBodyCharset(String bodyCharset){
         bodyHolder().setBodyCharset(bodyCharset);
         return myself();
     }
@@ -57,5 +57,5 @@ public interface MutableStringBodyRequest<T extends MutableStringBodyRequest> ex
      * @param contentType Content-Type
      * @return this
      */
-    T setBody(String body, String contentType);
+    THIS setBody(String body, String contentType);
 }

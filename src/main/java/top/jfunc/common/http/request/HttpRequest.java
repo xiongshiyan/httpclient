@@ -13,7 +13,7 @@ import java.net.URL;
  * @since 1.1
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface HttpRequest<T extends HttpRequest> extends ChainCall<T>{
+public interface HttpRequest<THIS extends HttpRequest> extends ChainCall<THIS>{
     /**
      * 结果包含headers
      */
@@ -38,14 +38,14 @@ public interface HttpRequest<T extends HttpRequest> extends ChainCall<T>{
      * @param url url
      * @return this
      */
-    T setUrl(String url);
+    THIS setUrl(String url);
 
     /**
      * 设置URL
      * @param url URL
      * @return this
      */
-    default T setUrl(URL url){
+    default THIS setUrl(URL url){
         return setUrl(url.toString());
     }
 
@@ -61,7 +61,7 @@ public interface HttpRequest<T extends HttpRequest> extends ChainCall<T>{
      * @param value value
      * @return this
      */
-    default T addRouteParam(String key, String value){
+    default THIS addRouteParam(String key, String value){
         routeParamHolder().addRouteParam(key, value);
         return myself();
     }
@@ -79,7 +79,7 @@ public interface HttpRequest<T extends HttpRequest> extends ChainCall<T>{
      * @param values values
      * @return this
      */
-    default T addQueryParam(String key, String value, String... values){
+    default THIS addQueryParam(String key, String value, String... values){
         queryParamHolder().addParam(key, value, values);
         return myself();
     }
@@ -97,7 +97,7 @@ public interface HttpRequest<T extends HttpRequest> extends ChainCall<T>{
      * @param values values
      * @return this
      */
-    default T addHeader(String key, String value, String... values){
+    default THIS addHeader(String key, String value, String... values){
         headerHolder().addHeader(key, value, values);
         return myself();
     }

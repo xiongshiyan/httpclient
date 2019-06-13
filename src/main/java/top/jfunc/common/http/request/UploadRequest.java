@@ -9,7 +9,7 @@ import top.jfunc.common.utils.MultiValueMap;
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface UploadRequest<T extends UploadRequest> extends HttpRequest<T> {
+public interface UploadRequest<THIS extends UploadRequest> extends HttpRequest<THIS> {
     /**
      * Form参数
      * @return Form参数
@@ -25,7 +25,7 @@ public interface UploadRequest<T extends UploadRequest> extends HttpRequest<T> {
      * @param values values
      * @return this
      */
-    default T addFormParam(String key, String value, String... values){
+    default THIS addFormParam(String key, String value, String... values){
         formParamHolder().addParam(key, value, values);
         return myself();
     }
@@ -49,7 +49,7 @@ public interface UploadRequest<T extends UploadRequest> extends HttpRequest<T> {
      * @param formFiles 上传的文件
      * @return this
      */
-    default T addFormFile(FormFile... formFiles){
+    default THIS addFormFile(FormFile... formFiles){
         formFileHolder().addFormFile(formFiles);
         return myself();
     }
