@@ -14,7 +14,6 @@ import top.jfunc.common.http.request.CharsetUtil;
 import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -169,10 +168,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public Response afterTemplate(top.jfunc.common.http.request.HttpRequest request, Response response) throws IOException{
-        if(request.isRedirectable() && response.needRedirect()){
-            return get(GetRequest.of(response.getRedirectUrl()));
-        }
-        return response;
+    public String toString() {
+        return "SmartHttpClient implemented by Jodd-http";
     }
 }

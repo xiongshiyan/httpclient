@@ -18,7 +18,6 @@ import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.RouteParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
 import top.jfunc.common.http.request.*;
-import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -181,10 +180,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     }
 
     @Override
-    public Response afterTemplate(HttpRequest request, Response response) throws IOException{
-        if(request.isRedirectable() && response.needRedirect()){
-            return get(GetRequest.of(response.getRedirectUrl()));
-        }
-        return response;
+    public String toString() {
+        return "SmartHttpClient implemented by Apache's httpcomponents";
     }
 }

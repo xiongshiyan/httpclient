@@ -5,7 +5,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
@@ -17,7 +16,6 @@ import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -185,10 +183,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     }
 
     @Override
-    public Response afterTemplate(HttpRequest request, Response response) throws IOException{
-        if(request.isRedirectable() && response.needRedirect()){
-            return get(GetRequest.of(response.getRedirectUrl()));
-        }
-        return response;
+    public String toString() {
+        return "SmartHttpClient implemented by square's OkHttp3";
     }
 }
