@@ -9,7 +9,6 @@ import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.RouteParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
 import top.jfunc.common.http.request.*;
-import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -184,15 +183,15 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         MultiValueMap<String, String> headers = mergeHeaders(request.headerHolder().getHeaders());
         request.headerHolder().setHeaders(headers);
         Response response = template(request, Method.POST ,
-                connect -> this.upload0(connect, request.getFormParams(), request.getFormFiles()) , Response::with);
+                connect -> {
+                    ParamHolder paramHolder = request.formParamHolder();
+                    this.upload0(connect, paramHolder.getParams(), getBodyCharsetWithDefault(paramHolder.getParamCharset()), request.getFormFiles());
+                }, Response::with);
         return afterTemplate(request , response);
     }
 
     @Override
-    public Response afterTemplate(HttpRequest request, Response response) throws IOException{
-        if(request.isRedirectable() && response.needRedirect()){
-            return get(GetRequest.of(response.getRedirectUrl()));
-        }
-        return response;
+    public String toString() {
+        return "SmartHttpClient implemented by JDK's HttpURLConnection";
     }
 }

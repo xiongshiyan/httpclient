@@ -1,6 +1,9 @@
 package top.jfunc.common.http.basic;
 
-import top.jfunc.common.http.*;
+import top.jfunc.common.http.HeaderRegular;
+import top.jfunc.common.http.HttpStatus;
+import top.jfunc.common.http.Method;
+import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
@@ -141,18 +144,21 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , FormFile... files) throws IOException {
         MultiValueMap<String, String> multimap = mergeHeaders(headers);
-        return template(url, Method.POST, null, connect -> this.upload0(connect , params , files), multimap ,
-                connectTimeout, readTimeout, resultCharset, false,
+        return template(url, Method.POST, null, connect -> this.upload0(connect , params , getDefaultBodyCharset() , files),
+                multimap , connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     protected void upload0(HttpURLConnection connection , FormFile... files) throws IOException{
-        connection.addRequestProperty("Content-Length" , String.valueOf(getFormFilesLen(files) + END_LINE.length()));
+        connection.addRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(getFormFilesLen(files) + END_LINE.length()));
 
         // 设置DataOutputStream
         DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
-        for (int i = 0; i < files.length; i++) {
+        /*for (int i = 0; i < files.length; i++) {
             writeOneFile(ds, files[i]);
+        }*/
+        for (FormFile formFile : files) {
+            writeOneFile(ds, formFile);
         }
         ds.writeBytes(END_LINE);
         /* close streams */
@@ -160,22 +166,25 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         //ds.close();
     }
 
-    protected void upload0(HttpURLConnection connection , MultiValueMap<String, String> params, FormFile... files) throws IOException{
+    protected void upload0(HttpURLConnection connection , MultiValueMap<String, String> params, String paramCharset, FormFile... files) throws IOException{
         int fileDataLength = getFormFilesLen(files);
 
         String textEntity = getTextEntity(params);
         // 计算传输给服务器的实体数据总长度
-        int dataLength = textEntity.getBytes(HttpConstants.DEFAULT_CHARSET).length + fileDataLength + END_LINE.length();
+        int dataLength = textEntity.getBytes(paramCharset).length + fileDataLength + END_LINE.length();
 
-        connection.addRequestProperty("Content-Length" , String.valueOf(dataLength));
+        connection.addRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(dataLength));
 
         DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
 
         //写params数据
         ds.writeBytes(textEntity);
         //写文件
-        for (int i = 0; i < files.length; i++) {
+        /*for (int i = 0; i < files.length; i++) {
             writeOneFile(ds, files[i]);
+        }*/
+        for (FormFile formFile : files) {
+            writeOneFile(ds, formFile);
         }
         //写末尾行
         ds.writeBytes(END_LINE);
@@ -244,11 +253,11 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
     protected MultiValueMap<String, String> mergeHeaders(MultiValueMap<String, String> headers) {
         if(null == headers){
-            headers = new ArrayListMultiValueMap<>(2);
+            headers = new ArrayListMultiValueMap<>(1);
         }
         ///headers.put("Connection" , "Keep-Alive");
-        headers.add("Charset" , "UTF-8");
-        headers.add("Content-Type" , "multipart/form-data; boundary=" + BOUNDARY);
+        //headers.add("Charset" , "UTF-8");
+        headers.add(HeaderRegular.CONTENT_TYPE.toString() , "multipart/form-data; boundary=" + BOUNDARY);
         return headers;
     }
 
