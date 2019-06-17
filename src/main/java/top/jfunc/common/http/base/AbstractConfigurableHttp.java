@@ -158,50 +158,32 @@ public abstract class AbstractConfigurableHttp extends ConfigFrozen {
         return ParamUtil.addBaseUrlIfNecessary(getConfig().getBaseUrl() , inputUrl);
     }
 
-    /**
-     * 统一的获取实际的值：逻辑是输入的不等于空就返回输入的，否则返回默认的
-     * @param input 输入值，可能为null
-     * @param defaultValue 默认值
-     * @param <T> 泛型参数
-     * @return 输入的值或者默认值
-     */
-    public <T> T getValueWithDefault(T input , T defaultValue){
-        return null == input ? defaultValue : input;
-    }
-
-
     public Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
-        return getValueWithDefault(connectionTimeout ,
-                getConfig().getDefaultConnectionTimeout());
+        return getConfig().getConnectionTimeoutWithDefault(connectionTimeout);
     }
 
     public Integer getReadTimeoutWithDefault(Integer readTimeout){
-        return getValueWithDefault(readTimeout ,
-                getConfig().getDefaultReadTimeout());
+        return getConfig().getReadTimeoutWithDefault(readTimeout);
     }
 
     public String getQueryCharsetWithDefault(String queryCharset){
-        return getValueWithDefault(queryCharset ,
-                getConfig().getDefaultQueryCharset());
+        return getConfig().getQueryCharsetWithDefault(queryCharset);
     }
     public String getDefaultQueryCharset() {
         return getConfig().getDefaultQueryCharset();
     }
     public String getBodyCharsetWithDefault(String bodyCharset){
-        return getValueWithDefault(bodyCharset ,
-                getConfig().getDefaultBodyCharset());
+        return getConfig().getBodyCharsetWithDefault(bodyCharset);
     }
     public String getDefaultBodyCharset() {
         return getConfig().getDefaultBodyCharset();
     }
     public String getResultCharsetWithDefault(String resultCharset){
-        return getValueWithDefault(resultCharset ,
-                getConfig().getDefaultResultCharset());
+        return getConfig().getResultCharsetWithDefault(resultCharset);
     }
 
     public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
-        return getValueWithDefault(proxyInfo ,
-                getConfig().getProxyInfo());
+        return getConfig().getProxyInfoWithDefault(proxyInfo);
     }
 
     public HostnameVerifier getHostnameVerifier() {
@@ -221,23 +203,19 @@ public abstract class AbstractConfigurableHttp extends ConfigFrozen {
     }
 
     public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
-        return getValueWithDefault(hostnameVerifier ,
-                getConfig().sslHolder().getHostnameVerifier());
+        return getConfig().getHostnameVerifierWithDefault(hostnameVerifier);
     }
 
     public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
-        return getValueWithDefault(sslContext ,
-                getConfig().sslHolder().getSslContext());
+        return getConfig().getSSLContextWithDefault(sslContext);
     }
 
     public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
-        return getValueWithDefault(sslSocketFactory ,
-                getConfig().sslHolder().getSslSocketFactory());
+        return getConfig().getSSLSocketFactoryWithDefault(sslSocketFactory);
     }
 
     public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
-        return getValueWithDefault(x509TrustManager ,
-                getConfig().sslHolder().getX509TrustManager());
+        return getConfig().getX509TrustManagerWithDefault(x509TrustManager);
     }
 
     public MultiValueMap<String , String> getDefaultHeaders(){

@@ -7,6 +7,10 @@ import top.jfunc.common.http.interceptor.CompositeInterceptor;
 import top.jfunc.common.http.interceptor.Interceptor;
 import top.jfunc.common.http.request.HttpRequest;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 import java.net.CookieHandler;
 
 /**
@@ -75,8 +79,23 @@ public class Config extends ConfigFrozen {
         return this;
     }
 
+    /**
+     * 统一的获取实际的值：逻辑是输入的不等于空就返回输入的，否则返回默认的
+     * @param input 输入值，可能为null
+     * @param defaultValue 默认值
+     * @param <T> 泛型参数
+     * @return 输入的值或者默认值
+     */
+    public <T> T getValueWithDefault(T input , T defaultValue){
+        return null == input ? defaultValue : input;
+    }
+
+
     public Integer getDefaultConnectionTimeout() {
         return defaultConnectionTimeout;
+    }
+    public Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
+        return getValueWithDefault(connectionTimeout , getDefaultConnectionTimeout());
     }
 
     public Config setDefaultConnectionTimeout(Integer defaultConnectionTimeout) {
@@ -84,9 +103,12 @@ public class Config extends ConfigFrozen {
         this.defaultConnectionTimeout = defaultConnectionTimeout;
         return this;
     }
-
     public Integer getDefaultReadTimeout() {
         return defaultReadTimeout;
+    }
+
+    public Integer getReadTimeoutWithDefault(Integer readTimeout){
+        return getValueWithDefault(readTimeout , getDefaultReadTimeout());
     }
 
     public Config setDefaultReadTimeout(Integer defaultReadTimeout) {
@@ -99,6 +121,10 @@ public class Config extends ConfigFrozen {
         return queryParamHolder.getParamCharset();
     }
 
+    public String getQueryCharsetWithDefault(String queryCharset){
+        return getValueWithDefault(queryCharset , getDefaultQueryCharset());
+    }
+
     public Config setDefaultQueryCharset(String defaultQueryCharset) {
         ensureConfigNotFreeze();
         this.queryParamHolder.setParamCharset(defaultQueryCharset);
@@ -109,6 +135,9 @@ public class Config extends ConfigFrozen {
         return defaultBodyCharset;
     }
 
+    public String getBodyCharsetWithDefault(String bodyCharset){
+        return getValueWithDefault(bodyCharset , getDefaultBodyCharset());
+    }
     public Config setDefaultBodyCharset(String defaultBodyCharset) {
         ensureConfigNotFreeze();
         this.defaultBodyCharset = defaultBodyCharset;
@@ -118,11 +147,17 @@ public class Config extends ConfigFrozen {
     public String getDefaultResultCharset() {
         return defaultResultCharset;
     }
+    public String getResultCharsetWithDefault(String resultCharset){
+        return getValueWithDefault(resultCharset , getDefaultResultCharset());
+    }
 
     public Config setDefaultResultCharset(String defaultResultCharset) {
         ensureConfigNotFreeze();
         this.defaultResultCharset = defaultResultCharset;
         return this;
+    }
+    public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
+        return getValueWithDefault(proxyInfo , getProxyInfo());
     }
 
     public ProxyInfo getProxyInfo() {
@@ -134,7 +169,21 @@ public class Config extends ConfigFrozen {
         this.proxyInfo = proxyInfo;
         return this;
     }
+    public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
+        return getValueWithDefault(hostnameVerifier , sslHolder().getHostnameVerifier());
+    }
 
+    public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
+        return getValueWithDefault(sslContext , sslHolder().getSslContext());
+    }
+
+    public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
+        return getValueWithDefault(sslSocketFactory , sslHolder().getSslSocketFactory());
+    }
+
+    public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
+        return getValueWithDefault(x509TrustManager , sslHolder().getX509TrustManager());
+    }
     public SSLHolder sslHolder(){
         return sslHolder;
     }
