@@ -163,12 +163,15 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     public Response upload(UploadRequest req) throws IOException {
         UploadRequest request = beforeTemplate(req);
         Response response = template(request , Method.POST ,
-                r -> upload0(r, request.getFormParams(), request.getFormFiles()) , Response::with);
+                r -> {
+                    ParamHolder paramHolder = request.formParamHolder();
+                    upload0(r, paramHolder.getParams(), paramHolder.getParamCharset() ,request.getFormFiles());
+                }, Response::with);
         return afterTemplate(request , response);
     }
 
     @Override
     public String toString() {
-        return "SmartHttpClient implemented by Jodd-http";
+        return "SmartHttpClient implemented by Jodd-Http";
     }
 }

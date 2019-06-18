@@ -21,13 +21,14 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.CharsetUtils;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.HeaderRegular;
+import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.CharsetUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -140,13 +141,13 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
 
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
-        return template(url, Method.POST, null, (request -> addFormFiles(request, null , files)),
+        return template(url, Method.POST, null, (request -> addFormFiles(request, null , getDefaultBodyCharset() , files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
-        return template(url, Method.POST, null, (request -> addFormFiles(request, params ,files)),
+        return template(url, Method.POST, null, (request -> addFormFiles(request, params , getDefaultBodyCharset() , files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
@@ -240,8 +241,8 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         LayeredConnectionSocketFactory sslsf = SSLConnectionSocketFactory
                 .getSocketFactory();
         Registry<ConnectionSocketFactory> registry = RegistryBuilder
-                .<ConnectionSocketFactory> create().register("http", csf)
-                .register("https", sslsf).build();
+                .<ConnectionSocketFactory> create().register(HttpConstants.HTTP, csf)
+                .register(HttpConstants.HTTPS, sslsf).build();
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
         // 将最大连接数增加
         cm.setMaxTotal(maxTotal);
@@ -298,10 +299,18 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
 
-    protected void addFormFiles(HttpEntityEnclosingRequest request, MultiValueMap<String, String> params ,FormFile[] files) throws UnsupportedEncodingException {
+    /**
+     * 给Request中添加key-value和上传文件信息
+     * @param request HttpEntityEnclosingRequest
+     * @param params Key-Value参数
+     * @param charset 编码
+     * @param files 文件上传信息
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
+     */
+    protected void addFormFiles(HttpEntityEnclosingRequest request, MultiValueMap<String, String> params ,String charset ,FormFile[] files) throws UnsupportedEncodingException {
         final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                .setCharset(CharsetUtils.get(getDefaultBodyCharset()));
+                .setCharset(CharsetUtil.charset(charset));
 
         if(null != params){
             ///params.keySet().forEach(key->params.get(key).forEach(value->multipartEntityBuilder.addTextBody(key , value)));

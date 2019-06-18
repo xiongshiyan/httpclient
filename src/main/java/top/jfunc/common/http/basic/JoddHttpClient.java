@@ -114,14 +114,14 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
 
     @Override
     public String upload(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
-        return template(url, Method.POST, null, httpRequest -> this.upload0(httpRequest , null , files), headers ,
+        return template(url, Method.POST, null, httpRequest -> this.upload0(httpRequest , null , getDefaultBodyCharset(), files), headers ,
                 connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
-        return template(url, Method.POST, null, httpRequest -> this.upload0(httpRequest , params , files), headers ,
+        return template(url, Method.POST, null, httpRequest -> this.upload0(httpRequest , params , getDefaultBodyCharset() , files), headers ,
                 connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
     }
@@ -194,21 +194,29 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
         return new ByteArrayInputStream(bodyBytes);
     }
 
-    protected void upload0(HttpRequest httpRequest , MultiValueMap<String, String> params,FormFile...formFiles){
+    /**
+     * 文件上传
+     * @param httpRequest HttpRequest
+     * @param params Key-Value参数
+     * @param charset 编码
+     * @param formFiles 上传文件信息
+     */
+    protected void upload0(HttpRequest httpRequest , MultiValueMap<String, String> params, String charset, FormFile...formFiles){
         httpRequest.multipart(true);
+        httpRequest.formEncoding(charset);
         if(null != params){
             /*params.getMap().forEach((k , l) ->l.forEach(v->httpRequest.form(k , v)));*/
             params.forEachKeyValue(httpRequest::form);
         }
         for (FormFile formFile : formFiles) {
-            httpRequest.form(formFile.getParameterName() , new FormFileUploadable(formFile));
+            httpRequest.form(formFile.getParameterName() , new FormFileUpload(formFile));
         }
     }
 
-    protected static class FormFileUploadable implements Uploadable<FormFile>{
+    protected static class FormFileUpload implements Uploadable<FormFile>{
         private final FormFile formFile;
 
-        public FormFileUploadable(FormFile formFile){
+        public FormFileUpload(FormFile formFile){
             this.formFile = formFile;
         }
         @Override
@@ -248,6 +256,6 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
 
     @Override
     public String toString() {
-        return "HttpClient implemented by Jodd-http";
+        return "HttpClient implemented by Jodd-Http";
     }
 }

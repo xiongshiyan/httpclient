@@ -47,7 +47,9 @@ public enum HeaderRegular {
 	COOKIE("Cookie"),
 	/**请求的内容长度*/
 	CONTENT_LENGTH("Content-Length"),
-	
+	/**文件上传请求头*/
+	CONTENT_DISPOSITION("Content-Disposition"),
+
 	//------------------------------------------------------------- 响应头域
 	/**Cookie*/
 	SET_COOKIE("Set-Cookie"),

@@ -175,7 +175,10 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     public Response upload(UploadRequest req) throws IOException {
         UploadRequest request = beforeTemplate(req);
         Response response = template(request , Method.POST ,
-                r -> addFormFiles(r, request.getFormParams(), request.getFormFiles()) , Response::with);
+                r -> {
+                    ParamHolder paramHolder = request.formParamHolder();
+                    addFormFiles(r, paramHolder.getParams(), getBodyCharsetWithDefault(paramHolder.getParamCharset()), request.getFormFiles());
+                }, Response::with);
         return afterTemplate(request , response);
     }
 

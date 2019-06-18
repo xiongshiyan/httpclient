@@ -196,7 +196,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
         }
 
         for (FormFile formFile : files) {
-            builder.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
+            builder.addPart(Headers.of(HeaderRegular.CONTENT_DISPOSITION.toString(), "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
                     inputStreamBody(formFile.getContentType() , formFile.getInStream() , formFile.getFileLen()));
         }
         return builder.build();
