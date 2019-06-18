@@ -17,8 +17,8 @@ import java.util.Map;
 /**
  * 实现者只需要实现HttpTemplate接口、处理POST Body、文件上传Body即可
  * @see HttpTemplate
- * @see this#bodyContentCallback(String, String, String)
- * @see this#uploadContentCallback(MultiValueMap, FormFile[])
+ * @see AbstractHttpClient#bodyContentCallback(String, String, String)
+ * @see AbstractHttpClient#uploadContentCallback(MultiValueMap, FormFile[])
  * @author xiongshiyan at 2019/5/9 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp implements HttpClient, HttpTemplate<CC> {

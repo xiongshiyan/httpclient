@@ -8,7 +8,7 @@ public class ConfigFrozen {
     /**
      * 是否冻结全局配置:当全局配置被冻结之后，是不允许再修改的，防止意外或者其他线程修改。
      * 因为全局配置是一个实例的所有请求共享的，如果被意外修改，可能引发一些严重的错误而不好排查。
-     * 一般在配置完成之后调用一下{@link this#freezeConfig()}
+     * 一般在配置完成之后调用一下{@link ConfigFrozen#freezeConfig()}
      */
     private boolean frozen = false;
     /**

@@ -73,7 +73,7 @@ public class Request extends BaseRequest<Request> implements
     /****************************Getter**************************/
     /**
      * 如果没有显式设置body而是通过params添加的，此时一般认为是想发起form请求，最好设置Content-Type
-     * @see this#setContentType(String)
+     * @see Request#setContentType(String)
      */
     @Override
     public String getBody() {
