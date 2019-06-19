@@ -11,27 +11,28 @@ import top.jfunc.common.http.request.HttpRequest;
  */
 public interface Interceptor {
     /**
-     * 执行之前拦截
+     * 执行之前拦截 before
      * @param httpRequest HttpRequest
      * @param method 请求方法
      */
     void onBefore(HttpRequest httpRequest, Method method);
 
     /**
-     * 执行之后拦截
+     * 执行之后拦截 afterReturn
      * @param httpRequest HttpRequest
      * @param returnValue 返回的值
      */
     void onAfterReturn(HttpRequest httpRequest, Object returnValue);
 
     /**
-     * 发生异常的时候
+     * 发生异常的时候 exception
      * @param httpRequest HttpRequest
      * @param exception Exception
      */
     void onError(HttpRequest httpRequest, Exception exception);
+
     /**
-     * finally执行
+     * finally执行 finally
      * @param httpRequest HttpRequest
      */
     void onAfter(HttpRequest httpRequest);

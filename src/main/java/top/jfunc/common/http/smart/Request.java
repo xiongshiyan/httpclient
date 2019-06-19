@@ -70,7 +70,6 @@ public class Request extends BaseRequest<Request> implements
         return new Request(url);
     }
 
-    /****************************Getter**************************/
     /**
      * 如果没有显式设置body而是通过params添加的，此时一般认为是想发起form请求，最好设置Content-Type
      * @see Request#setContentType(String)
