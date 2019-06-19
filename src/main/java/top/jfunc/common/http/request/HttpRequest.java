@@ -6,15 +6,17 @@ import top.jfunc.common.http.holder.HeaderHolder;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.RouteParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * Http请求的基本定义
  * @since 1.1
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface HttpRequest{
+public interface HttpRequest {
     /**
      * 结果包含headers
      */
@@ -57,7 +59,7 @@ public interface HttpRequest{
     RouteParamHolder routeParamHolder();
 
     /**
-     * 还是提供一些便捷方法
+     * 便捷地设置路径参数
      * @param key key
      * @param value value
      * @return this
@@ -68,13 +70,23 @@ public interface HttpRequest{
     }
 
     /**
+     * 便捷地设置路径参数
+     * @param routeParams 多个路径参数
+     * @return this
+     */
+    default HttpRequest setRouteParams(Map<String, String> routeParams){
+        routeParamHolder().setRouteParams(routeParams);
+        return this;
+    }
+
+    /**
      * 获取到 {@link ParamHolder} 可以对Query参数完全接管处理
      * @return ParamHolder must not be null
      */
     ParamHolder queryParamHolder();
 
     /**
-     * 提供便捷方法
+     * 提供便捷的设置Query参数的方法
      * @param key key
      * @param value value
      * @param values values
@@ -86,13 +98,33 @@ public interface HttpRequest{
     }
 
     /**
+     * 提供便捷的设置Query参数的方法
+     * @param queryParams 多个查询参数
+     * @return this
+     */
+    default HttpRequest setQueryParams(MultiValueMap<String, String> queryParams){
+        queryParamHolder().setParams(queryParams);
+        return this;
+    }
+
+    /**
+     * 提供便捷的设置Query参数的方法
+     * @param queryParams 多个查询参数
+     * @return this
+     */
+    default HttpRequest setQueryParams(Map<String, String> queryParams){
+        queryParamHolder().setParams(queryParams);
+        return this;
+    }
+
+    /**
      * 获取到 {@link HeaderHolder} 可以对Header完全接管处理
      * @return HeaderHolder must not be null
      */
     HeaderHolder headerHolder();
 
     /**
-     * 提供便捷方法
+     * 提供便捷的设置header的方法
      * @param key key
      * @param value value
      * @param values values
@@ -100,6 +132,26 @@ public interface HttpRequest{
      */
     default HttpRequest addHeader(String key, String value, String... values){
         headerHolder().addHeader(key, value, values);
+        return this;
+    }
+
+    /**
+     * 提供便捷的设置header的方法
+     * @param headers 多个header
+     * @return this
+     */
+    default HttpRequest setHeaders(MultiValueMap<String, String> headers){
+        headerHolder().setHeaders(headers);
+        return this;
+    }
+
+    /**
+     * 提供便捷的设置header的方法
+     * @param headers 多个header
+     * @return this
+     */
+    default HttpRequest setHeaders(Map<String, String> headers){
+        headerHolder().setHeaders(headers);
         return this;
     }
 
