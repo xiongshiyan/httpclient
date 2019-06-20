@@ -8,7 +8,6 @@ import top.jfunc.common.http.holder.FormFileHolder;
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public interface UploadRequest extends HttpRequest, ParamRequest {
-
     /**
      * 新增form参数
      * @param key key
@@ -19,6 +18,17 @@ public interface UploadRequest extends HttpRequest, ParamRequest {
     @Override
     default UploadRequest addFormParam(String key, String value, String... values){
         formParamHolder().addParam(key, value, values);
+        return this;
+    }
+
+    /**
+     * 提供便捷设置编码的方法
+     * @param paramCharset 参数编码
+     * @return this
+     */
+    @Override
+    default ParamRequest setParamCharset(String paramCharset){
+        formParamHolder().setParamCharset(paramCharset);
         return this;
     }
 

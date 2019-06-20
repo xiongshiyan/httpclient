@@ -11,7 +11,6 @@ import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.BaseRequest;
-import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
@@ -119,8 +118,9 @@ public class Request extends BaseRequest<Request> implements
     }
 
     @Override
-    public MultiValueMap<String, String> getFormParams() {
-        return formParamHolder.getParams();
+    public Request setParamCharset(String paramCharset) {
+        formParamHolder.setParamCharset(paramCharset);
+        return this;
     }
 
     /**
