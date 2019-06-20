@@ -124,13 +124,28 @@ public class Request extends BaseRequest<Request> implements
 
     ///////////// 以下方法是为了兼容以前的Request的用法[返回Request方便方法连缀] /////////////////////
 
-    public Request addHeader(String key, String value){
-        this.headerHolder().addHeader(key, value);
+
+    @Override
+    public Request addRouteParam(String key, String value) {
+        super.addRouteParam(key, value);
         return this;
     }
 
-    public Request addQueryParam(String key, String value){
-        queryParamHolder().addParam(key, value);
+    @Override
+    public Request addHeader(String key, String value , String... values){
+        super.addHeader(key, value, values);
+        return this;
+    }
+
+    @Override
+    public Request addQueryParam(String key, String value , String... values){
+        super.addQueryParam(key, value, values);
+        return this;
+    }
+
+    @Override
+    public Request addFormParam(String key, String value, String... values) {
+        this.formParamHolder.addParam(key, value, values);
         return this;
     }
 
@@ -158,9 +173,16 @@ public class Request extends BaseRequest<Request> implements
         return this;
     }
 
+    /**
+     * 可能是form的，可能是body的，最终其实都是body，
+     * 如果想单独设置，请使用分别的holder引用来设置
+     * @param bodyCharset bodyCharset
+     * @return this
+     */
     @Override
     public Request setBodyCharset(String bodyCharset) {
         bodyHolder.setBodyCharset(bodyCharset);
+        formParamHolder.setParamCharset(bodyCharset);
         return this;
     }
 
