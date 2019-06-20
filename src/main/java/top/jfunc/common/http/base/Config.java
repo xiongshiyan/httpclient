@@ -17,7 +17,8 @@ import java.net.CookieHandler;
  * 全局公共配置
  * @author xiongshiyan at 2018/8/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class Config extends ConfigFrozen {
+public class Config {
+    private ConfigFrozen configFrozen = new ConfigFrozen();
     /**
      * BaseUrl,如果设置了就在正常传送的URL之前添加上
      */
@@ -68,13 +69,17 @@ public class Config extends ConfigFrozen {
         return new Config();
     }
 
+    public Config freezeConfig(){
+        configFrozen.freezeConfig();
+        return this;
+    }
 
     public String getBaseUrl() {
         return baseUrl;
     }
 
     public Config setBaseUrl(String baseUrl) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.baseUrl = baseUrl;
         return this;
     }
@@ -99,7 +104,7 @@ public class Config extends ConfigFrozen {
     }
 
     public Config setDefaultConnectionTimeout(Integer defaultConnectionTimeout) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.defaultConnectionTimeout = defaultConnectionTimeout;
         return this;
     }
@@ -112,7 +117,7 @@ public class Config extends ConfigFrozen {
     }
 
     public Config setDefaultReadTimeout(Integer defaultReadTimeout) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.defaultReadTimeout = defaultReadTimeout;
         return this;
     }
@@ -126,7 +131,7 @@ public class Config extends ConfigFrozen {
     }
 
     public Config setDefaultQueryCharset(String defaultQueryCharset) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.queryParamHolder.setParamCharset(defaultQueryCharset);
         return this;
     }
@@ -139,7 +144,7 @@ public class Config extends ConfigFrozen {
         return getValueWithDefault(bodyCharset , getDefaultBodyCharset());
     }
     public Config setDefaultBodyCharset(String defaultBodyCharset) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.defaultBodyCharset = defaultBodyCharset;
         return this;
     }
@@ -152,7 +157,7 @@ public class Config extends ConfigFrozen {
     }
 
     public Config setDefaultResultCharset(String defaultResultCharset) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.defaultResultCharset = defaultResultCharset;
         return this;
     }
@@ -165,7 +170,7 @@ public class Config extends ConfigFrozen {
     }
 
     public Config setProxyInfo(ProxyInfo proxyInfo) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.proxyInfo = proxyInfo;
         return this;
     }
@@ -201,7 +206,7 @@ public class Config extends ConfigFrozen {
     }
 
     public Config setCookieHandler(CookieHandler cookieHandler) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.cookieHandler = cookieHandler;
         if(null == CookieHandler.getDefault()){
             CookieHandler.setDefault(cookieHandler);
@@ -214,12 +219,12 @@ public class Config extends ConfigFrozen {
     }
 
     public Config setCompositeInterceptor(CompositeInterceptor compositeInterceptor) {
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         this.compositeInterceptor = compositeInterceptor;
         return this;
     }
     public Config addInterceptor(Interceptor interceptor , Interceptor... interceptors){
-        ensureConfigNotFreeze();
+        configFrozen.ensureConfigNotFreeze();
         if(null == this.compositeInterceptor){
             this.compositeInterceptor = new CompositeInterceptor();
         }
