@@ -90,6 +90,12 @@ public class Request extends BaseRequest<Request> implements
         return body;
     }
 
+
+    @Override
+    public String getBodyCharset() {
+        return StrUtil.isNotBlank(bodyHolder.getBody()) ? bodyHolder.getBodyCharset() : formParamHolder.getParamCharset();
+    }
+
     @Override
     public FormFileHolder formFileHolder() {
         return this.formFileHolder;
