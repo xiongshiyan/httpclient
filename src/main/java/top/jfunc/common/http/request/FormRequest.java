@@ -1,5 +1,7 @@
 package top.jfunc.common.http.request;
 
+import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -38,6 +40,21 @@ public interface FormRequest extends StringBodyRequest {
         return this;
     }
 
+    /**
+     * form参数生成body
+     * @see ParamUtil#contactMap(MultiValueMap)
+     * @return body
+     */
+    @Override
+    default String getBody() {
+        ParamHolder formParamHolder = formParamHolder();
+        String bodyCharset = formParamHolder.getParamCharset();
+        //没有显式设置就设置默认的
+        if(null == getContentType()){
+            setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
+        }
+        return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
+    }
     /**
      * 获取请求体编码
      * @return charset

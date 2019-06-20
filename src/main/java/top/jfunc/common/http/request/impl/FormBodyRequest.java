@@ -1,7 +1,5 @@
 package top.jfunc.common.http.request.impl;
 
-import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.request.FormRequest;
@@ -25,16 +23,6 @@ public class FormBodyRequest extends BaseRequest implements FormRequest {
      * //private MultiValueMap<String,String> formParamHolder;
      */
     private ParamHolder formParamHolder = new DefaultParamHolder();
-
-    @Override
-    public String getBody() {
-        String bodyCharset = formParamHolder.getParamCharset();
-        //没有显式设置就设置默认的
-        if(null == getContentType()){
-            setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
-        }
-        return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
-    }
 
     @Override
     public ParamHolder formParamHolder() {
