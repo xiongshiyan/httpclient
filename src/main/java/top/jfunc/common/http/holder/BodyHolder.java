@@ -2,12 +2,21 @@ package top.jfunc.common.http.holder;
 
 import top.jfunc.common.http.base.handler.ToString;
 import top.jfunc.common.http.base.handler.ToStringHandler;
+import top.jfunc.common.utils.IoUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 /**
- * Body处理器，Body相关的处理
+ * Body处理器，Body相关的处理，提供了众多设置body的方式
+ * <ul>
+ *     <li>1.字符串、CharSequence</li>
+ *     <li>2.Java对象，依赖于 {@link ToString} 或 {@link ToStringHandler}</li>
+ *     <li>3.字节数组</li>
+ *     <li>4.输入流</li>
+ * </ul>
  * @author xiongshiyan
  */
 public interface BodyHolder {
@@ -19,7 +28,7 @@ public interface BodyHolder {
 
     /**
      * 获取body的字符编码
-     * @return this
+     * @return charset of body
      */
     String getBodyCharset();
 
@@ -29,6 +38,15 @@ public interface BodyHolder {
      * @return this
      */
     BodyHolder setBody(String body);
+
+    /**
+     * 设置请求体，提供对{@link StringBuffer}、{@link StringBuilder}等{@link CharSequence}的支持
+     * @param body body
+     * @return this
+     */
+    default BodyHolder setBody(CharSequence body){
+        return setBody(body.toString());
+    }
 
     /**
      * 设置字符编码
@@ -90,5 +108,24 @@ public interface BodyHolder {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 从流中获取body，并且关闭流
+     * @param inputStream 输入流
+     * @param bodyCharset 编码
+     * @return this
+     */
+    default BodyHolder setBody(InputStream inputStream, String bodyCharset){
+        byte[] bytes;
+        try {
+            bytes = IoUtil.stream2Bytes(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            IoUtil.close(inputStream);
+        }
+
+        return setBody(bytes, bodyCharset);
     }
 }
