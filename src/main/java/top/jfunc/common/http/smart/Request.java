@@ -7,9 +7,11 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.BaseRequest;
+import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
@@ -34,12 +36,12 @@ import java.io.File;
  */
 public class Request extends BaseRequest<Request> implements
         MutableStringBodyRequest,
+        FormRequest,
         UploadRequest,
         DownLoadRequest {
     /**
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
-     * //private MultiValueMap<String,String> formParamHolder;
      */
     private ParamHolder formParamHolder = new DefaultParamHolder();
 
@@ -114,6 +116,11 @@ public class Request extends BaseRequest<Request> implements
     @Override
     public BodyHolder bodyHolder() {
         return this.bodyHolder;
+    }
+
+    @Override
+    public MultiValueMap<String, String> getFormParams() {
+        return formParamHolder.getParams();
     }
 
     /**
