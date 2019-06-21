@@ -1,5 +1,6 @@
 package top.jfunc.common.http.request.impl;
 
+import top.jfunc.common.http.ChainCall;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
@@ -13,7 +14,7 @@ import java.net.URL;
  * T泛型为了变种的setter返回this便于链式调用
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest {
+public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest , ChainCall<THIS> {
     /**
      * 请求的URL
      */
@@ -90,13 +91,31 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     }
 
     @Override
+    public THIS addRouteParam(String key, String value) {
+        routeParamHolder().addRouteParam(key, value);
+        return myself();
+    }
+
+    @Override
     public ParamHolder queryParamHolder() {
         return queryParamHolder;
     }
 
     @Override
+    public THIS addQueryParam(String key, String value , String... values){
+        queryParamHolder().addParam(key, value, values);
+        return myself();
+    }
+
+    @Override
     public HeaderHolder headerHolder() {
         return headerHolder;
+    }
+
+    @Override
+    public THIS addHeader(String key, String value , String... values){
+        headerHolder().addHeader(key, value, values);
+        return myself();
     }
 
     public THIS addFormHeader(){
@@ -167,12 +186,6 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
         return myself();
     }
 
-    @SuppressWarnings("unchecked")
-    protected THIS myself(){
-        return (THIS)this;
-    }
-
-    /****************************Getter**************************/
     @Override
     public String getUrl() {
         return url;

@@ -27,7 +27,7 @@ public interface UploadRequest extends HttpRequest, ParamRequest {
      * @return this
      */
     @Override
-    default ParamRequest setParamCharset(String paramCharset){
+    default UploadRequest setParamCharset(String paramCharset){
         formParamHolder().setParamCharset(paramCharset);
         return this;
     }

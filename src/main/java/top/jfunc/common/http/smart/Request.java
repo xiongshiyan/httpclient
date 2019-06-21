@@ -4,7 +4,6 @@ import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.request.DownLoadRequest;
 import top.jfunc.common.http.request.FormRequest;
@@ -129,6 +128,12 @@ public class Request extends BaseRequest<Request> implements
         return this;
     }
 
+    @Override
+    public Request addFormParam(String key, String value, String... values) {
+        this.formParamHolder.addParam(key, value, values);
+        return this;
+    }
+
     /**
      * 设置body的同时设置Content-Type
      * @see MediaType
@@ -143,52 +148,9 @@ public class Request extends BaseRequest<Request> implements
 
     ///////////// 以下方法是为了兼容以前的Request的用法[返回Request方便方法连缀] /////////////////////
 
-
-    @Override
-    public Request addRouteParam(String key, String value) {
-        super.addRouteParam(key, value);
-        return this;
-    }
-
-    @Override
-    public Request addHeader(String key, String value , String... values){
-        super.addHeader(key, value, values);
-        return this;
-    }
-
-    @Override
-    public Request addQueryParam(String key, String value , String... values){
-        super.addQueryParam(key, value, values);
-        return this;
-    }
-
-    @Override
-    public Request addFormParam(String key, String value, String... values) {
-        this.formParamHolder.addParam(key, value, values);
-        return this;
-    }
-
     @Override
     public Request setBody(String body) {
         this.bodyHolder.setBody(body);
-        return this;
-    }
-
-    @Override
-    public Request setContentType(String contentType) {
-        super.setContentType(contentType);
-        return this;
-    }
-
-    @Override
-    public Request setConnectionTimeout(int connectionTimeout) {
-        super.setConnectionTimeout(connectionTimeout);
-        return this;
-    }
-
-    @Override
-    public Request setReadTimeout(int readTimeout) {
-        super.setReadTimeout(readTimeout);
         return this;
     }
 
@@ -206,30 +168,6 @@ public class Request extends BaseRequest<Request> implements
     }
 
     @Override
-    public Request setResultCharset(String resultCharset) {
-        super.setResultCharset(resultCharset);
-        return this;
-    }
-
-    @Override
-    public Request setIncludeHeaders(boolean includeHeaders) {
-        super.setIncludeHeaders(includeHeaders);
-        return this;
-    }
-
-    @Override
-    public Request setIgnoreResponseBody(boolean ignoreResponseBody) {
-        super.setIgnoreResponseBody(ignoreResponseBody);
-        return this;
-    }
-
-    @Override
-    public Request setRedirectable(boolean redirectable) {
-        super.setRedirectable(redirectable);
-        return this;
-    }
-
-    @Override
     public Request addFormFile(FormFile... formFiles) {
         formFileHolder.addFormFile(formFiles);
         return this;
@@ -238,12 +176,6 @@ public class Request extends BaseRequest<Request> implements
     @Override
     public Request setFile(File file) {
         fileHolder.setFile(file);
-        return this;
-    }
-
-    @Override
-    public Request setProxy(ProxyInfo proxyInfo) {
-        super.setProxy(proxyInfo);
         return this;
     }
 
