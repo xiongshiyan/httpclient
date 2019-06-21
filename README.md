@@ -77,6 +77,7 @@ HttpRequest接口体系，使用这些请求类意义更明确：
 - [x] 从1.1.1版本开始支持基于CookieHandler的Cookie支持,在全局设置中设置CookieHandler即可
 - [x] 从1.1.2版本开始类似Retrofit、MyBatis-Mapper的接口使用方式
 - [x] 从1.1.2版本开始支持全局拦截器拦截
+- [x] 从1.1.5版本开始支持每个HttpRequest中设置属性便于后续使用
 - [ ] 文件上传支持断点续传
 
 ### how to import it?
@@ -87,7 +88,7 @@ HttpRequest接口体系，使用这些请求类意义更明确：
 
 ##### 项目管理工具导入 
 
-项目已经发布至 `jcenter` 和 `maven` 中央仓库 最新版本version: **1.1.3**
+项目已经发布至 `jcenter` 和 `maven` 中央仓库 最新版本version: **1.1.5**
 
 Gradle:
 
