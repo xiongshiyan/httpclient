@@ -77,23 +77,23 @@ public class Request extends BaseRequest<Request> implements
     @Override
     public String getBody() {
         String body = bodyHolder.getBody();
-        //如果没有Body就将params的参数拼接
-        if(StrUtil.isBlank(body)){
-            //没有显式设置就设置默认的
-            String bodyCharset = formParamHolder.getParamCharset();
-            if(null == getContentType()){
-                setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
-            }
-            return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
+        //如果body不为空直接返回
+        if(StrUtil.isNotEmpty(body)){
+            return body;
         }
-        //直接返回设置的body
-        return body;
+
+        //没有设置body一般认为就是form表单传递
+        String bodyCharset = formParamHolder.getParamCharset();
+        if(null == getContentType()){
+            setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
+        }
+        return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
     }
 
 
     @Override
     public String getBodyCharset() {
-        return StrUtil.isNotBlank(bodyHolder.getBody()) ? bodyHolder.getBodyCharset() : formParamHolder.getParamCharset();
+        return StrUtil.isNotEmpty(bodyHolder.getBody()) ? bodyHolder.getBodyCharset() : formParamHolder.getParamCharset();
     }
 
     @Override
