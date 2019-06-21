@@ -2,10 +2,7 @@ package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.holder.HeaderHolder;
-import top.jfunc.common.http.holder.ParamHolder;
-import top.jfunc.common.http.holder.RouteParamHolder;
-import top.jfunc.common.http.holder.SSLHolder;
+import top.jfunc.common.http.holder.*;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.net.URL;
@@ -274,4 +271,25 @@ public interface HttpRequest {
      * @return SSLHolder must not be null
      */
     SSLHolder sslHolder();
+
+    /**
+     * 获取属性处理器
+     * @return must not be null
+     */
+    AttributeHolder attributeHolder();
+
+    /**
+     * 添加属性
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    default HttpRequest addAttribute(String key, String value){
+        attributeHolder().addAttribute(key , value);
+        return this;
+    }
+
+    default Map<String , Object> getAttributes(){
+        return attributeHolder().getAttributes();
+    }
 }

@@ -14,7 +14,7 @@ import java.net.URL;
  * T泛型为了变种的setter返回this便于链式调用
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest , ChainCall<THIS> {
+public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest, ChainCall<THIS> {
     /**
      * 请求的URL
      */
@@ -68,6 +68,10 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
      * SSL相关设置
      */
     private SSLHolder sslHolder = new DefaultSSLHolder();
+    /**
+     * 属性设置器
+     */
+    private AttributeHolder attributeHolder = new DefaultAttributeHolder();
 
     /**
      * 代理设置,如果有就设置
@@ -234,5 +238,16 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     @Override
     public SSLHolder sslHolder() {
         return sslHolder;
+    }
+
+    @Override
+    public AttributeHolder attributeHolder() {
+        return attributeHolder;
+    }
+
+    @Override
+    public THIS addAttribute(String key, String value) {
+        this.attributeHolder.addAttribute(key, value);
+        return myself();
     }
 }
