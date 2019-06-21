@@ -27,7 +27,7 @@ import java.io.File;
  * @see top.jfunc.common.http.request.impl.BaseRequest
  * @see top.jfunc.common.http.request.impl.PostBodyRequest
  * @see top.jfunc.common.http.request.impl.FormBodyRequest
- * @see top.jfunc.common.http.request.impl.FileParamUploadRequest
+ * @see top.jfunc.common.http.request.impl.UploadRequest
  * @see top.jfunc.common.http.request.impl.DownLoadRequest
  * @author xiongshiyan at 2017/12/9
  *
@@ -117,6 +117,12 @@ public class Request extends BaseRequest<Request> implements
         return this.bodyHolder;
     }
 
+    /**
+     * 如果实现的多个接口中有前面完全相同的方法，那么子类中必须复写此方法，相当于解决冲突
+     * 明确子类调用此方法时的行为
+     * @param paramCharset 参数编码
+     * @return this
+     */
     @Override
     public Request setParamCharset(String paramCharset) {
         formParamHolder.setParamCharset(paramCharset);

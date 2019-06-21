@@ -7,10 +7,7 @@ import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
 import top.jfunc.common.http.holder.HeaderHolder;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.impl.CommonBodyRequest;
-import top.jfunc.common.http.request.impl.CommonRequest;
-import top.jfunc.common.http.request.impl.FileParamUploadRequest;
-import top.jfunc.common.http.request.impl.FormBodyRequest;
+import top.jfunc.common.http.request.impl.*;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -208,7 +205,7 @@ class HttpRequestFactory implements RequestFactory {
         }
 
         if(multiPart){
-            httpRequest = FileParamUploadRequest.of(relativeUrl);
+            httpRequest = UploadRequest.of(relativeUrl);
         }
         if (formEncoded){
             httpRequest = FormBodyRequest.of(relativeUrl);
