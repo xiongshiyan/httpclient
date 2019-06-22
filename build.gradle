@@ -72,6 +72,11 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mock-server/mockserver-netty
     testCompile ("org.mock-server:mockserver-netty:${MockServerVersion}")
 }
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 //Maven仓库的URL
 //注意需要在防火墙的高级规则中添加允许入站规则http://bbs.csdn.net/topics/390728329
 def MAVEN_REPO_RELEASE_URL= 'http://192.168.2.188:8081/nexus/content/repositories/releases/'
