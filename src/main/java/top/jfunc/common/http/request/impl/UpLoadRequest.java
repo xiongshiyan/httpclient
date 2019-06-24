@@ -4,17 +4,18 @@ import top.jfunc.common.http.holder.DefaultFormFileHolder;
 import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.FormFileHolder;
 import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.request.UploadRequest;
 
 /**
  * 多文件、参数同时支持的上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class UploadRequest extends BaseRequest implements top.jfunc.common.http.request.UploadRequest {
-    public UploadRequest(String url){
+public class UpLoadRequest extends BaseRequest implements UploadRequest {
+    public UpLoadRequest(String url){
         super(url);
     }
-    public static UploadRequest of(String url){
-        return new UploadRequest(url);
+    public static UpLoadRequest of(String url){
+        return new UpLoadRequest(url);
     }
     /**
      * form参数// private MultiValueMap<String,String> formParamHolder;

@@ -205,7 +205,7 @@ class HttpRequestFactory implements RequestFactory {
         }
 
         if(multiPart){
-            httpRequest = UploadRequest.of(relativeUrl);
+            httpRequest = UpLoadRequest.of(relativeUrl);
         }
         if (formEncoded){
             httpRequest = FormBodyRequest.of(relativeUrl);

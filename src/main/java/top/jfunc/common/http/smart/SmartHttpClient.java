@@ -3,7 +3,7 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.basic.HttpClient;
-import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -71,7 +71,7 @@ public interface SmartHttpClient extends HttpClient {
      * @return File 下载的文件
      * @throws IOException IOException
      */
-    default File getAsFile(DownLoadRequest request) throws IOException{
+    default File getAsFile(DownloadRequest request) throws IOException{
         return download(request);
     }
     /**
@@ -80,7 +80,7 @@ public interface SmartHttpClient extends HttpClient {
      * @return File 下载的文件
      * @throws IOException IOException
      */
-    File download(DownLoadRequest request) throws IOException;
+    File download(DownloadRequest request) throws IOException;
 
     /**
      * 文件上传

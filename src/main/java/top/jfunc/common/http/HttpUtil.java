@@ -3,7 +3,7 @@ package top.jfunc.common.http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -51,7 +51,7 @@ public class HttpUtil {
     public static byte[] getAsBytes(HttpRequest request) throws IOException{
         return getSmartHttpClient().getAsBytes(request);
     }
-    public static File getAsFile(DownLoadRequest request) throws IOException{
+    public static File getAsFile(DownloadRequest request) throws IOException{
         return getSmartHttpClient().getAsFile(request);
     }
     public static Response upload(UploadRequest request) throws IOException{

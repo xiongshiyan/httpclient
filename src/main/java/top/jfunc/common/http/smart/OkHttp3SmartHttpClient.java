@@ -12,7 +12,7 @@ import top.jfunc.common.http.basic.OkHttp3Client;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.RouteParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
-import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -167,8 +167,8 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     }
 
     @Override
-    public File download(DownLoadRequest req) throws IOException {
-        DownLoadRequest request = beforeTemplate(req);
+    public File download(DownloadRequest req) throws IOException {
+        DownloadRequest request = beforeTemplate(req);
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 

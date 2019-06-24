@@ -11,7 +11,7 @@ import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.RouteParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
 import top.jfunc.common.http.request.CharsetUtil;
-import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
@@ -154,8 +154,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public File download(DownLoadRequest req) throws IOException {
-        DownLoadRequest request = beforeTemplate(req);
+    public File download(DownloadRequest req) throws IOException {
+        DownloadRequest request = beforeTemplate(req);
         return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 

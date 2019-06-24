@@ -166,8 +166,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     }
 
     @Override
-    public File download(DownLoadRequest req) throws IOException {
-        DownLoadRequest request = beforeTemplate(req);
+    public File download(DownloadRequest req) throws IOException {
+        DownloadRequest request = beforeTemplate(req);
         return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 

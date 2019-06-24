@@ -5,7 +5,7 @@ import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.base.handler.FromString;
 import top.jfunc.common.http.base.handler.FromStringHandler;
-import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -119,7 +119,7 @@ public class Response implements Closeable{
      *
      * 提供此方法的主要目的是在既想要将内容保存为文件，
      * 又需要header等信息的时候，返回Response代表响应的所有信息。
-     * 如果只需要保存为文件，那么请调用 {@link SmartHttpClient#getAsFile(DownLoadRequest)}
+     * 如果只需要保存为文件，那么请调用 {@link SmartHttpClient#getAsFile(DownloadRequest)}
      *
      */
     public File asFile(File fileToSave){

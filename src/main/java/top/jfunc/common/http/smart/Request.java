@@ -5,11 +5,13 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holder.*;
-import top.jfunc.common.http.request.DownLoadRequest;
+import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.BaseRequest;
+import top.jfunc.common.http.request.impl.DownLoadRequest;
+import top.jfunc.common.http.request.impl.UpLoadRequest;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
@@ -26,8 +28,8 @@ import java.io.File;
  * @see top.jfunc.common.http.request.impl.BaseRequest
  * @see top.jfunc.common.http.request.impl.PostBodyRequest
  * @see top.jfunc.common.http.request.impl.FormBodyRequest
- * @see top.jfunc.common.http.request.impl.UploadRequest
- * @see top.jfunc.common.http.request.impl.DownLoadRequest
+ * @see UpLoadRequest
+ * @see DownLoadRequest
  * @author xiongshiyan at 2017/12/9
  *
  * @since 从1.1开始建议不要用此类了,而是使用以上的一些意义更明确的
@@ -36,7 +38,7 @@ public class Request extends BaseRequest<Request> implements
         MutableStringBodyRequest,
         FormRequest,
         UploadRequest,
-        DownLoadRequest {
+        DownloadRequest {
     /**
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded
