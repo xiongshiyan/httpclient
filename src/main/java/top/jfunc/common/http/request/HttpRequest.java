@@ -227,6 +227,16 @@ public interface HttpRequest {
     HttpRequest setIncludeHeaders(boolean includeHeaders);
 
     /**
+     * 快捷设置
+     * @see HttpRequest#setIncludeHeaders(boolean)
+     * @return this
+     */
+    default HttpRequest includeHeaders(){
+        setIncludeHeaders(INCLUDE_HEADERS);
+        return this;
+    }
+
+    /**
      * 是否忽略响应体，在不需要响应体的场景下提高效率
      * @return 是否忽略响应体
      */
@@ -240,6 +250,16 @@ public interface HttpRequest {
     HttpRequest setIgnoreResponseBody(boolean ignoreResponseBody);
 
     /**
+     * 快捷设置
+     * @see HttpRequest#setIgnoreResponseBody(boolean)
+     * @return this
+     */
+    default HttpRequest ignoreResponseBody(){
+        setIgnoreResponseBody(IGNORE_RESPONSE_BODY);
+        return this;
+    }
+
+    /**
      * 是否重定向
      * @return 是否重定向
      */
@@ -251,6 +271,16 @@ public interface HttpRequest {
      * @return this
      */
     HttpRequest setRedirectable(boolean redirectable);
+
+    /**
+     * 快捷设置
+     * @see HttpRequest#setRedirectable(boolean)
+     * @return this
+     */
+    default HttpRequest redirectable(){
+        setRedirectable(REDIRECTABLE);
+        return this;
+    }
 
     /**
      * 代理信息

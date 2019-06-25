@@ -169,8 +169,20 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     }
 
     @Override
+    public THIS includeHeaders() {
+        setIncludeHeaders(INCLUDE_HEADERS);
+        return myself();
+    }
+
+    @Override
     public THIS setIgnoreResponseBody(boolean ignoreResponseBody) {
         this.ignoreResponseBody = ignoreResponseBody;
+        return myself();
+    }
+
+    @Override
+    public THIS ignoreResponseBody() {
+        setIgnoreResponseBody(IGNORE_RESPONSE_BODY);
         return myself();
     }
 
@@ -181,6 +193,12 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
         if(redirectable){
             this.includeHeaders = true;
         }
+        return myself();
+    }
+
+    @Override
+    public THIS redirectable() {
+        setRedirectable(REDIRECTABLE);
         return myself();
     }
 
