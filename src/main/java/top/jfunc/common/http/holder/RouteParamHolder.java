@@ -20,7 +20,7 @@ public interface RouteParamHolder extends MapHolder {
      * @return this
      */
     @Override
-    MapHolder setMap(Map<String, String> map);
+    RouteParamHolder setMap(Map<String, String> map);
 
     /**
      * 添加路径参数

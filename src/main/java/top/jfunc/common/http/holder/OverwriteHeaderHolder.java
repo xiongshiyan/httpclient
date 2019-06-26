@@ -20,7 +20,7 @@ public interface OverwriteHeaderHolder extends MapHolder{
      * @return this
      */
     @Override
-    MapHolder setMap(Map<String, String> map);
+    OverwriteHeaderHolder setMap(Map<String, String> map);
 
     /**
      * 添加路径参数
