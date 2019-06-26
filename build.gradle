@@ -56,8 +56,8 @@ jar {
         attributes('Email': 'yanshixiong@126.com')
         attributes('Build-By': 'Gradle-4.6')
         attributes('Licences': 'Apache-2.0')
-        attributes('gitUrl-gitee': 'https://gitee.com/xxssyyyyssxx/httpclient-interfacing')
-        attributes('gitUrl-github': 'https://github.com/xiongshiyan/httpclient-interfacing')
+        attributes('GitUrl-Gitee': 'https://gitee.com/xxssyyyyssxx/httpclient-interfacing')
+        attributes('GitUrl-Github': 'https://github.com/xiongshiyan/httpclient-interfacing')
     }
 }
 
