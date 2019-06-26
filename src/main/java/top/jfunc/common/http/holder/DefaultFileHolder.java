@@ -22,10 +22,4 @@ public class DefaultFileHolder implements FileHolder {
         this.file = file;
         return this;
     }
-
-    @Override
-    public FileHolder setFile(String filePath) {
-        this.file = new File(filePath);
-        return this;
-    }
 }

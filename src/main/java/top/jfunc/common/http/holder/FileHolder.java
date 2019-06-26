@@ -25,5 +25,7 @@ public interface FileHolder {
      * @param filePath 文件路径
      * @return this
      */
-    FileHolder setFile(String filePath);
+    default FileHolder setFile(String filePath){
+        return setFile(new File(filePath));
+    }
 }

@@ -51,6 +51,7 @@ public interface HeaderHolder {
      * @param key key
      * @param value value
      * @param values values
+     * @return this
      */
     HeaderHolder addHeader(String key, String value, String... values);
 
