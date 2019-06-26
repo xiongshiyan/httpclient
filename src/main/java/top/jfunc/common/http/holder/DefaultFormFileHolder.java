@@ -22,17 +22,17 @@ public class DefaultFormFileHolder implements FormFileHolder {
     }
 
     @Override
-    public FormFileHolder setFormFiles(Iterable<FormFile> formFiles) {
-        Objects.requireNonNull(formFiles);
-        formFiles.iterator().forEachRemaining(this.formFiles::add);
-        return this;
-    }
-
-    @Override
     public FormFileHolder addFormFile(FormFile... formFiles) {
         if(null != formFiles && formFiles.length > 0){
             this.formFiles.addAll(Arrays.asList(formFiles));
         }
+        return this;
+    }
+
+    @Override
+    public FormFileHolder addFormFiles(Iterable<FormFile> formFiles) {
+        Objects.requireNonNull(formFiles);
+        formFiles.forEach(this.formFiles::add);
         return this;
     }
 }

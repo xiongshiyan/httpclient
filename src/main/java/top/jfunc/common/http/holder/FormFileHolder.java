@@ -21,9 +21,9 @@ public interface FormFileHolder {
     FormFileHolder addFormFile(FormFile... formFiles);
 
     /**
-     * 设置文件上传信息
+     * 新增文件上传信息
      * @param formFiles 上传的文件
      * @return this
      */
-    FormFileHolder setFormFiles(Iterable<FormFile> formFiles);
+    FormFileHolder addFormFiles(Iterable<FormFile> formFiles);
 }
