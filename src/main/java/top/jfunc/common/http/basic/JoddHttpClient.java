@@ -57,7 +57,7 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
             }
 
             //5.设置header
-            setRequestHeaders(request , contentType , mergeDefaultHeaders(headers));
+            setRequestHeaders(request , contentType , mergeDefaultHeaders(headers) , null);
 
             //6.子类可以复写
             doWithHttpRequest(request);
@@ -126,15 +126,24 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
                 (s, b, r, h) -> IoUtil.read(b, r));
     }
 
-    protected void setRequestHeaders(HttpRequest httpRequest, String contentType, MultiValueMap<String, String> headers) {
+    protected void setRequestHeaders(HttpRequest request, String contentType,
+                                     MultiValueMap<String, String> headers,
+                                     Map<String , String> overwriteHeaders) {
+        //add方式处理多值header
         if(null != headers && !headers.isEmpty()) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)-> httpRequest.header(k , v)));*/
-            headers.forEachKeyValue(httpRequest::header);
+            headers.forEachKeyValue(request::header);
         }
+
+        //set方式处理单值header
+        if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
+            overwriteHeaders.forEach(request::headerOverwrite);
+        }
+
         if(null != contentType){
-            httpRequest.contentType(contentType);
+            request.contentType(contentType);
         }
     }
 

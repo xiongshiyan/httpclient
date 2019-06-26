@@ -62,7 +62,7 @@ public interface HttpRequest {
      * @return this
      */
     default HttpRequest addRouteParam(String key, String value){
-        routeParamHolder().addRouteParam(key, value);
+        routeParamHolder().put(key, value);
         return this;
     }
 
@@ -72,7 +72,7 @@ public interface HttpRequest {
      * @return this
      */
     default HttpRequest setRouteParams(Map<String, String> routeParams){
-        routeParamHolder().setRouteParams(routeParams);
+        routeParamHolder().setMap(routeParams);
         return this;
     }
 
@@ -116,6 +116,8 @@ public interface HttpRequest {
 
     /**
      * 获取到 {@link HeaderHolder} 可以对Header完全接管处理
+     * add 方式处理
+     * @see HttpRequest#overwriteHeaderHolder()
      * @return HeaderHolder must not be null
      */
     HeaderHolder headerHolder();
@@ -149,6 +151,35 @@ public interface HttpRequest {
      */
     default HttpRequest setHeaders(Map<String, String> headers){
         headerHolder().setHeaders(headers);
+        return this;
+    }
+
+    /**
+     * 获取到 {@link HeaderHolder} 可以对Header完全接管处理
+     * 用于处理重写的header，set方式处理
+     * @see HttpRequest#headerHolder()
+     * @return HeaderHolder must not be null
+     */
+    OverwriteHeaderHolder overwriteHeaderHolder();
+
+    /**
+     * 提供便捷的设置header的方法
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    default HttpRequest putOverwriteHeader(String key, String value){
+        overwriteHeaderHolder().put(key, value);
+        return this;
+    }
+
+    /**
+     * 提供便捷的设置header的方法
+     * @param headers 多个header
+     * @return this
+     */
+    default HttpRequest putOverwriteHeaders(Map<String, String> headers){
+        overwriteHeaderHolder().setMap(headers);
         return this;
     }
 

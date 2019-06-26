@@ -6,19 +6,21 @@ import java.util.Map;
  * 路径参数处理器
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface RouteParamHolder {
+public interface RouteParamHolder extends MapHolder {
     /**
      * 路径参数
      * @return 路径参数
      */
-    Map<String, String> getRouteParams();
+    @Override
+    Map<String, String> getMap();
 
     /**
      * 设置路径参数
-     * @param routeParams 路径参数映射
+     * @param map 路径参数映射
      * @return this
      */
-    RouteParamHolder setRouteParams(Map<String, String> routeParams);
+    @Override
+    MapHolder setMap(Map<String, String> map);
 
     /**
      * 添加路径参数
@@ -26,7 +28,19 @@ public interface RouteParamHolder {
      * @param value value
      * @return this
      */
-    RouteParamHolder addRouteParam(String key, String value);
+    @Override
+    RouteParamHolder put(String key, String value);
+
+    /**
+     * 添加路径参数
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    default RouteParamHolder addRouteParam(String key, String value){
+        put(key, value);
+        return this;
+    }
 
     /**
      * 添加路径参数
@@ -48,9 +62,9 @@ public interface RouteParamHolder {
     default RouteParamHolder addOrderedRouteParams(String first, String... others){
         int from = orderedParamsFrom();
 
-        addRouteParam("" + from , first);
+        put("" + from , first);
         for (int i = 0; i < others.length; i++) {
-            addRouteParam(String.valueOf(from + 1 +i) , others[i]);
+            put(String.valueOf(from + 1 +i) , others[i]);
         }
         return this;
     }

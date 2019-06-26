@@ -62,7 +62,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
             connection.setReadTimeout(getReadTimeoutWithDefault(readTimeout));
 
             //2.处理header
-            setRequestHeaders(connection, contentType, mergeDefaultHeaders(headers));
+            setRequestHeaders(connection, contentType, mergeDefaultHeaders(headers) , null);
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection);
@@ -298,13 +298,22 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         }
     }
 
-    protected void setRequestHeaders(HttpURLConnection connection, String contentType, MultiValueMap<String, String> headers) {
+    protected void setRequestHeaders(HttpURLConnection connection, String contentType,
+                                     MultiValueMap<String, String> headers,
+                                     Map<String , String> overwriteHeaders) {
+        //add方式处理多值header
         if(null != headers && !headers.isEmpty()) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)->connection.addRequestProperty(k,v)));*/
             headers.forEachKeyValue(connection::addRequestProperty);
         }
+
+        //set方式处理单值header
+        if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
+            overwriteHeaders.forEach(connection::setRequestProperty);
+        }
+
         if(null != contentType){
             connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString(), contentType);
         }

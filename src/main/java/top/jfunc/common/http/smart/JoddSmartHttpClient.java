@@ -37,7 +37,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             //1.获取完成的URL，创建请求
             ParamHolder queryParamHolder = httpRequest.queryParamHolder();
             RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getRouteParams() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
 
             HttpRequest request = new HttpRequest();
             request.method(method.name());
@@ -66,7 +66,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
 
             headers = handleCookieIfNecessary(completedUrl, headers);
 
-            setRequestHeaders(request , httpRequest.getContentType() , headers);
+            setRequestHeaders(request , httpRequest.getContentType() , headers ,
+                    httpRequest.overwriteHeaderHolder().getMap());
 
             //6.子类可以复写
             doWithHttpRequest(request);

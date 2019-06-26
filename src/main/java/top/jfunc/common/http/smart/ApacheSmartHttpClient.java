@@ -42,7 +42,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         //1.获取完整的URL
         ParamHolder queryParamHolder = httpRequest.queryParamHolder();
         RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-        String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getRouteParams() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
+        String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
 
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
 
@@ -66,7 +66,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         headers = handleCookieIfNecessary(completedUrl, headers);
 
         //4.设置请求头
-        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers);
+        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers ,
+                httpRequest.overwriteHeaderHolder().getMap());
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;

@@ -26,18 +26,18 @@ public class DefaultRouteParamHolder implements RouteParamHolder {
     }
 
     @Override
-    public Map<String, String> getRouteParams() {
+    public Map<String, String> getMap() {
         return routeParams;
     }
 
     @Override
-    public RouteParamHolder setRouteParams(Map<String, String> routeParams) {
+    public RouteParamHolder setMap(Map<String, String> routeParams) {
         this.routeParams = Objects.requireNonNull(routeParams);
         return this;
     }
 
     @Override
-    public RouteParamHolder addRouteParam(String key, String value) {
+    public RouteParamHolder put(String key, String value) {
         if(null == this.routeParams){
             this.routeParams = new HashMap<>(2);
         }

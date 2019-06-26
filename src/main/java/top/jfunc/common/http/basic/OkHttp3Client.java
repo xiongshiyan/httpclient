@@ -64,7 +64,7 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
             }
 
             //2.3设置headers
-            setRequestHeaders(builder , contentType , mergeDefaultHeaders(headers));
+            setRequestHeaders(builder , contentType , mergeDefaultHeaders(headers) , null);
 
             //3.构造请求
             Request request = builder.build();
@@ -206,13 +206,22 @@ public class OkHttp3Client extends AbstractConfigurableHttp implements HttpTempl
         return new InputStreamRequestBody(contentType , inputStream , length);
     }
 
-    protected void setRequestHeaders(Request.Builder builder, String contentType, MultiValueMap<String, String> headers) {
+    protected void setRequestHeaders(Request.Builder builder, String contentType,
+                                     MultiValueMap<String, String> headers,
+                                     Map<String , String> overwriteHeaders) {
+        //add方式处理多值header
         if(null != headers && !headers.isEmpty()) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));*/
             headers.forEachKeyValue(builder::addHeader);
         }
+
+        //set方式处理单值header
+        if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
+            overwriteHeaders.forEach(builder::header);
+        }
+
         if(null != contentType){
             builder.header(HeaderRegular.CONTENT_TYPE.toString(), contentType);
         }

@@ -75,7 +75,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         }
 
         //4.设置请求头
-        setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers));
+        setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers) , null);
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
@@ -350,7 +350,10 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         request.setConfig(builder.build());
     }
 
-    protected void setRequestHeaders(HttpUriRequest request, String contentType, MultiValueMap<String, String> headers) {
+    protected void setRequestHeaders(HttpUriRequest request, String contentType,
+                                     MultiValueMap<String, String> headers,
+                                     Map<String , String> overwriteHeaders) {
+        //add方式处理多值header
         if(null != headers && !headers.isEmpty()) {
             ///
             /*Set<String> keySet = headers.keySet();
@@ -359,6 +362,12 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
             entries.forEach(entry -> entry.getValue().forEach(v->request.addHeader(entry.getKey() , v)));*/
             headers.forEachKeyValue(request::addHeader);
         }
+
+        //set方式处理单值header
+        if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
+            overwriteHeaders.forEach(request::setHeader);
+        }
+
         if(null != contentType){
             request.setHeader(HeaderRegular.CONTENT_TYPE.toString(), contentType);
         }

@@ -30,9 +30,13 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
      */
     private ParamHolder queryParamHolder = new DefaultParamHolder();
     /**
-     * 请求头//private MultiValueMap<String,String> headerHolder;
+     * 请求头，通过add方式
      */
     private HeaderHolder headerHolder = new DefaultHeaderHolder();
+    /**
+     * 请求头，通过set方式
+     */
+    private OverwriteHeaderHolder overwriteHeaderHolder = new DefaultOverwriteHeaderHolder();
     /**
      * 资源类型
      */
@@ -96,7 +100,7 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
 
     @Override
     public THIS addRouteParam(String key, String value) {
-        routeParamHolder().addRouteParam(key, value);
+        routeParamHolder().put(key, value);
         return myself();
     }
 
@@ -141,6 +145,18 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     @Override
     public THIS setContentType(MediaType mediaType) {
         this.contentType = mediaType.toString();
+        return myself();
+    }
+
+
+    @Override
+    public OverwriteHeaderHolder overwriteHeaderHolder() {
+        return overwriteHeaderHolder;
+    }
+
+    @Override
+    public THIS putOverwriteHeader(String key, String value) {
+        overwriteHeaderHolder.put(key, value);
         return myself();
     }
 

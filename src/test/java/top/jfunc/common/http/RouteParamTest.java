@@ -14,7 +14,7 @@ public class RouteParamTest {
     @Test
     public void testRouteParam() throws Exception{
         Request request = Request.of("http://localhost:8080/http-server-test/get/{do}");
-        request.routeParamHolder().addRouteParam("do", "query");
+        request.routeParamHolder().put("do", "query");
         Response response = HttpDelegate.delegate().get(request);
         Assert.assertEquals("success" , response.asString());
     }

@@ -35,7 +35,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             //1.获取连接
             ParamHolder queryParamHolder = httpRequest.queryParamHolder();
             RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getRouteParams() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
 
             URL url = new URL(completedUrl);
             //1.1如果需要则设置代理
@@ -78,7 +78,8 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                 }
             }*/
 
-            setRequestHeaders(connection, httpRequest.getContentType(), headers);
+            setRequestHeaders(connection, httpRequest.getContentType(), headers,
+                    httpRequest.overwriteHeaderHolder().getMap());
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection);
