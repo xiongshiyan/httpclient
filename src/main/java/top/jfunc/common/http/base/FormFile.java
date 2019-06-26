@@ -20,10 +20,30 @@ public class FormFile {
     /**内容类型 */
     private String      contentType = MediaType.APPLICATIPON_OCTET_STREAM.toString();
 
+    public static FormFile of(String filName, byte[] data, String parameterName, String contentType){
+        return new FormFile(filName , data , parameterName , contentType);
+    }
+    public static FormFile of(File file, String parameterName, String contentType){
+        return new FormFile(file , parameterName , contentType);
+    }
+    public static FormFile of(String fileName, InputStream inStream, long fileLen, String parameterName, String contentType){
+        return new FormFile(fileName , inStream , fileLen , parameterName , contentType);
+    }
+    public static FormFile of(String fileName, InputStream inStream, String parameterName, String contentType){
+        int available;
+        try {
+            available = inStream.available();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new FormFile(fileName , inStream , available , parameterName , contentType);
+    }
     public FormFile(String filName, byte[] data, String parameterName, String contentType){
         this.inStream = new ByteArrayInputStream(data);
         init(filName, data.length , parameterName, contentType);
     }
+
+
 
     public FormFile(File file, String parameterName, String contentType) {
         try {
