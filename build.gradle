@@ -47,6 +47,21 @@ apply plugin: 'com.jfrog.bintray'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+
+jar {
+    manifest {
+        attributes('Version': "${version}")
+        attributes('Author': 'xiongshiyan')
+        attributes('Phone': '15208384257')
+        attributes('Email': 'yanshixiong@126.com')
+        attributes('Build-By': 'Gradle-4.6')
+        attributes('Licences': 'Apache-2.0')
+        attributes('gitUrl-gitee': 'https://gitee.com/xxssyyyyssxx/httpclient-interfacing')
+        attributes('gitUrl-github': 'https://github.com/xiongshiyan/httpclient-interfacing')
+    }
+}
+
+
 repositories {
     mavenLocal()
     mavenCentral()
