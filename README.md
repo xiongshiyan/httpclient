@@ -45,7 +45,7 @@ JoddHttp实现主线：
 
 代表所有参数的Request类：
 
-![代表所有参数的Request类](https://images.gitee.com/uploads/images/2019/0520/112801_a06944a0_1507575.png "Request.png")
+![Request](https://images.gitee.com/uploads/images/2019/0627/124024_5dd9b66a_1507575.png "Request.png")
 
 HttpRequest接口体系，使用这些请求类意义更明确：
 
