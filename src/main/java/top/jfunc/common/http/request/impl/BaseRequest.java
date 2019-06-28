@@ -6,8 +6,10 @@ import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * 基本请求参数实现:可用于无请求体如Get等的请求
@@ -105,6 +107,12 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     }
 
     @Override
+    public THIS setRouteParams(Map<String, String> routeParams) {
+        routeParamHolder().setMap(routeParams);
+        return myself();
+    }
+
+    @Override
     public ParamHolder queryParamHolder() {
         return queryParamHolder;
     }
@@ -116,6 +124,18 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     }
 
     @Override
+    public THIS setQueryParams(MultiValueMap<String, String> queryParams) {
+        queryParamHolder().setParams(queryParams);
+        return myself();
+    }
+
+    @Override
+    public THIS setQueryParams(Map<String, String> queryParams) {
+        queryParamHolder().setParams(queryParams);
+        return myself();
+    }
+
+    @Override
     public HeaderHolder headerHolder() {
         return headerHolder;
     }
@@ -123,6 +143,18 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     @Override
     public THIS addHeader(String key, String value , String... values){
         headerHolder().addHeader(key, value, values);
+        return myself();
+    }
+
+    @Override
+    public THIS setHeaders(Map<String, String> headers) {
+        headerHolder().setHeaders(headers);
+        return myself();
+    }
+
+    @Override
+    public THIS setHeaders(MultiValueMap<String, String> headers) {
+        headerHolder().setHeaders(headers);
         return myself();
     }
 
@@ -157,6 +189,12 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     @Override
     public THIS putOverwriteHeader(String key, String value) {
         overwriteHeaderHolder.put(key, value);
+        return myself();
+    }
+
+    @Override
+    public THIS putOverwriteHeaders(Map<String, String> headers) {
+        overwriteHeaderHolder().setMap(headers);
         return myself();
     }
 
