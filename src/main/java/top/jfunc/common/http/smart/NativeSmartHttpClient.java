@@ -6,7 +6,6 @@ import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.NativeHttpClient;
 import top.jfunc.common.http.holder.ParamHolder;
-import top.jfunc.common.http.holder.RouteParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
 import top.jfunc.common.http.request.*;
 import top.jfunc.common.utils.IoUtil;
@@ -33,9 +32,10 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         InputStream inputStream = null;
         try {
             //1.获取连接
-            ParamHolder queryParamHolder = httpRequest.queryParamHolder();
-            RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
+            /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
+            /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
+            /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.queryParamHolder().getParamCharset());
 
             URL url = new URL(completedUrl);
             //1.1如果需要则设置代理

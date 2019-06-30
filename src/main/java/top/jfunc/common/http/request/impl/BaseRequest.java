@@ -20,17 +20,7 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     /**
      * 请求的URL
      */
-    private String url;
-    /**
-     * 路径参数，形如这种URL http://httpbin.org/book/{id}，保存id和id的值
-     * @since 1.0.4 //private Map<String , String> routeParams;
-     */
-    private RouteParamHolder routeParamHolder = new DefaultRouteParamHolder();
-    /**
-     * 查询参数，拼装在URL后面 ?//private MultiValueMap<String,String> queryParamHolder;
-     * @since 1.0.4
-     */
-    private ParamHolder queryParamHolder = new DefaultParamHolder();
+    private UrlHolder urlHolder = new DefaultUrlHolder();
     /**
      * 请求头，通过add方式
      */
@@ -85,19 +75,14 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
      */
     private ProxyInfo proxyInfo = null;
 
-    public BaseRequest(String url){this.url = url;}
-    public BaseRequest(URL url){this.url = url.toString();}
+    public BaseRequest(String url){this.urlHolder.setUrl(url);}
+    public BaseRequest(URL url){this.urlHolder.setUrl(url);}
     public BaseRequest(){}
 
     @Override
     public THIS setUrl(String url) {
-        this.url = url;
+        this.urlHolder.setUrl(url);
         return myself();
-    }
-
-    @Override
-    public RouteParamHolder routeParamHolder() {
-        return routeParamHolder;
     }
 
     @Override
@@ -110,11 +95,6 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     public THIS setRouteParams(Map<String, String> routeParams) {
         routeParamHolder().setMap(routeParams);
         return myself();
-    }
-
-    @Override
-    public ParamHolder queryParamHolder() {
-        return queryParamHolder;
     }
 
     @Override
@@ -263,8 +243,14 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
     }
 
     @Override
-    public String getUrl() {
-        return url;
+    public UrlHolder urlHolder() {
+        return urlHolder;
+    }
+
+    @Override
+    public THIS urlHolder(UrlHolder urlHolder) {
+        this.urlHolder = urlHolder;
+        return myself();
     }
 
     @Override
