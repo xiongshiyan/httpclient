@@ -40,7 +40,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
             /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
             /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.queryParamHolder().getParamCharset());
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
 
             //1.构造OkHttpClient
             OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()

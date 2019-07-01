@@ -154,9 +154,14 @@ public abstract class AbstractConfigurableHttp {
         return ParamUtil.contactUrlParams(urlWithBase, queryParams, getQueryCharsetWithDefault(charset));
     }
 
-    protected String handleUrlIfNecessary(String originUrl , String queryCharset){
+    /**
+     * 处理基路径和默认Query参数：注意url可能已经带Query参数了
+     * @param originUrl 客户设置的url
+     * @return 处理后的url
+     */
+    protected String handleUrlIfNecessary(String originUrl){
         String urlWithBase = addBaseUrlIfNecessary(originUrl);
-        return ParamUtil.contactUrlParams(urlWithBase, getDefaultQueryParams(), getQueryCharsetWithDefault(queryCharset));
+        return ParamUtil.contactUrlParams(urlWithBase, getDefaultQueryParams(), getDefaultQueryCharset());
     }
 
 
