@@ -12,6 +12,7 @@ import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.impl.BaseRequest;
 import top.jfunc.common.http.request.impl.DownLoadRequest;
 import top.jfunc.common.http.request.impl.UpLoadRequest;
+import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
@@ -134,6 +135,11 @@ public class Request extends BaseRequest<Request> implements
     public Request addFormParam(String key, String value, String... values) {
         this.formParamHolder.addParam(key, value, values);
         return this;
+    }
+
+    @Override
+    public MultiValueMap<String, String> getFormParams() {
+        return formParamHolder.getParams();
     }
 
     /**
