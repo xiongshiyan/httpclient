@@ -184,23 +184,23 @@ public class ParamUtil {
     }
 
     /**
-     * 如果有必要就添加baseUrl，对 / 的兼容处理
-     * @param baseUrl baseUrl
-     * @param inputUrl inputUrl
+     * 将两截URL连接起来，主要功能是对 / 的兼容处理
+     * @param firstFragment firstFragment
+     * @param secondFragment secondFragment
      */
-    public static String addBaseUrlIfNecessary(String baseUrl , String inputUrl){
+    public static String concatUrlIfNecessary(String firstFragment , String secondFragment){
         //1.baseUrl为空不处理
         //2.本身是完整的URL不处理
-        if(StrUtil.isEmpty(baseUrl) || ParamUtil.isCompletedUrl(inputUrl)){
-            return inputUrl;
+        if(StrUtil.isEmpty(firstFragment) || ParamUtil.isCompletedUrl(secondFragment)){
+            return secondFragment;
         }
-        if(baseUrl.endsWith(SPLASH) && inputUrl.startsWith(SPLASH)){
-            return baseUrl + inputUrl.substring(1);
+        if(firstFragment.endsWith(SPLASH) && secondFragment.startsWith(SPLASH)){
+            return firstFragment + secondFragment.substring(1);
         }
-        if(!baseUrl.endsWith(SPLASH) && !inputUrl.startsWith(SPLASH)){
-            return baseUrl + SPLASH + inputUrl;
+        if(!firstFragment.endsWith(SPLASH) && !secondFragment.startsWith(SPLASH)){
+            return firstFragment + SPLASH + secondFragment;
         }
-        return baseUrl + inputUrl;
+        return firstFragment + secondFragment;
     }
 
     /**

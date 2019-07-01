@@ -150,7 +150,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
         this.path = path;
         if(null != paths && paths.length > 0){
             for (String p : paths) {
-                this.path = ParamUtil.addBaseUrlIfNecessary(this.path , p);
+                this.path = ParamUtil.concatUrlIfNecessary(this.path , p);
             }
         }
         return this;

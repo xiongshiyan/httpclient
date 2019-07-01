@@ -166,7 +166,7 @@ public abstract class AbstractConfigurableHttp {
 
 
     protected String addBaseUrlIfNecessary(String inputUrl){
-        return ParamUtil.addBaseUrlIfNecessary(getConfig().getBaseUrl() , inputUrl);
+        return ParamUtil.concatUrlIfNecessary(getConfig().getBaseUrl() , inputUrl);
     }
 
     public Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
