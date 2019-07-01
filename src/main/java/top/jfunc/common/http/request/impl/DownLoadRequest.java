@@ -10,7 +10,7 @@ import java.io.File;
  * 下载为文件的请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DownLoadRequest extends BaseRequest implements DownloadRequest {
+public class DownLoadRequest extends BaseRequest<DownLoadRequest> implements DownloadRequest {
     public DownLoadRequest(String url){
         super(url);
     }
@@ -33,5 +33,11 @@ public class DownLoadRequest extends BaseRequest implements DownloadRequest {
     @Override
     public FileHolder fileHolder() {
         return this.fileHolder;
+    }
+
+    @Override
+    public DownLoadRequest setFile(File file) {
+        fileHolder().setFile(file);
+        return myself();
     }
 }

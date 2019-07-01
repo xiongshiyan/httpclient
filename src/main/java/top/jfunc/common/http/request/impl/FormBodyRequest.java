@@ -8,7 +8,7 @@ import top.jfunc.common.http.request.FormRequest;
  * Form表单请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class FormBodyRequest extends BaseRequest implements FormRequest {
+public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements FormRequest {
 
     public FormBodyRequest(String url){
         super(url);
@@ -27,5 +27,17 @@ public class FormBodyRequest extends BaseRequest implements FormRequest {
     @Override
     public ParamHolder formParamHolder() {
         return formParamHolder;
+    }
+
+    @Override
+    public FormBodyRequest addFormParam(String key, String value, String... values) {
+        formParamHolder().addParam(key, value, values);
+        return myself();
+    }
+
+    @Override
+    public FormBodyRequest setParamCharset(String paramCharset) {
+        formParamHolder().setParamCharset(paramCharset);
+        return myself();
     }
 }

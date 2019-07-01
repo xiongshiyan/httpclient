@@ -1,5 +1,6 @@
 package top.jfunc.common.http.request.impl;
 
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holder.DefaultFormFileHolder;
 import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.FormFileHolder;
@@ -10,7 +11,7 @@ import top.jfunc.common.http.request.UploadRequest;
  * 多文件、参数同时支持的上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class UpLoadRequest extends BaseRequest implements UploadRequest {
+public class UpLoadRequest extends BaseRequest<UpLoadRequest> implements UploadRequest {
     public UpLoadRequest(String url){
         super(url);
     }
@@ -34,5 +35,23 @@ public class UpLoadRequest extends BaseRequest implements UploadRequest {
     @Override
     public FormFileHolder formFileHolder() {
         return formFileHolder;
+    }
+
+    @Override
+    public UpLoadRequest setParamCharset(String paramCharset) {
+        formParamHolder().setParamCharset(paramCharset);
+        return myself();
+    }
+
+    @Override
+    public UpLoadRequest addFormParam(String key, String value, String... values) {
+        formParamHolder().addParam(key, value, values);
+        return myself();
+    }
+
+    @Override
+    public UpLoadRequest addFormFile(FormFile... formFiles) {
+        formFileHolder().addFormFile(formFiles);
+        return myself();
     }
 }
