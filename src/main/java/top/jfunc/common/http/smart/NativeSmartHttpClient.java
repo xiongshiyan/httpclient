@@ -181,8 +181,8 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     @Override
     public Response upload(UploadRequest req) throws IOException {
         UploadRequest request = beforeTemplate(req);
-        MultiValueMap<String, String> headers = mergeHeaders(request.headerHolder().getHeaders());
-        request.headerHolder().setHeaders(headers);
+        ///MultiValueMap<String, String> headers = mergeHeaders(request.headerHolder().getHeaders());
+        ///request.headerHolder().setHeaders(headers);
         Response response = template(request, Method.POST ,
                 connect -> {
                     ParamHolder paramHolder = request.formParamHolder();

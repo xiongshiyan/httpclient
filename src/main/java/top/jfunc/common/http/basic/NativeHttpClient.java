@@ -132,8 +132,8 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
      */
     @Override
     public String upload(String url , MultiValueMap<String,String> headers , Integer connectTimeout , Integer readTimeout , String resultCharset ,FormFile... files) throws IOException{
-        MultiValueMap<String, String> multimap = mergeHeaders(headers);
-        return template(url, Method.POST, null, connect -> this.upload0(connect , files), multimap ,
+        //MultiValueMap<String, String> multimap = mergeHeaders(headers);
+        return template(url, Method.POST, null, connect -> this.upload0(connect , files), headers ,
                 connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
     }
@@ -143,14 +143,15 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
      */
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , FormFile... files) throws IOException {
-        MultiValueMap<String, String> multimap = mergeHeaders(headers);
+        //MultiValueMap<String, String> multimap = mergeHeaders(headers);
         return template(url, Method.POST, null, connect -> this.upload0(connect , params , getDefaultBodyCharset() , files),
-                multimap , connectTimeout, readTimeout, resultCharset, false,
+                headers , connectTimeout, readTimeout, resultCharset, false,
                 (s, b, r, h) -> IoUtil.read(b, r));
     }
 
     protected void upload0(HttpURLConnection connection , FormFile... files) throws IOException{
-        connection.addRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(getFormFilesLen(files) + END_LINE.length()));
+        connection.setRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(getFormFilesLen(files) + END_LINE.length()));
+        connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString() , "multipart/form-data; boundary=" + BOUNDARY);
 
         // 设置DataOutputStream
         DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
@@ -173,7 +174,8 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         // 计算传输给服务器的实体数据总长度
         int dataLength = textEntity.getBytes(paramCharset).length + fileDataLength + END_LINE.length();
 
-        connection.addRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(dataLength));
+        connection.setRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(dataLength));
+        connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString() , "multipart/form-data; boundary=" + BOUNDARY);
 
         DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
 
@@ -251,7 +253,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         }
         return textEntity.toString();
     }
-    protected MultiValueMap<String, String> mergeHeaders(MultiValueMap<String, String> headers) {
+    /*protected MultiValueMap<String, String> mergeHeaders(MultiValueMap<String, String> headers) {
         if(null == headers){
             headers = new ArrayListMultiValueMap<>(1);
         }
@@ -259,7 +261,7 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
         //headers.add("Charset" , "UTF-8");
         headers.add(HeaderRegular.CONTENT_TYPE.toString() , "multipart/form-data; boundary=" + BOUNDARY);
         return headers;
-    }
+    }*/
 
     protected InputStream getStreamFrom(HttpURLConnection connect , int statusCode , boolean ignoreResponseBody) throws IOException{
         //忽略返回body的情况下，直接返回空的
