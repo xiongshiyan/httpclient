@@ -16,6 +16,7 @@ public interface PhpUrlHolder extends UrlHolder {
      * 请求的URL
      * @return 请求的URL
      */
+    @Override
     String getUrl();
 
     /**
@@ -23,6 +24,7 @@ public interface PhpUrlHolder extends UrlHolder {
      * @param url url
      * @return this
      */
+    @Override
     PhpUrlHolder setUrl(String url);
 
     /**
@@ -30,6 +32,7 @@ public interface PhpUrlHolder extends UrlHolder {
      * @param url URL
      * @return this
      */
+    @Override
     default PhpUrlHolder setUrl(URL url){
         return setUrl(url.toString());
     }
@@ -144,6 +147,7 @@ public interface PhpUrlHolder extends UrlHolder {
      * @param value value
      * @return this
      */
+    @Override
     default PhpUrlHolder addRouteParam(String key, String value){
         routeParamHolder().put(key, value);
         return this;
@@ -154,6 +158,7 @@ public interface PhpUrlHolder extends UrlHolder {
      * @param routeParams 多个路径参数
      * @return this
      */
+    @Override
     default PhpUrlHolder setRouteParams(Map<String, String> routeParams){
         routeParamHolder().setMap(routeParams);
         return this;
@@ -166,6 +171,7 @@ public interface PhpUrlHolder extends UrlHolder {
      * @param values values
      * @return this
      */
+    @Override
     default PhpUrlHolder addQueryParam(String key, String value, String... values){
         queryParamHolder().addParam(key, value, values);
         return this;
@@ -176,6 +182,7 @@ public interface PhpUrlHolder extends UrlHolder {
      * @param queryParams 多个查询参数
      * @return this
      */
+    @Override
     default PhpUrlHolder setQueryParams(MultiValueMap<String, String> queryParams){
         queryParamHolder().setParams(queryParams);
         return this;
@@ -186,6 +193,7 @@ public interface PhpUrlHolder extends UrlHolder {
      * @param queryParams 多个查询参数
      * @return this
      */
+    @Override
     default PhpUrlHolder setQueryParams(Map<String, String> queryParams){
         queryParamHolder().setParams(queryParams);
         return this;

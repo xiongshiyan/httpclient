@@ -371,6 +371,10 @@ public interface HttpRequest {
         return this;
     }
 
+    /**
+     * 获取设置的属性
+     * @return 属性map
+     */
     default Map<String , Object> getAttributes(){
         return attributeHolder().getAttributes();
     }
