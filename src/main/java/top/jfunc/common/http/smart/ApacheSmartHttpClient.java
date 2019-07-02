@@ -140,8 +140,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     @Override
     public Response post(StringBodyRequest req) throws IOException {
         StringBodyRequest request = beforeTemplate(req);
-        String body = request.getBody();
-        final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(request);
+        final String body = request.getBody();
+        final String bodyCharset = request.getBodyCharset();
         Response response = template(request, Method.POST ,
                 r -> setRequestBody(r, body, getBodyCharsetWithDefault(bodyCharset)), Response::with);
         return afterTemplate(request , response);
@@ -152,8 +152,9 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         HttpRequest httpRequest = beforeTemplate(req);
         ContentCallback<HttpEntityEnclosingRequest> contentCallback = null;
         if(method.hasContent() && httpRequest instanceof StringBodyRequest){
-            String body = ((StringBodyRequest)httpRequest).getBody();
-            final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(httpRequest);
+            StringBodyRequest bodyRequest = (StringBodyRequest) httpRequest;
+            final String body = bodyRequest.getBody();
+            final String bodyCharset = bodyRequest.getBodyCharset();
             contentCallback = r -> setRequestBody(r, body, getBodyCharsetWithDefault(bodyCharset));
         }
         Response response = template(httpRequest, method , contentCallback, Response::with);

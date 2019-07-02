@@ -9,7 +9,6 @@ import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.JoddHttpClient;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
-import top.jfunc.common.http.request.CharsetUtil;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -122,8 +121,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     @Override
     public Response post(StringBodyRequest req) throws IOException {
         StringBodyRequest request = beforeTemplate(req);
-        String body = request.getBody();
-        final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(request);
+        final String body = request.getBody();
+        final String bodyCharset = request.getBodyCharset();
         Response response = template(request, Method.POST,
                 httpRequest -> {
                     String bodyCharsetWithDefault = getBodyCharsetWithDefault(bodyCharset);
@@ -140,8 +139,9 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         top.jfunc.common.http.request.HttpRequest request = beforeTemplate(req);
         ContentCallback<HttpRequest> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
-            String body = ((StringBodyRequest)request).getBody();
-            final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(request);
+            StringBodyRequest bodyRequest = (StringBodyRequest) request;
+            final String body = bodyRequest.getBody();
+            final String bodyCharset = bodyRequest.getBodyCharset();
             contentCallback = httpRequest -> httpRequest.body(body.getBytes(getBodyCharsetWithDefault(bodyCharset)), request.getContentType());
         }
         Response response = template(request, method , contentCallback, Response::with);

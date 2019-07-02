@@ -42,8 +42,9 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         HttpRequest request = beforeTemplate(req);
         ContentCallback<CC> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
-            String body = ((StringBodyRequest)request).getBody();
-            final String bodyCharset = CharsetUtil.bodyCharsetFromRequest(request);
+            StringBodyRequest bodyRequest = (StringBodyRequest) request;
+            String body = bodyRequest.getBody();
+            String bodyCharset = bodyRequest.getBodyCharset();
             contentCallback = bodyContentCallback(body, getBodyCharsetWithDefault(bodyCharset) , request.getContentType());
         }
         Response response = template(request, method , contentCallback, Response::with);
