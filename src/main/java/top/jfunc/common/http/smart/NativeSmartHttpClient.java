@@ -7,7 +7,10 @@ import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.NativeHttpClient;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holder.SSLHolder;
-import top.jfunc.common.http.request.*;
+import top.jfunc.common.http.request.DownloadRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -154,17 +157,16 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     }
 
     @Override
-    public Response httpMethod(HttpRequest req, Method method) throws IOException {
-        HttpRequest httpRequest = beforeTemplate(req);
+    public <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
+        HttpRequest request = beforeTemplate(httpRequest);
         ContentCallback<HttpURLConnection> contentCallback = null;
-        if(method.hasContent() && httpRequest instanceof StringBodyRequest){
-            StringBodyRequest bodyRequest = (StringBodyRequest) httpRequest;
+        if(method.hasContent() && request instanceof StringBodyRequest){
+            StringBodyRequest bodyRequest = (StringBodyRequest) request;
             final String body = bodyRequest.getBody();
             final String bodyCharset = bodyRequest.getBodyCharset();
             contentCallback = connection -> writeContent(connection, body, getBodyCharsetWithDefault(bodyCharset));
         }
-        Response response = template(httpRequest, method , contentCallback , Response::with);
-        return afterTemplate(httpRequest , response);
+        return template(request, method , contentCallback , resultCallback);
     }
 
     @Override

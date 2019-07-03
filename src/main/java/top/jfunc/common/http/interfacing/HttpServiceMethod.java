@@ -39,7 +39,7 @@ class HttpServiceMethod implements ServiceMethod<Object> {
                 return smartHttpClient.get(httpRequest);
         }else {
             //其他方法Http请求
-            return smartHttpClient.httpMethod(httpRequest , httpMethod);
+            return smartHttpClient.http(httpRequest , httpMethod);
         }
     }
 }

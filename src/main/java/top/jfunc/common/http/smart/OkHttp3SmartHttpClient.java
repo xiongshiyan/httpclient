@@ -146,19 +146,19 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         return afterTemplate(request , response);
     }
 
-
+    /**
+     * @param httpRequest 请求体的编码，不支持，需要在contentType中指定
+     */
     @Override
-    public Response httpMethod(HttpRequest req, Method method) throws IOException {
-        HttpRequest request = beforeTemplate(req);
+    public <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
+        HttpRequest request = beforeTemplate(httpRequest);
         ContentCallback<Request.Builder> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
             String body = ((StringBodyRequest)request).getBody();
             contentCallback = d -> setRequestBody(d, method, stringBody(body, request.getContentType()));
         }
-        Response response = template(request, method , contentCallback , Response::with);
-        return afterTemplate(request , response);
+        return template(request, method , contentCallback , resultCallback);
     }
-
 
     @Override
     public byte[] getAsBytes(HttpRequest req) throws IOException {

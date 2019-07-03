@@ -2,12 +2,13 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
+import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.HttpClient;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.http.request.impl.GetRequest;
+import top.jfunc.common.http.request.impl.CommonRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,20 @@ public interface SmartHttpClient extends HttpClient {
      * @return Response
      * @throws IOException IOException
      */
-    Response httpMethod(HttpRequest httpRequest, Method method) throws IOException;
+    default Response http(HttpRequest httpRequest, Method method) throws IOException{
+        Response response = http(httpRequest, method, Response::with);
+        return afterTemplate(httpRequest , response);
+    }
+
+    /**
+     * 接口对其他http方法的支持
+     * @param httpRequest Request
+     * @param method Method
+     * @param resultCallback resultCallback对结果的处理
+     * @return <R>R
+     * @throws IOException IOException
+     */
+    <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * 下载为字节数组
@@ -108,7 +122,7 @@ public interface SmartHttpClient extends HttpClient {
      */
     default Response afterTemplate(HttpRequest request, Response response) throws IOException{
         if(request.isRedirectable() && response.needRedirect()){
-            return get(GetRequest.of(response.getRedirectUrl()));
+            return get(CommonRequest.of(response.getRedirectUrl()));
         }
         return response;
     }
