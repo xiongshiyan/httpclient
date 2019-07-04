@@ -1,7 +1,7 @@
 package top.jfunc.common.http;
 
 import org.junit.Assert;
-import top.jfunc.common.http.base.handler.FromString;
+import top.jfunc.common.string.FromString;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.impl.PostBodyRequest;
@@ -220,7 +220,7 @@ public class HttpSmartTest {
             Request request = Request.of(url).setIncludeHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
-            Response response = http.httpMethod(request , Method.PUT);
+            Response response = http.http(request , Method.PUT);
             System.out.println(response.getStatusCode());
             System.out.println(response.getBody());
             System.out.println(response.getHeaders());

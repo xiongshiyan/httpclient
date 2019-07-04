@@ -14,12 +14,12 @@ public interface ResultCallback<R> {
     /**
      * 转换结果
      * @param statusCode 返回码
-     * @param stream body，代表输入流，自己转化成需要的数据结构string、bytes、file...
+     * @param inputStream body，代表输入流，自己转化成需要的数据结构string、bytes、file...
      * @param resultCharset 编码
      * @param headers headers
      * @return <R>
      * @throws IOException IOException
      * @see top.jfunc.common.http.smart.Response
      */
-    R convert(int statusCode, InputStream stream, String resultCharset, MultiValueMap<String, String> headers) throws IOException;
+    R convert(int statusCode, InputStream inputStream, String resultCharset, MultiValueMap<String, String> headers) throws IOException;
 }

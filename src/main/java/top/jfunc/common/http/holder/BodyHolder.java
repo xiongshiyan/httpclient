@@ -1,7 +1,7 @@
 package top.jfunc.common.http.holder;
 
-import top.jfunc.common.http.base.handler.ToString;
-import top.jfunc.common.http.base.handler.ToStringHandler;
+import top.jfunc.common.string.ToString;
+import top.jfunc.common.string.ToStringHandler;
 import top.jfunc.common.utils.IoUtil;
 
 import java.io.IOException;

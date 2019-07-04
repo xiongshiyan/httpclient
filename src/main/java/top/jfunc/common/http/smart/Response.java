@@ -3,8 +3,8 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.HttpStatus;
-import top.jfunc.common.http.base.handler.FromString;
-import top.jfunc.common.http.base.handler.FromStringHandler;
+import top.jfunc.common.string.FromString;
+import top.jfunc.common.string.FromStringHandler;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
