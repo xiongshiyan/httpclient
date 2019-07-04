@@ -58,20 +58,20 @@ public abstract class AbstractConfigurableHttp {
         //本身冻结
         configFrozen.freezeConfig();
         //Config冻结
-        getConfig().freezeConfig();
+        config.freezeConfig();
     }
 
     public void onBeforeIfNecessary(HttpRequest httpRequest , Method method){
-        getConfig().onBeforeIfNecessary(httpRequest, method);
+        config.onBeforeIfNecessary(httpRequest, method);
     }
     public void onAfterReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
-        getConfig().onAfterReturnIfNecessary(httpRequest, returnValue);
+        config.onAfterReturnIfNecessary(httpRequest, returnValue);
     }
     public void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
-        getConfig().onErrorIfNecessary(httpRequest, exception);
+        config.onErrorIfNecessary(httpRequest, exception);
     }
     public void onAfterIfNecessary(HttpRequest httpRequest){
-        getConfig().onAfterIfNecessary(httpRequest);
+        config.onAfterIfNecessary(httpRequest);
     }
 
 
@@ -168,21 +168,21 @@ public abstract class AbstractConfigurableHttp {
     }
 
     public Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
-        return getConfig().getConnectionTimeoutWithDefault(connectionTimeout);
+        return config.getConnectionTimeoutWithDefault(connectionTimeout);
     }
 
     public Integer getReadTimeoutWithDefault(Integer readTimeout){
-        return getConfig().getReadTimeoutWithDefault(readTimeout);
+        return config.getReadTimeoutWithDefault(readTimeout);
     }
 
     public String getQueryCharsetWithDefault(String queryCharset){
-        return getConfig().getQueryCharsetWithDefault(queryCharset);
+        return config.getQueryCharsetWithDefault(queryCharset);
     }
     public String getDefaultQueryCharset() {
-        return getConfig().getDefaultQueryCharset();
+        return config.getDefaultQueryCharset();
     }
     public String getDefaultBodyCharset() {
-        return getConfig().getDefaultBodyCharset();
+        return config.getDefaultBodyCharset();
     }
 
     /**
@@ -206,51 +206,51 @@ public abstract class AbstractConfigurableHttp {
     }
 
     public String getResultCharsetWithDefault(String resultCharset){
-        return getConfig().getResultCharsetWithDefault(resultCharset);
+        return config.getResultCharsetWithDefault(resultCharset);
     }
 
     public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
-        return getConfig().getProxyInfoWithDefault(proxyInfo);
+        return config.getProxyInfoWithDefault(proxyInfo);
     }
 
     public HostnameVerifier getHostnameVerifier() {
-        return getConfig().sslHolder().getHostnameVerifier();
+        return config.sslHolder().getHostnameVerifier();
     }
 
     public SSLContext getSSLContext() {
-        return getConfig().sslHolder().getSslContext();
+        return config.sslHolder().getSslContext();
     }
 
     public SSLSocketFactory getSSLSocketFactory() {
-        return getConfig().sslHolder().getSslSocketFactory();
+        return config.sslHolder().getSslSocketFactory();
     }
 
     public X509TrustManager getX509TrustManager() {
-        return getConfig().sslHolder().getX509TrustManager();
+        return config.sslHolder().getX509TrustManager();
     }
 
     public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
-        return getConfig().getHostnameVerifierWithDefault(hostnameVerifier);
+        return config.getHostnameVerifierWithDefault(hostnameVerifier);
     }
 
     public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
-        return getConfig().getSSLContextWithDefault(sslContext);
+        return config.getSSLContextWithDefault(sslContext);
     }
 
     public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
-        return getConfig().getSSLSocketFactoryWithDefault(sslSocketFactory);
+        return config.getSSLSocketFactoryWithDefault(sslSocketFactory);
     }
 
     public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
-        return getConfig().getX509TrustManagerWithDefault(x509TrustManager);
+        return config.getX509TrustManagerWithDefault(x509TrustManager);
     }
 
     public MultiValueMap<String , String> getDefaultHeaders(){
-        return getConfig().headerHolder().getHeaders();
+        return config.headerHolder().getHeaders();
     }
 
     public MultiValueMap<String , String> getDefaultQueryParams(){
-        return getConfig().queryParamHolder().getParams();
+        return config.queryParamHolder().getParams();
     }
 
     /**
@@ -261,6 +261,6 @@ public abstract class AbstractConfigurableHttp {
     }
 
     public CookieHandler getCookieHandler(){
-        return getConfig().getCookieHandler();
+        return config.getCookieHandler();
     }
 }
