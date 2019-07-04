@@ -119,7 +119,8 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        return template(url, Method.POST, contentType, (request -> setRequestBody(request , body ,getBodyCharsetWithDefault(bodyCharset))),
+        String charset = calculateBodyCharset(bodyCharset, contentType);
+        return template(url, Method.POST, contentType, (request -> setRequestBody(request , body , charset)),
                 ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
@@ -291,7 +292,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
     protected void setRequestBody(HttpEntityEnclosingRequest request, String body, String bodyCharset) {
-        if(body == null || bodyCharset == null){return;}
+        if(body == null){return;}
 
         StringEntity entity = new StringEntity(body, bodyCharset);
         entity.setContentEncoding(bodyCharset);

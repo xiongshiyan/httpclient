@@ -3,13 +3,11 @@ package top.jfunc.common.http.base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.HeaderRegular;
+import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.Joiner;
-import top.jfunc.common.utils.MapUtil;
-import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -183,12 +181,30 @@ public abstract class AbstractConfigurableHttp {
     public String getDefaultQueryCharset() {
         return getConfig().getDefaultQueryCharset();
     }
-    public String getBodyCharsetWithDefault(String bodyCharset){
-        return getConfig().getBodyCharsetWithDefault(bodyCharset);
-    }
     public String getDefaultBodyCharset() {
         return getConfig().getDefaultBodyCharset();
     }
+
+    /**
+     * bodyCharset->contentType->全局默认
+     */
+    public String calculateBodyCharset(String bodyCharset , String contentType){
+        //本身是可以的
+       if(StrUtil.isNotEmpty(bodyCharset)){
+           return bodyCharset;
+       }
+       if(StrUtil.isEmpty(contentType)){
+           return getDefaultBodyCharset();
+       }
+       MediaType mediaType = MediaType.parse(contentType);
+       //content-type不正确或者没带字符编码
+       if(null == mediaType || null == mediaType.charset()){
+           return getDefaultBodyCharset();
+       }
+
+       return mediaType.charset().name();
+    }
+
     public String getResultCharsetWithDefault(String resultCharset){
         return getConfig().getResultCharsetWithDefault(resultCharset);
     }

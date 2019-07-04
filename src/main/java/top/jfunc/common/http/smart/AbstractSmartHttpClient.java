@@ -35,8 +35,9 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     public Response post(StringBodyRequest req) throws IOException {
         StringBodyRequest request = beforeTemplate(req);
         String body = request.getBody();
+        String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
         Response response = template(request, Method.POST ,
-                bodyContentCallback(body, getBodyCharsetWithDefault(request.getBodyCharset()) , request.getContentType()) ,
+                bodyContentCallback(body, bodyCharset, request.getContentType()) ,
                 Response::with);
         return afterTemplate(request , response);
     }
@@ -48,8 +49,8 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         if(method.hasContent() && request instanceof StringBodyRequest){
             StringBodyRequest bodyRequest = (StringBodyRequest) request;
             String body = bodyRequest.getBody();
-            String bodyCharset = bodyRequest.getBodyCharset();
-            contentCallback = bodyContentCallback(body, getBodyCharsetWithDefault(bodyCharset) , request.getContentType());
+            String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
+            contentCallback = bodyContentCallback(body, bodyCharset, request.getContentType());
         }
         return template(request, method , contentCallback, resultCallback);
     }

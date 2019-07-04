@@ -144,9 +144,9 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     public Response post(StringBodyRequest req) throws IOException {
         StringBodyRequest request = beforeTemplate(req);
         final String body = request.getBody();
-        final String bodyCharset = request.getBodyCharset();
+        final String bodyCharset = calculateBodyCharset(request.getBodyCharset() , request.getContentType());
         Response response = template(request, Method.POST ,
-                r -> setRequestBody(r, body, getBodyCharsetWithDefault(bodyCharset)), Response::with);
+                r -> setRequestBody(r, body, bodyCharset), Response::with);
         return afterTemplate(request , response);
     }
 
@@ -157,8 +157,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         if(method.hasContent() && request instanceof StringBodyRequest){
             StringBodyRequest bodyRequest = (StringBodyRequest) request;
             final String body = bodyRequest.getBody();
-            final String bodyCharset = bodyRequest.getBodyCharset();
-            contentCallback = r -> setRequestBody(r, body, getBodyCharsetWithDefault(bodyCharset));
+            final String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
+            contentCallback = r -> setRequestBody(r, body, bodyCharset);
         }
         return template(request, method , contentCallback, resultCallback);
     }
@@ -181,7 +181,9 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         Response response = template(request , Method.POST ,
                 r -> {
                     ParamHolder paramHolder = request.formParamHolder();
-                    addFormFiles(r, paramHolder.getParams(), getBodyCharsetWithDefault(paramHolder.getParamCharset()), request.getFormFiles());
+                    addFormFiles(r, paramHolder.getParams(),
+                            calculateBodyCharset(paramHolder.getParamCharset() , request.getContentType()),
+                            request.getFormFiles());
                 }, Response::with);
         return afterTemplate(request , response);
     }

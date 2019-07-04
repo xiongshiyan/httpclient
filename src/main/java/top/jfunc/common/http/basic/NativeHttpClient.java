@@ -109,7 +109,8 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        return template(url, Method.POST, contentType, connect -> writeContent(connect , body , getBodyCharsetWithDefault(bodyCharset)),
+        String charset = calculateBodyCharset(bodyCharset, contentType);
+        return template(url, Method.POST, contentType, connect -> writeContent(connect , body , charset),
                 ArrayListMultiValueMap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));
     }
 
@@ -322,9 +323,10 @@ public class NativeHttpClient extends AbstractConfigurableHttp implements HttpTe
     }
 
     protected void writeContent(HttpURLConnection connect, String data, String bodyCharset) throws IOException {
-        if (null == data || null == bodyCharset) {
+        if (null == data) {
             return;
         }
+
         OutputStream outputStream = connect.getOutputStream();
         outputStream.write(data.getBytes(bodyCharset));
         outputStream.close();

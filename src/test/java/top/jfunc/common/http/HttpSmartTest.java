@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
+import static org.hamcrest.core.Is.is;
 import static top.jfunc.common.http.HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET;
 import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
 
@@ -22,6 +23,18 @@ import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
  */
 @Ignore
 public class HttpSmartTest {
+    @Test
+    public void testCalculateBodyCharset(){
+        NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
+        //bodyCharset指定了就是他
+        Assert.assertThat(smartHttpClient.calculateBodyCharset("GB2312" , null) , is("GB2312"));
+        //contentType指定了就是他
+        Assert.assertThat(smartHttpClient.calculateBodyCharset(null , "application/json;charset=GBK") , is("GBK"));
+        //都未指定就是全局默认
+        Assert.assertThat(smartHttpClient.calculateBodyCharset(null , "application/json") , is(HttpConstants.DEFAULT_CHARSET));
+        Assert.assertThat(smartHttpClient.calculateBodyCharset(null , null) , is(HttpConstants.DEFAULT_CHARSET));
+    }
+
     @Test
     public void testGetOkHttp3(){
         OkHttp3SmartHttpClient http = new OkHttp3SmartHttpClient();

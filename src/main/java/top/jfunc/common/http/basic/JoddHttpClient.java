@@ -91,9 +91,10 @@ public class JoddHttpClient extends AbstractConfigurableHttp implements HttpTemp
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
         return template(url, Method.POST, contentType,
                 httpRequest -> {
+                    String charset = calculateBodyCharset(bodyCharset, contentType);
                     String type = null == contentType ?
-                            MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : contentType;
-                    httpRequest.body(body.getBytes(getBodyCharsetWithDefault(bodyCharset)), type);
+                            MediaType.APPLICATIPON_JSON.withCharset(charset).toString() : contentType;
+                    httpRequest.bodyText(body , type, charset);
                 },
                 ArrayListMultiValueMap.fromMap(headers), connectTimeout, readTimeout, resultCharset, false, (s, b, r, h) -> IoUtil.read(b, r));
     }

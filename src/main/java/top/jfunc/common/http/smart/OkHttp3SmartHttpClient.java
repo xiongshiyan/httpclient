@@ -140,9 +140,10 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     @Override
     public Response post(StringBodyRequest req) throws IOException {
         StringBodyRequest request = beforeTemplate(req);
-        String body = request.getBody();
+        final String body = request.getBody();
+        final String bodyCharset = calculateBodyCharset(request.getBodyCharset() , request.getContentType());
         Response response = template(request, Method.POST ,
-                d -> setRequestBody(d, Method.POST, stringBody(body, request.getContentType())), Response::with);
+                d -> setRequestBody(d, Method.POST, stringBody(body, bodyCharset , request.getContentType())), Response::with);
         return afterTemplate(request , response);
     }
 
@@ -154,8 +155,10 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
         HttpRequest request = beforeTemplate(httpRequest);
         ContentCallback<Request.Builder> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
-            String body = ((StringBodyRequest)request).getBody();
-            contentCallback = d -> setRequestBody(d, method, stringBody(body, request.getContentType()));
+            StringBodyRequest bodyRequest = (StringBodyRequest) request;
+            final String body = bodyRequest.getBody();
+            final String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
+            contentCallback = d -> setRequestBody(d, method, stringBody(body, bodyCharset , request.getContentType()));
         }
         return template(request, method , contentCallback , resultCallback);
     }

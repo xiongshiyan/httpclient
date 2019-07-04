@@ -125,10 +125,10 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         final String bodyCharset = request.getBodyCharset();
         Response response = template(request, Method.POST,
                 httpRequest -> {
-                    String bodyCharsetWithDefault = getBodyCharsetWithDefault(bodyCharset);
+                    String charset = calculateBodyCharset(bodyCharset, request.getContentType());
                     String contentType = null == request.getContentType() ?
-                            MediaType.APPLICATIPON_JSON.withCharset(bodyCharsetWithDefault).toString() : request.getContentType();
-                    httpRequest.body(body.getBytes(bodyCharsetWithDefault), contentType);
+                            MediaType.APPLICATIPON_JSON.withCharset(charset).toString() : request.getContentType();
+                    httpRequest.bodyText(body , contentType , charset);
                 }, Response::with);
 
         return afterTemplate(request , response);
@@ -141,8 +141,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
         if(method.hasContent() && request instanceof StringBodyRequest){
             StringBodyRequest bodyRequest = (StringBodyRequest) request;
             final String body = bodyRequest.getBody();
-            final String bodyCharset = bodyRequest.getBodyCharset();
-            contentCallback = req -> req.body(body.getBytes(getBodyCharsetWithDefault(bodyCharset)), request.getContentType());
+            final String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
+            contentCallback = req -> req.bodyText(body , bodyRequest.getContentType() , bodyCharset);
         }
         return template(request, method , contentCallback, resultCallback);
     }
