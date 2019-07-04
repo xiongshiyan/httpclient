@@ -1,6 +1,8 @@
-package top.jfunc.common.http.base;
+package top.jfunc.common.http.basic;
 
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;

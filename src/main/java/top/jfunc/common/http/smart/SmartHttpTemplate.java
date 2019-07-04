@@ -2,7 +2,7 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.HttpTemplate;
+import top.jfunc.common.http.basic.HttpTemplate;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
 

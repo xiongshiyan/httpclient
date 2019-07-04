@@ -5,7 +5,6 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.AbstractConfigurableHttp;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.base.HttpTemplate;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
