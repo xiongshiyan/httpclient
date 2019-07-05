@@ -188,7 +188,7 @@ public abstract class AbstractConfigurableHttp {
     /**
      * bodyCharset->contentType->全局默认
      */
-    protected String calculateBodyCharset(String bodyCharset , String contentType){
+    public String calculateBodyCharset(String bodyCharset , String contentType){
         //本身是可以的
        if(StrUtil.isNotEmpty(bodyCharset)){
            return bodyCharset;

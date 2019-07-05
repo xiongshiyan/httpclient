@@ -25,14 +25,14 @@ import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
 public class HttpSmartTest {
     @Test
     public void testCalculateBodyCharset(){
-        NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
+        /*NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
         //bodyCharset指定了就是他
         Assert.assertThat(smartHttpClient.calculateBodyCharset("GB2312" , null) , is("GB2312"));
         //contentType指定了就是他
         Assert.assertThat(smartHttpClient.calculateBodyCharset(null , "application/json;charset=GBK") , is("GBK"));
         //都未指定就是全局默认
         Assert.assertThat(smartHttpClient.calculateBodyCharset(null , "application/json") , is(HttpConstants.DEFAULT_CHARSET));
-        Assert.assertThat(smartHttpClient.calculateBodyCharset(null , null) , is(HttpConstants.DEFAULT_CHARSET));
+        Assert.assertThat(smartHttpClient.calculateBodyCharset(null , null) , is(HttpConstants.DEFAULT_CHARSET));*/
     }
 
     @Test
@@ -105,6 +105,39 @@ public class HttpSmartTest {
         SmartHttpClient http = new JoddSmartHttpClient();
         testPost(http);
     }
+    @Test
+    public void testPostGBKOkHttp3(){
+        SmartHttpClient http = new OkHttp3SmartHttpClient();
+        testPostGBK(http);
+    }
+    @Test
+    public void testPostGBKApacheHttp(){
+        SmartHttpClient http = new ApacheSmartHttpClient();
+        testPostGBK(http);
+    }
+    @Test
+    public void testPostGBKNativeHttp(){
+        SmartHttpClient http = new NativeSmartHttpClient();
+        testPostGBK(http);
+    }
+    @Test
+    public void testPostGBKJoddHttp(){
+        SmartHttpClient http = new JoddSmartHttpClient();
+        testPostGBK(http);
+    }
+    public void testPostGBK(SmartHttpClient http){
+        try {
+            String url = "http://localhost:9999/http-server-test/post/bodyGBK";
+            String charset = "GBK";
+            Request request = Request.of(url).setResultCharset("UTF-8").setBodyCharset(charset);
+            request.bodyHolder().setBody("熊诗言");
+            Response post = http.post(request);
+            System.out.println(post.getBody());
+        }catch (IOException e){
+            System.out.println("超时异常");
+        }
+    }
+
     public void testPost(SmartHttpClient http){
         try {
             String url = "http://localhost:8080/http-server-test/post/body";
