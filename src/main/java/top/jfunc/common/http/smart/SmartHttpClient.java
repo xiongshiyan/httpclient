@@ -4,10 +4,10 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.HttpClient;
-import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.req.DownloadRequest;
+import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.req.StringBodyRequest;
+import top.jfunc.common.http.req.UploadRequest;
 import top.jfunc.common.http.request.impl.CommonRequest;
 
 import java.io.File;

@@ -5,12 +5,10 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.NativeHttpClient;
-import top.jfunc.common.http.holder.ParamHolder;
-import top.jfunc.common.http.holder.SSLHolder;
-import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.req.DownloadRequest;
+import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.req.StringBodyRequest;
+import top.jfunc.common.http.req.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -53,9 +51,8 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             if(connection instanceof HttpsURLConnection){
                 //默认设置这些
                 HttpsURLConnection con = (HttpsURLConnection)connection;
-                SSLHolder sslHolder = httpRequest.sslHolder();
-                initSSL(con , getHostnameVerifierWithDefault(sslHolder.getHostnameVerifier()) ,
-                        getSSLSocketFactoryWithDefault(sslHolder.getSslSocketFactory()));
+                initSSL(con , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
+                        getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()));
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -68,7 +65,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             connection.setReadTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
             //2.处理header
-            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.headerHolder().getHeaders());
+            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
             ///HttpURLConnection不能用以下方法处理，会出现重复Cookie，即同样的Cookie框架自己弄了一份，我们手动又弄了一份
             /*headerHolder = handleCookieIfNecessary(completedUrl, headerHolder);*/
@@ -82,7 +79,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             }*/
 
             setRequestHeaders(connection, httpRequest.getContentType(), headers,
-                    httpRequest.overwriteHeaderHolder().getMap());
+                    httpRequest.getOverwriteHeaders());
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection);
@@ -103,7 +100,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             //7.返回header,包括Cookie处理
             boolean includeHeaders = httpRequest.isIncludeHeaders();
             if(supportCookie()){
-                includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
+                includeHeaders = top.jfunc.common.http.req.HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(connection, includeHeaders);
 
@@ -187,12 +184,10 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         ///MultiValueMap<String, String> headers = mergeHeaders(request.headerHolder().getHeaders());
         ///request.headerHolder().setHeaders(headers);
         Response response = template(request, Method.POST ,
-                connect -> {
-                    ParamHolder paramHolder = request.formParamHolder();
-                    this.upload0(connect, paramHolder.getParams(),
-                            calculateBodyCharset(paramHolder.getParamCharset() , request.getContentType()),
-                            request.getFormFiles());
-                }, Response::with);
+                connect -> upload0(connect, request.getFormParams(),
+                            calculateBodyCharset(request.getParamCharset() , request.getContentType()),
+                            request.getFormFiles()),
+                Response::with);
         return afterTemplate(request , response);
     }
 

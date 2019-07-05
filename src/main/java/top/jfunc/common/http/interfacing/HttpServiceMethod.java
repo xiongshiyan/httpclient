@@ -1,9 +1,9 @@
 package top.jfunc.common.http.interfacing;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.req.StringBodyRequest;
+import top.jfunc.common.http.req.UploadRequest;
 import top.jfunc.common.http.smart.SmartHttpClient;
 
 import java.io.IOException;

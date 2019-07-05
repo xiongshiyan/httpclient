@@ -10,7 +10,18 @@ import java.util.Map;
  * 请求头处理器，新增、获取header
  * @author xiongshiyan
  */
-public interface HeaderHolder {
+public interface HeaderHolder extends Holder<MultiValueMap<String, String>>{
+    @Override
+    default MultiValueMap<String, String> get() {
+        return getHeaders();
+    }
+
+    @Override
+    default HeaderHolder set(MultiValueMap<String, String> headers){
+        setHeaders(headers);
+        return this;
+    }
+
     /**
      * 请求的Header
      * @return 请求的Header

@@ -9,11 +9,10 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.OkHttp3Client;
-import top.jfunc.common.http.holder.SSLHolder;
-import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.req.DownloadRequest;
+import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.req.StringBodyRequest;
+import top.jfunc.common.http.req.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -54,10 +53,9 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
 
             ////////////////////////////////////ssl处理///////////////////////////////////
             if(ParamUtil.isHttps(completedUrl)){
-                SSLHolder sslHolder = httpRequest.sslHolder();
-                initSSL(clientBuilder , getHostnameVerifierWithDefault(sslHolder.getHostnameVerifier()) ,
-                        getSSLSocketFactoryWithDefault(sslHolder.getSslSocketFactory()) ,
-                        getX509TrustManagerWithDefault(sslHolder.getX509TrustManager()));
+                initSSL(clientBuilder , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
+                        getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
+                        getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()));
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -77,12 +75,12 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             }
 
             //2.3设置headers
-            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.headerHolder().getHeaders());
+            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
             headers = handleCookieIfNecessary(completedUrl, headers);
 
             setRequestHeaders(builder , httpRequest.getContentType() , headers ,
-                    httpRequest.overwriteHeaderHolder().getMap());
+                    httpRequest.getOverwriteHeaders());
 
             //3.构造请求
             Request okRequest = builder.build();
@@ -96,7 +94,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             //6.处理header，包括Cookie的处理
             boolean includeHeaders = httpRequest.isIncludeHeaders();
             if(supportCookie()){
-                includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
+                includeHeaders = top.jfunc.common.http.req.HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
 

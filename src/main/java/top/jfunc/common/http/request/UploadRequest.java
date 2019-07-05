@@ -9,7 +9,7 @@ import top.jfunc.common.utils.MultiValueMap;
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface UploadRequest extends HttpRequest {
+public interface UploadRequest extends HttpRequest , top.jfunc.common.http.req.UploadRequest {
     /**
      * 接管Form param的处理
      * @return ParamHolder must not null
@@ -20,6 +20,7 @@ public interface UploadRequest extends HttpRequest {
      * Form参数
      * @return Form参数
      */
+    @Override
     default MultiValueMap<String, String> getFormParams(){
         return formParamHolder().getParams();
     }
@@ -31,9 +32,19 @@ public interface UploadRequest extends HttpRequest {
      * @param values values
      * @return this
      */
+    @Override
     default UploadRequest addFormParam(String key, String value, String... values){
         formParamHolder().addParam(key, value, values);
         return this;
+    }
+
+    /**
+     * 获取参数编码
+     * @return 参数编码
+     */
+    @Override
+    default String getParamCharset(){
+        return formParamHolder().getParamCharset();
     }
 
     /**
@@ -41,6 +52,7 @@ public interface UploadRequest extends HttpRequest {
      * @param paramCharset 参数编码
      * @return this
      */
+    @Override
     default UploadRequest setParamCharset(String paramCharset){
         formParamHolder().setParamCharset(paramCharset);
         return this;
@@ -50,6 +62,7 @@ public interface UploadRequest extends HttpRequest {
      * 上传文件信息
      * @return 上传文件信息
      */
+    @Override
     default FormFile[] getFormFiles(){
         return formFileHolder().getFormFiles();
     }
@@ -59,6 +72,7 @@ public interface UploadRequest extends HttpRequest {
      * @param formFiles 上传的文件
      * @return this
      */
+    @Override
     default UploadRequest addFormFile(FormFile... formFiles){
         formFileHolder().addFormFile(formFiles);
         return this;

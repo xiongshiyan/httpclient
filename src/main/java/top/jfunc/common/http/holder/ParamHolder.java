@@ -10,7 +10,17 @@ import java.util.Map;
  * Query参数、Form参数处理器
  * @author xiongshiyan
  */
-public interface ParamHolder {
+public interface ParamHolder extends Holder<MultiValueMap<String, String>>{
+    @Override
+    default MultiValueMap<String, String> get() {
+        return getParams();
+    }
+
+    @Override
+    default ParamHolder set(MultiValueMap<String, String> headers){
+        setParams(headers);
+        return this;
+    }
     /**
      * Param参数
      * @return Param参数

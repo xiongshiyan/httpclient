@@ -1,6 +1,7 @@
 package top.jfunc.common.http;
 
 import org.junit.Assert;
+import top.jfunc.common.http.request.impl.CommonBodyRequest;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.StringBodyRequest;
@@ -295,9 +296,8 @@ public class HttpSmartTest {
     }
     private void testAll(SmartHttpClient smartHttpClient) throws Exception{
 
-        StringBodyRequest request = PostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
-                .setIncludeHeaders(true)
-                .setBody("xxxxx" , HttpConstants.JSON_WITH_DEFAULT_CHARSET);
+        CommonBodyRequest request = PostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
+                .setIncludeHeaders(true).setBody("xxxxx", HttpConstants.JSON_WITH_DEFAULT_CHARSET);
         request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         request.queryParamHolder().addParam("sa" , "sa").addParam("ds" , "ds");
         Response response = smartHttpClient.post(request);

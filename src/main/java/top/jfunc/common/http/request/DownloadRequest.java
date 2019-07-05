@@ -8,11 +8,12 @@ import java.io.File;
  * 文件下载请求
  * @author xiongshiyan
  */
-public interface DownloadRequest extends HttpRequest {
+public interface DownloadRequest extends HttpRequest , top.jfunc.common.http.req.DownloadRequest {
     /**
      * 下载到的文件
      * @return file
      */
+    @Override
     default File getFile(){
         return fileHolder().getFile();
     }
@@ -22,6 +23,7 @@ public interface DownloadRequest extends HttpRequest {
      * @param file file
      * @return this
      */
+    @Override
     default DownloadRequest setFile(File file){
         fileHolder().setFile(file);
         return this;

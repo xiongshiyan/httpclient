@@ -5,7 +5,7 @@ import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.string.FromStringHandler;
-import top.jfunc.common.http.request.DownloadRequest;
+import top.jfunc.common.http.req.DownloadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 

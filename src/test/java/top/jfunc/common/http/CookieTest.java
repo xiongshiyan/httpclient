@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.base.Config;
-import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.http.smart.*;
 

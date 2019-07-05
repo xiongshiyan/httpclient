@@ -7,8 +7,8 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.Header;
 import org.mockserver.model.Parameter;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.req.StringBodyRequest;
 import top.jfunc.common.http.request.impl.FormBodyRequest;
 import top.jfunc.common.http.request.impl.GetRequest;
 import top.jfunc.common.http.request.impl.PostBodyRequest;
@@ -67,7 +67,7 @@ public class MultiRequestTest {
         );
 
         HttpRequest request = GetRequest.of("http://localhost:50000/hello/{name}");
-        request.routeParamHolder().addRouteParam("name" , "John");
+        request.addRouteParam("name" , "John");
         Response response = smartHttpClient.get(request);
         Assert.assertEquals(BODY , response.asString());
     }
@@ -86,8 +86,8 @@ public class MultiRequestTest {
         );
 
         HttpRequest request = GetRequest.of("http://localhost:50000/hello/{name}");
-        request.routeParamHolder().addRouteParam("name" , "John");
-        request.queryParamHolder().addParam("key1" , "value1").addParam("key2" , "value2");
+        request.addRouteParam("name" , "John");
+        request.addQueryParam("key1" , "value1").addQueryParam("key2" , "value2");
         Response response = smartHttpClient.get(request);
         Assert.assertEquals(BODY , response.asString());
     }
@@ -104,7 +104,7 @@ public class MultiRequestTest {
         );
 
         StringBodyRequest request = PostBodyRequest.of("http://localhost:50000/hello/{name}").setBody(BODY);
-        request.routeParamHolder().addRouteParam("name" , "John");
+        request.addRouteParam("name" , "John");
         Response response = smartHttpClient.post(request);
         Assert.assertEquals(BODY , response.asString());
     }
@@ -142,8 +142,8 @@ public class MultiRequestTest {
         );
 
         HttpRequest request = GetRequest.of("http://localhost:50000/hello/{name}").setIncludeHeaders(true);
-        request.routeParamHolder().addRouteParam("name" , "John");
-        request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
+        request.addRouteParam("name" , "John");
+        request.addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         Response response = smartHttpClient.get(request);
         Assert.assertEquals("xx" , response.getOneHeader("xx"));
     }

@@ -13,13 +13,10 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.ApacheHttpClient;
-import top.jfunc.common.http.holder.HeaderHolder;
-import top.jfunc.common.http.holder.ParamHolder;
-import top.jfunc.common.http.holder.SSLHolder;
-import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.req.DownloadRequest;
+import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.req.StringBodyRequest;
+import top.jfunc.common.http.req.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -62,15 +59,14 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             }
         }
 
-        HeaderHolder headerHolder = httpRequest.headerHolder();
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(headerHolder.getHeaders());
+        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
         //支持Cookie的话
         headers = handleCookieIfNecessary(completedUrl, headers);
 
         //4.设置请求头
         setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers ,
-                httpRequest.overwriteHeaderHolder().getMap());
+                httpRequest.getOverwriteHeaders());
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
@@ -81,9 +77,8 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
             SSLContext sslContext = null;
             //https默认设置这些
             if(ParamUtil.isHttps(completedUrl)){
-                SSLHolder sslHolder = httpRequest.sslHolder();
-                hostnameVerifier = getHostnameVerifierWithDefault(sslHolder.getHostnameVerifier());
-                sslContext = getSSLContextWithDefault(sslHolder.getSslContext());
+                hostnameVerifier = getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier());
+                sslContext = getSSLContextWithDefault(httpRequest.getSslContext());
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -97,7 +92,7 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
 
             boolean includeHeaders = httpRequest.isIncludeHeaders();
             if(supportCookie()){
-                includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
+                includeHeaders = HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
 
@@ -179,12 +174,10 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
     public Response upload(UploadRequest req) throws IOException {
         UploadRequest request = beforeTemplate(req);
         Response response = template(request , Method.POST ,
-                r -> {
-                    ParamHolder paramHolder = request.formParamHolder();
-                    addFormFiles(r, paramHolder.getParams(),
-                            calculateBodyCharset(paramHolder.getParamCharset() , request.getContentType()),
-                            request.getFormFiles());
-                }, Response::with);
+                r -> addFormFiles(r, request.getFormParams(),
+                            calculateBodyCharset(request.getParamCharset() , request.getContentType()),
+                            request.getFormFiles())
+                , Response::with);
         return afterTemplate(request , response);
     }
 

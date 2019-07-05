@@ -1,7 +1,7 @@
 package top.jfunc.common.http.interfacing;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.req.HttpRequest;
 
 /**
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257

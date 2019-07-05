@@ -7,11 +7,9 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.JoddHttpClient;
-import top.jfunc.common.http.holder.ParamHolder;
-import top.jfunc.common.http.holder.SSLHolder;
-import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.req.DownloadRequest;
+import top.jfunc.common.http.req.StringBodyRequest;
+import top.jfunc.common.http.req.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -27,7 +25,7 @@ import java.net.URI;
 public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpRequest> {
 
     @Override
-    public <R> R template(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(top.jfunc.common.http.req.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         onBeforeIfNecessary(httpRequest, method);
 
         HttpResponse response = null;
@@ -48,10 +46,9 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             request.timeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
             //3.SSL设置
-            SSLHolder sslHolder = httpRequest.sslHolder();
-            initSSL(request , getHostnameVerifierWithDefault(sslHolder.getHostnameVerifier()) ,
-                    getSSLSocketFactoryWithDefault(sslHolder.getSslSocketFactory()) ,
-                    getX509TrustManagerWithDefault(sslHolder.getX509TrustManager()),
+            initSSL(request , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
+                    getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
+                    getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()),
                     getProxyInfoWithDefault(httpRequest.getProxyInfo()));
 
 
@@ -61,12 +58,12 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             }
 
             //5.设置header
-            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.headerHolder().getHeaders());
+            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
             headers = handleCookieIfNecessary(completedUrl, headers);
 
             setRequestHeaders(request , httpRequest.getContentType() , headers ,
-                    httpRequest.overwriteHeaderHolder().getMap());
+                    httpRequest.getOverwriteHeaders());
 
             //6.子类可以复写
             doWithHttpRequest(request);
@@ -77,7 +74,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             //8.返回header,包括Cookie处理
             boolean includeHeaders = httpRequest.isIncludeHeaders();
             if(supportCookie()){
-                includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
+                includeHeaders = top.jfunc.common.http.req.HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
 
@@ -112,8 +109,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public Response get(top.jfunc.common.http.request.HttpRequest req) throws IOException {
-        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(req);
+    public Response get(top.jfunc.common.http.req.HttpRequest req) throws IOException {
+        top.jfunc.common.http.req.HttpRequest request = beforeTemplate(req);
         Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
@@ -135,8 +132,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public <R> R http(top.jfunc.common.http.request.HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
-        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(httpRequest);
+    public <R> R http(top.jfunc.common.http.req.HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
+        top.jfunc.common.http.req.HttpRequest request = beforeTemplate(httpRequest);
         ContentCallback<HttpRequest> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
             StringBodyRequest bodyRequest = (StringBodyRequest) request;
@@ -148,8 +145,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public byte[] getAsBytes(top.jfunc.common.http.request.HttpRequest req) throws IOException {
-        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(req);
+    public byte[] getAsBytes(top.jfunc.common.http.req.HttpRequest req) throws IOException {
+        top.jfunc.common.http.req.HttpRequest request = beforeTemplate(req);
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
@@ -163,10 +160,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     public Response upload(UploadRequest req) throws IOException {
         UploadRequest request = beforeTemplate(req);
         Response response = template(request , Method.POST ,
-                r -> {
-                    ParamHolder paramHolder = request.formParamHolder();
-                    upload0(r, paramHolder.getParams(), paramHolder.getParamCharset() ,request.getFormFiles());
-                }, Response::with);
+                r -> upload0(r, request.getFormParams(), request.getParamCharset() ,request.getFormFiles()),
+                Response::with);
         return afterTemplate(request , response);
     }
 

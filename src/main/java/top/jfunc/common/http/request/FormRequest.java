@@ -9,7 +9,7 @@ import top.jfunc.common.utils.MultiValueMap;
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface FormRequest extends StringBodyRequest {
+public interface FormRequest extends StringBodyRequest , top.jfunc.common.http.req.FormRequest {
     /**
      * 接管Form param的处理
      * @return ParamHolder must not null
@@ -20,6 +20,7 @@ public interface FormRequest extends StringBodyRequest {
      * Form参数
      * @return Form参数
      */
+    @Override
     default MultiValueMap<String, String> getFormParams(){
         return formParamHolder().getParams();
     }
@@ -31,6 +32,7 @@ public interface FormRequest extends StringBodyRequest {
      * @param values values
      * @return this
      */
+    @Override
     default FormRequest addFormParam(String key, String value, String... values){
         formParamHolder().addParam(key, value, values);
         return this;
@@ -43,6 +45,16 @@ public interface FormRequest extends StringBodyRequest {
      */
     default FormRequest setParamCharset(String paramCharset){
         formParamHolder().setParamCharset(paramCharset);
+        return this;
+    }
+    /**
+     * 提供便捷设置编码的方法
+     * @param bodyCharset 参数编码
+     * @return this
+     */
+    @Override
+    default FormRequest setBodyCharset(String bodyCharset){
+        setParamCharset(bodyCharset);
         return this;
     }
 

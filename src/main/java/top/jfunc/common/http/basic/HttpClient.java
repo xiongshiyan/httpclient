@@ -18,7 +18,7 @@ import static top.jfunc.common.http.HttpConstants.*;
  * 此接口可以实现一些简单的Http请求
  * 从接口定义看出，改变一个参数就需要重新定义个方法，实在太啰嗦，并且不好维护，
  * 所以墙裂建议使用其子类{@link SmartHttpClient}，
- * 使用{@link top.jfunc.common.http.request.HttpRequest}子类
+ * 使用{@link top.jfunc.common.http.req.HttpRequest}子类
  * 或者{@link top.jfunc.common.http.smart.Request}来表达请求参数
  * 使用{@link SmartHttpClient}还可以实现一些高级功能，比如拦截。
  * @author 熊诗言
@@ -47,7 +47,7 @@ public interface HttpClient {
      * HTTP GET请求
      * @param url URL，可以帶参数
      * @param params 参数列表，可以为 null, 此系列get方法的params按照URLEncoder(UTF-8)拼装,
-     *               如果是其他的编码请使用{@link SmartHttpClient#get(top.jfunc.common.http.request.HttpRequest)},然后Request中设置bodyCharset
+     *               如果是其他的编码请使用{@link SmartHttpClient#get(top.jfunc.common.http.req.HttpRequest)},然后Request中设置bodyCharset
      * @param headers HTTP header 可以为 null
      * @param connectTimeout 连接超时时间
      * @param readTimeout 读超时时间

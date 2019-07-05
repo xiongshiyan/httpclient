@@ -1,7 +1,7 @@
 package top.jfunc.common.http.interceptor;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.req.HttpRequest;
 
 /**
  * 拦截器适配器
