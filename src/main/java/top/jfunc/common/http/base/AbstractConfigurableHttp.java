@@ -61,16 +61,16 @@ public abstract class AbstractConfigurableHttp {
         config.freezeConfig();
     }
 
-    public void onBeforeIfNecessary(HttpRequest httpRequest , Method method){
+    protected void onBeforeIfNecessary(HttpRequest httpRequest , Method method){
         config.onBeforeIfNecessary(httpRequest, method);
     }
-    public void onAfterReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
+    protected void onAfterReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
         config.onAfterReturnIfNecessary(httpRequest, returnValue);
     }
-    public void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
+    protected void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
         config.onErrorIfNecessary(httpRequest, exception);
     }
-    public void onAfterIfNecessary(HttpRequest httpRequest){
+    protected void onAfterIfNecessary(HttpRequest httpRequest){
         config.onAfterIfNecessary(httpRequest);
     }
 
@@ -167,28 +167,28 @@ public abstract class AbstractConfigurableHttp {
         return ParamUtil.concatUrlIfNecessary(getConfig().getBaseUrl() , inputUrl);
     }
 
-    public Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
+    protected Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
         return config.getConnectionTimeoutWithDefault(connectionTimeout);
     }
 
-    public Integer getReadTimeoutWithDefault(Integer readTimeout){
+    protected Integer getReadTimeoutWithDefault(Integer readTimeout){
         return config.getReadTimeoutWithDefault(readTimeout);
     }
 
-    public String getQueryCharsetWithDefault(String queryCharset){
+    protected String getQueryCharsetWithDefault(String queryCharset){
         return config.getQueryCharsetWithDefault(queryCharset);
     }
-    public String getDefaultQueryCharset() {
+    protected String getDefaultQueryCharset() {
         return config.getDefaultQueryCharset();
     }
-    public String getDefaultBodyCharset() {
+    protected String getDefaultBodyCharset() {
         return config.getDefaultBodyCharset();
     }
 
     /**
      * bodyCharset->contentType->全局默认
      */
-    public String calculateBodyCharset(String bodyCharset , String contentType){
+    protected String calculateBodyCharset(String bodyCharset , String contentType){
         //本身是可以的
        if(StrUtil.isNotEmpty(bodyCharset)){
            return bodyCharset;
@@ -205,51 +205,51 @@ public abstract class AbstractConfigurableHttp {
        return mediaType.charset().name();
     }
 
-    public String getResultCharsetWithDefault(String resultCharset){
+    protected String getResultCharsetWithDefault(String resultCharset){
         return config.getResultCharsetWithDefault(resultCharset);
     }
 
-    public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
+    protected ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
         return config.getProxyInfoWithDefault(proxyInfo);
     }
 
-    public HostnameVerifier getHostnameVerifier() {
+    protected HostnameVerifier getHostnameVerifier() {
         return config.sslHolder().getHostnameVerifier();
     }
 
-    public SSLContext getSSLContext() {
+    protected SSLContext getSSLContext() {
         return config.sslHolder().getSslContext();
     }
 
-    public SSLSocketFactory getSSLSocketFactory() {
+    protected SSLSocketFactory getSSLSocketFactory() {
         return config.sslHolder().getSslSocketFactory();
     }
 
-    public X509TrustManager getX509TrustManager() {
+    protected X509TrustManager getX509TrustManager() {
         return config.sslHolder().getX509TrustManager();
     }
 
-    public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
+    protected HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
         return config.getHostnameVerifierWithDefault(hostnameVerifier);
     }
 
-    public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
+    protected SSLContext getSSLContextWithDefault(SSLContext sslContext) {
         return config.getSSLContextWithDefault(sslContext);
     }
 
-    public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
+    protected SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
         return config.getSSLSocketFactoryWithDefault(sslSocketFactory);
     }
 
-    public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
+    protected X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
         return config.getX509TrustManagerWithDefault(x509TrustManager);
     }
 
-    public MultiValueMap<String , String> getDefaultHeaders(){
+    protected MultiValueMap<String , String> getDefaultHeaders(){
         return config.headerHolder().getHeaders();
     }
 
-    public MultiValueMap<String , String> getDefaultQueryParams(){
+    protected MultiValueMap<String , String> getDefaultQueryParams(){
         return config.queryParamHolder().getParams();
     }
 
@@ -260,7 +260,7 @@ public abstract class AbstractConfigurableHttp {
         return MapUtil.mergeMap(headers , getDefaultHeaders());
     }
 
-    public CookieHandler getCookieHandler(){
+    protected CookieHandler getCookieHandler(){
         return config.getCookieHandler();
     }
 }
