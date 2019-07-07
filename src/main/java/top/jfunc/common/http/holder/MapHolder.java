@@ -8,18 +8,7 @@ import java.util.Map;
  * @see OverwriteHeaderHolder
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface MapHolder extends Holder<Map<String, String>>{
-    @Override
-    default Map<String, String> get(){
-        return getMap();
-    }
-
-    @Override
-    default MapHolder set(Map<String, String> map) {
-        setMap(map);
-        return this;
-    }
-
+public interface MapHolder extends Holder{
     /**
      * Map参数
      * @return Map参数
