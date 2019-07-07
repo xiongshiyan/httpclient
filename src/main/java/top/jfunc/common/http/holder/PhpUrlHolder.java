@@ -12,12 +12,6 @@ import java.util.Map;
  * @author xiongshiyan at 2019/6/28 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public interface PhpUrlHolder extends UrlHolder {
-    @Override
-    default PhpUrlHolder set(String url) {
-        setUrl(url);
-        return this;
-    }
-
     /**
      * 请求的URL
      * @return 请求的URL

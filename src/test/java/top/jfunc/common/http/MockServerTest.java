@@ -7,7 +7,7 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import org.mockserver.model.Header;
 import org.mockserver.model.Parameter;
-import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.holder.StringBodyRequest;
 import top.jfunc.common.http.smart.*;
 
 import static org.mockserver.model.HttpRequest.request;

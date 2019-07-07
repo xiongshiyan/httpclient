@@ -1,11 +1,11 @@
-package top.jfunc.common.http.req.impl;
+package top.jfunc.common.http.request.basic;
 
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * @author xiongshiyan at 2019/7/5 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest , ChainCall<THIS>{
+public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest, ChainCall<THIS>{
     private String url;
     private String cacheFinalUrl;
     private Map<String , String> routeParams;

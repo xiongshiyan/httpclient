@@ -1,8 +1,8 @@
-package top.jfunc.common.http.request.impl;
+package top.jfunc.common.http.request.holder.impl;
 
 import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.ParamHolder;
-import top.jfunc.common.http.request.FormRequest;
+import top.jfunc.common.http.request.holder.FormRequest;
 
 /**
  * Form表单请求

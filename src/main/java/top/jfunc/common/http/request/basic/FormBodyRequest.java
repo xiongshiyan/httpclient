@@ -1,7 +1,7 @@
-package top.jfunc.common.http.req.impl;
+package top.jfunc.common.http.request.basic;
 
 import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.req.FormRequest;
+import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 

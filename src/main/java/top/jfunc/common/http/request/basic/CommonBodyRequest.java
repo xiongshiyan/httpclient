@@ -1,7 +1,7 @@
-package top.jfunc.common.http.req.impl;
+package top.jfunc.common.http.request.basic;
 
 import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.req.MutableStringBodyRequest;
+import top.jfunc.common.http.request.MutableStringBodyRequest;
 
 /**
  * 通用的StringBody请求

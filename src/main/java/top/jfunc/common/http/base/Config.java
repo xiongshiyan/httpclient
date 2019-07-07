@@ -5,7 +5,7 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
 import top.jfunc.common.http.interceptor.Interceptor;
-import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.request.HttpRequest;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;

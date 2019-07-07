@@ -1,6 +1,6 @@
-package top.jfunc.common.http.request;
+package top.jfunc.common.http.request.holder;
 
-import top.jfunc.common.http.request.basic.*;
+import top.jfunc.common.http.request.holder.impl.*;
 
 import java.io.File;
 

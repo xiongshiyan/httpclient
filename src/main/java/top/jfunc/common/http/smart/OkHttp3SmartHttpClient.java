@@ -9,10 +9,10 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.OkHttp3Client;
-import top.jfunc.common.http.req.DownloadRequest;
-import top.jfunc.common.http.req.HttpRequest;
-import top.jfunc.common.http.req.StringBodyRequest;
-import top.jfunc.common.http.req.UploadRequest;
+import top.jfunc.common.http.request.DownloadRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -94,7 +94,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             //6.处理header，包括Cookie的处理
             boolean includeHeaders = httpRequest.isIncludeHeaders();
             if(supportCookie()){
-                includeHeaders = top.jfunc.common.http.req.HttpRequest.INCLUDE_HEADERS;
+                includeHeaders = HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
 

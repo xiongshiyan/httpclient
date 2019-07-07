@@ -6,7 +6,7 @@ import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.req.HttpRequest;
+import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.*;
 
 import javax.net.ssl.HostnameVerifier;

@@ -1,11 +1,10 @@
 package top.jfunc.common.http;
 
 import org.junit.Assert;
-import top.jfunc.common.http.request.impl.CommonBodyRequest;
+import top.jfunc.common.http.request.holder.impl.CommonBodyRequest;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.impl.PostBodyRequest;
+import top.jfunc.common.http.request.holder.impl.PostBodyRequest;
 import top.jfunc.common.http.smart.*;
 import org.junit.Ignore;
 import org.junit.Test;

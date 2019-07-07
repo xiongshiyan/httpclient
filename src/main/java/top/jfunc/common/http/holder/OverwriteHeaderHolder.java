@@ -7,11 +7,6 @@ import java.util.Map;
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public interface OverwriteHeaderHolder extends MapHolder{
-    @Override
-    default OverwriteHeaderHolder set(Map<String, String> map) {
-        setMap(map);
-        return this;
-    }
     /**
      * 路径参数
      * @return 路径参数

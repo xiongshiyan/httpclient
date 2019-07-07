@@ -5,9 +5,11 @@ import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
-import top.jfunc.common.http.holder.HeaderHolder;
-import top.jfunc.common.http.req.HttpRequest;
-import top.jfunc.common.http.request.impl.*;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.holder.impl.CommonBodyRequest;
+import top.jfunc.common.http.request.holder.impl.CommonRequest;
+import top.jfunc.common.http.request.holder.impl.FormBodyRequest;
+import top.jfunc.common.http.request.holder.impl.UpLoadRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 

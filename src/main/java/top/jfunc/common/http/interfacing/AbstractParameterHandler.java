@@ -1,10 +1,10 @@
 package top.jfunc.common.http.interfacing;
 
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.req.FormRequest;
-import top.jfunc.common.http.req.HttpRequest;
-import top.jfunc.common.http.req.MutableStringBodyRequest;
-import top.jfunc.common.http.req.UploadRequest;
+import top.jfunc.common.http.request.FormRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.MutableStringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.lang.reflect.Array;

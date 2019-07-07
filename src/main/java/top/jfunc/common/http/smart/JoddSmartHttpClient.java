@@ -7,9 +7,9 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.JoddHttpClient;
-import top.jfunc.common.http.req.DownloadRequest;
-import top.jfunc.common.http.req.StringBodyRequest;
-import top.jfunc.common.http.req.UploadRequest;
+import top.jfunc.common.http.request.DownloadRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -25,7 +25,7 @@ import java.net.URI;
 public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpRequest> {
 
     @Override
-    public <R> R template(top.jfunc.common.http.req.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         onBeforeIfNecessary(httpRequest, method);
 
         HttpResponse response = null;
@@ -74,7 +74,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             //8.返回header,包括Cookie处理
             boolean includeHeaders = httpRequest.isIncludeHeaders();
             if(supportCookie()){
-                includeHeaders = top.jfunc.common.http.req.HttpRequest.INCLUDE_HEADERS;
+                includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
             }
             MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
 
@@ -109,8 +109,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public Response get(top.jfunc.common.http.req.HttpRequest req) throws IOException {
-        top.jfunc.common.http.req.HttpRequest request = beforeTemplate(req);
+    public Response get(top.jfunc.common.http.request.HttpRequest req) throws IOException {
+        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(req);
         Response response = template(request , Method.GET , null , Response::with);
         return afterTemplate(request , response);
     }
@@ -132,8 +132,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public <R> R http(top.jfunc.common.http.req.HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
-        top.jfunc.common.http.req.HttpRequest request = beforeTemplate(httpRequest);
+    public <R> R http(top.jfunc.common.http.request.HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
+        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(httpRequest);
         ContentCallback<HttpRequest> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
             StringBodyRequest bodyRequest = (StringBodyRequest) request;
@@ -145,8 +145,8 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public byte[] getAsBytes(top.jfunc.common.http.req.HttpRequest req) throws IOException {
-        top.jfunc.common.http.req.HttpRequest request = beforeTemplate(req);
+    public byte[] getAsBytes(top.jfunc.common.http.request.HttpRequest req) throws IOException {
+        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(req);
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 

@@ -1,9 +1,9 @@
-package top.jfunc.common.http.request.impl;
+package top.jfunc.common.http.request.holder.impl;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.holder.BodyHolder;
 import top.jfunc.common.http.holder.DefaultBodyHolder;
-import top.jfunc.common.http.request.MutableStringBodyRequest;
+import top.jfunc.common.http.request.holder.MutableStringBodyRequest;
 
 /**
  * 通用的StringBody请求

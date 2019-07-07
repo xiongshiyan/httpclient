@@ -1,6 +1,6 @@
-package top.jfunc.common.http.request.impl;
+package top.jfunc.common.http.request.holder.impl;
 
-import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.holder.StringBodyRequest;
 
 /**
  * Post请求，包含请求体
