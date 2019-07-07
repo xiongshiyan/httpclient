@@ -19,7 +19,7 @@ import java.util.Objects;
  * </ul>
  * @author xiongshiyan
  */
-public interface BodyHolder {
+public interface BodyHolder extends Holder{
     /**
      * 获取实际的Body
      * @return body
