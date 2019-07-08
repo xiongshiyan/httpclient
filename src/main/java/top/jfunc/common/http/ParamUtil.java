@@ -87,10 +87,29 @@ public class ParamUtil {
     }
 
     /**
+     * value进行URL编码
      * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
-     * @param entries Map.Entrys
+     * @param entries Map.Entries
      */
     public static String contactIterable(Iterable<Map.Entry<String, List<String>>> entries, String valueCharset) {
+        return contactIterable(entries , (v) -> urlEncode(v , valueCharset));
+    }
+    /**
+     * value不进行URL编码
+     * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
+     * @param entries Map.Entries
+     */
+    public static String contactIterableNotEncode(Iterable<Map.Entry<String, List<String>>> entries) {
+        return contactIterable(entries , (v) -> v);
+    }
+
+    /**
+     * 连接key-value，并对value做一定的处理
+     * @param entries Iterable<Map.Entry<String, List<String>>>
+     * @param valueEditor value处理器
+     * @return 连接后的字符串
+     */
+    public static String contactIterable(Iterable<Map.Entry<String, List<String>>> entries , Editor<String> valueEditor){
         if(null == entries || !entries.iterator().hasNext()){
             return BLANK;
         }
@@ -100,7 +119,9 @@ public class ParamUtil {
             String key = entry.getKey();
             List<String> vList = entry.getValue();
             for (String v : vList) {
-                params.append(key).append(EQUALS).append(urlEncode(v, valueCharset)).append(AND);
+                params.append(key).append(EQUALS)
+                        .append(valueEditor.edit(v))
+                        .append(AND);
             }
         }
 
