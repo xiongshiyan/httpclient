@@ -21,12 +21,33 @@ import java.util.Map;
  * @author xiongshiyan at 2019/7/5 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements HttpRequest, ChainCall<THIS>{
+    /**
+     * 设置的URL
+     */
     private String url;
+    /**
+     * 缓存处理后的Url
+     */
     private String cacheFinalUrl;
+    /**
+     * 路径参数
+     */
     private Map<String , String> routeParams;
+    /**
+     * Query参数
+     */
     private MultiValueMap<String , String> queryParams;
+    /**
+     * Query参数字符编码
+     */
     private String queryParamCharset = HttpConstants.DEFAULT_CHARSET;
+    /**
+     * header，可能多值
+     */
     private MultiValueMap<String , String> headers;
+    /**
+     * header，单值
+     */
     private Map<String , String> overwriteHeaders;
     /**
      * 资源类型
@@ -125,6 +146,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
             routeParams = new HashMap<>(2);
         }
         routeParams.put(key, value);
+        cacheFinalUrl = null;
         return myself();
     }
 
@@ -141,6 +163,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     @Override
     public THIS setQueryParamCharset(String paramCharset) {
         this.queryParamCharset = paramCharset;
+        cacheFinalUrl = null;
         return myself();
     }
 
@@ -150,6 +173,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
             queryParams = new ArrayListMultiValueMap<>(2);
         }
         queryParams.add(key, value, values);
+        cacheFinalUrl = null;
         return myself();
     }
 
