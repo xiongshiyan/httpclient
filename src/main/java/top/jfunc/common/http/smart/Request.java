@@ -5,16 +5,9 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holder.*;
-import top.jfunc.common.http.request.holder.DownloadRequest;
-import top.jfunc.common.http.request.holder.FormRequest;
-import top.jfunc.common.http.request.holder.HttpRequest;
-import top.jfunc.common.http.request.holder.MutableStringBodyRequest;
-import top.jfunc.common.http.request.holder.UploadRequest;
-import top.jfunc.common.http.request.holder.impl.FormBodyRequest;
-import top.jfunc.common.http.request.holder.impl.PostBodyRequest;
-import top.jfunc.common.http.request.holder.impl.BaseRequest;
-import top.jfunc.common.http.request.holder.impl.DownLoadRequest;
-import top.jfunc.common.http.request.holder.impl.UpLoadRequest;
+import top.jfunc.common.http.request.holder.*;
+import top.jfunc.common.http.request.holder.HolderHttpRequest;
+import top.jfunc.common.http.request.holder.impl.*;
 import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
@@ -28,21 +21,21 @@ import java.io.File;
  * !!!此类作为以前的大杂烩，什么样的请求都放到一起，给设置参数的时候造成困扰，已经不适应快速发展的需要
  * 现将其一拆为多，针对不同的请求使用不同的请求即可
  *
- * @see HttpRequest
- * @see BaseRequest
- * @see PostBodyRequest
- * @see FormBodyRequest
- * @see UpLoadRequest
- * @see DownLoadRequest
+ * @see HolderHttpRequest
+ * @see BaseHolderHttpRequest
+ * @see HolderCommonBodyRequest
+ * @see HolderFormBodyRequest
+ * @see HolderUpLoadRequest
+ * @see HolderDownLoadRequest
  * @author xiongshiyan at 2017/12/9
  *
  * @since 从1.1开始建议不要用此类了,而是使用以上的一些意义更明确的
  */
-public class Request extends BaseRequest<Request> implements
-        MutableStringBodyRequest,
-        FormRequest,
-        UploadRequest,
-        DownloadRequest {
+public class Request extends BaseHolderHttpRequest<Request> implements
+        HolderMutableStringBodyRequest,
+        HolderFormRequest,
+        HolderUploadRequest,
+        HolderDownloadRequest {
     /**
      * form参数
      * POST请求，会作为body存在 并且设置Content-Type为 application/xxx-form-url-encoded

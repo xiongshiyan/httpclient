@@ -1,10 +1,10 @@
 package top.jfunc.common.http;
 
 import org.junit.Assert;
-import top.jfunc.common.http.request.holder.impl.CommonBodyRequest;
+import top.jfunc.common.http.request.holder.impl.HolderCommonBodyRequest;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.request.holder.impl.PostBodyRequest;
+import top.jfunc.common.http.request.holder.impl.HolderPostBodyRequest;
 import top.jfunc.common.http.smart.*;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -295,7 +295,7 @@ public class HttpSmartTest {
     }
     private void testAll(SmartHttpClient smartHttpClient) throws Exception{
 
-        CommonBodyRequest request = PostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
+        HolderCommonBodyRequest request = HolderPostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
                 .setIncludeHeaders(true).setBody("xxxxx", HttpConstants.JSON_WITH_DEFAULT_CHARSET);
         request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         request.queryParamHolder().addParam("sa" , "sa").addParam("ds" , "ds");

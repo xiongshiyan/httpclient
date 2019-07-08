@@ -6,10 +6,10 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.holder.impl.CommonBodyRequest;
-import top.jfunc.common.http.request.holder.impl.CommonRequest;
-import top.jfunc.common.http.request.holder.impl.FormBodyRequest;
-import top.jfunc.common.http.request.holder.impl.UpLoadRequest;
+import top.jfunc.common.http.request.holder.impl.HolderCommonBodyRequest;
+import top.jfunc.common.http.request.holder.impl.HolderCommonRequest;
+import top.jfunc.common.http.request.holder.impl.HolderFormBodyRequest;
+import top.jfunc.common.http.request.holder.impl.HolderUpLoadRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -200,16 +200,16 @@ class HttpRequestFactory implements RequestFactory {
     private HttpRequest initHttpRequest() {
         HttpRequest httpRequest;
         if(hasBody){
-            httpRequest = CommonBodyRequest.of(relativeUrl);
+            httpRequest = HolderCommonBodyRequest.of(relativeUrl);
         }else {
-            httpRequest = CommonRequest.of(relativeUrl);
+            httpRequest = HolderCommonRequest.of(relativeUrl);
         }
 
         if(multiPart){
-            httpRequest = UpLoadRequest.of(relativeUrl);
+            httpRequest = HolderUpLoadRequest.of(relativeUrl);
         }
         if (formEncoded){
-            httpRequest = FormBodyRequest.of(relativeUrl);
+            httpRequest = HolderFormBodyRequest.of(relativeUrl);
         }
 
         return httpRequest;

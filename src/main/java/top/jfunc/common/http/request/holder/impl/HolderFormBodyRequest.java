@@ -2,19 +2,19 @@ package top.jfunc.common.http.request.holder.impl;
 
 import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.ParamHolder;
-import top.jfunc.common.http.request.holder.FormRequest;
+import top.jfunc.common.http.request.holder.HolderFormRequest;
 
 /**
  * Form表单请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements FormRequest {
+public class HolderFormBodyRequest extends BaseHolderHttpRequest<HolderFormBodyRequest> implements HolderFormRequest {
 
-    public FormBodyRequest(String url){
+    public HolderFormBodyRequest(String url){
         super(url);
     }
-    public static FormBodyRequest of(String url){
-        return new FormBodyRequest(url);
+    public static HolderFormBodyRequest of(String url){
+        return new HolderFormBodyRequest(url);
     }
 
     /**
@@ -30,13 +30,13 @@ public class FormBodyRequest extends BaseRequest<FormBodyRequest> implements For
     }
 
     @Override
-    public FormBodyRequest addFormParam(String key, String value, String... values) {
+    public HolderFormBodyRequest addFormParam(String key, String value, String... values) {
         formParamHolder().addParam(key, value, values);
         return myself();
     }
 
     @Override
-    public FormBodyRequest setParamCharset(String paramCharset) {
+    public HolderFormBodyRequest setParamCharset(String paramCharset) {
         formParamHolder().setParamCharset(paramCharset);
         return myself();
     }

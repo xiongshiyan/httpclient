@@ -2,7 +2,7 @@ package top.jfunc.common.http.request.holder.impl;
 
 import top.jfunc.common.http.holder.DefaultFileHolder;
 import top.jfunc.common.http.holder.FileHolder;
-import top.jfunc.common.http.request.holder.DownloadRequest;
+import top.jfunc.common.http.request.holder.HolderDownloadRequest;
 
 import java.io.File;
 
@@ -10,20 +10,20 @@ import java.io.File;
  * 下载为文件的请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DownLoadRequest extends BaseRequest<DownLoadRequest> implements DownloadRequest {
-    public DownLoadRequest(String url){
+public class HolderDownLoadRequest extends BaseHolderHttpRequest<HolderDownLoadRequest> implements HolderDownloadRequest {
+    public HolderDownLoadRequest(String url){
         super(url);
     }
-    public static DownLoadRequest of(String url){
-        return new DownLoadRequest(url);
+    public static HolderDownLoadRequest of(String url){
+        return new HolderDownLoadRequest(url);
     }
-    public static DownLoadRequest of(String url , String filePath){
-        DownLoadRequest downLoadFileRequest = new DownLoadRequest(url);
+    public static HolderDownLoadRequest of(String url , String filePath){
+        HolderDownLoadRequest downLoadFileRequest = new HolderDownLoadRequest(url);
         downLoadFileRequest.fileHolder().setFile(filePath);
         return downLoadFileRequest;
     }
-    public static DownLoadRequest of(String url , File file){
-        DownLoadRequest downLoadFileRequest = new DownLoadRequest(url);
+    public static HolderDownLoadRequest of(String url , File file){
+        HolderDownLoadRequest downLoadFileRequest = new HolderDownLoadRequest(url);
         downLoadFileRequest.fileHolder().setFile(file);
         return downLoadFileRequest;
     }
@@ -36,7 +36,7 @@ public class DownLoadRequest extends BaseRequest<DownLoadRequest> implements Dow
     }
 
     @Override
-    public DownLoadRequest setFile(File file) {
+    public HolderDownLoadRequest setFile(File file) {
         fileHolder().setFile(file);
         return myself();
     }

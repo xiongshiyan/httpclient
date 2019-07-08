@@ -1,6 +1,7 @@
 package top.jfunc.common.http.request.holder;
 
 import top.jfunc.common.http.holder.*;
+import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -14,7 +15,7 @@ import java.util.Map;
  * @since 1.1
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
+public interface HolderHttpRequest extends HttpRequest {
     /**
      * 处理Url参数的
      * @return urlHolder must not be null
@@ -28,7 +29,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @param urlHolder urlHolder
      * @return this
      */
-    HttpRequest urlHolder(UrlHolder urlHolder);
+    HolderHttpRequest urlHolder(UrlHolder urlHolder);
 
     /**
      * 请求的URL
@@ -45,7 +46,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    HttpRequest setUrl(String url);
+    HolderHttpRequest setUrl(String url);
 
     /**
      *获取到 {@link RouteParamHolder} 可以对路径参数完全接管处理
@@ -71,7 +72,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest addRouteParam(String key, String value){
+    default HolderHttpRequest addRouteParam(String key, String value){
         routeParamHolder().put(key, value);
         return this;
     }
@@ -81,7 +82,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @param routeParams 多个路径参数
      * @return this
      */
-    default HttpRequest setRouteParams(Map<String, String> routeParams){
+    default HolderHttpRequest setRouteParams(Map<String, String> routeParams){
         routeParamHolder().setMap(routeParams);
         return this;
     }
@@ -111,7 +112,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest addQueryParam(String key, String value, String... values){
+    default HolderHttpRequest addQueryParam(String key, String value, String... values){
         queryParamHolder().addParam(key, value, values);
         return this;
     }
@@ -121,7 +122,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @param queryParams 多个查询参数
      * @return this
      */
-    default HttpRequest setQueryParams(MultiValueMap<String, String> queryParams){
+    default HolderHttpRequest setQueryParams(MultiValueMap<String, String> queryParams){
         queryParamHolder().setParams(queryParams);
         return this;
     }
@@ -131,7 +132,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @param queryParams 多个查询参数
      * @return this
      */
-    default HttpRequest setQueryParams(Map<String, String> queryParams){
+    default HolderHttpRequest setQueryParams(Map<String, String> queryParams){
         queryParamHolder().setParams(queryParams);
         return this;
     }
@@ -142,7 +143,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
     }
 
     @Override
-    default HttpRequest setQueryParamCharset(String paramCharset) {
+    default HolderHttpRequest setQueryParamCharset(String paramCharset) {
         queryParamHolder().setParamCharset(paramCharset);
         return this;
     }
@@ -150,7 +151,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
     /**
      * 获取到 {@link HeaderHolder} 可以对Header完全接管处理
      * add 方式处理
-     * @see HttpRequest#overwriteHeaderHolder()
+     * @see HolderHttpRequest#overwriteHeaderHolder()
      * @return HeaderHolder must not be null
      */
     HeaderHolder headerHolder();
@@ -163,7 +164,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest addHeader(String key, String value, String... values){
+    default HolderHttpRequest addHeader(String key, String value, String... values){
         headerHolder().addHeader(key, value, values);
         return this;
     }
@@ -173,7 +174,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @param headers 多个header
      * @return this
      */
-    default HttpRequest setHeaders(MultiValueMap<String, String> headers){
+    default HolderHttpRequest setHeaders(MultiValueMap<String, String> headers){
         headerHolder().setHeaders(headers);
         return this;
     }
@@ -183,7 +184,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @param headers 多个header
      * @return this
      */
-    default HttpRequest setHeaders(Map<String, String> headers){
+    default HolderHttpRequest setHeaders(Map<String, String> headers){
         headerHolder().setHeaders(headers);
         return this;
     }
@@ -191,7 +192,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
     /**
      * 获取到 {@link HeaderHolder} 可以对Header完全接管处理
      * 用于处理重写的header，set方式处理
-     * @see HttpRequest#headerHolder()
+     * @see HolderHttpRequest#headerHolder()
      * @return HeaderHolder must not be null
      */
     OverwriteHeaderHolder overwriteHeaderHolder();
@@ -203,7 +204,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest putOverwriteHeader(String key, String value){
+    default HolderHttpRequest putOverwriteHeader(String key, String value){
         overwriteHeaderHolder().put(key, value);
         return this;
     }
@@ -213,7 +214,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @param headers 多个header
      * @return this
      */
-    default HttpRequest putOverwriteHeaders(Map<String, String> headers){
+    default HolderHttpRequest putOverwriteHeaders(Map<String, String> headers){
         overwriteHeaderHolder().setMap(headers);
         return this;
     }
@@ -255,7 +256,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+    default HolderHttpRequest setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         sslHolder().setHostnameVerifier(hostnameVerifier);
         return this;
     }
@@ -272,7 +273,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest setSslContext(SSLContext sslContext) {
+    default HolderHttpRequest setSslContext(SSLContext sslContext) {
         sslHolder().setSslContext(sslContext);
         return this;
     }
@@ -289,7 +290,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+    default HolderHttpRequest setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
         sslHolder().setSslSocketFactory(sslSocketFactory);
         return this;
     }
@@ -306,7 +307,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest setX509TrustManager(X509TrustManager x509TrustManager) {
+    default HolderHttpRequest setX509TrustManager(X509TrustManager x509TrustManager) {
         sslHolder().setX509TrustManager(x509TrustManager);
         return this;
     }
@@ -324,7 +325,7 @@ public interface HttpRequest extends top.jfunc.common.http.request.HttpRequest {
      * @return this
      */
     @Override
-    default HttpRequest addAttribute(String key, String value){
+    default HolderHttpRequest addAttribute(String key, String value){
         attributeHolder().addAttribute(key , value);
         return this;
     }

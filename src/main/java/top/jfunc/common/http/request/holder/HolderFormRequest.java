@@ -3,13 +3,14 @@ package top.jfunc.common.http.request.holder;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 /**
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface FormRequest extends StringBodyRequest , top.jfunc.common.http.request.FormRequest {
+public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest {
     /**
      * 接管Form param的处理
      * @return ParamHolder must not null
@@ -33,7 +34,7 @@ public interface FormRequest extends StringBodyRequest , top.jfunc.common.http.r
      * @return this
      */
     @Override
-    default FormRequest addFormParam(String key, String value, String... values){
+    default HolderFormRequest addFormParam(String key, String value, String... values){
         formParamHolder().addParam(key, value, values);
         return this;
     }
@@ -43,7 +44,7 @@ public interface FormRequest extends StringBodyRequest , top.jfunc.common.http.r
      * @param paramCharset 参数编码
      * @return this
      */
-    default FormRequest setParamCharset(String paramCharset){
+    default HolderFormRequest setParamCharset(String paramCharset){
         formParamHolder().setParamCharset(paramCharset);
         return this;
     }
@@ -53,7 +54,7 @@ public interface FormRequest extends StringBodyRequest , top.jfunc.common.http.r
      * @return this
      */
     @Override
-    default FormRequest setBodyCharset(String bodyCharset){
+    default HolderFormRequest setBodyCharset(String bodyCharset){
         setParamCharset(bodyCharset);
         return this;
     }

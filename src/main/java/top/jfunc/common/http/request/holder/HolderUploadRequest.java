@@ -3,13 +3,14 @@ package top.jfunc.common.http.request.holder;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holder.FormFileHolder;
 import top.jfunc.common.http.holder.ParamHolder;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 /**
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface UploadRequest extends HttpRequest , top.jfunc.common.http.request.UploadRequest {
+public interface HolderUploadRequest extends HolderHttpRequest, UploadRequest {
     /**
      * 接管Form param的处理
      * @return ParamHolder must not null
@@ -33,7 +34,7 @@ public interface UploadRequest extends HttpRequest , top.jfunc.common.http.reque
      * @return this
      */
     @Override
-    default UploadRequest addFormParam(String key, String value, String... values){
+    default HolderUploadRequest addFormParam(String key, String value, String... values){
         formParamHolder().addParam(key, value, values);
         return this;
     }
@@ -53,7 +54,7 @@ public interface UploadRequest extends HttpRequest , top.jfunc.common.http.reque
      * @return this
      */
     @Override
-    default UploadRequest setParamCharset(String paramCharset){
+    default HolderUploadRequest setParamCharset(String paramCharset){
         formParamHolder().setParamCharset(paramCharset);
         return this;
     }
@@ -73,7 +74,7 @@ public interface UploadRequest extends HttpRequest , top.jfunc.common.http.reque
      * @return this
      */
     @Override
-    default UploadRequest addFormFile(FormFile... formFiles){
+    default HolderUploadRequest addFormFile(FormFile... formFiles){
         formFileHolder().addFormFile(formFiles);
         return this;
     }

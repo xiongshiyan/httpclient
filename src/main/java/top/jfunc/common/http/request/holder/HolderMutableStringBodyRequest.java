@@ -1,11 +1,12 @@
 package top.jfunc.common.http.request.holder;
 
 import top.jfunc.common.http.holder.BodyHolder;
+import top.jfunc.common.http.request.MutableStringBodyRequest;
 
 /**
  * @author xiongshiyan at 2019/5/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface MutableStringBodyRequest extends HttpRequest , StringBodyRequest , top.jfunc.common.http.request.MutableStringBodyRequest {
+public interface HolderMutableStringBodyRequest extends HolderHttpRequest, HolderStringBodyRequest, MutableStringBodyRequest {
     /**
      * body的holder
      * @return bodyHolder must not be null
@@ -27,7 +28,7 @@ public interface MutableStringBodyRequest extends HttpRequest , StringBodyReques
      * @return this
      */
     @Override
-    default MutableStringBodyRequest setBody(String body){
+    default HolderMutableStringBodyRequest setBody(String body){
         bodyHolder().setBody(body);
         return this;
     }
@@ -38,7 +39,7 @@ public interface MutableStringBodyRequest extends HttpRequest , StringBodyReques
      * @return this
      */
     @Override
-    default MutableStringBodyRequest setBodyCharset(String bodyCharset){
+    default HolderMutableStringBodyRequest setBodyCharset(String bodyCharset){
         bodyHolder().setBodyCharset(bodyCharset);
         return this;
     }
@@ -59,5 +60,5 @@ public interface MutableStringBodyRequest extends HttpRequest , StringBodyReques
      * @return this
      */
     @Override
-    MutableStringBodyRequest setBody(String body, String contentType);
+    HolderMutableStringBodyRequest setBody(String body, String contentType);
 }

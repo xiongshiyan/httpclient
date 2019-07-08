@@ -1,6 +1,7 @@
 package top.jfunc.common.http.request.holder;
 
 import top.jfunc.common.http.holder.FileHolder;
+import top.jfunc.common.http.request.DownloadRequest;
 
 import java.io.File;
 
@@ -8,7 +9,7 @@ import java.io.File;
  * 文件下载请求
  * @author xiongshiyan
  */
-public interface DownloadRequest extends HttpRequest , top.jfunc.common.http.request.DownloadRequest {
+public interface HolderDownloadRequest extends HolderHttpRequest, DownloadRequest {
     /**
      * 下载到的文件
      * @return file
@@ -24,7 +25,7 @@ public interface DownloadRequest extends HttpRequest , top.jfunc.common.http.req
      * @return this
      */
     @Override
-    default DownloadRequest setFile(File file){
+    default HolderDownloadRequest setFile(File file){
         fileHolder().setFile(file);
         return this;
     }

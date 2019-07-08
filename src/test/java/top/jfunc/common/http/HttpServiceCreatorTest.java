@@ -6,8 +6,8 @@ import org.junit.Test;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.interfacing.HttpServiceCreator;
-import top.jfunc.common.http.request.holder.impl.GetRequest;
-import top.jfunc.common.http.request.holder.impl.PostBodyRequest;
+import top.jfunc.common.http.request.holder.impl.HolderGetRequest;
+import top.jfunc.common.http.request.holder.impl.HolderPostBodyRequest;
 import top.jfunc.common.http.smart.ApacheSmartHttpClient;
 import top.jfunc.common.http.smart.Response;
 
@@ -37,17 +37,17 @@ public class HttpServiceCreatorTest {
 
     @Test
     public void testRequest(){
-        Response zzzzzz = jfunc.request(GetRequest.of("https://www.baidu.com"));
+        Response zzzzzz = jfunc.request(HolderGetRequest.of("https://www.baidu.com"));
         System.out.println(zzzzzz);
     }
     @Test
     public void testRequestHeader(){
-        Response zzzzzz = jfunc.request(GetRequest.of("/get/query") , "kkkk");
+        Response zzzzzz = jfunc.request(HolderGetRequest.of("/get/query") , "kkkk");
         System.out.println(zzzzzz);
     }
     @Test
     public void testRequestPost(){
-        PostBodyRequest bodyRequest = PostBodyRequest.of("/post/body");
+        HolderPostBodyRequest bodyRequest = HolderPostBodyRequest.of("/post/body");
         bodyRequest.bodyHolder().setBody("xxsdasdadxx");
         Response zzzzzz = jfunc.post(bodyRequest);
         System.out.println(zzzzzz);

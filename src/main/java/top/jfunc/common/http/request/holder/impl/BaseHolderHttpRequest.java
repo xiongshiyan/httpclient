@@ -5,7 +5,7 @@ import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.holder.*;
-import top.jfunc.common.http.request.holder.HttpRequest;
+import top.jfunc.common.http.request.holder.HolderHttpRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.net.URL;
@@ -16,7 +16,7 @@ import java.util.Map;
  * T泛型为了变种的setter返回this便于链式调用
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest, ChainCall<THIS> {
+public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> implements HolderHttpRequest, ChainCall<THIS> {
     /**
      * 请求的URL
      */
@@ -75,9 +75,9 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
      */
     private ProxyInfo proxyInfo = null;
 
-    public BaseRequest(String url){this.urlHolder.setUrl(url);}
-    public BaseRequest(URL url){this.urlHolder.setUrl(url);}
-    public BaseRequest(){}
+    public BaseHolderHttpRequest(String url){this.urlHolder.setUrl(url);}
+    public BaseHolderHttpRequest(URL url){this.urlHolder.setUrl(url);}
+    public BaseHolderHttpRequest(){}
 
     @Override
     public THIS setUrl(String url) {

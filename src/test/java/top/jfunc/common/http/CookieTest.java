@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.base.Config;
-import top.jfunc.common.http.request.holder.impl.GetRequest;
+import top.jfunc.common.http.request.holder.impl.HolderGetRequest;
 import top.jfunc.common.http.smart.*;
 
 import java.net.*;
@@ -92,10 +92,10 @@ public class CookieTest {
 
     private void testCookie(SmartHttpClient smartHttpClient) throws Exception{
         //服务端设置Cookie
-        Response response = smartHttpClient.get(GetRequest.of("http://localhost:8080/http-server-test/cookie/getCookie"));
+        Response response = smartHttpClient.get(HolderGetRequest.of("http://localhost:8080/http-server-test/cookie/getCookie"));
         System.out.println(response.getHeaders());
         //客户端自动带上Cookie
-        Response response1 = smartHttpClient.get(GetRequest.of("http://localhost:8080/http-server-test/cookie/setCookie"));
+        Response response1 = smartHttpClient.get(HolderGetRequest.of("http://localhost:8080/http-server-test/cookie/setCookie"));
         System.out.println(response1.getBody());
     }
 }
