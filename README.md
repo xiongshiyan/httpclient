@@ -15,7 +15,7 @@ http模块的架构设计和使用方式见 CSDN博客
 
 HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；SmartHttpTemplate继承于HttpTemplate，SmartHttpClient接口继承于HttpClient，且基于Request来模拟Http的参数、header，这样更容易优化、更容易使用。
 
-[接口体系设计及类图说明](https://gitee.com/xxssyyyyssxx/httpclient-interfacing/blob/master/CLASS.md)
+[接口体系设计及类图说明](https://gitee.com/xxssyyyyssxx/httpclient/blob/master/CLASS.md)
 
 ### features
 
