@@ -51,6 +51,10 @@ HttpRequest接口体系，使用这些请求类意义更明确：
 
 ![HttpRequest接口体系，使用这些请求类意义更明确](https://images.gitee.com/uploads/images/2019/0611/152249_cb6beefa_1507575.png "HttpRequest体系.png")
 
+HttpRequest-HolderHttpRequest接口体系，基于Holder的HttpRequest：
+
+![HttpRequest-HolderHttpRequest接口体系，基于Holder的HttpRequest](https://images.gitee.com/uploads/images/2019/0708/200719_fef33858_1507575.png "HttpRequest-HolderHttpRequest体系.png")
+
 提供众多的holder简化参数处理
 
 ![提供众多的holder简化参数处理](https://images.gitee.com/uploads/images/2019/0611/152341_7aff634a_1507575.png "holder.png")
