@@ -1,11 +1,11 @@
-package top.jfunc.common.http.request.holder.impl;
+package top.jfunc.common.http.holderrequest.impl;
 
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holder.DefaultFormFileHolder;
 import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.FormFileHolder;
 import top.jfunc.common.http.holder.ParamHolder;
-import top.jfunc.common.http.request.holder.HolderUploadRequest;
+import top.jfunc.common.http.holderrequest.HolderUploadRequest;
 
 /**
  * 多文件、参数同时支持的上传请求

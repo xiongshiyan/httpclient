@@ -1,8 +1,8 @@
-package top.jfunc.common.http.request.holder.impl;
+package top.jfunc.common.http.holderrequest.impl;
 
 import top.jfunc.common.http.holder.DefaultFileHolder;
 import top.jfunc.common.http.holder.FileHolder;
-import top.jfunc.common.http.request.holder.HolderDownloadRequest;
+import top.jfunc.common.http.holderrequest.HolderDownloadRequest;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package top.jfunc.common.http.request.holder.impl;
+package top.jfunc.common.http.holderrequest.impl;
 
 /**
  * 通用的代表没有更多参数的请求

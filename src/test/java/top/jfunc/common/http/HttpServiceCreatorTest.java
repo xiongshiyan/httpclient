@@ -6,8 +6,8 @@ import org.junit.Test;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.interfacing.HttpServiceCreator;
-import top.jfunc.common.http.request.holder.impl.HolderGetRequest;
-import top.jfunc.common.http.request.holder.impl.HolderPostBodyRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderGetRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderPostBodyRequest;
 import top.jfunc.common.http.smart.ApacheSmartHttpClient;
 import top.jfunc.common.http.smart.Response;
 

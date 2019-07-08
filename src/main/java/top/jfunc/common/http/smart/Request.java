@@ -5,9 +5,8 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holder.*;
-import top.jfunc.common.http.request.holder.*;
-import top.jfunc.common.http.request.holder.HolderHttpRequest;
-import top.jfunc.common.http.request.holder.impl.*;
+import top.jfunc.common.http.holderrequest.*;
+import top.jfunc.common.http.holderrequest.impl.*;
 import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 

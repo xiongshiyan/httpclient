@@ -1,4 +1,4 @@
-package top.jfunc.common.http.request.holder;
+package top.jfunc.common.http.holderrequest;
 
 import top.jfunc.common.http.request.StringBodyRequest;
 

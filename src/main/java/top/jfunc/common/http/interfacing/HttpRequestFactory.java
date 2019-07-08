@@ -6,10 +6,10 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.holder.impl.HolderCommonBodyRequest;
-import top.jfunc.common.http.request.holder.impl.HolderCommonRequest;
-import top.jfunc.common.http.request.holder.impl.HolderFormBodyRequest;
-import top.jfunc.common.http.request.holder.impl.HolderUpLoadRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderCommonBodyRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderCommonRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderFormBodyRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderUpLoadRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 

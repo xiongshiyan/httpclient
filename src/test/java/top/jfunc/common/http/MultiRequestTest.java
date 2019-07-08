@@ -9,9 +9,9 @@ import org.mockserver.model.Header;
 import org.mockserver.model.Parameter;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.holder.impl.HolderFormBodyRequest;
-import top.jfunc.common.http.request.holder.impl.HolderGetRequest;
-import top.jfunc.common.http.request.holder.impl.HolderPostBodyRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderFormBodyRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderGetRequest;
+import top.jfunc.common.http.holderrequest.impl.HolderPostBodyRequest;
 import top.jfunc.common.http.smart.*;
 
 import static org.mockserver.model.HttpRequest.request;

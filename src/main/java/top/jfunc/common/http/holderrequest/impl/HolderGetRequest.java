@@ -1,4 +1,4 @@
-package top.jfunc.common.http.request.holder.impl;
+package top.jfunc.common.http.holderrequest.impl;
 
 /**
  * get请求

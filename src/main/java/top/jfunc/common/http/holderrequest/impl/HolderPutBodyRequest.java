@@ -1,4 +1,4 @@
-package top.jfunc.common.http.request.holder.impl;
+package top.jfunc.common.http.holderrequest.impl;
 
 /**
  * Put请求，包含请求体

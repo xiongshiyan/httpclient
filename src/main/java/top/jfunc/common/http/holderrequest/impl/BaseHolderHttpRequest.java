@@ -1,11 +1,11 @@
-package top.jfunc.common.http.request.holder.impl;
+package top.jfunc.common.http.holderrequest.impl;
 
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.holder.*;
-import top.jfunc.common.http.request.holder.HolderHttpRequest;
+import top.jfunc.common.http.holderrequest.HolderHttpRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.net.URL;
