@@ -2,12 +2,14 @@ package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.ProxyInfo;
+import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
@@ -288,6 +290,9 @@ public interface HttpRequest {
 
     /**
      * 设置 SSLContext
+     * @see SSLSocketFactoryBuilder#getSSLContext()
+     * @see SSLSocketFactoryBuilder#getSSLContext(String, String)
+     * @see SSLSocketFactoryBuilder#getSSLContext(InputStream, String)
      * @param sslContext SSLContext
      * @return this
      */
@@ -295,12 +300,14 @@ public interface HttpRequest {
 
     /**
      * SSLSocketFactory
+     * @see HttpRequest#getSslContext()
      * @return SSLSocketFactory
      */
     SSLSocketFactory getSslSocketFactory();
 
     /**
      * 设置SSLSocketFactory
+     * @see HttpRequest#setSslContext(SSLContext)
      * @param sslSocketFactory SSLSocketFactory
      * @return this
      */
