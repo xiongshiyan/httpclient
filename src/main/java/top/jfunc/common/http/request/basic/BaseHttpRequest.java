@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * @author xiongshiyan at 2019/7/5 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseRequest<THIS extends BaseRequest> implements HttpRequest, ChainCall<THIS>{
+public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements HttpRequest, ChainCall<THIS>{
     private String url;
     private String cacheFinalUrl;
     private Map<String , String> routeParams;
@@ -86,9 +86,9 @@ public abstract class BaseRequest<THIS extends BaseRequest> implements HttpReque
      */
     private Map<String , Object> attributes;
 
-    public BaseRequest(String url){this.url = url;}
-    public BaseRequest(URL url){this.url = url.toString();}
-    public BaseRequest(){}
+    public BaseHttpRequest(String url){this.url = url;}
+    public BaseHttpRequest(URL url){this.url = url.toString();}
+    public BaseHttpRequest(){}
 
     @Override
     public String getUrl() {

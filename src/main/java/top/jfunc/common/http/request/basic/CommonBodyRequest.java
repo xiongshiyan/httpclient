@@ -7,7 +7,7 @@ import top.jfunc.common.http.request.MutableStringBodyRequest;
  * 通用的StringBody请求
  * @author xiongshiyan at 2019/5/21 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class CommonBodyRequest extends BaseRequest<CommonBodyRequest> implements MutableStringBodyRequest {
+public class CommonBodyRequest extends BaseHttpRequest<CommonBodyRequest> implements MutableStringBodyRequest {
     public CommonBodyRequest(String url){
         super(url);
     }
