@@ -11,7 +11,7 @@ import java.util.Map;
  * @see top.jfunc.common.http.interceptor.Interceptor
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface AttributeHolder extends Holder{
+public interface AttributeHolder{
     /**
      * 获取属性
      * @return 属性参数

@@ -10,7 +10,7 @@ import java.util.Map;
  * 可能返回的是完整url路径，也可能是返回的/xxx/yyy这样的路径
  * @author xiongshiyan at 2019/6/28 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface UrlHolder extends Holder{
+public interface UrlHolder{
     /**
      * 请求的URL
      * @return 请求的URL

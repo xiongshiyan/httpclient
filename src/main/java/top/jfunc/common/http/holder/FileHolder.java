@@ -6,7 +6,7 @@ import java.io.File;
  * 下载文件处理器，新增、获取下载到哪个文件的信息
  * @author xiongshiyan
  */
-public interface FileHolder extends Holder{
+public interface FileHolder{
     /**
      * 下载到的文件
      * @return file

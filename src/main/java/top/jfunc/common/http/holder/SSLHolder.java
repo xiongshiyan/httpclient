@@ -9,7 +9,7 @@ import javax.net.ssl.X509TrustManager;
  * 处置SSL相关设置的
  * @author xiongshiyan
  */
-public interface SSLHolder extends Holder{
+public interface SSLHolder{
     /**
      * HostnameVerifier
      * @return HostnameVerifier
