@@ -33,7 +33,7 @@ public class DemoImpl extends AbstractSmartHttpClient<Socket> {
     }
 
     @Override
-    public <R> R template(HttpRequest request, Method method, ContentCallback<Socket> contentCallback, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R doTemplate(HttpRequest request, Method method, ContentCallback<Socket> contentCallback, ResultCallback<R> resultCallback) throws IOException {
         //实现具体Http请求
         return null;
     }
