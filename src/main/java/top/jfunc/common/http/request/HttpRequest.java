@@ -307,10 +307,12 @@ public interface HttpRequest {
 
     /**
      * 设置SSLSocketFactory
+     * 废弃此方法,调用{@link HttpRequest#setSslContext(SSLContext)}设置
      * @see HttpRequest#setSslContext(SSLContext)
      * @param sslSocketFactory SSLSocketFactory
      * @return this
      */
+    @Deprecated
     HttpRequest setSslSocketFactory(SSLSocketFactory sslSocketFactory);
 
     /**

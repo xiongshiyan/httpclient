@@ -14,8 +14,8 @@ import javax.net.ssl.X509TrustManager;
  */
 public class DefaultSSLHolder2 implements SSLHolder {
     private HostnameVerifier hostnameVerifier = new TrustAnyHostnameVerifier();
-    private SSLContext sslContext = getDefaultSSLContext();
-    private SSLSocketFactory sslSocketFactory = getDefaultSSLSocketFactory();
+    private SSLContext sslContext = SSLSocketFactoryBuilder.create().getSSLContext();
+    private SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
     private X509TrustManager x509TrustManager = new DefaultTrustManager2();
 
     @Override
@@ -42,7 +42,10 @@ public class DefaultSSLHolder2 implements SSLHolder {
 
     @Override
     public SSLSocketFactory getSslSocketFactory() {
-        return this.sslSocketFactory;
+        if(null == sslSocketFactory && null != sslContext){
+            return sslContext.getSocketFactory();
+        }
+        return sslSocketFactory;
     }
 
     @Override
@@ -60,16 +63,5 @@ public class DefaultSSLHolder2 implements SSLHolder {
     public SSLHolder setX509TrustManager(X509TrustManager x509TrustManager) {
         this.x509TrustManager = x509TrustManager;
         return this;
-    }
-
-
-    private SSLContext getDefaultSSLContext(){
-        return SSLSocketFactoryBuilder.create().getSSLContext();
-    }
-    private SSLSocketFactory getDefaultSSLSocketFactory(){
-        if(null == sslContext){
-            return SSLSocketFactoryBuilder.create().getSSLContext().getSocketFactory();
-        }
-        return sslContext.getSocketFactory();
     }
 }
