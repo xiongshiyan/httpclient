@@ -300,10 +300,13 @@ public interface HttpRequest {
 
     /**
      * SSLSocketFactory
-     * @see HttpRequest#getSslContext()
+     * 因为一般地 SslSocketFactory 都是从sslContext产生出来的 ， 所以废弃其set方法，从sslContext产生
      * @return SSLSocketFactory
      */
-    SSLSocketFactory getSslSocketFactory();
+    default SSLSocketFactory getSslSocketFactory(){
+        SSLContext sslContext = getSslContext();
+        return null == sslContext ? null : sslContext.getSocketFactory();
+    }
 
     /**
      * 设置SSLSocketFactory
@@ -312,8 +315,8 @@ public interface HttpRequest {
      * @param sslSocketFactory SSLSocketFactory
      * @return this
      */
-    @Deprecated
-    HttpRequest setSslSocketFactory(SSLSocketFactory sslSocketFactory);
+    //@Deprecated
+    //HttpRequest setSslSocketFactory(SSLSocketFactory sslSocketFactory);
 
     /**
      * X509TrustManager

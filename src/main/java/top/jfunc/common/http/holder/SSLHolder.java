@@ -44,10 +44,13 @@ public interface SSLHolder{
 
     /**
      * SSLSocketFactory
-     * @see SSLHolder#getSslContext()
+     * 因为一般地 SslSocketFactory 都是从sslContext产生出来的 ， 所以废弃其set方法，从sslContext产生
      * @return SSLSocketFactory
      */
-    SSLSocketFactory getSslSocketFactory();
+    default SSLSocketFactory getSslSocketFactory(){
+        SSLContext sslContext = getSslContext();
+        return null == sslContext ? null : sslContext.getSocketFactory();
+    }
 
     /**
      * 设置SSLSocketFactory
@@ -56,8 +59,8 @@ public interface SSLHolder{
      * @param sslSocketFactory SSLSocketFactory
      * @return this
      */
-    @Deprecated
-    SSLHolder setSslSocketFactory(SSLSocketFactory sslSocketFactory);
+    //@Deprecated
+    //SSLHolder setSslSocketFactory(SSLSocketFactory sslSocketFactory);
 
     /**
      * X509TrustManager

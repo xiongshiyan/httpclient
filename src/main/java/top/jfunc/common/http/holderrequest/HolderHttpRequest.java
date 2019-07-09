@@ -286,15 +286,6 @@ public interface HolderHttpRequest extends HttpRequest {
         return sslHolder().getSslSocketFactory();
     }
     /**
-     * 设置 SSLSocketFactory
-     * @return this
-     */
-    @Override
-    default HolderHttpRequest setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        sslHolder().setSslSocketFactory(sslSocketFactory);
-        return this;
-    }
-    /**
      * 获取设置的X509TrustManager
      * @return X509TrustManager
      */

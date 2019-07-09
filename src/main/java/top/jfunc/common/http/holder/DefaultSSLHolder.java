@@ -2,7 +2,6 @@ package top.jfunc.common.http.holder;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -17,10 +16,6 @@ public class DefaultSSLHolder implements SSLHolder {
      * SSLContext
      */
     private SSLContext sslContext = null;
-    /**
-     * SSLSocketFactory
-     */
-    private SSLSocketFactory sslSocketFactory = null;
     /**
      * X509TrustManager
      */
@@ -45,23 +40,6 @@ public class DefaultSSLHolder implements SSLHolder {
     @Override
     public SSLHolder setSslContext(SSLContext sslContext) {
         this.sslContext = sslContext;
-        return this;
-    }
-
-    /**
-     * 因为一般地 SslSocketFactory 都是从sslContext产生出来的 ， 所以如果没显式设置就从sslContext产生
-     */
-    @Override
-    public SSLSocketFactory getSslSocketFactory() {
-        if(null == sslSocketFactory && null != sslContext){
-            return sslContext.getSocketFactory();
-        }
-        return sslSocketFactory;
-    }
-
-    @Override
-    public SSLHolder setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
         return this;
     }
 

@@ -11,7 +11,6 @@ import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 import java.net.URL;
 import java.util.HashMap;
@@ -94,10 +93,6 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
      * SSLContext
      */
     private SSLContext sslContext = null;
-    /**
-     * SSLSocketFactory
-     */
-    private SSLSocketFactory sslSocketFactory = null;
     /**
      * X509TrustManager
      */
@@ -336,23 +331,6 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     @Override
     public THIS setSslContext(SSLContext sslContext) {
         this.sslContext = sslContext;
-        return myself();
-    }
-
-    /**
-     * 因为一般地 SslSocketFactory 都是从sslContext产生出来的 ， 所以如果没显式设置就从sslContext产生
-     */
-    @Override
-    public SSLSocketFactory getSslSocketFactory() {
-        if(null == sslSocketFactory && null != sslContext){
-            return sslContext.getSocketFactory();
-        }
-        return sslSocketFactory;
-    }
-
-    @Override
-    public THIS setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
         return myself();
     }
 

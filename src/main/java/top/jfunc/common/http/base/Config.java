@@ -175,19 +175,19 @@ public class Config {
         return this;
     }
     public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
-        return getValueWithDefault(hostnameVerifier , sslHolder().getHostnameVerifier());
+        return getValueWithDefault(hostnameVerifier , sslHolder.getHostnameVerifier());
     }
 
     public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
-        return getValueWithDefault(sslContext , sslHolder().getSslContext());
+        return getValueWithDefault(sslContext , sslHolder.getSslContext());
     }
 
     public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
-        return getValueWithDefault(sslSocketFactory , sslHolder().getSslSocketFactory());
+        return getValueWithDefault(sslSocketFactory , sslHolder.getSslSocketFactory());
     }
 
     public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
-        return getValueWithDefault(x509TrustManager , sslHolder().getX509TrustManager());
+        return getValueWithDefault(x509TrustManager , sslHolder.getX509TrustManager());
     }
     public SSLHolder sslHolder(){
         return sslHolder;
