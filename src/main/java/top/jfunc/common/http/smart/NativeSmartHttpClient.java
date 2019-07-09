@@ -23,10 +23,10 @@ import java.net.URL;
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpURLConnection> {
+public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpURLConnection> {
 
     @Override
-    public <R> R template(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R doTemplate(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         onBeforeIfNecessary(httpRequest, method);
 
         HttpURLConnection connection = null;
@@ -136,26 +136,21 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
 
 
     @Override
-    public Response get(HttpRequest req) throws IOException {
-        HttpRequest request = beforeTemplate(req);
-        Response response = template(request , Method.GET , null , Response::with);
-        return afterTemplate(request , response);
+    public Response get(HttpRequest request) throws IOException {
+        return template(request , Method.GET , null , Response::with);
     }
 
     @Override
-    public Response post(StringBodyRequest req) throws IOException {
-        StringBodyRequest request = beforeTemplate(req);
+    public Response post(StringBodyRequest request) throws IOException {
         final String body = request.getBody();
         final String bodyCharset = calculateBodyCharset(request.getBodyCharset() , request.getContentType());
-        Response response = template(request, Method.POST ,
+        return template(request, Method.POST ,
                 connection -> writeContent(connection, body, bodyCharset),
                 Response::with);
-        return afterTemplate(request , response);
     }
 
     @Override
-    public <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
-        HttpRequest request = beforeTemplate(httpRequest);
+    public <R> R http(HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
         ContentCallback<HttpURLConnection> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
             StringBodyRequest bodyRequest = (StringBodyRequest) request;
@@ -167,28 +162,24 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
     }
 
     @Override
-    public byte[] getAsBytes(HttpRequest req) throws IOException {
-        HttpRequest request = beforeTemplate(req);
+    public byte[] getAsBytes(HttpRequest request) throws IOException {
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File download(DownloadRequest req) throws IOException {
-        DownloadRequest request = beforeTemplate(req);
+    public File download(DownloadRequest request) throws IOException {
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override
-    public Response upload(UploadRequest req) throws IOException {
-        UploadRequest request = beforeTemplate(req);
+    public Response upload(UploadRequest request) throws IOException {
         ///MultiValueMap<String, String> headers = mergeHeaders(request.headerHolder().getHeaders());
         ///request.headerHolder().setHeaders(headers);
-        Response response = template(request, Method.POST ,
+        return template(request, Method.POST ,
                 connect -> upload0(connect, request.getFormParams(),
                             calculateBodyCharset(request.getParamCharset() , request.getContentType()),
                             request.getFormFiles()),
                 Response::with);
-        return afterTemplate(request , response);
     }
 
     @Override

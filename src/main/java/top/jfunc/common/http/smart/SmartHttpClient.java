@@ -8,11 +8,9 @@ import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.http.request.basic.CommonRequest;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * @author xiongshiyan at 2017/12/9
@@ -57,8 +55,7 @@ public interface SmartHttpClient extends HttpClient {
      * @throws IOException IOException
      */
     default Response http(HttpRequest httpRequest, Method method) throws IOException{
-        Response response = http(httpRequest, method, Response::with);
-        return afterTemplate(httpRequest , response);
+        return http(httpRequest, method, Response::with);
     }
 
     /**
@@ -103,27 +100,4 @@ public interface SmartHttpClient extends HttpClient {
      * @throws IOException IOException
      */
     Response upload(UploadRequest request) throws IOException;
-
-    /**
-     * 对请求参数拦截处理 , 比如统一添加header , 参数加密 , 默认不处理
-     * @param request Request
-     * @return Request
-     */
-    default <T extends HttpRequest> T beforeTemplate(T request){
-        return Objects.requireNonNull(request);
-    }
-
-    /**
-     * 对返回结果拦截处理 , 比如统一解密 , 默认不处理
-     * @param request Request
-     * @param response Response
-     * @return Response
-     * @throws IOException IOException
-     */
-    default Response afterTemplate(HttpRequest request, Response response) throws IOException{
-        if(request.isRedirectable() && response.needRedirect()){
-            return get(CommonRequest.of(response.getRedirectUrl()));
-        }
-        return response;
-    }
 }

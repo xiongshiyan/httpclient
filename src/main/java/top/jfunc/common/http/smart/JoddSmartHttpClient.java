@@ -22,10 +22,10 @@ import java.net.URI;
  * 使用Jodd-http 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient, SmartHttpTemplate<HttpRequest> {
+public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpRequest> {
 
     @Override
-    public <R> R template(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R doTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
         onBeforeIfNecessary(httpRequest, method);
 
         HttpResponse response = null;
@@ -109,31 +109,25 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public Response get(top.jfunc.common.http.request.HttpRequest req) throws IOException {
-        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(req);
-        Response response = template(request , Method.GET , null , Response::with);
-        return afterTemplate(request , response);
+    public Response get(top.jfunc.common.http.request.HttpRequest request) throws IOException {
+        return template(request , Method.GET , null , Response::with);
     }
 
     @Override
-    public Response post(StringBodyRequest req) throws IOException {
-        StringBodyRequest request = beforeTemplate(req);
+    public Response post(StringBodyRequest request) throws IOException {
         final String body = request.getBody();
         final String bodyCharset = request.getBodyCharset();
-        Response response = template(request, Method.POST,
+        return template(request, Method.POST,
                 httpRequest -> {
                     String charset = calculateBodyCharset(bodyCharset, request.getContentType());
                     String contentType = null == request.getContentType() ?
                             MediaType.APPLICATIPON_JSON.withCharset(charset).toString() : request.getContentType();
                     httpRequest.bodyText(body , contentType , charset);
                 }, Response::with);
-
-        return afterTemplate(request , response);
     }
 
     @Override
-    public <R> R http(top.jfunc.common.http.request.HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
-        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(httpRequest);
+    public <R> R http(top.jfunc.common.http.request.HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
         ContentCallback<HttpRequest> contentCallback = null;
         if(method.hasContent() && request instanceof StringBodyRequest){
             StringBodyRequest bodyRequest = (StringBodyRequest) request;
@@ -145,24 +139,20 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     }
 
     @Override
-    public byte[] getAsBytes(top.jfunc.common.http.request.HttpRequest req) throws IOException {
-        top.jfunc.common.http.request.HttpRequest request = beforeTemplate(req);
+    public byte[] getAsBytes(top.jfunc.common.http.request.HttpRequest request) throws IOException {
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
 
     @Override
-    public File download(DownloadRequest req) throws IOException {
-        DownloadRequest request = beforeTemplate(req);
+    public File download(DownloadRequest request) throws IOException {
         return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
     }
 
     @Override
-    public Response upload(UploadRequest req) throws IOException {
-        UploadRequest request = beforeTemplate(req);
-        Response response = template(request , Method.POST ,
+    public Response upload(UploadRequest request) throws IOException {
+        return template(request , Method.POST ,
                 r -> upload0(r, request.getFormParams(), request.getParamCharset() ,request.getFormFiles()),
                 Response::with);
-        return afterTemplate(request , response);
     }
 
     @Override
