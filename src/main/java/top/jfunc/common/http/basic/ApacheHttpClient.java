@@ -142,13 +142,13 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
 
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
-        return template(url, Method.POST, null, (request -> addFormFiles(request, null , getDefaultBodyCharset() , files)),
+        return template(url, Method.POST, null, (request -> upload0(request, null , getDefaultBodyCharset() , files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
-        return template(url, Method.POST, null, (request -> addFormFiles(request, params , getDefaultBodyCharset() , files)),
+        return template(url, Method.POST, null, (request -> upload0(request, params , getDefaultBodyCharset() , files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
@@ -308,7 +308,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
      * @param files 文件上传信息
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
-    protected void addFormFiles(HttpEntityEnclosingRequest request, MultiValueMap<String, String> params ,String charset ,FormFile[] files) throws UnsupportedEncodingException {
+    protected void upload0(HttpEntityEnclosingRequest request, MultiValueMap<String, String> params , String charset , FormFile[] files) throws UnsupportedEncodingException {
         final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                 .setCharset(CharsetUtil.charset(charset));

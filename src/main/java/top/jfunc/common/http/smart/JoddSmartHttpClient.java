@@ -116,14 +116,12 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     @Override
     public Response post(StringBodyRequest request) throws IOException {
         final String body = request.getBody();
-        final String bodyCharset = request.getBodyCharset();
+        final String bodyCharset = calculateBodyCharset(request.getBodyCharset() , request.getContentType());
+        String contentType = null == request.getContentType() ?
+                MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : request.getContentType();
         return template(request, Method.POST,
-                httpRequest -> {
-                    String charset = calculateBodyCharset(bodyCharset, request.getContentType());
-                    String contentType = null == request.getContentType() ?
-                            MediaType.APPLICATIPON_JSON.withCharset(charset).toString() : request.getContentType();
-                    httpRequest.bodyText(body , contentType , charset);
-                }, Response::with);
+                httpRequest -> httpRequest.bodyText(body , contentType , bodyCharset),
+                Response::with);
     }
 
     @Override

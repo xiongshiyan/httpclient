@@ -19,7 +19,7 @@ import java.io.IOException;
  * 实现者只需要实现HttpTemplate接口、处理POST Body、文件上传Body即可
  * @see SmartHttpClient
  * @see AbstractSmartHttpClient#bodyContentCallback(String, String, String)
- * @see AbstractSmartHttpClient#uploadContentCallback(MultiValueMap, FormFile[])
+ * @see AbstractSmartHttpClient#uploadContentCallback(MultiValueMap, String, FormFile[])
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartInterceptorHttpTemplate<CC> {
@@ -63,7 +63,9 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     @Override
     public Response upload(UploadRequest request) throws IOException {
         return template(request , Method.POST ,
-                uploadContentCallback(request.getFormParams(), request.getFormFiles()) , Response::with);
+                uploadContentCallback(request.getFormParams(),
+                        calculateBodyCharset(request.getParamCharset() , request.getContentType()),
+                        request.getFormFiles()) , Response::with);
     }
 }
 
