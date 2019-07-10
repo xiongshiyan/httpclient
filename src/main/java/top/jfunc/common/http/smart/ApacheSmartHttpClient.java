@@ -14,6 +14,7 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.basic.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -126,59 +127,17 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
     }
     @Override
     public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
-        //1.获取完成的URL，创建请求
-        String completedUrl = addBaseUrlIfNecessary(url);
-        ///*URIBuilder builder = new URIBuilder(url);
-        //URI uri = builder.build();*/
-        HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl , method);
-
-
-        //2.设置请求参数
-        setRequestProperty((HttpRequestBase) httpUriRequest,
-                getConnectionTimeoutWithDefault(connectTimeout),
-                getReadTimeoutWithDefault(readTimeout));
-
-        //3.创建请求内容，如果有的话
-        if(httpUriRequest instanceof HttpEntityEnclosingRequest){
-            if(contentCallback != null){
-                contentCallback.doWriteWith((HttpEntityEnclosingRequest)httpUriRequest);
-            }
+        HttpRequest httpRequest = GetRequest.of(url);
+        httpRequest.setContentType(contentType);
+        if(null != headers){
+            headers.forEachKeyValue((k,v)->httpRequest.addHeader(k , v));
         }
+        httpRequest.setConnectionTimeout(connectTimeout);
+        httpRequest.setReadTimeout(readTimeout);
+        httpRequest.setResultCharset(resultCharset);
+        httpRequest.setIncludeHeaders(includeHeader);
 
-        //4.设置请求头
-        setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers) , null);
-
-        CloseableHttpClient httpClient = null;
-        CloseableHttpResponse response = null;
-        HttpEntity entity = null;
-        try {
-
-            //5.创建http客户端
-            ///CloseableHttpClient httpClient = HttpClients.createDefault();
-            httpClient = getCloseableHttpClient(completedUrl ,getHostnameVerifier() , getSSLContext());
-
-            //6.发送请求
-            response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
-            int statusCode = response.getStatusLine().getStatusCode();
-            /*String resultString = EntityUtils.toString(response.getEntity(), resultCharset);*/
-
-            entity = response.getEntity();
-
-            InputStream inputStream = getStreamFrom(entity, false);
-
-            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset),  parseHeaders(response , includeHeader));
-            IoUtil.close(inputStream);
-
-            return convert;
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }finally {
-            EntityUtils.consumeQuietly(entity);
-            IoUtil.close(response);
-            IoUtil.close(httpClient);
-        }
+        return template(httpRequest , method , contentCallback , resultCallback);
     }
 
     @Override
