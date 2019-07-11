@@ -82,7 +82,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                     httpRequest.getOverwriteHeaders());
 
             //3.留给子类复写的机会:给connection设置更多参数
-            doWithConnection(connection);
+            doWithConnection(connection , httpRequest);
 
             //4.写入内容，只对post有效
             if(contentCallback != null && method.hasContent()){
@@ -132,7 +132,10 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
             IoUtil.close(inputStream);
         }
     }
-
+    /**子类复写增加更多设置*/
+    protected void doWithConnection(HttpURLConnection connect , HttpRequest httpRequest) throws IOException{
+        //default do nothing, give children a chance to do more config
+    }
 
 
     @Override

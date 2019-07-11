@@ -84,7 +84,12 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
 
             //5.创建http客户端
             ///CloseableHttpClient httpClient = HttpClients.createDefault();
-            httpClient = getCloseableHttpClient(completedUrl ,getHostnameVerifier() , getSSLContext());
+            HttpClientBuilder clientBuilder = getCloseableHttpClient(completedUrl, getHostnameVerifier(), getSSLContext());
+
+            //给子类复写的机会
+            doWithClient(clientBuilder);
+
+            httpClient = clientBuilder.build();
 
             //6.发送请求
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
@@ -184,7 +189,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
     /**
      * https://ss.xx.xx.ss:8080/dsda
      */
-    protected CloseableHttpClient getCloseableHttpClient(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
+    protected HttpClientBuilder getCloseableHttpClient(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
         return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext);
     }
 
@@ -227,7 +232,7 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
         return false;
     }
 
-    protected CloseableHttpClient createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
+    protected HttpClientBuilder createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
         String hostname = url.split(SPLASH)[2];
         boolean isHttps = ParamUtil.isHttps(url);
         int port = isHttps ? 443 : 80;
@@ -267,13 +272,10 @@ public class ApacheHttpClient extends AbstractConfigurableHttp implements HttpTe
             initSSL(httpClientBuilder , hostnameVerifier , sslContext);
         }
 
-        //给子类复写的机会
-        doWithClient(httpClientBuilder , isHttps);
-
-        return httpClientBuilder.build();
+        return httpClientBuilder;
     }
 
-    protected void doWithClient(HttpClientBuilder httpClientBuilder , boolean isHttps) throws Exception{
+    protected void doWithClient(HttpClientBuilder httpClientBuilder) throws Exception{
         //default do nothing, give children a chance to do more config
     }
 

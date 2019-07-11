@@ -59,12 +59,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
-            //给子类复写的机会
-            doWithBuilder(clientBuilder , ParamUtil.isHttps(completedUrl));
-
-            OkHttpClient client = clientBuilder.build();
-
-            doWithClient(client);
+            OkHttpClient client = createOkHttpClient(clientBuilder , httpRequest);
 
             //2.1设置URL
             Request.Builder builder = new Request.Builder().url(completedUrl);
@@ -124,6 +119,25 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             IoUtil.close(inputStream);
             IoUtil.close(response);
         }
+    }
+
+    /**
+     * 子类复写，增添更多的功能，保证返回OkHttpClient
+     */
+    protected OkHttpClient createOkHttpClient(OkHttpClient.Builder builder , HttpRequest httpRequest) throws Exception{
+        //默认就使用builder生成
+        //可以进一步对builder进行处理
+        OkHttpClient okHttpClient = builder.build();
+        //对OkHttpClient单独处理
+        doWithClient(okHttpClient , httpRequest);
+        return okHttpClient;
+    }
+
+    /**
+     * 子类对ObHttpClient复写
+     */
+    protected void doWithClient(OkHttpClient okHttpClient , HttpRequest httpRequest) throws Exception{
+        //default do nothing, give children a chance to do more config
     }
 
     @Override

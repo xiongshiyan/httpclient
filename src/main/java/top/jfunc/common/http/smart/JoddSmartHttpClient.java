@@ -66,7 +66,7 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
                     httpRequest.getOverwriteHeaders());
 
             //6.子类可以复写
-            doWithHttpRequest(request);
+            doWithHttpRequest(request , httpRequest);
 
             //7.真正请求
             response = request.send();
@@ -107,6 +107,13 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
             }
         }
     }
+
+    /**
+     * 留给子类做更多的配置
+     * @param joddHttpRequest jodd的请求
+     * @param httpRequest 请求参数
+     */
+    protected void doWithHttpRequest(HttpRequest joddHttpRequest , top.jfunc.common.http.request.HttpRequest httpRequest){}
 
     @Override
     public Response get(top.jfunc.common.http.request.HttpRequest request) throws IOException {
