@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
-import static top.jfunc.common.http.basic.NativeUtil.*;
+import static top.jfunc.common.http.util.NativeUtil.*;
 
 /**
  * 使用URLConnection实现的Http请求类

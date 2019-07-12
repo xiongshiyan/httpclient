@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import static top.jfunc.common.http.basic.OkHttp3Util.*;
+import static top.jfunc.common.http.util.OkHttp3Util.*;
 
 /**
  * 使用OkHttp3实现的Http请求类

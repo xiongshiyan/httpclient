@@ -1,4 +1,4 @@
-package top.jfunc.common.http.basic;
+package top.jfunc.common.http.util;
 
 import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.HttpStatus;

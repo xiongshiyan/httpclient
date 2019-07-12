@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.URI;
 
-import static top.jfunc.common.http.basic.ApacheUtil.*;
+import static top.jfunc.common.http.util.ApacheUtil.*;
 /**
  * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01

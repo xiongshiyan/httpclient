@@ -1,4 +1,4 @@
-package top.jfunc.common.http.basic;
+package top.jfunc.common.http.util;
 
 import org.apache.http.*;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -16,7 +16,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;

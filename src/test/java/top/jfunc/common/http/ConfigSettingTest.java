@@ -1,5 +1,6 @@
 package top.jfunc.common.http;
 
+import jdk.nashorn.internal.scripts.JO;
 import org.junit.Test;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.smart.*;
@@ -23,6 +24,11 @@ public class ConfigSettingTest {
     @Test
     public void testGetNativeHttp(){
         NativeSmartHttpClient http = new NativeSmartHttpClient();
+        testGet(http);
+    }
+    @Test
+    public void testGetJoddHttp(){
+        JoddSmartHttpClient http = new JoddSmartHttpClient();
         testGet(http);
     }
     private void testGet(SmartHttpClient http){

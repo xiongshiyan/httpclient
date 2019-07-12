@@ -20,7 +20,7 @@ import java.net.CookieHandler;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
-import static top.jfunc.common.http.basic.OkHttp3Util.*;
+import static top.jfunc.common.http.util.OkHttp3Util.*;
 
 /**
  * 使用OkHttp3 实现的Http请求类

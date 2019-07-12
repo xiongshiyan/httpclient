@@ -1,4 +1,4 @@
-package top.jfunc.common.http.basic;
+package top.jfunc.common.http.util;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;

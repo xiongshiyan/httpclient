@@ -48,9 +48,15 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         if(null != headers){
             headers.forEachKeyValue((k,v)->httpRequest.addHeader(k , v));
         }
-        httpRequest.setConnectionTimeout(connectTimeout);
-        httpRequest.setReadTimeout(readTimeout);
-        httpRequest.setResultCharset(resultCharset);
+        if(null != connectTimeout){
+            httpRequest.setConnectionTimeout(connectTimeout);
+        }
+        if(null != readTimeout){
+            httpRequest.setReadTimeout(readTimeout);
+        }
+        if(null != resultCharset){
+            httpRequest.setResultCharset(resultCharset);
+        }
         httpRequest.setIncludeHeaders(includeHeader);
 
         return template(httpRequest , method , contentCallback , resultCallback);

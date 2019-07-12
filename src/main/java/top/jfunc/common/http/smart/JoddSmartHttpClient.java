@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.URI;
 
-import static top.jfunc.common.http.basic.JoddUtil.*;
+import static top.jfunc.common.http.util.JoddUtil.*;
 
 /**
  * 使用Jodd-http 实现的Http请求类

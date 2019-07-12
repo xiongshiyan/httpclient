@@ -11,7 +11,7 @@ import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 
-import static top.jfunc.common.http.basic.JoddUtil.*;
+import static top.jfunc.common.http.util.JoddUtil.*;
 
 /**
  * 使用Jodd-Http 实现的Http请求类

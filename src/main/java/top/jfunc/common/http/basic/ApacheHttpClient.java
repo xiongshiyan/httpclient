@@ -19,7 +19,7 @@ import top.jfunc.common.utils.MultiValueMap;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static top.jfunc.common.http.basic.ApacheUtil.*;
+import static top.jfunc.common.http.util.ApacheUtil.*;
 
 /**
  * 使用Apache HttpClient 实现的Http请求类
@@ -94,12 +94,12 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
 
     @Override
     protected ContentCallback<HttpEntityEnclosingRequest> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
-        return (request -> setRequestBody(request , body , bodyCharset));
+        return request -> setRequestBody(request , body , bodyCharset);
     }
 
     @Override
     protected ContentCallback<HttpEntityEnclosingRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
-        return (request -> upload0(request, params, paramCharset, formFiles));
+        return request -> upload0(request, params, paramCharset, formFiles);
     }
 
     @Override
