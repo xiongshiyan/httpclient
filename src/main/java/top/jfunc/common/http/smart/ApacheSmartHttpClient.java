@@ -125,29 +125,15 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
             IoUtil.close(httpClient);
         }
     }
-    @Override
-    public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
-        HttpRequest httpRequest = GetRequest.of(url);
-        httpRequest.setContentType(contentType);
-        if(null != headers){
-            headers.forEachKeyValue((k,v)->httpRequest.addHeader(k , v));
-        }
-        httpRequest.setConnectionTimeout(connectTimeout);
-        httpRequest.setReadTimeout(readTimeout);
-        httpRequest.setResultCharset(resultCharset);
-        httpRequest.setIncludeHeaders(includeHeader);
-
-        return template(httpRequest , method , contentCallback , resultCallback);
-    }
 
     @Override
     protected ContentCallback<HttpEntityEnclosingRequest> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
-        return (request -> setRequestBody(request , body , bodyCharset));
+        return request -> setRequestBody(request , body , bodyCharset);
     }
 
     @Override
     protected ContentCallback<HttpEntityEnclosingRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
-        return (request -> upload0(request, params , paramCharset , formFiles));
+        return request -> upload0(request, params , paramCharset , formFiles);
     }
     @Override
     public String toString() {
