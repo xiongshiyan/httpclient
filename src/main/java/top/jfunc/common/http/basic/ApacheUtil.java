@@ -82,11 +82,11 @@ public class ApacheUtil {
     /**
      * https://ss.xx.xx.ss:8080/dsda
      */
-    public static CloseableHttpClient getCloseableHttpClient(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
+    public static HttpClientBuilder getCloseableHttpClient(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
         return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext);
     }
 
-    public static CloseableHttpClient createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
+    public static HttpClientBuilder createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
         String hostname = url.split(SPLASH)[2];
         boolean isHttps = ParamUtil.isHttps(url);
         int port = isHttps ? 443 : 80;
@@ -126,10 +126,7 @@ public class ApacheUtil {
             initSSL(httpClientBuilder , hostnameVerifier , sslContext);
         }
 
-        //给子类复写的机会
-        //doWithClient(httpClientBuilder , isHttps);
-
-        return httpClientBuilder.build();
+        return httpClientBuilder;
     }
 
     private static boolean retryIf(IOException exception, int executionCount, HttpContext context) {

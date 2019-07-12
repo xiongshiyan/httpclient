@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
@@ -79,7 +80,11 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
-            httpClient = getCloseableHttpClient(completedUrl , hostnameVerifier , sslContext);
+            HttpClientBuilder clientBuilder = getCloseableHttpClient(completedUrl, hostnameVerifier, sslContext);
+
+            doWithClient(clientBuilder , httpRequest);
+
+            httpClient = clientBuilder.build();
             //6.发送请求
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
             int statusCode = response.getStatusLine().getStatusCode();
@@ -123,6 +128,10 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
             IoUtil.close(response);
             IoUtil.close(httpClient);
         }
+    }
+
+    protected void doWithClient(HttpClientBuilder httpClientBuilder , HttpRequest httpRequest) throws Exception{
+        //default do nothing, give children a chance to do more config
     }
 
     @Override

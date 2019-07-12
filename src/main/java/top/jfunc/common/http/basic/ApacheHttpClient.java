@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
@@ -56,7 +57,12 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
 
             //5.创建http客户端
             ///CloseableHttpClient httpClient = HttpClients.createDefault();
-            httpClient = getCloseableHttpClient(completedUrl ,getHostnameVerifier() , getSSLContext());
+            HttpClientBuilder clientBuilder = getCloseableHttpClient(completedUrl, getHostnameVerifier(), getSSLContext());
+
+            //给子类复写的机会
+            doWithClient(clientBuilder);
+
+            httpClient = clientBuilder.build();
 
             //6.发送请求
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
@@ -80,6 +86,10 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
             IoUtil.close(response);
             IoUtil.close(httpClient);
         }
+    }
+
+    protected void doWithClient(HttpClientBuilder httpClientBuilder) throws Exception{
+        //default do nothing, give children a chance to do more config
     }
 
     @Override
