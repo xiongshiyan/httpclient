@@ -3,31 +3,30 @@ package top.jfunc.common.http.smart;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.OkHttp3Client;
-import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
+import static top.jfunc.common.http.basic.OkHttp3Util.*;
+
 /**
  * 使用OkHttp3 实现的Http请求类
  * @author xiongshiyan at 2018/1/11
  */
-public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpClient, SmartInterceptorHttpTemplate<Request.Builder> {
+public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Builder> implements SmartHttpClient, SmartInterceptorHttpTemplate<Request.Builder> {
 
     @Override
     public <R> R doTemplate(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
@@ -59,6 +58,7 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
             }
             ////////////////////////////////////ssl处理///////////////////////////////////
 
+            //给子类复写的机会
             OkHttpClient client = createOkHttpClient(clientBuilder , httpRequest);
 
             //2.1设置URL
@@ -141,46 +141,15 @@ public class OkHttp3SmartHttpClient extends OkHttp3Client implements SmartHttpCl
     }
 
     @Override
-    public Response get(HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , Response::with);
+    protected ContentCallback<Request.Builder> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+        RequestBody stringBody = stringBody(body, bodyCharset, contentType);
+        return d -> setRequestBody(d, Method.POST, stringBody);
     }
 
     @Override
-    public Response post(StringBodyRequest request) throws IOException {
-        final String body = request.getBody();
-        final String bodyCharset = calculateBodyCharset(request.getBodyCharset() , request.getContentType());
-        return template(request, Method.POST ,
-                d -> setRequestBody(d, Method.POST, stringBody(body, bodyCharset , request.getContentType())), Response::with);
-    }
-
-    @Override
-    public <R> R http(HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
-        ContentCallback<Request.Builder> contentCallback = null;
-        if(method.hasContent() && request instanceof StringBodyRequest){
-            StringBodyRequest bodyRequest = (StringBodyRequest) request;
-            final String body = bodyRequest.getBody();
-            final String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
-            contentCallback = d -> setRequestBody(d, method, stringBody(body, bodyCharset , request.getContentType()));
-        }
-        return template(request, method , contentCallback , resultCallback);
-    }
-
-    @Override
-    public byte[] getAsBytes(HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
-    }
-
-    @Override
-    public File download(DownloadRequest request) throws IOException {
-        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
-    }
-
-    @Override
-    public Response upload(UploadRequest request) throws IOException {
-        MultipartBody requestBody = filesBody(request.getFormParams() , request.getFormFiles());
-        return template(request, Method.POST ,
-                d -> setRequestBody(d, Method.POST, requestBody) ,
-                Response::with);
+    protected ContentCallback<Request.Builder> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
+        MultipartBody filesBody = filesBody(null , formFiles);
+        return d -> setRequestBody(d, Method.POST , filesBody);
     }
 
     @Override

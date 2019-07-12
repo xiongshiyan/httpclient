@@ -12,28 +12,25 @@ import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.ApacheHttpClient;
-import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.URI;
 
+import static top.jfunc.common.http.basic.ApacheUtil.*;
 /**
  * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpEntityEnclosingRequest> {
+public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnclosingRequest> implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpEntityEnclosingRequest> {
 
     @Override
     public <R> R doTemplate(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
@@ -134,55 +131,19 @@ public class ApacheSmartHttpClient extends ApacheHttpClient implements SmartHttp
         }
     }
 
-
-    protected void doWithClient(HttpClientBuilder clientBuilder , HttpRequest httpRequest) throws Exception{
+    protected void doWithClient(HttpClientBuilder httpClientBuilder , HttpRequest httpRequest) throws Exception{
         //default do nothing, give children a chance to do more config
     }
 
     @Override
-    public Response get(HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , Response::with);
+    protected ContentCallback<HttpEntityEnclosingRequest> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+        return request -> setRequestBody(request , body , bodyCharset);
     }
 
     @Override
-    public Response post(StringBodyRequest request) throws IOException {
-        final String body = request.getBody();
-        final String bodyCharset = calculateBodyCharset(request.getBodyCharset() , request.getContentType());
-        return template(request, Method.POST ,
-                r -> setRequestBody(r, body, bodyCharset), Response::with);
+    protected ContentCallback<HttpEntityEnclosingRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
+        return request -> upload0(request, params , paramCharset , formFiles);
     }
-
-    @Override
-    public <R> R http(HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
-        ContentCallback<HttpEntityEnclosingRequest> contentCallback = null;
-        if(method.hasContent() && request instanceof StringBodyRequest){
-            StringBodyRequest bodyRequest = (StringBodyRequest) request;
-            final String body = bodyRequest.getBody();
-            final String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
-            contentCallback = r -> setRequestBody(r, body, bodyCharset);
-        }
-        return template(request, method , contentCallback, resultCallback);
-    }
-
-    @Override
-    public byte[] getAsBytes(HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
-    }
-
-    @Override
-    public File download(DownloadRequest request) throws IOException {
-        return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
-    }
-
-    @Override
-    public Response upload(UploadRequest request) throws IOException {
-        return template(request , Method.POST ,
-                r -> upload0(r, request.getFormParams(),
-                            calculateBodyCharset(request.getParamCharset() , request.getContentType()),
-                            request.getFormFiles())
-                , Response::with);
-    }
-
     @Override
     public String toString() {
         return "SmartHttpClient implemented by Apache's httpcomponents";

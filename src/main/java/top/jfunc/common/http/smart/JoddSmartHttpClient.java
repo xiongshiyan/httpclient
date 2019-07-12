@@ -5,24 +5,21 @@ import jodd.http.HttpResponse;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.JoddHttpClient;
-import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.URI;
+
+import static top.jfunc.common.http.basic.JoddUtil.*;
 
 /**
  * 使用Jodd-http 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpRequest> {
+public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpRequest> {
 
     @Override
     public <R> R doTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
@@ -116,48 +113,15 @@ public class JoddSmartHttpClient extends JoddHttpClient implements SmartHttpClie
     protected void doWithHttpRequest(HttpRequest joddHttpRequest , top.jfunc.common.http.request.HttpRequest httpRequest){}
 
     @Override
-    public Response get(top.jfunc.common.http.request.HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , Response::with);
+    protected ContentCallback<HttpRequest> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+        String type = null == contentType ?
+                MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : contentType;
+        return httpRequest -> httpRequest.bodyText(body , type, bodyCharset);
     }
 
     @Override
-    public Response post(StringBodyRequest request) throws IOException {
-        final String body = request.getBody();
-        final String bodyCharset = calculateBodyCharset(request.getBodyCharset() , request.getContentType());
-        String contentType = null == request.getContentType() ?
-                MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : request.getContentType();
-        return template(request, Method.POST,
-                httpRequest -> httpRequest.bodyText(body , contentType , bodyCharset),
-                Response::with);
-    }
-
-    @Override
-    public <R> R http(top.jfunc.common.http.request.HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
-        ContentCallback<HttpRequest> contentCallback = null;
-        if(method.hasContent() && request instanceof StringBodyRequest){
-            StringBodyRequest bodyRequest = (StringBodyRequest) request;
-            final String body = bodyRequest.getBody();
-            final String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
-            contentCallback = req -> req.bodyText(body , bodyRequest.getContentType() , bodyCharset);
-        }
-        return template(request, method , contentCallback, resultCallback);
-    }
-
-    @Override
-    public byte[] getAsBytes(top.jfunc.common.http.request.HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
-    }
-
-    @Override
-    public File download(DownloadRequest request) throws IOException {
-        return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
-    }
-
-    @Override
-    public Response upload(UploadRequest request) throws IOException {
-        return template(request , Method.POST ,
-                r -> upload0(r, request.getFormParams(), request.getParamCharset() ,request.getFormFiles()),
-                Response::with);
+    protected ContentCallback<HttpRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
+        return httpRequest -> upload0(httpRequest , params , paramCharset , formFiles);
     }
 
     @Override

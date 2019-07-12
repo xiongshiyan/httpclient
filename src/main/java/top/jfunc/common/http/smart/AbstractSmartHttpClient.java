@@ -9,6 +9,7 @@ import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.request.basic.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -23,6 +24,37 @@ import java.io.IOException;
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartInterceptorHttpTemplate<CC> {
+
+    /**
+     * 使用HttpRequest体系来实现HttpTemplate接口方法
+     * @param url URL
+     * @param method 请求方法
+     * @param contentType 请求体MIME类型
+     * @param contentCallback 处理请求体的
+     * @param headers headers
+     * @param connectTimeout 连接超时时间
+     * @param readTimeout 读取超时时间
+     * @param resultCharset 结果字符集
+     * @param includeHeader 是否结果包含header
+     * @param resultCallback 结果处理器
+     * @param <R> 结果
+     * @return ResultCallback接口返回的
+     * @throws IOException IOException
+     */
+    @Override
+    public  <R> R template(String url, Method method , String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
+        HttpRequest httpRequest = GetRequest.of(url);
+        httpRequest.setContentType(contentType);
+        if(null != headers){
+            headers.forEachKeyValue((k,v)->httpRequest.addHeader(k , v));
+        }
+        httpRequest.setConnectionTimeout(connectTimeout);
+        httpRequest.setReadTimeout(readTimeout);
+        httpRequest.setResultCharset(resultCharset);
+        httpRequest.setIncludeHeaders(includeHeader);
+
+        return template(httpRequest , method , contentCallback , resultCallback);
+    }
 
     @Override
     public Response get(HttpRequest request) throws IOException {
