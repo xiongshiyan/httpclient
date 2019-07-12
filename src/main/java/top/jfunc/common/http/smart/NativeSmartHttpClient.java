@@ -2,28 +2,26 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.NativeHttpClient;
-import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static top.jfunc.common.http.basic.NativeUtil.*;
+
 /**
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpURLConnection> {
+public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnection> implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpURLConnection> {
 
     @Override
     public <R> R doTemplate(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
@@ -82,7 +80,7 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
                     httpRequest.getOverwriteHeaders());
 
             //3.留给子类复写的机会:给connection设置更多参数
-            doWithConnection(connection);
+            doWithConnection(connection , httpRequest);
 
             //4.写入内容，只对post有效
             if(contentCallback != null && method.hasContent()){
@@ -133,53 +131,18 @@ public class NativeSmartHttpClient extends NativeHttpClient implements SmartHttp
         }
     }
 
-
-
-    @Override
-    public Response get(HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , Response::with);
+    protected void doWithConnection(HttpURLConnection connect , HttpRequest httpRequest) throws IOException{
+        //default do nothing, give children a chance to do more config
     }
 
     @Override
-    public Response post(StringBodyRequest request) throws IOException {
-        final String body = request.getBody();
-        final String bodyCharset = calculateBodyCharset(request.getBodyCharset() , request.getContentType());
-        return template(request, Method.POST ,
-                connection -> writeContent(connection, body, bodyCharset),
-                Response::with);
+    protected ContentCallback<HttpURLConnection> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+        return connect -> writeContent(connect , body , bodyCharset);
     }
 
     @Override
-    public <R> R http(HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
-        ContentCallback<HttpURLConnection> contentCallback = null;
-        if(method.hasContent() && request instanceof StringBodyRequest){
-            StringBodyRequest bodyRequest = (StringBodyRequest) request;
-            final String body = bodyRequest.getBody();
-            final String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
-            contentCallback = connection -> writeContent(connection, body, bodyCharset);
-        }
-        return template(request, method , contentCallback , resultCallback);
-    }
-
-    @Override
-    public byte[] getAsBytes(HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
-    }
-
-    @Override
-    public File download(DownloadRequest request) throws IOException {
-        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
-    }
-
-    @Override
-    public Response upload(UploadRequest request) throws IOException {
-        ///MultiValueMap<String, String> headers = mergeHeaders(request.headerHolder().getHeaders());
-        ///request.headerHolder().setHeaders(headers);
-        return template(request, Method.POST ,
-                connect -> upload0(connect, request.getFormParams(),
-                            calculateBodyCharset(request.getParamCharset() , request.getContentType()),
-                            request.getFormFiles()),
-                Response::with);
+    protected ContentCallback<HttpURLConnection> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
+        return connect -> upload0(connect , params , paramCharset , formFiles);
     }
 
     @Override

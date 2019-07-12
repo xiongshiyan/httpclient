@@ -14,7 +14,6 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.basic.GetRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
