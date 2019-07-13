@@ -127,7 +127,7 @@ public class HttpSmartTest {
     }
     public void testPostGBK(SmartHttpClient http){
         try {
-            String url = "http://localhost:9999/http-server-test/post/bodyGBK";
+            String url = "http://localhost:8080/http-server-test/post/bodyGBK";
             String charset = "GBK";
             Request request = Request.of(url).setResultCharset("UTF-8").setBodyCharset(charset);
             request.bodyHolder().setBody("熊诗言");
