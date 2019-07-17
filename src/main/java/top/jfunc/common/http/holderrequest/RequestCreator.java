@@ -17,8 +17,8 @@ import java.io.File;
  * @see HolderDownloadRequest
  * @author xiongshiyan at 2019/7/1 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class RequestUtil {
-    private RequestUtil(){}
+public class RequestCreator {
+    private RequestCreator(){}
 
     public static HolderHttpRequest get(String url){
         return HolderCommonRequest.of(url);
