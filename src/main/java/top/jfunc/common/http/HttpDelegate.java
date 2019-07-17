@@ -24,7 +24,8 @@ public class HttpDelegate {
         //根据类路径的jar加载默认顺序是 OKHttp3、ApacheHttpClient、URLConnection
         SmartHttpClient delegateToUse = null;
         // okhttp3.OkHttpClient ?
-        if (ClassUtil.isPresent(HttpDelegate.class.getClassLoader() ,"okhttp3.OkHttpClient" , "okio.Okio")) {
+        if (ClassUtil.isPresent(HttpDelegate.class.getClassLoader() ,
+                "okhttp3.OkHttpClient" , "okio.Okio")) {
             delegateToUse = new top.jfunc.common.http.smart.OkHttp3SmartHttpClient();
         }
         // org.apache.http.impl.client.CloseableHttpClient ?
@@ -32,8 +33,14 @@ public class HttpDelegate {
                 "org.apache.http.impl.client.CloseableHttpClient","org.apache.http.impl.client.HttpClientBuilder")) {
             delegateToUse = new top.jfunc.common.http.smart.ApacheSmartHttpClient();
         }
+        // jodd.http.HttpRequest ?
+        else if (ClassUtil.isPresent(HttpDelegate.class.getClassLoader() ,
+                "jodd.http.HttpRequest","jodd.http.HttpResponse")) {
+            delegateToUse = new top.jfunc.common.http.smart.JoddSmartHttpClient();
+        }
         // java.net.URLConnection
-        else if (ClassUtil.isPresent(HttpDelegate.class.getClassLoader() ,"java.net.URLConnection")) {
+        else {//if (ClassUtil.isPresent(HttpDelegate.class.getClassLoader() ,
+              //  "java.net.URLConnection")) {
             delegateToUse = new NativeSmartHttpClient();
         }
         delegate = delegateToUse;
