@@ -5,6 +5,9 @@ import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * Form表单请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -20,6 +23,13 @@ public class FormBodyRequest extends BaseHttpRequest<FormBodyRequest> implements
 
     private MultiValueMap<String , String> formParams = new ArrayListMultiValueMap<>(2);
     private String formParamCharset = HttpConstants.DEFAULT_CHARSET;
+
+    @Override
+    public FormBodyRequest setFormParams(Map<String, String> params) {
+        Objects.requireNonNull(params);
+        this.formParams = ArrayListMultiValueMap.fromMap(params);
+        return myself();
+    }
 
     @Override
     public FormBodyRequest addFormParam(String key, String value, String... values) {

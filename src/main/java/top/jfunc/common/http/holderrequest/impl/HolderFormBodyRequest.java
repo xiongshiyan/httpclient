@@ -4,6 +4,8 @@ import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holderrequest.HolderFormRequest;
 
+import java.util.Map;
+
 /**
  * Form表单请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -27,6 +29,12 @@ public class HolderFormBodyRequest extends BaseHolderHttpRequest<HolderFormBodyR
     @Override
     public ParamHolder formParamHolder() {
         return formParamHolder;
+    }
+
+    @Override
+    public HolderFormBodyRequest setFormParams(Map<String, String> params) {
+        formParamHolder().setParams(params);
+        return myself();
     }
 
     @Override

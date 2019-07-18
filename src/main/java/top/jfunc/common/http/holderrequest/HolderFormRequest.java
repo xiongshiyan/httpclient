@@ -6,6 +6,8 @@ import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
+import java.util.Map;
+
 /**
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -24,6 +26,17 @@ public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest 
     @Override
     default MultiValueMap<String, String> getFormParams(){
         return formParamHolder().getParams();
+    }
+
+    /**
+     * 设置Form参数
+     * @param params Form参数
+     * @return this
+     */
+    @Override
+    default HolderFormRequest setFormParams(Map<String, String> params){
+        formParamHolder().setParams(params);
+        return this;
     }
 
     /**
