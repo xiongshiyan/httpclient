@@ -5,6 +5,7 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.AbstractConfigurableHttp;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -21,6 +22,38 @@ import java.util.Map;
  * @author xiongshiyan at 2019/5/9 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp implements HttpClient, HttpTemplate<CC> {
+
+    /**
+     * 统一的异常处理
+     * @param url URL
+     * @param method 请求方法
+     * @param contentType 请求体MIME类型
+     * @param contentCallback 处理请求体的
+     * @param headers headers
+     * @param connectTimeout 连接超时时间
+     * @param readTimeout 读取超时时间
+     * @param resultCharset 结果字符集
+     * @param includeHeaders 是否结果包含header
+     * @param resultCallback 结果处理器
+     * @param <R> 返回值泛型
+     * @return R
+     * @throws IOException IOException
+     */
+    @Override
+    public <R> R template(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {
+        try {
+            return doInternalTemplate(url , method , contentType , contentCallback , headers , connectTimeout , readTimeout , resultCharset , includeHeaders , resultCallback);
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 子类复写此方法,实现自己的请求逻辑即可
+     */
+    protected abstract <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception;
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException{

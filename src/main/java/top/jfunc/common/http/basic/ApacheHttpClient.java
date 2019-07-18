@@ -27,7 +27,7 @@ import static top.jfunc.common.http.util.ApacheUtil.*;
  */
 public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequest> implements HttpTemplate<HttpEntityEnclosingRequest>, HttpClient {
     @Override
-    public  <R> R template(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
+    public  <R> R doInternalTemplate(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws Exception {
         //1.获取完成的URL，创建请求
         String completedUrl = addBaseUrlIfNecessary(url);
         ///*URIBuilder builder = new URIBuilder(url);
@@ -77,10 +77,6 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
             IoUtil.close(inputStream);
 
             return convert;
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e){
-            throw new RuntimeException(e);
         }finally {
             EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);

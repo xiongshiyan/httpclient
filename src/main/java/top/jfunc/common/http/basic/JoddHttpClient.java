@@ -17,10 +17,10 @@ import static top.jfunc.common.http.util.JoddUtil.*;
  * 使用Jodd-Http 实现的Http请求类
  * @author xiongshiyan at 2019/5/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class JoddHttpClient extends AbstractHttpClient<HttpRequest> implements HttpTemplate<HttpRequest>, HttpClient {
+public class JoddHttpClient extends AbstractHttpClient<HttpRequest> {
 
     @Override
-    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<HttpRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception {
         HttpResponse response = null;
         try {
             //1.获取完成的URL，创建请求
@@ -56,10 +56,6 @@ public class JoddHttpClient extends AbstractHttpClient<HttpRequest> implements H
                     getStreamFrom(response , false),
                     getResultCharsetWithDefault(resultCharset) ,
                     parseHeaders(response , includeHeaders));
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e){
-            throw new RuntimeException(e);
         } finally {
             if(null != response){
                 response.close();

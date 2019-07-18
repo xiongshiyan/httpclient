@@ -20,7 +20,7 @@ import static top.jfunc.common.http.util.NativeUtil.*;
  */
 public class NativeHttpClient extends AbstractHttpClient<HttpURLConnection> implements HttpTemplate<HttpURLConnection>, HttpClient {
     @Override
-    public <R> R template(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception {
         //默认的https校验
         // 后面会处理的，这里就不需要了 initDefaultSSL(sslVer);
 
@@ -67,10 +67,6 @@ public class NativeHttpClient extends AbstractHttpClient<HttpURLConnection> impl
             inputStream = getStreamFrom(connection , statusCode , false);
 
             return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset), parseHeaders(connection, includeHeaders));
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e){
-            throw new RuntimeException(e);
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接

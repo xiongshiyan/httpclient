@@ -23,7 +23,7 @@ import static top.jfunc.common.http.util.OkHttp3Util.*;
 public class OkHttp3Client extends AbstractHttpClient<Request.Builder> implements HttpTemplate<Request.Builder>, HttpClient {
 
     @Override
-    public  <R> R template(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws IOException{
+    public  <R> R doInternalTemplate(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception{
         Objects.requireNonNull(url);
         Response response = null;
         InputStream inputStream = null;
@@ -69,10 +69,6 @@ public class OkHttp3Client extends AbstractHttpClient<Request.Builder> implement
             inputStream = getStreamFrom(response , false);
 
             return resultCallback.convert(response.code() , inputStream, getResultCharsetWithDefault(resultCharset), parseHeaders(response , includeHeaders));
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e){
-            throw new RuntimeException(e);
         } finally {
             IoUtil.close(inputStream);
             IoUtil.close(response);
