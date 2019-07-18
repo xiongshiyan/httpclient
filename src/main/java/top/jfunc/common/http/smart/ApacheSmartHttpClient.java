@@ -30,12 +30,10 @@ import static top.jfunc.common.http.util.ApacheUtil.*;
  * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnclosingRequest> implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpEntityEnclosingRequest> {
+public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnclosingRequest> {
 
     @Override
-    public <R> R doTemplate(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        onBeforeIfNecessary(httpRequest, method);
-
+    protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         //1.获取完整的URL
         /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
         /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
@@ -112,19 +110,8 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
                     parseHeaders);
 
             IoUtil.close(inputStream);
-
-            onAfterReturnIfNecessary(httpRequest , convert);
-
             return convert;
-
-        } catch (IOException e) {
-            onErrorIfNecessary(httpRequest , e);
-            throw e;
-        } catch (Exception e){
-            onErrorIfNecessary(httpRequest , e);
-            throw new RuntimeException(e);
         }finally {
-            onAfterIfNecessary(httpRequest);
             EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);
             IoUtil.close(httpClient);

@@ -27,8 +27,7 @@ public class DemoImpl extends AbstractSmartHttpClient<Socket> {
     }
 
     @Override
-    public <R> R doTemplate(HttpRequest request, Method method, ContentCallback<Socket> contentCallback, ResultCallback<R> resultCallback) throws IOException {
-        //实现具体Http请求
+    protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<Socket> contentCallback, ResultCallback<R> resultCallback) throws Exception {
         return null;
     }
 }

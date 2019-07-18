@@ -26,12 +26,10 @@ import static top.jfunc.common.http.util.OkHttp3Util.*;
  * 使用OkHttp3 实现的Http请求类
  * @author xiongshiyan at 2018/1/11
  */
-public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Builder> implements SmartHttpClient, SmartInterceptorHttpTemplate<Request.Builder> {
+public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Builder> {
 
     @Override
-    public <R> R doTemplate(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        onBeforeIfNecessary(httpRequest, method);
-
+    protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         okhttp3.Response response = null;
         InputStream inputStream = null;
         try {
@@ -101,21 +99,10 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
                 }
             }
 
-            R convert = resultCallback.convert(response.code(), inputStream,
+            return resultCallback.convert(response.code(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     parseHeaders);
-
-            onAfterReturnIfNecessary(httpRequest , convert);
-
-            return convert;
-        } catch (IOException e) {
-            onErrorIfNecessary(httpRequest , e);
-            throw e;
-        } catch (Exception e){
-            onErrorIfNecessary(httpRequest , e);
-            throw new RuntimeException(e);
         } finally {
-            onAfterIfNecessary(httpRequest);
             IoUtil.close(inputStream);
             IoUtil.close(response);
         }

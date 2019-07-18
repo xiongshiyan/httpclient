@@ -23,7 +23,55 @@ import java.io.IOException;
  * @see AbstractSmartHttpClient#uploadContentCallback(MultiValueMap, String, FormFile[])
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartInterceptorHttpTemplate<CC> {
+public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC> , TemplateInterceptor {
+    /**
+     * 统一的拦截和异常处理：最佳实践使用拦截器代替子类复写
+     * @param httpRequest HttpRequest
+     * @param method 请求方法
+     * @param contentCallback 处理请求体的
+     * @param resultCallback 结果处理器
+     * @param <R> 处理的结果
+     * @return 处理的结果
+     * @throws IOException IOException
+     */
+    @Override
+    public <R> R template(HttpRequest httpRequest, Method method, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException {
+        //1.子类处理
+        HttpRequest request = beforeTemplate(httpRequest);
+        //2.拦截器在之前处理
+        onBeforeIfNecessary(request, method);
+        try {
+            //3.真正的实现
+            R response = doInternalTemplate(request , method , contentCallback , resultCallback);
+            //4.拦截器过滤
+            onAfterReturnIfNecessary(request , response);
+            //5.子类处理
+            return afterTemplate(request , response);
+        } catch (IOException e) {
+            //6.1拦截器在抛异常的时候处理
+            onErrorIfNecessary(request , e);
+            throw e;
+        } catch (Exception e) {
+            //6.2拦截器在抛异常的时候处理
+            onErrorIfNecessary(request, e);
+            throw new RuntimeException(e);
+        }finally {
+            //7拦截器在任何时候都处理
+            onAfterIfNecessary(httpRequest);
+        }
+    }
+
+    /**
+     * 子类实现真正的自己的
+     * @param httpRequest HttpRequest
+     * @param method 请求方法
+     * @param contentCallback 处理请求体的
+     * @param resultCallback 结果处理器
+     * @param <R> 处理的结果
+     * @return 处理的结果
+     * @throws Exception Exception
+     */
+    abstract protected  <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws Exception;
 
     /**
      * 使用HttpRequest体系来实现HttpTemplate接口方法

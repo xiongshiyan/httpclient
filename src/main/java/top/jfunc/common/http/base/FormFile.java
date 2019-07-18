@@ -100,4 +100,8 @@ public class FormFile {
         this.contentType = contentType;
     }
 
+    @Override
+    public String toString() {
+        return parameterName + " : " + filName;
+    }
 }

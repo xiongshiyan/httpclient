@@ -21,10 +21,10 @@ import static top.jfunc.common.http.util.NativeUtil.*;
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnection> implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpURLConnection> {
+public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnection> {
 
     @Override
-    public <R> R doTemplate(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws IOException {
+    protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         onBeforeIfNecessary(httpRequest, method);
 
         HttpURLConnection connection = null;
@@ -108,21 +108,10 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
                 cookieHandler.put(URI.create(completedUrl) , parseHeaders);
             }*/
 
-            R convert = resultCallback.convert(statusCode, inputStream,
+            return resultCallback.convert(statusCode, inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     parseHeaders);
-
-            onAfterReturnIfNecessary(httpRequest , convert);
-
-            return convert;
-        } catch (IOException e) {
-            onErrorIfNecessary(httpRequest , e);
-            throw e;
-        } catch (Exception e){
-            onErrorIfNecessary(httpRequest , e);
-            throw new RuntimeException(e);
         } finally {
-            onAfterIfNecessary(httpRequest);
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接
             disconnectQuietly(connection);

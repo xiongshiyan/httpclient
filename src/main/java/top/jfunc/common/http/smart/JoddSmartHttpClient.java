@@ -19,12 +19,10 @@ import static top.jfunc.common.http.util.JoddUtil.*;
  * 使用Jodd-http 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> implements SmartHttpClient, SmartInterceptorHttpTemplate<HttpRequest> {
+public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
 
     @Override
-    public <R> R doTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws IOException {
-        onBeforeIfNecessary(httpRequest, method);
-
+    protected <R> R doInternalTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         HttpResponse response = null;
         try {
             //1.获取完成的URL，创建请求
@@ -83,22 +81,11 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> im
                 }
             }
 
-            R convert = resultCallback.convert(response.statusCode(),
+            return resultCallback.convert(response.statusCode(),
                     getStreamFrom(response, httpRequest.isIgnoreResponseBody()),
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     parseHeaders);
-
-            onAfterReturnIfNecessary(httpRequest , convert);
-
-            return convert;
-        } catch (IOException e) {
-            onErrorIfNecessary(httpRequest , e);
-            throw e;
-        } catch (Exception e){
-            onErrorIfNecessary(httpRequest , e);
-            throw new RuntimeException(e);
         } finally {
-            onAfterIfNecessary(httpRequest);
             if(null != response){
                 response.close();
             }
