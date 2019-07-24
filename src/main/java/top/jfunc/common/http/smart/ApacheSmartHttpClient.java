@@ -67,6 +67,7 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         HttpEntity entity = null;
+        InputStream inputStream = null;
         try {
             ////////////////////////////////////ssl处理///////////////////////////////////
             HostnameVerifier hostnameVerifier = null;
@@ -89,7 +90,7 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
             int statusCode = response.getStatusLine().getStatusCode();
             entity = response.getEntity();
 
-            InputStream inputStream = getStreamFrom(entity , httpRequest.isIgnoreResponseBody());
+            inputStream = getStreamFrom(entity , httpRequest.isIgnoreResponseBody());
 
             boolean includeHeaders = httpRequest.isIncludeHeaders();
             if(supportCookie()){
@@ -105,13 +106,11 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
                 }
             }
 
-            R convert = resultCallback.convert(statusCode , inputStream,
+            return resultCallback.convert(statusCode , inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     parseHeaders);
-
-            IoUtil.close(inputStream);
-            return convert;
         }finally {
+            IoUtil.close(inputStream);
             EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);
             IoUtil.close(httpClient);

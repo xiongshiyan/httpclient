@@ -50,15 +50,15 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
             //5.子类处理
             return afterTemplate(request , response);
         } catch (IOException e) {
-            //6.1拦截器在抛异常的时候处理
+            //6.1.拦截器在抛异常的时候处理
             onErrorIfNecessary(request , e);
             throw e;
         } catch (Exception e) {
-            //6.2拦截器在抛异常的时候处理
+            //6.2.拦截器在抛异常的时候处理
             onErrorIfNecessary(request, e);
             throw new RuntimeException(e);
         }finally {
-            //7拦截器在任何时候都处理
+            //7.拦截器在任何时候都处理
             onAfterIfNecessary(httpRequest);
         }
     }
@@ -119,6 +119,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
      * 而是直接复写{@link HttpTemplate#template(String, Method, String, ContentCallback, MultiValueMap, Integer, Integer, String, boolean, ResultCallback)}
      * 所以抛出异常
      */
+    @Override
     protected <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception{
         throw new UnsupportedOperationException("HttpRequest实现体系不支持此种方式");
     }

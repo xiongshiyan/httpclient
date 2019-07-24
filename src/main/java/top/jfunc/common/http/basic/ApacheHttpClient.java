@@ -53,6 +53,7 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         HttpEntity entity = null;
+        InputStream inputStream = null;
         try {
 
             //5.创建http客户端
@@ -71,13 +72,11 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
 
             entity = response.getEntity();
 
-            InputStream inputStream = getStreamFrom(entity, false);
+            inputStream = getStreamFrom(entity, false);
 
-            R convert = resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset),  parseHeaders(response , includeHeader));
-            IoUtil.close(inputStream);
-
-            return convert;
+            return resultCallback.convert(statusCode , inputStream, getResultCharsetWithDefault(resultCharset),  parseHeaders(response , includeHeader));
         }finally {
+            IoUtil.close(inputStream);
             EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);
             IoUtil.close(httpClient);
