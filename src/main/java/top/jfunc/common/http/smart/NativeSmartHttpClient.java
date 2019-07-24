@@ -25,8 +25,6 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws Exception {
-        onBeforeIfNecessary(httpRequest, method);
-
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
