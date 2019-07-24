@@ -14,15 +14,16 @@ public interface Interceptor {
      * 执行之前拦截 before
      * @param httpRequest HttpRequest
      * @param method 请求方法
+     * @return 可能被修改后的HttpRequest
      */
-    void onBefore(HttpRequest httpRequest, Method method);
+    HttpRequest onBefore(HttpRequest httpRequest, Method method);
 
     /**
-     * 执行之后拦截 afterReturn
+     * 执行之后拦截 beforeReturn
      * @param httpRequest HttpRequest
-     * @param returnValue 返回的值
+     * @param returnValue 返回的值 返回值目前不允许修改类型，即没有返回
      */
-    void onAfterReturn(HttpRequest httpRequest, Object returnValue);
+    void onBeforeReturn(HttpRequest httpRequest, Object returnValue);
 
     /**
      * 发生异常的时候 exception
@@ -35,5 +36,5 @@ public interface Interceptor {
      * finally执行 finally
      * @param httpRequest HttpRequest
      */
-    void onAfter(HttpRequest httpRequest);
+    void onFinally(HttpRequest httpRequest);
 }

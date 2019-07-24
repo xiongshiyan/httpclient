@@ -232,15 +232,16 @@ public class Config {
         return this;
     }
 
-    void onBeforeIfNecessary(HttpRequest httpRequest , Method method){
+    HttpRequest onBeforeIfNecessary(HttpRequest httpRequest , Method method){
         if(hasInterceptors()){
-            compositeInterceptor.onBefore(httpRequest, method);
+            return compositeInterceptor.onBefore(httpRequest, method);
         }
+        return httpRequest;
     }
 
-    void onAfterReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
+    void onBeforeReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
         if(hasInterceptors()){
-            compositeInterceptor.onAfterReturn(httpRequest, returnValue);
+            compositeInterceptor.onBeforeReturn(httpRequest, returnValue);
         }
     }
     void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
@@ -248,9 +249,9 @@ public class Config {
             compositeInterceptor.onError(httpRequest, exception);
         }
     }
-    void onAfterIfNecessary(HttpRequest httpRequest){
+    void onFinallyIfNecessary(HttpRequest httpRequest){
         if(hasInterceptors()){
-            compositeInterceptor.onAfter(httpRequest);
+            compositeInterceptor.onFinally(httpRequest);
         }
     }
     private boolean hasInterceptors(){

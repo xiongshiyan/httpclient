@@ -72,19 +72,24 @@ public class CompositeInterceptor implements Interceptor {
     }
 
     @Override
-    public void onBefore(HttpRequest httpRequest, Method method) {
+    public HttpRequest onBefore(HttpRequest httpRequest, Method method) {
+        HttpRequest temp = httpRequest;
         //循环执行拦截器代码
         if (null != this.interceptors && !this.interceptors.isEmpty()) {
-            this.interceptors.forEach(executeInterceptor -> executeInterceptor.onBefore(httpRequest, method));
+            ///this.interceptors.forEach(executeInterceptor -> executeInterceptor.onBefore(httpRequest, method));
+            for (Interceptor interceptor : this.interceptors) {
+                temp = interceptor.onBefore(temp, method);
+            }
         }
+        return temp;
     }
 
     @Override
-    public void onAfterReturn(HttpRequest httpRequest, Object returnValue) {
+    public void onBeforeReturn(HttpRequest httpRequest, Object returnValue) {
         //逆序循环执行拦截器代码
         if (null != this.interceptors && !this.interceptors.isEmpty()) {
             for (int i = this.interceptors.size() - 1; i >= 0; i--) {
-                this.interceptors.get(i).onAfterReturn(httpRequest, returnValue);
+                this.interceptors.get(i).onBeforeReturn(httpRequest, returnValue);
             }
         }
     }
@@ -98,11 +103,11 @@ public class CompositeInterceptor implements Interceptor {
     }
 
     @Override
-    public void onAfter(HttpRequest httpRequest) {
+    public void onFinally(HttpRequest httpRequest) {
         //逆序循环执行拦截器代码
         if (null != this.interceptors && !this.interceptors.isEmpty()) {
             for (int i = this.interceptors.size() - 1; i >= 0; i--) {
-                this.interceptors.get(i).onAfter(httpRequest);
+                this.interceptors.get(i).onFinally(httpRequest);
             }
         }
     }

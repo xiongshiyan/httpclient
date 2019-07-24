@@ -61,17 +61,17 @@ public abstract class AbstractConfigurableHttp {
         config.freezeConfig();
     }
 
-    protected void onBeforeIfNecessary(HttpRequest httpRequest , Method method){
-        config.onBeforeIfNecessary(httpRequest, method);
+    protected HttpRequest onBeforeIfNecessary(HttpRequest httpRequest , Method method){
+        return config.onBeforeIfNecessary(httpRequest, method);
     }
-    protected void onAfterReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
-        config.onAfterReturnIfNecessary(httpRequest, returnValue);
+    protected void onBeforeReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
+        config.onBeforeReturnIfNecessary(httpRequest, returnValue);
     }
     protected void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
         config.onErrorIfNecessary(httpRequest, exception);
     }
-    protected void onAfterIfNecessary(HttpRequest httpRequest){
-        config.onAfterIfNecessary(httpRequest);
+    protected void onFinallyIfNecessary(HttpRequest httpRequest){
+        config.onFinallyIfNecessary(httpRequest);
     }
 
 

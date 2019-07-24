@@ -17,23 +17,23 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.Map;
 
+import static top.jfunc.common.http.HttpConstants.CRLF;
+import static top.jfunc.common.http.HttpConstants.TWO_HYPHENS;
 import static top.jfunc.common.http.base.StreamUtil.emptyInputStream;
 
 /**
  * @author xiongshiyan at 2019/7/12 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class NativeUtil {
-    private static final String END = "\r\n";
-    private static final String TWO_HYPHENS = "--";
     private static final String BOUNDARY = "*****xsyloveyou******";
     /**
      * 数据开始标志
      */
-    private static final String PART_BEGIN_LINE = TWO_HYPHENS + BOUNDARY + END;
+    private static final String PART_BEGIN_LINE = TWO_HYPHENS + BOUNDARY + CRLF;
     /**
      * 数据结束标志
      */
-    private static final String END_LINE = TWO_HYPHENS + BOUNDARY + TWO_HYPHENS + END;
+    private static final String END_LINE = TWO_HYPHENS + BOUNDARY + TWO_HYPHENS + CRLF;
 
 
     public static void upload0(HttpURLConnection connection , FormFile... files) throws IOException {
@@ -88,12 +88,12 @@ public class NativeUtil {
      */
     private static void writeOneFile(DataOutputStream ds, FormFile formFile) throws IOException {
         ds.writeBytes(PART_BEGIN_LINE);
-        ds.writeBytes("Content-Disposition: form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"" + END);
-        ds.writeBytes("Content-Type: " + formFile.getContentType() + END + END);
+        ds.writeBytes("Content-Disposition: form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"" + CRLF);
+        ds.writeBytes("Content-Type: " + formFile.getContentType() + CRLF + CRLF);
 
         InputStream inStream = formFile.getInStream();
         IoUtil.copy(inStream, ds);
-        ds.writeBytes(END);
+        ds.writeBytes(CRLF);
 
         IoUtil.close(inStream);
     }
@@ -109,11 +109,11 @@ public class NativeUtil {
         for (FormFile formFile : files) {
             StringBuilder fileExplain = new StringBuilder();
             fileExplain.append(PART_BEGIN_LINE);
-            fileExplain.append("Content-Disposition: form-data; name=\"" + formFile.getParameterName() + "\";filename=\"" + formFile.getFilName() + "\"" + END);
-            fileExplain.append("Content-Type: " + formFile.getContentType() + END + END);
+            fileExplain.append("Content-Disposition: form-data; name=\"" + formFile.getParameterName() + "\";filename=\"" + formFile.getFilName() + "\"" + CRLF);
+            fileExplain.append("Content-Type: " + formFile.getContentType() + CRLF + CRLF);
             fileDataLength += fileExplain.length();
             fileDataLength += formFile.getFileLen();
-            fileDataLength += END.length();
+            fileDataLength += CRLF.length();
         }
         return fileDataLength;
     }
@@ -134,8 +134,8 @@ public class NativeUtil {
             }*/
             params.forEachKeyValue((key,value)->{
                 textEntity.append(PART_BEGIN_LINE);
-                textEntity.append("Content-Disposition: form-data; name=\"" + key + "\"" + END + END);
-                textEntity.append(value).append(END);
+                textEntity.append("Content-Disposition: form-data; name=\"" + key + "\"" + CRLF + CRLF);
+                textEntity.append(value).append(CRLF);
             });
         }
         return textEntity.toString();

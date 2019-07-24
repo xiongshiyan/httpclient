@@ -9,12 +9,12 @@ import top.jfunc.common.http.request.HttpRequest;
  */
 public class InterceptorAdapter implements Interceptor {
     @Override
-    public void onBefore(HttpRequest httpRequest, Method method) {
-
+    public HttpRequest onBefore(HttpRequest httpRequest, Method method) {
+        return httpRequest;
     }
 
     @Override
-    public void onAfterReturn(HttpRequest httpRequest, Object returnValue) {
+    public void onBeforeReturn(HttpRequest httpRequest, Object returnValue) {
 
     }
 
@@ -24,7 +24,7 @@ public class InterceptorAdapter implements Interceptor {
     }
 
     @Override
-    public void onAfter(HttpRequest httpRequest) {
+    public void onFinally(HttpRequest httpRequest) {
 
     }
 }

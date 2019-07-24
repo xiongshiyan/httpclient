@@ -17,6 +17,8 @@ public class HttpConstants {
     public static final String COLON_SPLASH  = "://";
     public static final String HTTP          = "http";
     public static final String HTTPS         = "https";
+    public static final String CRLF          = "\r\n";
+    public static final String TWO_HYPHENS   = "--";
     public static final String HTTP_PREFIX   = HTTP + COLON_SPLASH;
     public static final String HTTPS_PREFIX  = HTTPS + COLON_SPLASH;
 

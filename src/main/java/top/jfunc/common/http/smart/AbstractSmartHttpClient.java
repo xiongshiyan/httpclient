@@ -39,14 +39,14 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     @Override
     public <R> R template(HttpRequest httpRequest, Method method, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException {
         //1.子类处理
-        HttpRequest request = beforeTemplate(httpRequest);
+        HttpRequest h = beforeTemplate(httpRequest);
         //2.拦截器在之前处理
-        onBeforeIfNecessary(request, method);
+        HttpRequest request = onBeforeIfNecessary(h, method);
         try {
             //3.真正的实现
             R response = doInternalTemplate(request , method , contentCallback , resultCallback);
             //4.拦截器过滤
-            onAfterReturnIfNecessary(request , response);
+            onBeforeReturnIfNecessary(request , response);
             //5.子类处理
             return afterTemplate(request , response);
         } catch (IOException e) {
@@ -59,7 +59,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
             throw new RuntimeException(e);
         }finally {
             //7.拦截器在任何时候都处理
-            onAfterIfNecessary(httpRequest);
+            onFinallyIfNecessary(httpRequest);
         }
     }
 
