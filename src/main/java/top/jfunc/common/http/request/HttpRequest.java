@@ -69,6 +69,13 @@ public interface HttpRequest {
     HttpRequest addRouteParam(String key, String value);
 
     /**
+     * 便捷地设置路径参数
+     * @param routeParams 多个路径参数
+     * @return this
+     */
+    HttpRequest setRouteParams(Map<String , String> routeParams);
+
+    /**
      * 获取设置的Query参数
      * @return Query参数
      */
@@ -97,13 +104,35 @@ public interface HttpRequest {
     HttpRequest addQueryParam(String key, String value, String... values);
 
     /**
+     * 设置QueryParam参数
+     * @param params Param参数
+     * @return this
+     */
+    HttpRequest setQueryParams(MultiValueMap<String, String> params);
+
+    /**
+     * 设置QueryParam参数
+     * @param params Param参数
+     * @return this
+     */
+    HttpRequest setQueryParams(Map<String, String> params);
+
+    /**
      * 请求的Header
      * @return 请求的Header
      */
     MultiValueMap<String, String> getHeaders();
 
     /**
-     * 提供便捷的设置header的方法
+     * 便捷的设置header的方法，set方式，相同key就会覆盖
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    HttpRequest setHeader(String key , String value);
+
+    /**
+     * 提供便捷的设置header的方法，add方式，相同key那么value就成为多值
      * @param key key
      * @param value value
      * @param values values
@@ -112,10 +141,24 @@ public interface HttpRequest {
     HttpRequest addHeader(String key, String value, String... values);
 
     /**
+     * 有些请求可能经过一些处理之后需要改变header重新设置回去
+     * @param headers 处理过后的header
+     * @return this
+     */
+    HttpRequest setHeaders(MultiValueMap<String, String> headers);
+
+    /**
+     * 设置header
+     * @param headers headerHolder
+     * @return this
+     */
+    HttpRequest setHeaders(Map<String, String> headers);
+
+    /**
      * 请求的不可重复key的Header
      * @return 请求的Header
      */
-    Map<String, String> getOverwriteHeaders();
+    //Map<String, String> getOverwriteHeaders();
 
     /**
      * 提供便捷的设置header的方法
@@ -123,7 +166,7 @@ public interface HttpRequest {
      * @param value value
      * @return this
      */
-    HttpRequest putOverwriteHeader(String key, String value);
+    //HttpRequest putOverwriteHeader(String key, String value);
 
     /**
      * Content-Type

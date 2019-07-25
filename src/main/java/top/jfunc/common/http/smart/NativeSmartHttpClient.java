@@ -74,8 +74,7 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
                 }
             }*/
 
-            setRequestHeaders(connection, httpRequest.getContentType(), headers,
-                    httpRequest.getOverwriteHeaders());
+            setRequestHeaders(connection, httpRequest.getContentType(), headers);
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection , httpRequest);

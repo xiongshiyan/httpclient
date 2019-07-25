@@ -61,8 +61,7 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
         headers = handleCookieIfNecessary(completedUrl, headers);
 
         //4.设置请求头
-        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers ,
-                httpRequest.getOverwriteHeaders());
+        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers);
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;

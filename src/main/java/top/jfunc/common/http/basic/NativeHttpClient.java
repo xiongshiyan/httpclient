@@ -48,7 +48,7 @@ public class NativeHttpClient extends AbstractHttpClient<HttpURLConnection> impl
             connection.setReadTimeout(getReadTimeoutWithDefault(readTimeout));
 
             //2.处理header
-            setRequestHeaders(connection, contentType, mergeDefaultHeaders(headers) , null);
+            setRequestHeaders(connection, contentType, mergeDefaultHeaders(headers));
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection);

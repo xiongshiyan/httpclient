@@ -91,8 +91,7 @@ public class OkHttp3Util {
     }
 
     public static void setRequestHeaders(Request.Builder builder, String contentType,
-                                     MultiValueMap<String, String> headers,
-                                     Map<String , String> overwriteHeaders) {
+                                     MultiValueMap<String, String> headers) {
         //add方式处理多值header
         if(null != headers && !headers.isEmpty()) {
             ///
@@ -101,10 +100,10 @@ public class OkHttp3Util {
             headers.forEachKeyValue(builder::addHeader);
         }
 
-        //set方式处理单值header
-        if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
+        ///set方式处理单值header
+        /*if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
             overwriteHeaders.forEach(builder::header);
-        }
+        }*/
 
         if(null != contentType){
             builder.header(HeaderRegular.CONTENT_TYPE.toString(), contentType);

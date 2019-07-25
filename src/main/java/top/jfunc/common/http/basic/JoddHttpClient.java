@@ -43,7 +43,7 @@ public class JoddHttpClient extends AbstractHttpClient<HttpRequest> {
             }
 
             //5.设置header
-            setRequestHeaders(request , contentType , mergeDefaultHeaders(headers) , null);
+            setRequestHeaders(request , contentType , mergeDefaultHeaders(headers));
 
             //6.子类可以复写
             doWithHttpRequest(request);

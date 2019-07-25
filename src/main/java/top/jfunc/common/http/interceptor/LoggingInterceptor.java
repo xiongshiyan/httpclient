@@ -42,9 +42,6 @@ public class LoggingInterceptor extends InterceptorAdapter{
             if(notEmpty(httpRequest.getHeaders())){
                 builder.append("headers:"+httpRequest.getHeaders()+CRLF);
             }
-            if(notEmpty(httpRequest.getOverwriteHeaders())){
-                builder.append("overwriteHeaders:"+httpRequest.getOverwriteHeaders()+CRLF);
-            }
             if(notEmpty(httpRequest.getConnectionTimeout())){
                 builder.append("connectionTimeout:"+httpRequest.getConnectionTimeout()+CRLF);
             }

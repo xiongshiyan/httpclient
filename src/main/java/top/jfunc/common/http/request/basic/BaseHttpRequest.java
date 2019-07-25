@@ -15,6 +15,7 @@ import javax.net.ssl.X509TrustManager;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author xiongshiyan at 2019/7/5 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -47,7 +48,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     /**
      * header，单值
      */
-    private Map<String , String> overwriteHeaders;
+    //private Map<String , String> overwriteHeaders;
     /**
      * 资源类型
      */
@@ -146,6 +147,13 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
+    public THIS setRouteParams(Map<String, String> routeParams) {
+        this.routeParams = routeParams;
+        cacheFinalUrl = null;
+        return myself();
+    }
+
+    @Override
     public MultiValueMap<String, String> getQueryParams() {
         return queryParams;
     }
@@ -167,7 +175,21 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
         if(null == queryParams){
             queryParams = new ArrayListMultiValueMap<>(2);
         }
+        cacheFinalUrl = null;
         queryParams.add(key, value, values);
+        return myself();
+    }
+
+    @Override
+    public THIS setQueryParams(MultiValueMap<String, String> params) {
+        this.queryParams = Objects.requireNonNull(params);
+        cacheFinalUrl = null;
+        return myself();
+    }
+
+    @Override
+    public THIS setQueryParams(Map<String, String> params) {
+        this.queryParams = ArrayListMultiValueMap.fromMap(Objects.requireNonNull(params));
         cacheFinalUrl = null;
         return myself();
     }
@@ -178,15 +200,39 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
+    public THIS setHeader(String key, String value) {
+        initHeaders();
+        headers.set(key, value);
+        return myself();
+    }
+
+    @Override
     public THIS addHeader(String key, String value, String... values) {
-        if(null == headers){
-            headers = new ArrayListMultiValueMap<>(2);
-        }
+        initHeaders();
         headers.add(key, value, values);
         return myself();
     }
 
     @Override
+    public HttpRequest setHeaders(MultiValueMap<String, String> headers) {
+        this.headers = Objects.requireNonNull(headers);
+        return myself();
+    }
+
+    @Override
+    public HttpRequest setHeaders(Map<String, String> headers) {
+        this.headers = ArrayListMultiValueMap.fromMap(Objects.requireNonNull(headers));
+        return myself();
+    }
+
+    private void initHeaders() {
+        if(null == headers){
+            headers = new ArrayListMultiValueMap<>(2);
+        }
+    }
+
+    ///
+    /*@Override
     public Map<String, String> getOverwriteHeaders() {
         return overwriteHeaders;
     }
@@ -198,7 +244,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
         }
         overwriteHeaders.put(key, value);
         return myself();
-    }
+    }*/
 
     @Override
     public String getContentType() {

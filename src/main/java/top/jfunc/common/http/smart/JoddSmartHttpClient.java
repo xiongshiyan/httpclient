@@ -57,8 +57,7 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
 
             headers = handleCookieIfNecessary(completedUrl, headers);
 
-            setRequestHeaders(request , httpRequest.getContentType() , headers ,
-                    httpRequest.getOverwriteHeaders());
+            setRequestHeaders(request , httpRequest.getContentType() , headers);
 
             //6.子类可以复写
             doWithHttpRequest(request , httpRequest);

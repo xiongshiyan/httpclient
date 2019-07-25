@@ -48,7 +48,7 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
         }
 
         //4.设置请求头
-        setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers) , null);
+        setRequestHeaders(httpUriRequest, contentType, mergeDefaultHeaders(headers));
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;

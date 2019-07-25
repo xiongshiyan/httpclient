@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.util.Map;
 
 import static top.jfunc.common.http.HttpConstants.CRLF;
 import static top.jfunc.common.http.HttpConstants.TWO_HYPHENS;
@@ -183,8 +182,7 @@ public class NativeUtil {
     }
 
     public static void setRequestHeaders(HttpURLConnection connection, String contentType,
-                                     MultiValueMap<String, String> headers,
-                                     Map<String , String> overwriteHeaders) {
+                                     MultiValueMap<String, String> headers) {
         //add方式处理多值header
         if(null != headers && !headers.isEmpty()) {
             ///
@@ -193,10 +191,10 @@ public class NativeUtil {
             headers.forEachKeyValue(connection::addRequestProperty);
         }
 
-        //set方式处理单值header
-        if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
+        ///set方式处理单值header
+        /*if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
             overwriteHeaders.forEach(connection::setRequestProperty);
-        }
+        }*/
 
         if(null != contentType){
             connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString(), contentType);

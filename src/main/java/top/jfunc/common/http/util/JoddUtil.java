@@ -31,8 +31,7 @@ import static top.jfunc.common.http.base.StreamUtil.emptyInputStream;
  */
 public class JoddUtil {
     public static void setRequestHeaders(HttpRequest request, String contentType,
-                                     MultiValueMap<String, String> headers,
-                                     Map<String , String> overwriteHeaders) {
+                                     MultiValueMap<String, String> headers) {
         //add方式处理多值header
         if(null != headers && !headers.isEmpty()) {
             ///
@@ -41,10 +40,10 @@ public class JoddUtil {
             headers.forEachKeyValue(request::header);
         }
 
-        //set方式处理单值header
-        if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
+        ///set方式处理单值header
+        /*if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
             overwriteHeaders.forEach(request::headerOverwrite);
-        }
+        }*/
 
         if(null != contentType){
             request.contentType(contentType);

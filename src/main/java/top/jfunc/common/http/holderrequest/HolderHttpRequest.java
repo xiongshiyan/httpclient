@@ -82,6 +82,7 @@ public interface HolderHttpRequest extends HttpRequest {
      * @param routeParams 多个路径参数
      * @return this
      */
+    @Override
     default HolderHttpRequest setRouteParams(Map<String, String> routeParams){
         routeParamHolder().setMap(routeParams);
         return this;
@@ -122,6 +123,7 @@ public interface HolderHttpRequest extends HttpRequest {
      * @param queryParams 多个查询参数
      * @return this
      */
+    @Override
     default HolderHttpRequest setQueryParams(MultiValueMap<String, String> queryParams){
         queryParamHolder().setParams(queryParams);
         return this;
@@ -132,16 +134,26 @@ public interface HolderHttpRequest extends HttpRequest {
      * @param queryParams 多个查询参数
      * @return this
      */
+    @Override
     default HolderHttpRequest setQueryParams(Map<String, String> queryParams){
         queryParamHolder().setParams(queryParams);
         return this;
     }
 
+    /**
+     * 获取Query编码
+     * @return Query编码
+     */
     @Override
     default String getQueryParamCharset() {
         return queryParamHolder().getParamCharset();
     }
 
+    /**
+     * 设置Query参数编码
+     * @param paramCharset 参数编码
+     * @return this
+     */
     @Override
     default HolderHttpRequest setQueryParamCharset(String paramCharset) {
         queryParamHolder().setParamCharset(paramCharset);
@@ -151,13 +163,24 @@ public interface HolderHttpRequest extends HttpRequest {
     /**
      * 获取到 {@link HeaderHolder} 可以对Header完全接管处理
      * add 方式处理
-     * @see HolderHttpRequest#overwriteHeaderHolder()
      * @return HeaderHolder must not be null
      */
     HeaderHolder headerHolder();
 
     /**
-     * 提供便捷的设置header的方法
+     * 便捷设置header，set方式
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    @Override
+    default HolderHttpRequest setHeader(String key, String value){
+        headerHolder().setHeader(key, value);
+        return this;
+    }
+
+    /**
+     * 提供便捷的设置header的方法，add方式
      * @param key key
      * @param value value
      * @param values values
@@ -174,6 +197,7 @@ public interface HolderHttpRequest extends HttpRequest {
      * @param headers 多个header
      * @return this
      */
+    @Override
     default HolderHttpRequest setHeaders(MultiValueMap<String, String> headers){
         headerHolder().setHeaders(headers);
         return this;
@@ -184,6 +208,7 @@ public interface HolderHttpRequest extends HttpRequest {
      * @param headers 多个header
      * @return this
      */
+    @Override
     default HolderHttpRequest setHeaders(Map<String, String> headers){
         headerHolder().setHeaders(headers);
         return this;
@@ -195,7 +220,7 @@ public interface HolderHttpRequest extends HttpRequest {
      * @see HolderHttpRequest#headerHolder()
      * @return HeaderHolder must not be null
      */
-    OverwriteHeaderHolder overwriteHeaderHolder();
+    //OverwriteHeaderHolder overwriteHeaderHolder();
 
     /**
      * 提供便捷的设置header的方法
@@ -203,21 +228,21 @@ public interface HolderHttpRequest extends HttpRequest {
      * @param value value
      * @return this
      */
-    @Override
+    /*@Override
     default HolderHttpRequest putOverwriteHeader(String key, String value){
         overwriteHeaderHolder().put(key, value);
         return this;
-    }
+    }*/
 
     /**
      * 提供便捷的设置header的方法
      * @param headers 多个header
      * @return this
      */
-    default HolderHttpRequest putOverwriteHeaders(Map<String, String> headers){
+    /*default HolderHttpRequest putOverwriteHeaders(Map<String, String> headers){
         overwriteHeaderHolder().setMap(headers);
         return this;
-    }
+    }*/
 
     /**
      * SSL相关设置的处理器
@@ -238,11 +263,11 @@ public interface HolderHttpRequest extends HttpRequest {
      * 获取设置的header
      * @return 单值header
      */
-    @Override
+    /*@Override
     default Map<String, String> getOverwriteHeaders() {
         return overwriteHeaderHolder().getMap();
     }
-
+    */
     /**
      * 获取设置的 HostNameVerifier
      * @return HostnameVerifier

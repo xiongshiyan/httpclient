@@ -57,7 +57,7 @@ public class OkHttp3Client extends AbstractHttpClient<Request.Builder> implement
             }
 
             //2.3设置headers
-            setRequestHeaders(builder , contentType , mergeDefaultHeaders(headers) , null);
+            setRequestHeaders(builder , contentType , mergeDefaultHeaders(headers));
 
             //3.构造请求
             Request request = builder.build();

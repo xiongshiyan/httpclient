@@ -7,6 +7,7 @@ import java.util.Objects;
 /**
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
  */
+@Deprecated
 public class DefaultOverwriteHeaderHolder implements OverwriteHeaderHolder {
     private Map<String , String> map;
 

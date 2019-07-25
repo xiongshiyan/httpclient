@@ -42,7 +42,6 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.UnknownHostException;
-import java.util.Map;
 
 import static top.jfunc.common.http.HttpConstants.COLON;
 import static top.jfunc.common.http.HttpConstants.SPLASH;
@@ -242,8 +241,7 @@ public class ApacheUtil {
     }
 
     public static void setRequestHeaders(HttpUriRequest request, String contentType,
-                                     MultiValueMap<String, String> headers,
-                                     Map<String , String> overwriteHeaders) {
+                                     MultiValueMap<String, String> headers) {
         //add方式处理多值header
         if(null != headers && !headers.isEmpty()) {
             ///
@@ -254,10 +252,10 @@ public class ApacheUtil {
             headers.forEachKeyValue(request::addHeader);
         }
 
-        //set方式处理单值header
-        if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
+        ///set方式处理单值header
+        /*if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
             overwriteHeaders.forEach(request::setHeader);
-        }
+        }*/
 
         if(null != contentType){
             request.setHeader(HeaderRegular.CONTENT_TYPE.toString(), contentType);

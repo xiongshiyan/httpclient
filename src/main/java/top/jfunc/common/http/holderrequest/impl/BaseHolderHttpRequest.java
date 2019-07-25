@@ -22,13 +22,13 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
      */
     private UrlHolder urlHolder = new DefaultUrlHolder();
     /**
-     * 请求头，通过add方式
+     * 请求头
      */
     private HeaderHolder headerHolder = new DefaultHeaderHolder();
     /**
      * 请求头，通过set方式
      */
-    private OverwriteHeaderHolder overwriteHeaderHolder = new DefaultOverwriteHeaderHolder();
+    //private OverwriteHeaderHolder overwriteHeaderHolder = new DefaultOverwriteHeaderHolder();
     /**
      * 资源类型
      */
@@ -121,6 +121,12 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     }
 
     @Override
+    public THIS setHeader(String key, String value) {
+        headerHolder.setHeader(key, value);
+        return myself();
+    }
+
+    @Override
     public THIS addHeader(String key, String value , String... values){
         headerHolder().addHeader(key, value, values);
         return myself();
@@ -161,7 +167,8 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     }
 
 
-    @Override
+    ///
+    /*@Override
     public OverwriteHeaderHolder overwriteHeaderHolder() {
         return overwriteHeaderHolder;
     }
@@ -176,7 +183,7 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     public THIS putOverwriteHeaders(Map<String, String> headers) {
         overwriteHeaderHolder().setMap(headers);
         return myself();
-    }
+    }*/
 
     @Override
     public THIS setConnectionTimeout(int connectionTimeout) {

@@ -5,7 +5,9 @@ import java.util.Map;
 /**
  * 只能存在一个key的header处理器，例如 Connection、Host等
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
+ * @deprecated {@link HeaderHolder}代替，对于单值的使用put方式
  */
+@Deprecated
 public interface OverwriteHeaderHolder extends MapHolder{
     /**
      * 路径参数

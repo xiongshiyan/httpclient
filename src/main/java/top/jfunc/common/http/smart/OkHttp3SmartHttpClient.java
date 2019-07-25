@@ -72,8 +72,7 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
 
             headers = handleCookieIfNecessary(completedUrl, headers);
 
-            setRequestHeaders(builder , httpRequest.getContentType() , headers ,
-                    httpRequest.getOverwriteHeaders());
+            setRequestHeaders(builder , httpRequest.getContentType() , headers);
 
             //3.构造请求
             Request okRequest = builder.build();

@@ -43,6 +43,14 @@ public class DefaultHeaderHolder implements HeaderHolder {
         this.headers = ArrayListMultiValueMap.fromMap(headers);
         return this;
     }
+
+    @Override
+    public HeaderHolder setHeader(String key, String value) {
+        initHeaders();
+        this.headers.set(key, value);
+        return this;
+    }
+
     @Override
     public HeaderHolder addHeader(String key, String value){
         initHeaders();

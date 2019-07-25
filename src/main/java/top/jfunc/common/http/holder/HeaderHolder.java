@@ -1,6 +1,7 @@
 package top.jfunc.common.http.holder;
 
 import top.jfunc.common.http.kv.Header;
+import top.jfunc.common.http.kv.SingleValueEntry;
 import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -25,13 +26,6 @@ public interface HeaderHolder{
     HeaderHolder setHeaders(MultiValueMap<String, String> headers);
 
     /**
-     * 设置请求的header
-     * @param headers headers
-     * @return this
-     */
-    HeaderHolder setHeaders(ArrayListMultimap<String, String> headers);
-
-    /**
      * 设置header
      * @param headers headerHolder
      * @return this
@@ -39,7 +33,45 @@ public interface HeaderHolder{
     HeaderHolder setHeaders(Map<String, String> headers);
 
     /**
-     * 添加header
+     * 设置请求的header
+     * @param headers headers
+     * @return this
+     */
+    HeaderHolder setHeaders(ArrayListMultimap<String, String> headers);
+
+    /**
+     * 添加header,set方式
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    HeaderHolder setHeader(String key, String value);
+
+    /**
+     * set多个kv
+     * @param entry kv
+     * @param entries kvs
+     * @return this
+     */
+    default HeaderHolder setHeader(SingleValueEntry entry , SingleValueEntry... entries){
+        setHeader(entry.getKey() , entry.getValue());
+        for (SingleValueEntry kv : entries) {
+            setHeader(kv.getKey() , kv.getValue());
+        }
+        return this;
+    }
+
+    /**
+     * set多个kv
+     * @param entries kvs
+     * @return this
+     */
+    default HeaderHolder setHeader(Iterable<SingleValueEntry> entries){
+        entries.forEach(kv->setHeader(kv));
+        return this;
+    }
+    /**
+     * 添加header,add方式
      * @param key key
      * @param value value
      * @return this

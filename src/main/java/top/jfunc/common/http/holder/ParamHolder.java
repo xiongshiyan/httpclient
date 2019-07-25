@@ -42,14 +42,14 @@ public interface ParamHolder{
      * @param params Param参数
      * @return this
      */
-    ParamHolder setParams(ArrayListMultimap<String, String> params);
+    ParamHolder setParams(Map<String, String> params);
 
     /**
      * 设置Param参数
      * @param params Param参数
      * @return this
      */
-    ParamHolder setParams(Map<String, String> params);
+    ParamHolder setParams(ArrayListMultimap<String, String> params);
 
     /**
      * 添加Param参数
