@@ -22,7 +22,6 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import static top.jfunc.common.http.base.StreamUtil.emptyInputStream;
 
