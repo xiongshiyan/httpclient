@@ -12,12 +12,13 @@ import static top.jfunc.common.http.HttpConstants.*;
  * @author xiongshiyan at 2019/6/28 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolder {
+    private static final int DEFAULT_PORT = -1;
     /**
      * 下面三个参数可能都没有
      */
     private Protocol protocol;
     private String host;
-    private int port = -1;
+    private int port = DEFAULT_PORT;
 
     /**
      * 路径，不包括query参数的
@@ -48,6 +49,12 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
         if(null == host){
             throw new IllegalArgumentException("host 未指定");
         }
+
+        //如果port为指定
+        if(DEFAULT_PORT == port){
+            port = protocol.getPort();
+        }
+
         //拼装url
         String url = protocol.name().toLowerCase() + COLON_SPLASH
                 + host + COLON + port;
@@ -60,13 +67,12 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
 
     @Override
     public PhpUrlHolder setUrl(String destination) {
-        this.cacheFinalUrl = destination;
+        //this.cacheFinalUrl = destination;
         // protocol
         int ndx = destination.indexOf(COLON_SPLASH);
         if (ndx != -1) {
             //获取协议，如果协议名不正确，直接抛出异常
             this.protocol = Protocol.valueOf(destination.substring(0, ndx).toUpperCase());
-            this.port = protocol.getPort();
             destination = destination.substring(ndx + 3);
         }
         // host
