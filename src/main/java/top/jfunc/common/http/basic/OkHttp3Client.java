@@ -91,7 +91,7 @@ public class OkHttp3Client extends AbstractHttpClient<Request.Builder> implement
 
     @Override
     protected ContentCallback<Request.Builder> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
-        MultipartBody filesBody = filesBody(null , formFiles);
+        MultipartBody filesBody = filesBody(params , formFiles);
         return d -> setRequestBody(d, Method.POST , filesBody);
     }
     @Override

@@ -134,7 +134,7 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
 
     @Override
     protected ContentCallback<Request.Builder> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
-        MultipartBody filesBody = filesBody(null , formFiles);
+        MultipartBody filesBody = filesBody(params , formFiles);
         return d -> setRequestBody(d, Method.POST , filesBody);
     }
 
