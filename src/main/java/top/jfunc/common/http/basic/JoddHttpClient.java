@@ -66,7 +66,7 @@ public class JoddHttpClient extends AbstractHttpClient<HttpRequest> {
     protected void doWithHttpRequest(HttpRequest httpRequest){}
 
     @Override
-    protected ContentCallback<HttpRequest> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+    protected ContentCallback<HttpRequest> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
         String type = null == contentType ?
                 MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : contentType;
         return httpRequest -> httpRequest.bodyText(body , type, bodyCharset);

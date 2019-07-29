@@ -88,7 +88,7 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
     }
 
     @Override
-    protected ContentCallback<HttpEntityEnclosingRequest> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+    protected ContentCallback<HttpEntityEnclosingRequest> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
         return request -> setRequestBody(request , body , bodyCharset);
     }
 

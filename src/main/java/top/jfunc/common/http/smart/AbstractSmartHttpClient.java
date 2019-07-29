@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * 实现者只需要实现HttpTemplate接口、处理POST Body、文件上传Body即可
  * @see SmartHttpClient
- * @see AbstractSmartHttpClient#bodyContentCallback(String, String, String)
+ * @see AbstractSmartHttpClient#bodyContentCallback(Method, String, String, String)
  * @see AbstractSmartHttpClient#uploadContentCallback(MultiValueMap, String, FormFile[])
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
@@ -135,7 +135,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         String body = request.getBody();
         String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
         return template(request, Method.POST ,
-                bodyContentCallback(body, bodyCharset, request.getContentType()) ,
+                bodyContentCallback(Method.POST , body, bodyCharset, request.getContentType()) ,
                 Response::with);
     }
 
@@ -146,7 +146,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
             StringBodyRequest bodyRequest = (StringBodyRequest) request;
             String body = bodyRequest.getBody();
             String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
-            contentCallback = bodyContentCallback(body, bodyCharset, request.getContentType());
+            contentCallback = bodyContentCallback(method ,body, bodyCharset, request.getContentType());
         }
         return template(request, method , contentCallback, resultCallback);
     }

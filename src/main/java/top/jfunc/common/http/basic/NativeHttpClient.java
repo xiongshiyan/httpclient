@@ -81,7 +81,7 @@ public class NativeHttpClient extends AbstractHttpClient<HttpURLConnection> impl
     }
 
     @Override
-    protected ContentCallback<HttpURLConnection> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+    protected ContentCallback<HttpURLConnection> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
         return connect -> writeContent(connect , body , bodyCharset);
     }
 

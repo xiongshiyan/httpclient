@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * 实现者只需要实现HttpTemplate接口、处理POST Body、文件上传Body即可
  * @see HttpTemplate
- * @see AbstractHttpClient#bodyContentCallback(String, String, String)
+ * @see AbstractHttpClient#bodyContentCallback(Method, String, String, String)
  * @see AbstractHttpClient#uploadContentCallback(MultiValueMap, String, FormFile[])
  * @author xiongshiyan at 2019/5/9 , contact me with email yanshixiong@126.com or phone 15208384257
  */
@@ -65,7 +65,7 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException {
         String charset = calculateBodyCharset(bodyCharset, contentType);
-        return template(url, Method.POST, contentType, bodyContentCallback(body, charset, contentType),
+        return template(url, Method.POST, contentType, bodyContentCallback(Method.POST , body, charset, contentType),
                 ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
@@ -99,13 +99,14 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
 
     /**
      * 处理请求体的回调
+     * @param method 请求方法
      * @param body 请求体
      * @param bodyCharset 编码
      * @param contentType Content-Type
      * @return ContentCallback<CC>
      * @throws IOException IOException
      */
-    abstract protected ContentCallback<CC> bodyContentCallback(String body , String bodyCharset , String contentType) throws IOException;
+    abstract protected ContentCallback<CC> bodyContentCallback(Method method , String body , String bodyCharset , String contentType) throws IOException;
 
     /**
      * 处理文件上传

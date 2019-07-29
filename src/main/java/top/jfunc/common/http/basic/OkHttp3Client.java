@@ -84,9 +84,9 @@ public class OkHttp3Client extends AbstractHttpClient<Request.Builder> implement
 
 
     @Override
-    protected ContentCallback<Request.Builder> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+    protected ContentCallback<Request.Builder> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
         RequestBody stringBody = stringBody(body, bodyCharset, contentType);
-        return d -> setRequestBody(d, Method.POST, stringBody);
+        return d -> setRequestBody(d, method, stringBody);
     }
 
     @Override

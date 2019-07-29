@@ -99,7 +99,7 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
     protected void doWithHttpRequest(HttpRequest joddHttpRequest , top.jfunc.common.http.request.HttpRequest httpRequest){}
 
     @Override
-    protected ContentCallback<HttpRequest> bodyContentCallback(String body, String bodyCharset, String contentType) throws IOException {
+    protected ContentCallback<HttpRequest> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
         String type = null == contentType ?
                 MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : contentType;
         return httpRequest -> httpRequest.bodyText(body , type, bodyCharset);
