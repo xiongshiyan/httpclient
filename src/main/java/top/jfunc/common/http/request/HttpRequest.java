@@ -176,6 +176,10 @@ public interface HttpRequest {
 
     /**
      * 设置Content-Type
+     * 对于HttpURLConnection和OkHttp3来说，Content-Type非常重要，
+     * 前者根据Content-Type的编码来输出流，后者直接需要指定Content-Type，
+     * 所以建议的最佳实践为：在需要发送body的时候都指定Content-Type
+     * @see HttpRequest#setContentType(MediaType)
      * @param contentType Content-Type
      * @return this
      */
@@ -183,6 +187,7 @@ public interface HttpRequest {
 
     /**
      * 设置Content-Type
+     * @see MediaType
      * @param mediaType Content-Type
      * @return this
      */

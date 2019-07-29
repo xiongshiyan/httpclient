@@ -247,6 +247,10 @@ http.setConfig(Config.defaultConfig()
     //.....
    );
 ```
+建议的最佳实践为：
+1. 设置body的同时应该设置Content-Type
+2. 针对同一组请求可以使用一个SmartHttpClient，可以对他进行一些参数设置
+3. 使用拦截器而非复写父类方法达到拦截目的
 
 更多用法等待你探索，本人才疏学浅，难免有考虑不周到的地方，请不吝赐教。
 

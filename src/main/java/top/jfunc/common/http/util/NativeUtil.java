@@ -206,6 +206,8 @@ public class NativeUtil {
             return;
         }
 
+        //！！！！！！设置ContentType非常重要，他写入的时候根据Content-Type的编码来写的！！！！！！！
+
         OutputStream outputStream = connect.getOutputStream();
         outputStream.write(data.getBytes(bodyCharset));
         outputStream.close();

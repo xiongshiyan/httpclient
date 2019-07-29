@@ -129,7 +129,9 @@ public class HttpSmartTest {
         try {
             String url = "http://localhost:8080/http-server-test/post/bodyGBK";
             String charset = "GBK";
-            Request request = Request.of(url).setResultCharset("UTF-8").setBodyCharset(charset);
+            Request request = Request.of(url).setResultCharset("UTF-8").setBodyCharset(charset)
+                    //设置ContentType非常重要，尤其是对于HTTPURLConnection来说，他写入的时候根据这个编码来写的
+                    .setContentType(MediaType.APPLICATIPON_JSON.withCharset(charset));
             request.bodyHolder().setBody("熊诗言");
             Response post = http.post(request);
             System.out.println(post.getBody());
