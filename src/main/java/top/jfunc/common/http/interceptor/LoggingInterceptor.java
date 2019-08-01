@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.*;
-import top.jfunc.common.http.request.basic.FormBodyRequest;
-import top.jfunc.common.http.request.basic.PostBodyRequest;
 import top.jfunc.common.http.smart.Response;
 
 import java.util.Arrays;

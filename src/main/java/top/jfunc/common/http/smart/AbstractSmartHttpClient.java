@@ -140,18 +140,6 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     }
 
     @Override
-    public <R> R http(HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
-        ContentCallback<CC> contentCallback = null;
-        if(method.hasContent() && request instanceof StringBodyRequest){
-            StringBodyRequest bodyRequest = (StringBodyRequest) request;
-            String body = bodyRequest.getBody();
-            String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
-            contentCallback = bodyContentCallback(method ,body, bodyCharset, request.getContentType());
-        }
-        return template(request, method , contentCallback, resultCallback);
-    }
-
-    @Override
     public byte[] getAsBytes(HttpRequest request) throws IOException {
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
@@ -167,6 +155,105 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
                 uploadContentCallback(request.getFormParams(),
                         calculateBodyCharset(request.getParamCharset() , request.getContentType()),
                         request.getFormFiles()) , Response::with);
+    }
+
+
+
+
+    /*------------------------HTTP方法通用支持---------------------------*/
+
+    @Override
+    public <R> R http(HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
+        ContentCallback<CC> contentCallback = null;
+        if(method.hasContent() && request instanceof StringBodyRequest){
+            StringBodyRequest bodyRequest = (StringBodyRequest) request;
+            String body = bodyRequest.getBody();
+            String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
+            contentCallback = bodyContentCallback(method ,body, bodyCharset, request.getContentType());
+        }
+        return template(request, method , contentCallback, resultCallback);
+    }
+
+
+
+    /*------------------------HEAD---------------------------*/
+
+    @Override
+    public Response head(HttpRequest httpRequest) throws IOException {
+        //必须要响应头
+        httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
+        //设置忽略响应体
+        httpRequest.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
+        return template(httpRequest , Method.HEAD , null , Response::with);
+    }
+
+
+
+    /*------------------------OPTIONS---------------------------*/
+
+    @Override
+    public Response options(HttpRequest httpRequest) throws IOException {
+        //必须要响应头
+        httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
+        //设置忽略响应体
+        httpRequest.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
+        return template(httpRequest , Method.HEAD , null , Response::with);
+    }
+
+
+
+    /*------------------------PUT---------------------------*/
+
+    @Override
+    public Response put(StringBodyRequest request) throws IOException {
+        String body = request.getBody();
+        String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
+        return template(request, Method.PUT ,
+                bodyContentCallback(Method.PUT , body, bodyCharset, request.getContentType()) ,
+                Response::with);
+    }
+
+
+
+    /*------------------------PATCH---------------------------*/
+
+    @Override
+    public Response patch(StringBodyRequest request) throws IOException {
+        String body = request.getBody();
+        String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
+        return template(request, Method.PATCH ,
+                bodyContentCallback(Method.PATCH , body, bodyCharset, request.getContentType()) ,
+                Response::with);
+    }
+
+
+
+    /*------------------------DELETE---------------------------*/
+
+    @Override
+    public Response delete(HttpRequest httpRequest) throws IOException {
+        return template(httpRequest , Method.DELETE , null , Response::with);
+    }
+
+
+
+    /*------------------------TRACE---------------------------*/
+
+    @Override
+    public Response trace(HttpRequest request) throws IOException {
+        //必须要响应头
+        request.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
+        //设置忽略响应体
+        request.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
+
+        ContentCallback<CC> contentCallback = null;
+        if(request instanceof StringBodyRequest){
+            StringBodyRequest bodyRequest = (StringBodyRequest) request;
+            String body = bodyRequest.getBody();
+            String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
+            contentCallback = bodyContentCallback(Method.TRACE ,body, bodyCharset, request.getContentType());
+        }
+        return template(request, Method.TRACE , contentCallback, Response::with);
     }
 }
 

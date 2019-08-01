@@ -1,6 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.annotation.method.HEAD;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.HttpClient;
@@ -32,6 +33,7 @@ public interface SmartHttpClient extends HttpClient {
      */
     @Override
     Config getConfig();
+
     /**
      * GET方法
      * @param request 请求参数
@@ -39,6 +41,7 @@ public interface SmartHttpClient extends HttpClient {
      * @throws IOException 超时等IO异常
      */
     Response get(HttpRequest request) throws IOException;
+
     /**
      * POST方法
      * @param request 请求参数
@@ -46,6 +49,40 @@ public interface SmartHttpClient extends HttpClient {
      * @throws IOException 超时等IO异常
      */
     Response post(StringBodyRequest request) throws IOException;
+
+    /**
+     * 下载为字节数组
+     * @param request 请求参数
+     * @return byte[]
+     * @throws IOException IOException
+     */
+    byte[] getAsBytes(HttpRequest request) throws IOException;
+
+    /**
+     * 下载文件
+     * @param request 请求参数
+     * @return File 下载的文件
+     * @throws IOException IOException
+     */
+    default File getAsFile(DownloadRequest request) throws IOException{
+        return download(request);
+    }
+
+    /**
+     * 下载文件
+     * @param request 请求参数
+     * @return File 下载的文件
+     * @throws IOException IOException
+     */
+    File download(DownloadRequest request) throws IOException;
+
+    /**
+     * 文件上传
+     * @param request 请求参数
+     * @return Response
+     * @throws IOException IOException
+     */
+    Response upload(UploadRequest request) throws IOException;
 
     /**
      * 接口对其他http方法的支持
@@ -69,35 +106,60 @@ public interface SmartHttpClient extends HttpClient {
     <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException;
 
     /**
-     * 下载为字节数组
-     * @param request 请求参数
-     * @return byte[]
+     * HEAD方法
+     * @param httpRequest 请求参数
+     * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
      */
-    byte[] getAsBytes(HttpRequest request) throws IOException;
+    Response head(HttpRequest httpRequest) throws IOException;
 
     /**
-     * 下载文件
-     * @param request 请求参数
-     * @return File 下载的文件
+     * OPTIONS方法
+     * access-control-allow-credentials →true
+       access-control-allow-headers →Origin,X-Requested-With,Content-Type,Accept,Authorization,sourcetype,token
+       access-control-allow-methods →POST,GET,PUT,OPTIONS,DELETE
+       access-control-allow-origin →https://ossh5.palmte.cn
+       access-control-max-age →3600
+       connection →keep-alive
+       content-length →0, 0
+       content-type →application/octet-stream, text/plain
+       date →Thu, 01 Aug 2019 06:29:43 GMT
+       server →nginx
+     * @param httpRequest 请求参数
+     * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
      */
-    default File getAsFile(DownloadRequest request) throws IOException{
-        return download(request);
-    }
-    /**
-     * 下载文件
-     * @param request 请求参数
-     * @return File 下载的文件
-     * @throws IOException IOException
-     */
-    File download(DownloadRequest request) throws IOException;
+    Response options(HttpRequest httpRequest) throws IOException;
 
     /**
-     * 文件上传
-     * @param request 请求参数
-     * @return Response
+     * PUT方法
+     * @param httpRequest 请求参数
+     * @return 响应
      * @throws IOException IOException
      */
-    Response upload(UploadRequest request) throws IOException;
+    Response put(StringBodyRequest httpRequest) throws IOException;
+
+    /**
+     * PUT方法
+     * @param httpRequest 请求参数
+     * @return 响应
+     * @throws IOException IOException
+     */
+    Response patch(StringBodyRequest httpRequest) throws IOException;
+
+    /**
+     * DELETE方法
+     * @param httpRequest 请求参数
+     * @return 响应
+     * @throws IOException IOException
+     */
+    Response delete(HttpRequest httpRequest) throws IOException;
+
+    /**
+     * TRACE方法，一般用于调试，在服务器支持的情况下会返回请求的头和body
+     * @param httpRequest 请求参数
+     * @return 响应
+     * @throws IOException IOException
+     */
+    Response trace(HttpRequest httpRequest) throws IOException;
 }
