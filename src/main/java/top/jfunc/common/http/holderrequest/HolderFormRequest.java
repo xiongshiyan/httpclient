@@ -38,6 +38,16 @@ public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest 
         formParamHolder().setParams(params);
         return this;
     }
+    /**
+     * 设置Form参数
+     * @param params Form参数
+     * @return this
+     */
+    @Override
+    default HolderFormRequest setFormParams(MultiValueMap<String, String> params){
+        formParamHolder().setParams(params);
+        return this;
+    }
 
     /**
      * 新增form参数的便捷方法

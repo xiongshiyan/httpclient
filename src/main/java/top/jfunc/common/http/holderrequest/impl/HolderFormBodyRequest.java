@@ -3,6 +3,7 @@ package top.jfunc.common.http.holderrequest.impl;
 import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holderrequest.HolderFormRequest;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
 
@@ -33,6 +34,11 @@ public class HolderFormBodyRequest extends BaseHolderHttpRequest<HolderFormBodyR
 
     @Override
     public HolderFormBodyRequest setFormParams(Map<String, String> params) {
+        formParamHolder().setParams(params);
+        return myself();
+    }
+    @Override
+    public HolderFormBodyRequest setFormParams(MultiValueMap<String, String> params) {
         formParamHolder().setParams(params);
         return myself();
     }

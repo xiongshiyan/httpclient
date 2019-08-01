@@ -30,6 +30,11 @@ public class FormBodyRequest extends BaseHttpRequest<FormBodyRequest> implements
         this.formParams = ArrayListMultiValueMap.fromMap(params);
         return myself();
     }
+    @Override
+    public FormBodyRequest setFormParams(MultiValueMap<String, String> params) {
+        this.formParams = Objects.requireNonNull(params);
+        return myself();
+    }
 
     @Override
     public FormBodyRequest addFormParam(String key, String value, String... values) {

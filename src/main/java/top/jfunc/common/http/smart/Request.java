@@ -132,10 +132,15 @@ public class Request extends BaseHolderHttpRequest<Request> implements
         formParamHolder.setParams(params);
         return this;
     }
+    @Override
+    public Request setFormParams(MultiValueMap<String, String> params) {
+        formParamHolder.setParams(params);
+        return this;
+    }
 
     @Override
     public Request addFormParam(String key, String value, String... values) {
-        this.formParamHolder.addParam(key, value, values);
+        formParamHolder.addParam(key, value, values);
         return this;
     }
 

@@ -23,6 +23,12 @@ public interface FormRequest extends StringBodyRequest {
      * @return this
      */
     FormRequest setFormParams(Map<String, String> params);
+    /**
+     * 设置Form参数
+     * @param params Form参数
+     * @return this
+     */
+    FormRequest setFormParams(MultiValueMap<String, String> params);
 
     /**
      * 新增form参数的便捷方法

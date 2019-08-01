@@ -84,6 +84,11 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
         this.urlHolder.setUrl(url);
         return myself();
     }
+    @Override
+    public THIS setUrl(URL url) {
+        this.urlHolder.setUrl(url);
+        return myself();
+    }
 
     @Override
     public THIS addRouteParam(String key, String value) {
