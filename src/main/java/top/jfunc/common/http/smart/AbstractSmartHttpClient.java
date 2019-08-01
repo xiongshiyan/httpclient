@@ -197,7 +197,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
         //设置忽略响应体
         httpRequest.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
-        return template(httpRequest , Method.HEAD , null , Response::with);
+        return template(httpRequest , Method.OPTIONS , null , Response::with);
     }
 
 
