@@ -18,6 +18,16 @@ import static top.jfunc.common.http.HttpConstants.CRLF;
  */
 public class LoggingInterceptor extends InterceptorAdapter{
     private static final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
+    /**默认超过1M就不打印了*/
+    private static final int DEFAULT_THRESHOLD = 1024*1024;
+    private int threshold = DEFAULT_THRESHOLD;
+
+    public LoggingInterceptor(int threshold) {
+        this.threshold = threshold;
+    }
+
+    public LoggingInterceptor() {
+    }
 
     @Override
     public HttpRequest onBefore(HttpRequest httpRequest, Method method) {
@@ -50,12 +60,15 @@ public class LoggingInterceptor extends InterceptorAdapter{
             builder.append("includeResponseHeaders:"+httpRequest.isIncludeHeaders()+CRLF);
             builder.append("ignoreResponseBody:"+httpRequest.isIgnoreResponseBody()+CRLF);
             builder.append("redirectable:"+httpRequest.isRedirectable()+CRLF);
+
             if(notEmpty(httpRequest.getAttributes())){
                 builder.append("attributes:"+httpRequest.getAttributes()+CRLF);
             }
             if(httpRequest instanceof StringBodyRequest && !(httpRequest instanceof FormRequest)){
                 StringBodyRequest stringBodyRequest = (StringBodyRequest) httpRequest;
-                builder.append("body:"+stringBodyRequest.getBody()+CRLF
+                String body = stringBodyRequest.getBody();
+                String toPrint = body.length() <= threshold ? body : body.substring(0 , threshold);
+                builder.append("body:"+ toPrint +CRLF
                         +"bodyCharset:"+stringBodyRequest.getBodyCharset()+CRLF);
             }
             if(httpRequest instanceof FormRequest){
