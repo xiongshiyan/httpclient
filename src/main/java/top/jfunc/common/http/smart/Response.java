@@ -69,7 +69,7 @@ public class Response implements Closeable{
         }*/
         try {
             return new Response(statusCode ,
-                    IoUtil.stream2Bytes(inputStream) ,
+                    null == inputStream ? new byte[]{} : IoUtil.stream2Bytes(inputStream) ,
                     resultCharset ,
                     headers);
         } catch (IOException e) {
