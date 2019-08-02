@@ -1,7 +1,6 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.annotation.method.HEAD;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.HttpClient;
@@ -35,7 +34,7 @@ public interface SmartHttpClient extends HttpClient {
     Config getConfig();
 
     /**
-     * GET方法
+     * GET方法，用于获取某个资源
      * @param request 请求参数
      * @return 响应
      * @throws IOException 超时等IO异常
@@ -43,15 +42,8 @@ public interface SmartHttpClient extends HttpClient {
     Response get(HttpRequest request) throws IOException;
 
     /**
-     * POST方法
-     * @param request 请求参数
-     * @return 响应
-     * @throws IOException 超时等IO异常
-     */
-    Response post(StringBodyRequest request) throws IOException;
-
-    /**
      * 下载为字节数组
+     * 也可以使用{@link SmartHttpClient#get(HttpRequest)}得到，再根据{@link Response#asBytes()}达到相同的效果
      * @param request 请求参数
      * @return byte[]
      * @throws IOException IOException
@@ -77,6 +69,14 @@ public interface SmartHttpClient extends HttpClient {
     File download(DownloadRequest request) throws IOException;
 
     /**
+     * POST方法，用于新增
+     * @param request 请求参数
+     * @return 响应
+     * @throws IOException 超时等IO异常
+     */
+    Response post(StringBodyRequest request) throws IOException;
+
+    /**
      * 文件上传
      * @param request 请求参数
      * @return Response
@@ -86,6 +86,7 @@ public interface SmartHttpClient extends HttpClient {
 
     /**
      * 接口对其他http方法的支持
+     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @param httpRequest Request
      * @param method Method
      * @return Response
@@ -106,7 +107,9 @@ public interface SmartHttpClient extends HttpClient {
     <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException;
 
     /**
-     * HEAD方法
+     * HEAD方法，一般返回某个接口的响应头，而没有响应体，用于探测Content-Length等信息
+     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
+     * @see Method#HEAD
      * @param httpRequest 请求参数
      * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
@@ -115,6 +118,8 @@ public interface SmartHttpClient extends HttpClient {
 
     /**
      * OPTIONS方法
+     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
+     * @see Method#OPTIONS
      * access-control-allow-credentials →true
        access-control-allow-headers →Origin,X-Requested-With,Content-Type,Accept,Authorization,sourcetype,token
        access-control-allow-methods →POST,GET,PUT,OPTIONS,DELETE
@@ -132,7 +137,10 @@ public interface SmartHttpClient extends HttpClient {
     Response options(HttpRequest httpRequest) throws IOException;
 
     /**
-     * PUT方法
+     * PUT方法，用于更新
+     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
+     * @see SmartHttpClient#post(StringBodyRequest)
+     * @see Method#PUT
      * @param httpRequest 请求参数
      * @return 响应
      * @throws IOException IOException
@@ -140,7 +148,10 @@ public interface SmartHttpClient extends HttpClient {
     Response put(StringBodyRequest httpRequest) throws IOException;
 
     /**
-     * PUT方法
+     * PUT方法，用于部分更新
+     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
+     * @see SmartHttpClient#post(StringBodyRequest)
+     * @see Method#PATCH
      * @param httpRequest 请求参数
      * @return 响应
      * @throws IOException IOException
@@ -148,7 +159,9 @@ public interface SmartHttpClient extends HttpClient {
     Response patch(StringBodyRequest httpRequest) throws IOException;
 
     /**
-     * DELETE方法
+     * DELETE方法，用于删除某个资源
+     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
+     * @see Method#DELETE
      * @param httpRequest 请求参数
      * @return 响应
      * @throws IOException IOException
@@ -157,6 +170,8 @@ public interface SmartHttpClient extends HttpClient {
 
     /**
      * TRACE方法，一般用于调试，在服务器支持的情况下会返回请求的头和body
+     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
+     * @see Method#TRACE
      * @param httpRequest 请求参数
      * @return 响应
      * @throws IOException IOException

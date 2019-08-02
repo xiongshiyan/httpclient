@@ -25,7 +25,7 @@ import java.io.IOException;
  * @see AbstractSmartHttpClient#uploadContentCallback(MultiValueMap, String, FormFile[])
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC> , TemplateInterceptor {
+public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC>, TemplateInterceptor {
     /**
      * 统一的拦截和异常处理：最佳实践使用拦截器代替子类复写
      * @param httpRequest HttpRequest
@@ -131,15 +131,6 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     }
 
     @Override
-    public Response post(StringBodyRequest request) throws IOException {
-        String body = request.getBody();
-        String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
-        return template(request, Method.POST ,
-                bodyContentCallback(Method.POST , body, bodyCharset, request.getContentType()) ,
-                Response::with);
-    }
-
-    @Override
     public byte[] getAsBytes(HttpRequest request) throws IOException {
         return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
     }
@@ -147,6 +138,15 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     @Override
     public File download(DownloadRequest request) throws IOException {
         return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
+    }
+
+    @Override
+    public Response post(StringBodyRequest request) throws IOException {
+        String body = request.getBody();
+        String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
+        return template(request, Method.POST ,
+                bodyContentCallback(Method.POST , body, bodyCharset, request.getContentType()) ,
+                Response::with);
     }
 
     @Override
