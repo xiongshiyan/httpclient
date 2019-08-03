@@ -49,7 +49,7 @@ HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；
 
 ##### 项目管理工具导入 
 
-项目已经发布至 `jcenter` 和 `maven` 中央仓库 最新版本version: **1.1.7**
+项目已经发布至 `jcenter` 和 `maven` 中央仓库 最新版本version: **1.1.8**
 
 Gradle:
 
