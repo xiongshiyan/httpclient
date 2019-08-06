@@ -2,8 +2,10 @@
 
 ### introduction
 
-http客户端接口设计，完全模拟http可能的参数，有多种实现：OKHttp3、ApacheHttpClient、HttpURLConnection、JoddHttp，可以无代码修改地实现一键切换http实现。
-我用此工具逐渐替换了业务项目工程中不统一、繁杂的各种HttpClient工具的实现、版本，只需要面向统一、抽象的操作接口。可以做到一键切换http请求的实现，而无需散弹式修改。
+Http客户端接口设计，基本覆盖所有Http可能的参数，针对Http请求抽象出了参数设置的接口，进而达到使用统一、一致、连缀的API对URL、Header、Body、Form、文件上传提供最大的支持。
+目前适配了这几种实现：OkHttp3、ApacheHttpClient、HttpURLConnection、JoddHttp，可以无代码修改地实现一键切换。
+我用此工具逐渐替换了业务项目工程中不统一、繁杂的各种HttpClient工具的实现、版本，只需要面向统一、抽象的操作接口。
+**可以做到无代码修改切换Http请求的实现，而无需散弹式修改**。
 
 http模块的架构设计和使用方式见 CSDN博客
 
