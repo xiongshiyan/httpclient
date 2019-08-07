@@ -52,6 +52,19 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
 
     /**
      * 子类复写此方法,实现自己的请求逻辑即可
+     * @param url URL
+     * @param method 请求方法
+     * @param contentType Content-Type
+     * @param contentCallback 请求体处理器
+     * @param headers 请求header
+     * @param connectTimeout 链接超时时间
+     * @param readTimeout 读超时时间
+     * @param resultCharset 响应体字符编码
+     * @param includeHeaders 是否包含header
+     * @param resultCallback 结果转换器
+     * @param <R> 返回值泛型
+     * @return <R> R
+     * @throws Exception Exception
      */
     protected abstract <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception;
 
