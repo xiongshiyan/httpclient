@@ -7,6 +7,8 @@ import top.jfunc.common.http.holder.FormFileHolder;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holderrequest.HolderUploadRequest;
 
+import java.net.URL;
+
 /**
  * 多文件、参数同时支持的上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -14,6 +16,17 @@ import top.jfunc.common.http.holderrequest.HolderUploadRequest;
 public class HolderUpLoadRequest extends BaseHolderHttpRequest<HolderUpLoadRequest> implements HolderUploadRequest {
     public HolderUpLoadRequest(String url){
         super(url);
+    }
+    public HolderUpLoadRequest(URL url){
+        super(url);
+    }
+    public HolderUpLoadRequest(){
+    }
+    public static HolderUpLoadRequest of(){
+        return new HolderUpLoadRequest();
+    }
+    public static HolderUpLoadRequest of(URL url){
+        return new HolderUpLoadRequest(url);
     }
     public static HolderUpLoadRequest of(String url){
         return new HolderUpLoadRequest(url);

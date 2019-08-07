@@ -5,6 +5,8 @@ import top.jfunc.common.http.holder.BodyHolder;
 import top.jfunc.common.http.holder.DefaultBodyHolder;
 import top.jfunc.common.http.holderrequest.HolderMutableStringBodyRequest;
 
+import java.net.URL;
+
 /**
  * 通用的StringBody请求
  * @author xiongshiyan at 2019/5/21 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -13,6 +15,20 @@ public class HolderCommonBodyRequest extends BaseHolderHttpRequest<HolderCommonB
     public HolderCommonBodyRequest(String url){
         super(url);
     }
+    public HolderCommonBodyRequest(URL url){
+        super(url);
+    }
+    public HolderCommonBodyRequest(){
+    }
+
+    public static HolderCommonBodyRequest of(){
+        return new HolderCommonBodyRequest();
+    }
+    public static HolderCommonBodyRequest of(URL url){
+        return new HolderCommonBodyRequest(url);
+    }
+
+
     public static HolderCommonBodyRequest of(String url){
         return new HolderCommonBodyRequest(url);
     }

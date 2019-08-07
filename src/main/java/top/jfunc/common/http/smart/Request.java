@@ -11,6 +11,7 @@ import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -59,6 +60,8 @@ public class Request extends BaseHolderHttpRequest<Request> implements
     private FileHolder fileHolder = new DefaultFileHolder();
 
     public Request(String url){super(url);}
+    public Request(URL url){super(url);}
+    public Request(){}
 
     /**
      * 静态方法创建请求
@@ -67,6 +70,12 @@ public class Request extends BaseHolderHttpRequest<Request> implements
      */
     public static Request of(String url){
         return new Request(url);
+    }
+    public static Request of(URL url){
+        return new Request(url);
+    }
+    public static Request of(){
+        return new Request();
     }
 
     /**

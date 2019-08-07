@@ -5,6 +5,7 @@ import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holderrequest.HolderFormRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -16,8 +17,20 @@ public class HolderFormBodyRequest extends BaseHolderHttpRequest<HolderFormBodyR
     public HolderFormBodyRequest(String url){
         super(url);
     }
+    public HolderFormBodyRequest(URL url){
+        super(url);
+    }
+    public HolderFormBodyRequest(){
+    }
+
+    public static HolderFormBodyRequest of(URL url){
+        return new HolderFormBodyRequest(url);
+    }
     public static HolderFormBodyRequest of(String url){
         return new HolderFormBodyRequest(url);
+    }
+    public static HolderFormBodyRequest of(){
+        return new HolderFormBodyRequest();
     }
 
     /**

@@ -5,6 +5,7 @@ import top.jfunc.common.http.holder.FileHolder;
 import top.jfunc.common.http.holderrequest.HolderDownloadRequest;
 
 import java.io.File;
+import java.net.URL;
 
 /**
  * 下载为文件的请求
@@ -14,6 +15,21 @@ public class HolderDownLoadRequest extends BaseHolderHttpRequest<HolderDownLoadR
     public HolderDownLoadRequest(String url){
         super(url);
     }
+
+    public HolderDownLoadRequest(URL url){
+        super(url);
+    }
+    public HolderDownLoadRequest(){
+    }
+
+    public static HolderDownLoadRequest of(){
+        return new HolderDownLoadRequest();
+    }
+    public static HolderDownLoadRequest of(URL url){
+        return new HolderDownLoadRequest(url);
+    }
+
+
     public static HolderDownLoadRequest of(String url){
         return new HolderDownLoadRequest(url);
     }
