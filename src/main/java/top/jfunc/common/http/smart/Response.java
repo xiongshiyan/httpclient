@@ -43,30 +43,7 @@ public class Response implements Closeable{
         this.headers = headers;
     }
 
-    ///
-
-    /*private Response(String body) {
-        this.body = body;
-    }
-
-    public static Response with(String body){
-        return new Response(body);
-    }
-    public static Response with(String body , String resultCharset , Map<String , List<String>> headers){
-        return new Response(body).setResultCharset(resultCharset).setHeaders(headers);
-    }
-    public static Response with(InputStream body , String resultCharset , Map<String , List<String>> headers){
-        return with(HttpStatus.HTTP_OK , body , resultCharset , headers);
-    }*/
-
     public static Response with(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers){
-        ///
-        /*String read = null;
-        try {
-            read = IoUtil.read(inputStream, resultCharset);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
         try {
             return new Response(statusCode ,
                     null == inputStream ? new byte[]{} : IoUtil.stream2Bytes(inputStream) ,

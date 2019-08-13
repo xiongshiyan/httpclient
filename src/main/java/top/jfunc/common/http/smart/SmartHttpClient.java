@@ -148,7 +148,7 @@ public interface SmartHttpClient extends HttpClient {
     Response put(StringBodyRequest httpRequest) throws IOException;
 
     /**
-     * PUT方法，用于部分更新
+     * PATCH方法，用于部分更新
      * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @see SmartHttpClient#post(StringBodyRequest)
      * @see Method#PATCH
