@@ -11,7 +11,7 @@ import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.http.request.basic.GetRequest;
+import top.jfunc.common.http.request.basic.CommonRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -93,7 +93,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
      */
     @Override
     public  <R> R template(String url, Method method , String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
-        HttpRequest httpRequest = GetRequest.of(url);
+        HttpRequest httpRequest = CommonRequest.of(url);
         httpRequest.setContentType(contentType);
         if(null != headers){
             headers.forEachKeyValue((k,v)->httpRequest.addHeader(k , v));
