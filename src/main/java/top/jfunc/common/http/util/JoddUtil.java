@@ -110,15 +110,17 @@ public class JoddUtil {
      * @param charset 编码
      * @param formFiles 上传文件信息
      */
-    public static void upload0(HttpRequest httpRequest , MultiValueMap<String, String> params, String charset, FormFile...formFiles){
+    public static void upload0(HttpRequest httpRequest , MultiValueMap<String, String> params, String charset, Iterable<FormFile> formFiles){
         httpRequest.multipart(true);
         httpRequest.formEncoding(charset);
         if(null != params){
             /*params.getMap().forEach((k , l) ->l.forEach(v->httpRequest.form(k , v)));*/
             params.forEachKeyValue(httpRequest::form);
         }
-        for (FormFile formFile : formFiles) {
-            httpRequest.form(formFile.getParameterName() , new FormFileUpload(formFile));
+        if(null != formFiles){
+            for (FormFile formFile : formFiles) {
+                httpRequest.form(formFile.getParameterName() , new FormFileUpload(formFile));
+            }
         }
     }
 

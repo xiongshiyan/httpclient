@@ -22,7 +22,7 @@ public class DemoImpl extends AbstractSmartHttpClient<Socket> {
     }
 
     @Override
-    protected ContentCallback<Socket> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset , FormFile[] formFiles) throws IOException {
+    protected ContentCallback<Socket> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset , Iterable<FormFile> formFiles) throws IOException {
         return null;
     }
 

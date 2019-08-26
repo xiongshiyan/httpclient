@@ -69,9 +69,9 @@ public class OkHttp3Util {
     /**
      * 文件上传body
      * @param params 伴随文件上传的参数key=value，可以为空
-     * @param files 上传文件信息
+     * @param formFiles 上传文件信息
      */
-    public static MultipartBody filesBody(MultiValueMap<String, String> params , FormFile... files) {
+    public static MultipartBody filesBody(MultiValueMap<String, String> params , Iterable<FormFile> formFiles) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
         if(null != params){
@@ -79,10 +79,13 @@ public class OkHttp3Util {
             params.forEachKeyValue(builder::addFormDataPart);
         }
 
-        for (FormFile formFile : files) {
-            builder.addPart(Headers.of(HeaderRegular.CONTENT_DISPOSITION.toString(), "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
-                    inputStreamBody(formFile.getContentType() , formFile.getInStream() , formFile.getFileLen()));
+        if(null != formFiles){
+            for (FormFile formFile : formFiles) {
+                builder.addPart(Headers.of(HeaderRegular.CONTENT_DISPOSITION.toString(), "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
+                        inputStreamBody(formFile.getContentType() , formFile.getInStream() , formFile.getFileLen()));
+            }
         }
+
         return builder.build();
     }
 

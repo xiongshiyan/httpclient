@@ -64,7 +64,7 @@ public interface HolderUploadRequest extends HolderHttpRequest, UploadRequest {
      * @return 上传文件信息
      */
     @Override
-    default FormFile[] getFormFiles(){
+    default Iterable<FormFile> getFormFiles(){
         return formFileHolder().getFormFiles();
     }
 
@@ -76,6 +76,16 @@ public interface HolderUploadRequest extends HolderHttpRequest, UploadRequest {
     @Override
     default HolderUploadRequest addFormFile(FormFile... formFiles){
         formFileHolder().addFormFile(formFiles);
+        return this;
+    }
+    /**
+     * 新增文件上传信息
+     * @param formFiles 上传的文件
+     * @return this
+     */
+    @Override
+    default HolderUploadRequest addFormFiles(Iterable<FormFile> formFiles){
+        formFileHolder().addFormFiles(formFiles);
         return this;
     }
 

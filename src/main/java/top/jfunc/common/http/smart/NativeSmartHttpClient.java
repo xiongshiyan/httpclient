@@ -128,7 +128,7 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
     }
 
     @Override
-    protected ContentCallback<HttpURLConnection> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
+    protected ContentCallback<HttpURLConnection> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
         return connect -> upload0(connect , params , paramCharset , formFiles);
     }
 

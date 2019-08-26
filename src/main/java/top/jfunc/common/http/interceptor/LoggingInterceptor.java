@@ -80,7 +80,7 @@ public class LoggingInterceptor extends InterceptorAdapter{
                 UploadRequest uploadRequest = (UploadRequest) httpRequest;
                 builder.append("form:"+uploadRequest.getFormParams()+CRLF
                         +"formCharset:"+uploadRequest.getParamCharset()+CRLF
-                        +"formFiles:"+ Arrays.toString(uploadRequest.getFormFiles())+CRLF);
+                        +"formFiles:"+ uploadRequest.getFormFiles()+CRLF);
             }
             if(httpRequest instanceof DownloadRequest){
                 DownloadRequest downloadRequest = (DownloadRequest) httpRequest;

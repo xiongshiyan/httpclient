@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.AbstractHttpClient;
 import top.jfunc.common.http.basic.HttpClient;
@@ -22,7 +21,7 @@ import java.io.IOException;
  * 实现者只需要实现HttpTemplate接口、处理POST Body、文件上传Body即可
  * @see SmartHttpClient
  * @see AbstractSmartHttpClient#bodyContentCallback(Method, String, String, String)
- * @see AbstractSmartHttpClient#uploadContentCallback(MultiValueMap, String, FormFile[])
+ * @see AbstractSmartHttpClient#uploadContentCallback(MultiValueMap, String, Iterable)
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC>, TemplateInterceptor {

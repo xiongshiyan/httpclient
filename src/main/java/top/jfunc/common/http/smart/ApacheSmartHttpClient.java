@@ -126,7 +126,7 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
     }
 
     @Override
-    protected ContentCallback<HttpEntityEnclosingRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
+    protected ContentCallback<HttpEntityEnclosingRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
         return request -> upload0(request, params , paramCharset , formFiles);
     }
     @Override

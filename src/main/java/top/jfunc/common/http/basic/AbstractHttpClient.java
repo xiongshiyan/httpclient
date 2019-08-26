@@ -12,13 +12,14 @@ import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
  * 实现者只需要实现HttpTemplate接口、处理POST Body、文件上传Body即可
  * @see HttpTemplate
  * @see AbstractHttpClient#bodyContentCallback(Method, String, String, String)
- * @see AbstractHttpClient#uploadContentCallback(MultiValueMap, String, FormFile[])
+ * @see AbstractHttpClient#uploadContentCallback(MultiValueMap, String, Iterable)
  * @author xiongshiyan at 2019/5/9 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp implements HttpClient, HttpTemplate<CC> {
@@ -100,13 +101,13 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
 
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
-        return template(url, Method.POST, null, uploadContentCallback(null , getDefaultBodyCharset() , files),
+        return template(url, Method.POST, null, uploadContentCallback(null , getDefaultBodyCharset() , Arrays.asList(files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException {
-        return template(url, Method.POST, null, uploadContentCallback(params , getDefaultBodyCharset() , files),
+        return template(url, Method.POST, null, uploadContentCallback(params , getDefaultBodyCharset() , Arrays.asList(files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
@@ -129,5 +130,5 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
      * @return ContentCallback<CC>
      * @throws IOException IOException
      */
-    protected abstract ContentCallback<CC> uploadContentCallback(MultiValueMap<String, String> params , String paramCharset , FormFile[] formFiles) throws IOException;
+    protected abstract ContentCallback<CC> uploadContentCallback(MultiValueMap<String, String> params , String paramCharset , Iterable<FormFile> formFiles) throws IOException;
 }

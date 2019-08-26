@@ -9,6 +9,7 @@ import top.jfunc.common.utils.MultiValueMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 多文件、参数同时支持的上传请求
@@ -27,8 +28,8 @@ public class UpLoadRequest extends BaseHttpRequest<UpLoadRequest> implements Upl
     private List<FormFile> formFiles = new ArrayList<>(2);
 
     @Override
-    public FormFile[] getFormFiles() {
-        return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
+    public Iterable<FormFile> getFormFiles() {
+        return this.formFiles;
     }
 
     @Override
@@ -57,5 +58,12 @@ public class UpLoadRequest extends BaseHttpRequest<UpLoadRequest> implements Upl
     public UpLoadRequest addFormFile(FormFile... formFiles) {
         this.formFiles.addAll(Arrays.asList(formFiles));
         return myself();
+    }
+
+    @Override
+    public UploadRequest addFormFiles(Iterable<FormFile> formFiles) {
+        Objects.requireNonNull(formFiles);
+        formFiles.forEach(this.formFiles::add);
+        return null;
     }
 }

@@ -35,8 +35,8 @@ public class NativeUtil {
     private static final String END_LINE = TWO_HYPHENS + BOUNDARY + TWO_HYPHENS + CRLF;
 
 
-    public static void upload0(HttpURLConnection connection , FormFile... files) throws IOException {
-        connection.setRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(getFormFilesLen(files) + END_LINE.length()));
+    public static void upload0(HttpURLConnection connection , Iterable<FormFile> formFiles) throws IOException {
+        connection.setRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(getFormFilesLen(formFiles) + END_LINE.length()));
         connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString() , "multipart/form-data; boundary=" + BOUNDARY);
 
         // 设置DataOutputStream
@@ -44,7 +44,7 @@ public class NativeUtil {
         /*for (int i = 0; i < files.length; i++) {
             writeOneFile(ds, files[i]);
         }*/
-        for (FormFile formFile : files) {
+        for (FormFile formFile : formFiles) {
             writeOneFile(ds, formFile);
         }
         ds.writeBytes(END_LINE);
@@ -53,8 +53,8 @@ public class NativeUtil {
         //ds.close();
     }
 
-    public static void upload0(HttpURLConnection connection , MultiValueMap<String, String> params, String paramCharset, FormFile... files) throws IOException{
-        int fileDataLength = getFormFilesLen(files);
+    public static void upload0(HttpURLConnection connection , MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException{
+        int fileDataLength = getFormFilesLen(formFiles);
 
         String textEntity = getTextEntity(params);
         // 计算传输给服务器的实体数据总长度
@@ -71,7 +71,7 @@ public class NativeUtil {
         /*for (int i = 0; i < files.length; i++) {
             writeOneFile(ds, files[i]);
         }*/
-        for (FormFile formFile : files) {
+        for (FormFile formFile : formFiles) {
             writeOneFile(ds, formFile);
         }
         //写末尾行
@@ -83,7 +83,7 @@ public class NativeUtil {
 
     /**
      * 写一个文件 ， 必须保证和getFormFilesLen的内容一致
-     * @see NativeUtil#getFormFilesLen(FormFile...)
+     * @see NativeUtil#getFormFilesLen(Iterable)
      */
     private static void writeOneFile(DataOutputStream ds, FormFile formFile) throws IOException {
         ds.writeBytes(PART_BEGIN_LINE);
@@ -100,12 +100,12 @@ public class NativeUtil {
     /**
      * 计算需要传输的字节数
      * @see NativeUtil#writeOneFile(DataOutputStream, FormFile)
-     * @param files FormFile
+     * @param formFiles FormFile
      * @return 总的字节数
      */
-    private static int getFormFilesLen(FormFile... files){
+    private static int getFormFilesLen(Iterable<FormFile> formFiles){
         int fileDataLength = 0;
-        for (FormFile formFile : files) {
+        for (FormFile formFile : formFiles) {
             StringBuilder fileExplain = new StringBuilder();
             fileExplain.append(PART_BEGIN_LINE);
             fileExplain.append("Content-Disposition: form-data; name=\"" + formFile.getParameterName() + "\";filename=\"" + formFile.getFilName() + "\"" + CRLF);

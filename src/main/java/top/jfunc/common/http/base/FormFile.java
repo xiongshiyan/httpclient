@@ -104,4 +104,29 @@ public class FormFile {
     public String toString() {
         return parameterName + " : " + filName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FormFile formFile = (FormFile) o;
+
+        if (fileLen != formFile.fileLen) return false;
+        if (inStream != null ? !inStream.equals(formFile.inStream) : formFile.inStream != null) return false;
+        if (filName != null ? !filName.equals(formFile.filName) : formFile.filName != null) return false;
+        if (parameterName != null ? !parameterName.equals(formFile.parameterName) : formFile.parameterName != null)
+            return false;
+        return contentType != null ? contentType.equals(formFile.contentType) : formFile.contentType == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = inStream != null ? inStream.hashCode() : 0;
+        result = 31 * result + (int) (fileLen ^ (fileLen >>> 32));
+        result = 31 * result + (filName != null ? filName.hashCode() : 0);
+        result = 31 * result + (parameterName != null ? parameterName.hashCode() : 0);
+        result = 31 * result + (contentType != null ? contentType.hashCode() : 0);
+        return result;
+    }
 }

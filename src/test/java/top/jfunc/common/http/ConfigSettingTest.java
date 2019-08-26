@@ -1,6 +1,5 @@
 package top.jfunc.common.http;
 
-import jdk.nashorn.internal.scripts.JO;
 import org.junit.Test;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.smart.*;

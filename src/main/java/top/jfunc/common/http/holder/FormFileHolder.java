@@ -11,7 +11,7 @@ public interface FormFileHolder{
      * 上传文件信息
      * @return 上传文件信息
      */
-    FormFile[] getFormFiles();
+    Iterable<FormFile> getFormFiles();
 
     /**
      * 新增文件上传信息

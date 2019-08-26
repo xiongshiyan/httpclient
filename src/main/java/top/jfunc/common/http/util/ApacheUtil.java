@@ -194,10 +194,10 @@ public class ApacheUtil {
      * @param request HttpEntityEnclosingRequest
      * @param params Key-Value参数
      * @param charset 编码
-     * @param files 文件上传信息
+     * @param formFiles 文件上传信息
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
-    public static void upload0(HttpEntityEnclosingRequest request, MultiValueMap<String, String> params , String charset , FormFile[] files) throws UnsupportedEncodingException {
+    public static void upload0(HttpEntityEnclosingRequest request, MultiValueMap<String, String> params , String charset , Iterable<FormFile> formFiles) throws UnsupportedEncodingException {
         final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                 .setCharset(CharsetUtil.charset(charset));
@@ -207,9 +207,12 @@ public class ApacheUtil {
             params.forEachKeyValue(multipartEntityBuilder::addTextBody);
         }
 
-        for (FormFile formFile : files) {
-            multipartEntityBuilder.addBinaryBody(formFile.getParameterName(), formFile.getInStream() , ContentType.parse(formFile.getContentType()) , formFile.getFilName());
+        if(null != formFiles){
+            for (FormFile formFile : formFiles) {
+                multipartEntityBuilder.addBinaryBody(formFile.getParameterName(), formFile.getInStream() , ContentType.parse(formFile.getContentType()) , formFile.getFilName());
+            }
         }
+
         HttpEntity reqEntity = multipartEntityBuilder.build();
         request.setEntity(reqEntity);
     }

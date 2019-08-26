@@ -17,8 +17,8 @@ public class DefaultFormFileHolder implements FormFileHolder {
     private List<FormFile> formFiles = new ArrayList<>(2);
 
     @Override
-    public FormFile[] getFormFiles() {
-        return this.formFiles.toArray(new FormFile[this.formFiles.size()]);
+    public Iterable<FormFile> getFormFiles() {
+        return this.formFiles;
     }
 
     @Override

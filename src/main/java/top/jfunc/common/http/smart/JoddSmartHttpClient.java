@@ -106,7 +106,7 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
     }
 
     @Override
-    protected ContentCallback<HttpRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, FormFile[] formFiles) throws IOException {
+    protected ContentCallback<HttpRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
         return httpRequest -> upload0(httpRequest , params , paramCharset , formFiles);
     }
 

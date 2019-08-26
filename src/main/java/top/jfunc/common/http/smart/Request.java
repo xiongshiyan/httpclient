@@ -198,6 +198,12 @@ public class Request extends BaseHolderHttpRequest<Request> implements
     }
 
     @Override
+    public Request addFormFiles(Iterable<FormFile> formFiles) {
+        formFileHolder.addFormFiles(formFiles);
+        return this;
+    }
+
+    @Override
     public Request setFile(File file) {
         fileHolder.setFile(file);
         return this;

@@ -67,4 +67,10 @@ public class HolderUpLoadRequest extends BaseHolderHttpRequest<HolderUpLoadReque
         formFileHolder().addFormFile(formFiles);
         return myself();
     }
+
+    @Override
+    public HolderUpLoadRequest addFormFiles(Iterable<FormFile> formFiles) {
+        formFileHolder().addFormFiles(formFiles);
+        return myself();
+    }
 }

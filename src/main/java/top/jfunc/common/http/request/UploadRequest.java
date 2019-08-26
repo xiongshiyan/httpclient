@@ -40,7 +40,7 @@ public interface UploadRequest extends HttpRequest {
      * 上传文件信息
      * @return 上传文件信息
      */
-    FormFile[] getFormFiles();
+    Iterable<FormFile> getFormFiles();
 
     /**
      * 新增文件上传信息
@@ -48,4 +48,11 @@ public interface UploadRequest extends HttpRequest {
      * @return this
      */
     UploadRequest addFormFile(FormFile... formFiles);
+
+    /**
+     * 新增文件上传信息
+     * @param formFiles 上传的文件
+     * @return this
+     */
+    UploadRequest addFormFiles(Iterable<FormFile> formFiles);
 }
