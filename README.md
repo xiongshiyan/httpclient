@@ -41,6 +41,7 @@ HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；
 - [x] 从1.1.2版本开始类似Retrofit、MyBatis-Mapper的接口使用方式
 - [x] 从1.1.2版本开始支持全局拦截器拦截
 - [x] 从1.1.5版本开始支持每个HttpRequest中设置属性便于后续使用
+- [x] 从1.1.8版本开始支持所有的HTTP METHOD
 - [ ] 文件上传支持断点续传
 
 ### how to import it?
