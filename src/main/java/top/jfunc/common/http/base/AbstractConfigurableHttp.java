@@ -2,10 +2,7 @@ package top.jfunc.common.http.base;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.jfunc.common.http.HeaderRegular;
-import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.Method;
-import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.*;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.*;
 
@@ -13,9 +10,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.URI;
 import java.util.List;
@@ -115,41 +110,10 @@ public abstract class AbstractConfigurableHttp {
                 if(null == headers){
                     headers = new ArrayListMultiValueMap<>();
                 }
-                headers.add(HeaderRegular.COOKIE.toString() , Joiner.on(";").join(cookies));
+                headers.add(HeaderRegular.COOKIE.toString() , Joiner.on(HttpConstants.SEMICOLON).join(cookies));
             }
         }
         return headers;
-    }
-
-    /**
-     * 获取一个空的，防止空指针
-     */
-    protected InputStream emptyInputStream() {
-        return new ByteArrayInputStream(new byte[]{});
-    }
-    /**
-     * 处理路径参数、Query参数
-     * @param originUrl 原始URL
-     * @param routeParams 路径参数 可空
-     * @param queryParams Query参数 可空
-     * @param charset Query参数的字符集，null则取默认的
-     * @return 处理后的URL
-     */
-    protected String handleUrlIfNecessary(String originUrl ,
-                                          Map<String , String> routeParams ,
-                                          MultiValueMap<String,String> queryParams,
-                                          String charset){
-        //1.处理路径参数
-        String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , routeParams);
-
-        //2.处理BaseUrl
-        String urlWithBase = addBaseUrlIfNecessary(routeUrl);
-
-        //3.合并默认的Query参数
-        queryParams = MapUtil.mergeMap(queryParams , getDefaultQueryParams());
-
-        //4.处理Query参数
-        return ParamUtil.contactUrlParams(urlWithBase, queryParams, getQueryCharsetWithDefault(charset));
     }
 
     /**
