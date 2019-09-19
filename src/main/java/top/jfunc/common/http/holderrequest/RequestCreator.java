@@ -20,22 +20,22 @@ import java.io.File;
 public class RequestCreator {
     private RequestCreator(){}
 
-    public static HolderHttpRequest get(String url){
+    public static HolderCommonRequest get(String url){
         return HolderCommonRequest.of(url);
     }
-    public static HolderMutableStringBodyRequest post(String url , String body){
+    public static HolderCommonBodyRequest post(String url , String body){
         return HolderCommonBodyRequest.of(url, body, null);
     }
-    public static HolderMutableStringBodyRequest post(String url , String body , String contentType){
+    public static HolderCommonBodyRequest post(String url , String body , String contentType){
         return HolderCommonBodyRequest.of(url, body, contentType);
     }
-    public static HolderFormRequest form(String url){
+    public static HolderFormBodyRequest form(String url){
         return HolderFormBodyRequest.of(url);
     }
-    public static HolderDownloadRequest download(String url , File fileToSave){
+    public static HolderDownLoadRequest download(String url , File fileToSave){
         return HolderDownLoadRequest.of(url, fileToSave);
     }
-    public static HolderUploadRequest upload(String url){
+    public static HolderUpLoadRequest upload(String url){
         return HolderUpLoadRequest.of(url);
     }
 
