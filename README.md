@@ -47,7 +47,7 @@ HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；
 ### how to import it?
 
 ##### 源码使用
-下载本项目，gradle clean build得到的jar包引入工程即可。本项目依赖于[utils](https://gitee.com/xxssyyyyssxx/utils)
+下载本项目，gradle clean build得到的jar包引入工程即可。本项目依赖于[common-utils](https://gitee.com/xxssyyyyssxx/common-utils)
 
 
 ##### 项目管理工具导入 
