@@ -2,10 +2,17 @@
 
 ### introduction
 
-Http客户端接口设计，基本覆盖所有Http可能的参数，针对Http请求抽象出了参数设置的接口，进而达到使用统一、一致、连缀的API对URL、Header、Body、Form、文件上传提供最大的支持。
-目前适配了这几种实现：OkHttp3、ApacheHttpClient、HttpURLConnection、JoddHttp，可以无代码修改地实现一键切换。
-我用此工具逐渐替换了业务项目工程中不统一、繁杂的各种HttpClient工具的实现、版本，只需要面向统一、抽象的操作接口。
-**可以做到无代码修改切换Http请求的实现，而无需散弹式修改**。
+本项目针对http协议定义了所有http实现之上的接口来描述一个http请求，使用者只需要面对同一套语义化的接口，
+如果需要切换http的实现，可以做到完全无代码修改。支持GET、POST、文件上传下载等，目前适配了以下项目：
+`OKHttp3、ApacheHttpClient、HttpURLConnection、Jodd-http`。
+
+这一套接口基本覆盖了一个Http请求的所有参数，接口的使用也是简单的、统一的、一致的、连缀的。对URL、Header、Body、Form、文件上传提供最大的支持。
+
+我用此工具逐渐替换了业务项目工程中不统一、繁杂的各种HttpClient工具的实现、版本。
+
+项目的两个两点：
+1. **http语义化的接口设计，简单的、统一的、一致的、连缀的接口使用体验**
+2. **可以做到无代码修改切换Http请求的实现，而无需散弹式修改**。
 
 http模块的架构设计和使用方式见 CSDN博客
 
