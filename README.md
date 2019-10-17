@@ -8,23 +8,9 @@
 
 这一套接口基本覆盖了一个Http请求的所有参数，接口的使用也是简单的、统一的、一致的、连缀的。对URL、Header、Body、Form、文件上传提供最大的支持。
 
-我用此工具逐渐替换了业务项目工程中不统一、繁杂的各种HttpClient工具的实现、版本。
-
 项目的两个亮点：
 1. **http语义化的接口设计，简单的、统一的、一致的、连缀的接口使用体验**
 2. **可以做到无代码修改切换Http请求的实现，而无需散弹式修改**。
-
-http模块的架构设计和使用方式见 CSDN博客
-
-[一个http请求工具类的接口化（接口设计）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715202)
-
-[一个http请求工具类的接口化（多种实现）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715837)
-
-项目采用双接口并行设计模式，一种是面向接口实现者的 **HttpTemplate-SmartHttpTemplate**  _功能接口_ ，主要的功能是模拟Http的参数、header等；一种是面向终端用户调用者的 **HttpClient-SmartHttpClient**  _用户接口_ 。具体实现类通过实现两组接口，后者接口实现最终调用前者的接口实现。这样做的好处是互不影响，实现者可以无限优化 **HttpTemplate、SmartHttpTemplate** 的实现类，而对使用者几无影响。
-
-HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；SmartHttpTemplate继承于HttpTemplate，SmartHttpClient接口继承于HttpClient，且基于Request来模拟Http的参数、header，这样更容易优化、更容易使用。
-
-[接口体系设计及类图说明](https://gitee.com/xxssyyyyssxx/httpclient/blob/master/CLASS.md)
 
 ### features
 
@@ -265,3 +251,16 @@ http.setConfig(Config.defaultConfig()
 更多用法等待你探索，本人才疏学浅，难免有考虑不周到的地方，请不吝赐教。
 
 提供了服务端的测试工程，可以clone下来运行，再跑本项目的单元测试。https://gitee.com/xxssyyyyssxx/http-server-test
+
+
+http模块的架构设计和使用方式见 CSDN博客
+
+[一个http请求工具类的接口化（接口设计）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715202)
+
+[一个http请求工具类的接口化（多种实现）](https://blog.csdn.net/xxssyyyyssxx/article/details/80715837)
+
+项目采用双接口并行设计模式，一种是面向接口实现者的 **HttpTemplate-SmartHttpTemplate**  _功能接口_ ，主要的功能是模拟Http的参数、header等；一种是面向终端用户调用者的 **HttpClient-SmartHttpClient**  _用户接口_ 。具体实现类通过实现两组接口，后者接口实现最终调用前者的接口实现。这样做的好处是互不影响，实现者可以无限优化 **HttpTemplate、SmartHttpTemplate** 的实现类，而对使用者几无影响。
+
+HttpTemplate、HttpClient接口基于方法来模拟Http的参数、header等；SmartHttpTemplate继承于HttpTemplate，SmartHttpClient接口继承于HttpClient，且基于Request来模拟Http的参数、header，这样更容易优化、更容易使用。
+
+[接口体系设计及类图说明](https://gitee.com/xxssyyyyssxx/httpclient/blob/master/CLASS.md)
