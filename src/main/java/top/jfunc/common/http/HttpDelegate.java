@@ -14,13 +14,12 @@ public class HttpDelegate {
     /**
      * http请求工具代理对象
      */
-    private static final SmartHttpClient delegate;
+    private static final SmartHttpClient DELEGATE = initDelegate();
     public static SmartHttpClient delegate() {
-        return delegate;
+        return DELEGATE;
     }
 
-    static {
-
+    private static SmartHttpClient initDelegate() {
         //根据类路径的jar加载默认顺序是 OKHttp3、ApacheHttpClient、URLConnection
         SmartHttpClient delegateToUse = null;
         // okhttp3.OkHttpClient ?
@@ -43,6 +42,6 @@ public class HttpDelegate {
               //  "java.net.URLConnection")) {
             delegateToUse = new NativeSmartHttpClient();
         }
-        delegate = delegateToUse;
+        return delegateToUse;
     }
 }
