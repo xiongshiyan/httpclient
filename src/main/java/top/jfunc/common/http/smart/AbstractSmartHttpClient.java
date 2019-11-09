@@ -11,10 +11,8 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.basic.CommonRequest;
-import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -125,39 +123,26 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
 
 
     @Override
-    public Response get(HttpRequest request) throws IOException {
-        return template(request, Method.GET , null , Response::with);
+    public <R> R get(HttpRequest request , ResultCallback<R> resultCallback) throws IOException {
+        return template(request, Method.GET , null , resultCallback);
     }
 
     @Override
-    public byte[] getAsBytes(HttpRequest request) throws IOException {
-        return template(request , Method.GET , null , (s, b, r, h)-> IoUtil.stream2Bytes(b));
-    }
-
-    @Override
-    public File download(DownloadRequest request) throws IOException {
-        return template(request , Method.GET, null , (s, b, r, h)-> IoUtil.copy2File(b, request.getFile()));
-    }
-
-    @Override
-    public Response post(StringBodyRequest request) throws IOException {
+    public <R> R post(StringBodyRequest request , ResultCallback<R> resultCallback) throws IOException {
         String body = request.getBody();
         String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
         return template(request, Method.POST ,
                 bodyContentCallback(Method.POST , body, bodyCharset, request.getContentType()) ,
-                Response::with);
+                resultCallback);
     }
 
     @Override
-    public Response upload(UploadRequest request) throws IOException {
+    public <R> R upload(UploadRequest request , ResultCallback<R> resultCallback) throws IOException {
         return template(request , Method.POST ,
                 uploadContentCallback(request.getFormParams(),
                         calculateBodyCharset(request.getParamCharset() , request.getContentType()),
-                        request.getFormFiles()) , Response::with);
+                        request.getFormFiles()) , resultCallback);
     }
-
-
-
 
     /*------------------------HTTP方法通用支持---------------------------*/
 
@@ -178,12 +163,12 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------HEAD---------------------------*/
 
     @Override
-    public Response head(HttpRequest httpRequest) throws IOException {
+    public <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
         //必须要响应头
         httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
         //设置忽略响应体
         httpRequest.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
-        return template(httpRequest , Method.HEAD , null , Response::with);
+        return template(httpRequest , Method.HEAD , null , resultCallback);
     }
 
 
@@ -191,12 +176,12 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------OPTIONS---------------------------*/
 
     @Override
-    public Response options(HttpRequest httpRequest) throws IOException {
+    public <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
         //必须要响应头
         httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
         //设置忽略响应体
         httpRequest.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
-        return template(httpRequest , Method.OPTIONS , null , Response::with);
+        return template(httpRequest , Method.OPTIONS , null , resultCallback);
     }
 
 
@@ -204,12 +189,12 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------PUT---------------------------*/
 
     @Override
-    public Response put(StringBodyRequest request) throws IOException {
+    public <R> R put(StringBodyRequest request, ResultCallback<R> resultCallback) throws IOException {
         String body = request.getBody();
         String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
         return template(request, Method.PUT ,
                 bodyContentCallback(Method.PUT , body, bodyCharset, request.getContentType()) ,
-                Response::with);
+                resultCallback);
     }
 
 
@@ -217,12 +202,12 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------PATCH---------------------------*/
 
     @Override
-    public Response patch(StringBodyRequest request) throws IOException {
+    public <R> R patch(StringBodyRequest request, ResultCallback<R> resultCallback) throws IOException {
         String body = request.getBody();
         String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
         return template(request, Method.PATCH ,
                 bodyContentCallback(Method.PATCH , body, bodyCharset, request.getContentType()) ,
-                Response::with);
+                resultCallback);
     }
 
 
@@ -230,8 +215,8 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------DELETE---------------------------*/
 
     @Override
-    public Response delete(HttpRequest httpRequest) throws IOException {
-        return template(httpRequest , Method.DELETE , null , Response::with);
+    public <R> R delete(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
+        return template(httpRequest , Method.DELETE , null , resultCallback);
     }
 
 
@@ -239,7 +224,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------TRACE---------------------------*/
 
     @Override
-    public Response trace(HttpRequest request) throws IOException {
+    public <R> R trace(HttpRequest request, ResultCallback<R> resultCallback) throws IOException {
         //必须要响应头
         request.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
         //设置忽略响应体
@@ -252,7 +237,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
             String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
             contentCallback = bodyContentCallback(Method.TRACE ,body, bodyCharset, request.getContentType());
         }
-        return template(request, Method.TRACE , contentCallback, Response::with);
+        return template(request, Method.TRACE , contentCallback, resultCallback);
     }
 }
 

@@ -22,4 +22,8 @@ public interface ResultCallback<R> {
      * @see top.jfunc.common.http.smart.Response
      */
     R convert(int statusCode, InputStream inputStream, String resultCharset, MultiValueMap<String, String> headers) throws IOException;
+
+    static MultiValueMap<String , String> headers(int statusCode, InputStream inputStream, String resultCharset, MultiValueMap<String, String> headers){
+        return headers;
+    }
 }
