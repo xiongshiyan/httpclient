@@ -35,9 +35,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    default <R> R form(FormRequest request, ResultCallback<R> resultCallback) throws IOException{
-        return post(request , resultCallback);
-    }
+    <R> R form(FormRequest request, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * 下载文件
