@@ -3,10 +3,7 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.HttpClient;
-import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.request.*;
 
 import java.io.IOException;
 
@@ -22,7 +19,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    <R> R get(HttpRequest request , ResultCallback<R> resultCallback) throws IOException;
+    <R> R get(HttpRequest request, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * POST方法，用于新增
@@ -30,7 +27,17 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    <R> R post(StringBodyRequest request , ResultCallback<R> resultCallback) throws IOException;
+    <R> R post(StringBodyRequest request, ResultCallback<R> resultCallback) throws IOException;
+
+    /**
+     * POST方法，对form表单的语义化支持
+     * @param request 请求参数
+     * @return 响应
+     * @throws IOException 超时等IO异常
+     */
+    default <R> R form(FormRequest request, ResultCallback<R> resultCallback) throws IOException{
+        return post(request , resultCallback);
+    }
 
     /**
      * 下载文件
@@ -38,7 +45,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return File 下载的文件
      * @throws IOException IOException
      */
-    default <R> R download(DownloadRequest request , ResultCallback<R> resultCallback) throws IOException{
+    default <R> R download(DownloadRequest request, ResultCallback<R> resultCallback) throws IOException{
         return get(request , resultCallback);
     }
 
@@ -48,7 +55,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return Response
      * @throws IOException IOException
      */
-    <R> R upload(UploadRequest request , ResultCallback<R> resultCallback) throws IOException;
+    <R> R upload(UploadRequest request, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * 接口对其他http方法的支持
@@ -68,7 +75,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
      */
-    <R> R head(HttpRequest httpRequest , ResultCallback<R> resultCallback) throws IOException;
+    <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * OPTIONS方法
@@ -88,7 +95,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
      */
-    <R> R options(HttpRequest httpRequest , ResultCallback<R> resultCallback) throws IOException;
+    <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * PUT方法，用于更新
@@ -99,7 +106,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R put(StringBodyRequest httpRequest , ResultCallback<R> resultCallback) throws IOException;
+    <R> R put(StringBodyRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * PATCH方法，用于部分更新
@@ -110,7 +117,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R patch(StringBodyRequest httpRequest , ResultCallback<R> resultCallback) throws IOException;
+    <R> R patch(StringBodyRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * DELETE方法，用于删除某个资源
@@ -120,7 +127,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R delete(HttpRequest httpRequest , ResultCallback<R> resultCallback) throws IOException;
+    <R> R delete(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * TRACE方法，一般用于调试，在服务器支持的情况下会返回请求的头和body
@@ -130,5 +137,5 @@ public interface CallbackHttpClient extends HttpClient {
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R trace(HttpRequest httpRequest , ResultCallback<R> resultCallback) throws IOException;
+    <R> R trace(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 }

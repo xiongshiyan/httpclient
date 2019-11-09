@@ -4,10 +4,7 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.HttpClient;
-import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.request.*;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -74,6 +71,16 @@ public interface SmartHttpClient extends CallbackHttpClient {
      */
     default Response post(StringBodyRequest request) throws IOException{
         return post(request , Response::with);
+    }
+
+    /**
+     * POST方法，对form表单的语义化支持
+     * @param request 请求参数
+     * @return 响应
+     * @throws IOException 超时等IO异常
+     */
+    default Response form(FormRequest request) throws IOException{
+        return form(request , Response::with);
     }
 
     /**
