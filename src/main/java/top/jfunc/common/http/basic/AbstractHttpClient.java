@@ -26,19 +26,7 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
 
     /**
      * 统一的异常处理
-     * @param url URL
-     * @param method 请求方法
-     * @param contentType 请求体MIME类型
-     * @param contentCallback 处理请求体的
-     * @param headers headers
-     * @param connectTimeout 连接超时时间
-     * @param readTimeout 读取超时时间
-     * @param resultCharset 结果字符集
-     * @param includeHeaders 是否结果包含header
-     * @param resultCallback 结果处理器
-     * @param <R> 返回值泛型
-     * @return R
-     * @throws IOException IOException
+     * @inheritDoc
      */
     @Override
     public <R> R template(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {

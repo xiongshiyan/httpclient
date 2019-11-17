@@ -19,15 +19,13 @@ import java.io.IOException;
  */
 public interface SmartHttpClient extends CallbackHttpClient {
     /**
-     * 设置全局默认配置,不调用就用系统设置的
-     * @param config config
+     * @inheritDoc
      */
     @Override
     void setConfig(Config config);
 
     /**
-     * 获取全局配置
-     * @return 全局配置的config
+     * @inheritDoc
      */
     @Override
     Config getConfig();
