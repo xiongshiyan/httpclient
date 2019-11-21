@@ -7,6 +7,7 @@ import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -140,6 +141,19 @@ public class ParamUtil {
     public static String urlEncode(String src, String valueCharset) {
         try {
             return URLEncoder.encode(src, valueCharset);
+        }catch (UnsupportedEncodingException e){
+            return src;
+        }
+    }
+    /**
+     * 对字符串进行URL解码
+     * @param valueCharset 字符编码,字符编码不对原样返回
+     * @param src 原字符串
+     * @return 解码后的字符串
+     */
+    public static String urlDecode(String src, String valueCharset) {
+        try {
+            return URLDecoder.decode(src, valueCharset);
         }catch (UnsupportedEncodingException e){
             return src;
         }

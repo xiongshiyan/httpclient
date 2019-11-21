@@ -1,6 +1,7 @@
 package top.jfunc.common.http;
 
 import top.jfunc.common.propenv.EnvUtil;
+import top.jfunc.common.utils.CharsetUtil;
 
 /**
  * HTTP模块的一些默认设置
@@ -45,7 +46,7 @@ public class HttpConstants {
         String dc = EnvUtil.env("DEFAULT_CHARSET");
         DEFAULT_CONNECT_TIMEOUT = (dct==null) ? 15000 : Integer.valueOf(dct);
         DEFAULT_READ_TIMEOUT    = (drt==null) ? 15000 : Integer.valueOf(drt);
-        DEFAULT_CHARSET = ( dc == null ) ? "UTF-8" : dc;
+        DEFAULT_CHARSET = ( dc == null ) ? CharsetUtil.UTF_8 : dc;
 
         FORM_URLENCODED_WITH_DEFAULT_CHARSET = FORM_URLENCODED + ";charset=" + DEFAULT_CHARSET;
         TEXT_XML_WITH_DEFAULT_CHARSET        = TEXT_XML + ";charset=" + DEFAULT_CHARSET;
