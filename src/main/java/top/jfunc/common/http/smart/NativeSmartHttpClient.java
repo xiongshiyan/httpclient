@@ -6,6 +6,7 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.util.NativeUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -116,6 +117,11 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
             IoUtil.close(inputStream);
         }
     }
+
+    protected InputStream getStreamFrom(HttpURLConnection connect , int statusCode , boolean ignoreResponseBody) throws IOException {
+        return NativeUtil.getStreamFrom(connect, statusCode, ignoreResponseBody);
+    }
+
     /**子类复写增加更多设置*/
     protected void doWithConnection(HttpURLConnection connect , HttpRequest httpRequest) throws IOException{
         //default do nothing, give children a chance to do more config

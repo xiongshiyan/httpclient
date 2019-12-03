@@ -1,4 +1,4 @@
-def VERSION = '1.1.9'
+def VERSION = '1.1.10'
 def ARTIFACT_ID = 'httpclient'
 def GROUP_ID = 'top.jfunc.network'
 def TYPE = 'jar'
@@ -18,7 +18,7 @@ buildscript {
     }
 
     ext{
-        CommonUtilVersion       = '1.8.3'
+        CommonUtilVersion       = '1.8.3.2'
         //SpringBootVersion       = '1.5.7.RELEASE'
         OkHttp3Version          = '3.11.0'
         JoddVersion             = '5.0.12'

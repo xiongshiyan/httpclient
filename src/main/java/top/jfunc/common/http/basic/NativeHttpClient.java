@@ -4,6 +4,7 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.util.NativeUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -75,6 +76,11 @@ public class NativeHttpClient extends AbstractHttpClient<HttpURLConnection> impl
             IoUtil.close(inputStream);
         }
     }
+
+    protected InputStream getStreamFrom(HttpURLConnection connect , int statusCode , boolean ignoreResponseBody) throws IOException {
+        return NativeUtil.getStreamFrom(connect, statusCode, ignoreResponseBody);
+    }
+
     /**子类复写需要首先调用此方法，保证http的功能*/
     protected void doWithConnection(HttpURLConnection connect) throws IOException{
         //default do nothing, give children a chance to do more config
