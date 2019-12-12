@@ -12,10 +12,15 @@ import java.util.Map;
  */
 public interface UrlHolder{
     /**
-     * 请求的URL
+     * 请求的URL，处理参数后的
      * @return 请求的URL
      */
     String getUrl();
+
+    /**
+     * 获取原始的URL，设置的什么就是什么
+     */
+    String getOriginalUrl();
 
     /**
      * 重新计算全url，用于在计算了url了之后再调用可能引起更改的方法

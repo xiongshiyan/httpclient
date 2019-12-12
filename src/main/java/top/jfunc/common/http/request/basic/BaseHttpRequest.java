@@ -132,6 +132,11 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
+    public String getOriginalUrl(){
+        return url;
+    }
+
+    @Override
     public Map<String, String> getRouteParams() {
         return routeParams;
     }

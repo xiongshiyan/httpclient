@@ -52,6 +52,11 @@ public class DefaultUrlHolder implements UrlHolder {
     }
 
     @Override
+    public String getOriginalUrl(){
+        return url;
+    }
+
+    @Override
     public RouteParamHolder routeParamHolder() {
         return routeParamHolder;
     }

@@ -91,6 +91,11 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     }
 
     @Override
+    public String getOriginalUrl(){
+        return urlHolder().getOriginalUrl();
+    }
+
+    @Override
     public THIS addRouteParam(String key, String value) {
         routeParamHolder().put(key, value);
         return myself();

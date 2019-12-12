@@ -39,6 +39,11 @@ public interface HttpRequest {
     String getUrl();
 
     /**
+     * 获取原始的URL，设置的什么就是什么
+     */
+    String getOriginalUrl();
+
+    /**
      * 设置URL
      * @param url url
      * @return this
