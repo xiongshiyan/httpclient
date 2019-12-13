@@ -6,7 +6,7 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.*;
 import top.jfunc.common.http.smart.Response;
 
-import java.util.Arrays;
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
@@ -94,20 +94,23 @@ public class LoggingInterceptor extends InterceptorAdapter{
         return super.onBefore(httpRequest, method);
     }
 
-    private boolean notEmpty(Object o){
-        if(null != o){
-            if(o instanceof Map){
-                return ((Map) o).size() > 0;
-            }
-            if(o instanceof Collection){
-                return ((Collection) o).size() > 0;
-            }
-            if(o instanceof CharSequence){
-                return ((CharSequence) o).length() > 0;
-            }
+    protected boolean notEmpty(Object o){
+        if (null == o) {
+            return false;
         }
-
-        return false;
+        if(o instanceof Map){
+            return ((Map) o).size() > 0;
+        }
+        if(o instanceof Collection){
+            return ((Collection) o).size() > 0;
+        }
+        if(o.getClass().isArray()){
+            return Array.getLength(o) > 0;
+        }
+        if(o instanceof CharSequence){
+            return ((CharSequence) o).length() > 0;
+        }
+        return true;
     }
 
     @Override
