@@ -11,9 +11,12 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.basic.CommonRequest;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.URI;
 
 /**
  * 实现者只需要实现HttpTemplate接口、处理POST Body、文件上传Body即可
@@ -103,6 +106,78 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         throw new UnsupportedOperationException("HttpRequest实现体系不支持此种方式");
     }
 
+    /**
+     * 处理请求的headers
+     * @param target 给谁设置，每个框架自行实现
+     * @param httpRequest HttpRequest
+     * @param completedUrl completedUrl
+     * @throws IOException IOException
+     */
+    protected void configHeaders(Object target , HttpRequest httpRequest, String completedUrl) throws IOException {
+        //1.合并默认headers
+        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+
+        //2.处理cookie
+        headers = handleCookieIfNecessary(completedUrl, headers);
+
+        //3.真正设置
+        setRequestHeaders(target , httpRequest , headers);
+    }
+
+    /**
+     * 每个框架自己实现自己的设置方法
+     * @param target 给谁设置
+     * @param httpRequest HttpRequest
+     * @param handledHeaders 处理过后的headers
+     * @throws IOException IOException
+     */
+    protected abstract void setRequestHeaders(Object target , HttpRequest httpRequest , MultiValueMap<String , String> handledHeaders) throws IOException;
+
+    /**
+     * 处理返回的header，并处理了cookie
+     * @param source 每种实现都有自己的
+     * @param httpRequest HttpRequest
+     * @param completedUrl completedUrl
+     * @return headers
+     * @throws IOException IOException
+     */
+    protected MultiValueMap<String, String> determineHeaders(Object source, HttpRequest httpRequest, String completedUrl) throws IOException {
+        ///boolean includeHeaders = httpRequest.isIncludeHeaders();
+        ///如果要支持cookie，必须读取header
+        if(supportCookie()){
+            //includeHeaders = HttpRequest.INCLUDE_HEADERS;
+            httpRequest.includeHeaders();
+        }
+        MultiValueMap<String, String> responseHeaders = parseResponseHeaders(source, httpRequest);
+
+        handleCookies(httpRequest , responseHeaders, completedUrl);
+
+        return responseHeaders;
+    }
+
+    /**
+     * 处理cookie相关的
+     * @param responseHeaders 响应的headers
+     * @param completedUrl completedUrl
+     * @throws IOException IOException
+     */
+    protected void handleCookies(HttpRequest httpRequest , MultiValueMap<String, String> responseHeaders, String completedUrl) throws IOException {
+        //存入Cookie
+        if(supportCookie()){
+            if(null != getCookieHandler() && MapUtil.notEmpty(responseHeaders)){
+                CookieHandler cookieHandler = getCookieHandler();
+                cookieHandler.put(URI.create(completedUrl) , responseHeaders);
+            }
+        }
+    }
+
+    /**
+     * 每种实现真正实现自己的获取header的方法
+     * @param source 源
+     * @param httpRequest httpRequest
+     * @return headers
+     */
+    protected abstract MultiValueMap<String, String> parseResponseHeaders(Object source, HttpRequest httpRequest);
 
     @Override
     public <R> R get(HttpRequest request , ResultCallback<R> resultCallback) throws IOException {

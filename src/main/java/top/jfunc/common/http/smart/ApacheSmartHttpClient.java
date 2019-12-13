@@ -23,8 +23,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieHandler;
-import java.net.URI;
 
 import static top.jfunc.common.http.util.ApacheUtil.*;
 /**
@@ -51,7 +49,7 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
             }
         }
 
-        configRequestHeaders(httpUriRequest, httpRequest, completedUrl);
+        configHeaders(httpUriRequest, httpRequest, completedUrl);
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
@@ -63,19 +61,18 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
             //给子类复写的机会
             doWithClient(clientBuilder , httpRequest);
 
-            httpClient = clientBuilder.build();
             //6.发送请求
+            httpClient = clientBuilder.build();
             response = httpClient.execute(httpUriRequest  , HttpClientContext.create());
-            int statusCode = response.getStatusLine().getStatusCode();
-            entity = response.getEntity();
 
             //7.处理返回值
+            entity = response.getEntity();
             inputStream = getStreamFrom(entity , httpRequest);
 
             //8.处理headers
-            MultiValueMap<String, String> responseHeaders = parseResponseHeaders(response, httpRequest, completedUrl);
+            MultiValueMap<String, String> responseHeaders = determineHeaders(response, httpRequest, completedUrl);
 
-            return resultCallback.convert(statusCode , inputStream,
+            return resultCallback.convert(response.getStatusLine().getStatusCode() , inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         }finally {
@@ -90,21 +87,9 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
         return ApacheUtil.getStreamFrom(entity, httpRequest.isIgnoreResponseBody());
     }
 
-    protected MultiValueMap<String, String> parseResponseHeaders(CloseableHttpResponse response, HttpRequest httpRequest, String completedUrl) throws IOException {
-        boolean includeHeaders = httpRequest.isIncludeHeaders();
-        if(supportCookie()){
-            includeHeaders = HttpRequest.INCLUDE_HEADERS;
-        }
-        MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
-
-        //存入Cookie
-        if(supportCookie()){
-            if(null != getCookieHandler() && null != parseHeaders){
-                CookieHandler cookieHandler = getCookieHandler();
-                cookieHandler.put(URI.create(completedUrl) , parseHeaders);
-            }
-        }
-        return parseHeaders;
+    @Override
+    protected MultiValueMap<String, String> parseResponseHeaders(Object source, HttpRequest httpRequest) {
+        return ApacheUtil.parseHeaders((CloseableHttpResponse) source , httpRequest.isIncludeHeaders());
     }
 
     protected HttpClientBuilder createClientBuilder(HttpRequest httpRequest, String completedUrl) throws Exception {
@@ -121,14 +106,9 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
         return getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext);
     }
 
-    protected void configRequestHeaders(HttpUriRequest httpUriRequest, HttpRequest httpRequest, String completedUrl) throws IOException {
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
-
-        //支持Cookie的话
-        headers = handleCookieIfNecessary(completedUrl, headers);
-
-        //4.设置请求头
-        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers);
+    @Override
+    protected void setRequestHeaders(Object target, HttpRequest httpRequest, MultiValueMap<String, String> handledHeaders) throws IOException {
+        ApacheUtil.setRequestHeaders((HttpUriRequest)target , httpRequest.getContentType() , handledHeaders);
     }
 
     protected HttpUriRequest createAndConfigHttpUriRequest(HttpRequest httpRequest, Method method, String completedUrl) {

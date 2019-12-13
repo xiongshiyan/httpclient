@@ -30,4 +30,14 @@ public class DemoImpl extends AbstractSmartHttpClient<Socket> {
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<Socket> contentCallback, ResultCallback<R> resultCallback) throws Exception {
         return null;
     }
+
+    @Override
+    protected void setRequestHeaders(Object target, HttpRequest httpRequest, MultiValueMap<String, String> handledHeaders) throws IOException {
+
+    }
+
+    @Override
+    protected MultiValueMap<String, String> parseResponseHeaders(Object source, HttpRequest httpRequest) {
+        return null;
+    }
 }

@@ -12,8 +12,6 @@ import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieHandler;
-import java.net.URI;
 
 import static top.jfunc.common.http.util.JoddUtil.*;
 
@@ -40,7 +38,7 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
             }
 
             //5.设置header
-            configRequestHeaders(request , httpRequest , completedUrl);
+            configHeaders(request , httpRequest , completedUrl);
 
             //6.子类可以复写
             doWithHttpRequest(request , httpRequest);
@@ -48,11 +46,13 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
             //7.真正请求
             response = request.send();
 
-            //8.返回header,包括Cookie处理
-            MultiValueMap<String , String> responseHeaders = parseResponseHeaders(response , httpRequest , completedUrl);
+            //8.获取返回值
+            InputStream inputStream = getStreamFrom(response, httpRequest);
 
-            return resultCallback.convert(response.statusCode(),
-                    getStreamFrom(response, httpRequest),
+            //9.返回header,包括Cookie处理
+            MultiValueMap<String , String> responseHeaders = determineHeaders(response , httpRequest , completedUrl);
+
+            return resultCallback.convert(response.statusCode(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
@@ -89,13 +89,12 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
                 getProxyInfoWithDefault(httpRequest.getProxyInfo()));
     }
 
-    protected void configRequestHeaders(HttpRequest request , top.jfunc.common.http.request.HttpRequest httpRequest , String completedUrl) throws IOException{
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
-        headers = handleCookieIfNecessary(completedUrl, headers);
-
-        setRequestHeaders(request , httpRequest.getContentType() , headers);
+    @Override
+    protected void setRequestHeaders(Object target, top.jfunc.common.http.request.HttpRequest httpRequest, MultiValueMap<String, String> handledHeaders) throws IOException {
+        JoddUtil.setRequestHeaders((HttpRequest)target , httpRequest.getContentType() , handledHeaders);
     }
+
     /**
      * 留给子类做更多的配置
      * @param joddHttpRequest jodd的请求
@@ -104,24 +103,10 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
     protected void doWithHttpRequest(HttpRequest joddHttpRequest , top.jfunc.common.http.request.HttpRequest httpRequest){}
 
 
-    protected MultiValueMap<String , String> parseResponseHeaders(HttpResponse response , top.jfunc.common.http.request.HttpRequest httpRequest , String completedUrl) throws IOException{
-        boolean includeHeaders = httpRequest.isIncludeHeaders();
-        if(supportCookie()){
-            includeHeaders = top.jfunc.common.http.request.HttpRequest.INCLUDE_HEADERS;
-        }
-        MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
-
-        //存入Cookie
-        if(supportCookie()){
-            if(null != getCookieHandler() && null != parseHeaders){
-                CookieHandler cookieHandler = getCookieHandler();
-                cookieHandler.put(URI.create(completedUrl) , parseHeaders);
-            }
-        }
-
-        return parseHeaders;
+    @Override
+    protected MultiValueMap<String, String> parseResponseHeaders(Object source, top.jfunc.common.http.request.HttpRequest httpRequest) {
+        return JoddUtil.parseHeaders((HttpResponse)source , httpRequest.isIncludeHeaders());
     }
-
 
     @Override
     protected ContentCallback<HttpRequest> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {

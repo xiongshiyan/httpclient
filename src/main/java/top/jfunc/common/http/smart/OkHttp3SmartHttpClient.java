@@ -18,8 +18,6 @@ import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieHandler;
-import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 import static top.jfunc.common.http.util.OkHttp3Util.*;
@@ -54,7 +52,7 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
             }
 
             //2.3设置headers
-            configBuilderHeaders(builder, httpRequest, completedUrl);
+            configHeaders(builder, httpRequest, completedUrl);
 
             //3.构造请求
             Request okRequest = builder.build();
@@ -66,11 +64,11 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
             inputStream = getStreamFrom(response , httpRequest);
 
             //6.处理header，包括Cookie的处理
-            MultiValueMap<String, String> parseHeaders = parseResponseHeaders(response, httpRequest, completedUrl);
+            MultiValueMap<String, String> responseHeaders = determineHeaders(response, httpRequest, completedUrl);
 
             return resultCallback.convert(response.code(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
-                    parseHeaders);
+                    responseHeaders);
         } finally {
             IoUtil.close(inputStream);
             IoUtil.close(response);
@@ -81,33 +79,18 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
         return OkHttp3Util.getStreamFrom(response, httpRequest.isIgnoreResponseBody());
     }
 
-    protected MultiValueMap<String, String> parseResponseHeaders(Response response, HttpRequest httpRequest, String completedUrl) throws IOException {
-        boolean includeHeaders = httpRequest.isIncludeHeaders();
-        if(supportCookie()){
-            includeHeaders = HttpRequest.INCLUDE_HEADERS;
-        }
-        MultiValueMap<String, String> responseHeaders = parseHeaders(response, includeHeaders);
-
-        //存入Cookie
-        if(supportCookie()){
-            if(null != getCookieHandler() && null != responseHeaders){
-                CookieHandler cookieHandler = getCookieHandler();
-                cookieHandler.put(URI.create(completedUrl) , responseHeaders);
-            }
-        }
-        return responseHeaders;
+    @Override
+    protected MultiValueMap<String, String> parseResponseHeaders(Object source, HttpRequest httpRequest) {
+        return OkHttp3Util.parseHeaders((Response)source , httpRequest.isIncludeHeaders());
     }
 
     protected Request.Builder createRequestBuilder(HttpRequest httpRequest , String completedUrl) {
         return new Request.Builder().url(completedUrl);
     }
 
-    protected void configBuilderHeaders(Request.Builder builder , HttpRequest httpRequest, String completedUrl) throws IOException {
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
-
-        headers = handleCookieIfNecessary(completedUrl, headers);
-
-        setRequestHeaders(builder , httpRequest.getContentType() , headers);
+    @Override
+    protected void setRequestHeaders(Object target, HttpRequest httpRequest, MultiValueMap<String, String> handledHeaders) throws IOException {
+        OkHttp3Util.setRequestHeaders((Request.Builder)target , httpRequest.getContentType() , handledHeaders);
     }
 
     protected OkHttpClient.Builder createAndConfigBuilder(HttpRequest httpRequest, String completedUrl) {

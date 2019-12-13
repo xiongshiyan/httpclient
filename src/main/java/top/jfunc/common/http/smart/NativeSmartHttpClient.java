@@ -29,11 +29,16 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
-            //1.初始化connection
-            connection = createAndConfigConnection(httpRequest, method);
+            //1.获取连接
+            /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
+            /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
+            /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
+            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
+            //初始化connection
+            connection = createAndConfigConnection(httpRequest, method , completedUrl);
 
             //2.处理header
-            configHttpRequestHeaders(connection , httpRequest);
+            configHeaders(connection , httpRequest , completedUrl);
 
             //3.留给子类复写的机会:给connection设置更多参数
             doWithConnection(connection , httpRequest);
@@ -50,7 +55,7 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
             inputStream = getStreamFrom(connection , httpRequest);
 
             //7.返回header,包括Cookie处理
-            MultiValueMap<String, String> responseHeaders = parseResponseHeaders(connection, httpRequest);
+            MultiValueMap<String, String> responseHeaders = determineHeaders(connection, httpRequest , completedUrl);
 
             return resultCallback.convert(connection.getResponseCode(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
@@ -64,13 +69,7 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
         }
     }
 
-    protected HttpURLConnection createAndConfigConnection(HttpRequest httpRequest , Method method) throws Exception{
-        //1.获取连接
-        /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
-        /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-        /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
-        String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
-
+    protected HttpURLConnection createAndConfigConnection(HttpRequest httpRequest , Method method , String completedUrl) throws Exception{
         URL url = new URL(completedUrl);
         //1.1如果需要则设置代理
         ProxyInfo proxyInfo = getProxyInfoWithDefault(httpRequest.getProxyInfo());
@@ -103,7 +102,8 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
                 getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()));
     }
 
-    protected void configHttpRequestHeaders(HttpURLConnection connection , HttpRequest httpRequest){
+    @Override
+    protected void configHeaders(Object target , HttpRequest httpRequest , String completedUrl) throws IOException{
         MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
         ///HttpURLConnection不能用以下方法处理，会出现重复Cookie，即同样的Cookie框架自己弄了一份，我们手动又弄了一份
@@ -117,7 +117,12 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
                 }
             }*/
 
-        setRequestHeaders(connection, httpRequest.getContentType(), headers);
+        setRequestHeaders(target, httpRequest, headers);
+    }
+
+    @Override
+    protected void setRequestHeaders(Object target, HttpRequest httpRequest, MultiValueMap<String, String> handledHeaders) throws IOException {
+        NativeUtil.setRequestHeaders((HttpURLConnection)target , httpRequest.getContentType() , handledHeaders);
     }
 
     /**子类复写增加更多设置*/
@@ -130,22 +135,28 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
         return NativeUtil.getStreamFrom(connect, connect.getResponseCode(), httpRequest.isIgnoreResponseBody());
     }
 
-    protected MultiValueMap<String , String> parseResponseHeaders(HttpURLConnection connection , HttpRequest httpRequest){
-        boolean includeHeaders = httpRequest.isIncludeHeaders();
+    @Override
+    protected MultiValueMap<String , String> determineHeaders(Object source , HttpRequest httpRequest , String completedUr){
+        /// boolean includeHeaders = httpRequest.isIncludeHeaders();
         if(supportCookie()){
-            includeHeaders = HttpRequest.INCLUDE_HEADERS;
+            ///includeHeaders = HttpRequest.INCLUDE_HEADERS;
+            httpRequest.includeHeaders();
         }
-        MultiValueMap<String, String> responseHeaders = parseHeaders(connection, includeHeaders);
+        return parseResponseHeaders(source, httpRequest);
 
-        ///存入Cookie
-        /*if(null != getCookieHandler() && null != parseHeaders){
+        ///框架自己会处理 存入Cookie
+        /*if(null != getCookieHandler() && null != responseHeaders){
             CookieHandler cookieHandler = getCookieHandler();
-            cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+            cookieHandler.put(URI.create(completedUrl) , responseHeaders);
         }*/
 
-        return responseHeaders;
+        //return responseHeaders;
     }
 
+    @Override
+    protected MultiValueMap<String, String> parseResponseHeaders(Object source, HttpRequest httpRequest) {
+        return NativeUtil.parseHeaders((HttpURLConnection)source , httpRequest.isIncludeHeaders());
+    }
 
     @Override
     protected ContentCallback<HttpURLConnection> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
