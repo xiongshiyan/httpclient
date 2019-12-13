@@ -47,14 +47,12 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
             connection.connect();
 
             //6.获取返回值
-            int statusCode = connection.getResponseCode();
-
-            inputStream = getStreamFrom(connection , statusCode , httpRequest.isIgnoreResponseBody());
+            inputStream = getStreamFrom(connection , httpRequest);
 
             //7.返回header,包括Cookie处理
             MultiValueMap<String, String> responseHeaders = parseResponseHeaders(connection, httpRequest);
 
-            return resultCallback.convert(statusCode, inputStream,
+            return resultCallback.convert(connection.getResponseCode(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
@@ -128,8 +126,8 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
     }
 
 
-    protected InputStream getStreamFrom(HttpURLConnection connect , int statusCode , boolean ignoreResponseBody) throws IOException {
-        return NativeUtil.getStreamFrom(connect, statusCode, ignoreResponseBody);
+    protected InputStream getStreamFrom(HttpURLConnection connect , HttpRequest httpRequest) throws IOException {
+        return NativeUtil.getStreamFrom(connect, connect.getResponseCode(), httpRequest.isIgnoreResponseBody());
     }
 
     protected MultiValueMap<String , String> parseResponseHeaders(HttpURLConnection connection , HttpRequest httpRequest){
