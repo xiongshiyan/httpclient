@@ -11,6 +11,7 @@ import top.jfunc.common.http.util.JoddUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.URI;
 
@@ -51,7 +52,7 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
             MultiValueMap<String , String> responseHeaders = parseResponseHeaders(response , httpRequest , completedUrl);
 
             return resultCallback.convert(response.statusCode(),
-                    getStreamFrom(response, httpRequest.isIgnoreResponseBody()),
+                    getStreamFrom(response, httpRequest),
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
@@ -59,6 +60,10 @@ public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
                 response.close();
             }
         }
+    }
+
+    protected InputStream getStreamFrom(HttpResponse httpResponse , top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException{
+        return JoddUtil.getStreamFrom(httpResponse , httpRequest.isIgnoreResponseBody());
     }
 
     protected HttpRequest createAndConfigHttpRequest(top.jfunc.common.http.request.HttpRequest httpRequest , Method method , String completedUrl){

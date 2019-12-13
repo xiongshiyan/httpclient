@@ -63,7 +63,7 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
             response = client.newCall(okRequest).execute();
 
             //5.获取响应
-            inputStream = getStreamFrom(response , httpRequest.isIgnoreResponseBody());
+            inputStream = getStreamFrom(response , httpRequest);
 
             //6.处理header，包括Cookie的处理
             MultiValueMap<String, String> parseHeaders = parseResponseHeaders(response, httpRequest, completedUrl);
@@ -75,6 +75,10 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
             IoUtil.close(inputStream);
             IoUtil.close(response);
         }
+    }
+
+    protected InputStream getStreamFrom(Response response , HttpRequest httpRequest){
+        return OkHttp3Util.getStreamFrom(response, httpRequest.isIgnoreResponseBody());
     }
 
     protected MultiValueMap<String, String> parseResponseHeaders(Response response, HttpRequest httpRequest, String completedUrl) throws IOException {
