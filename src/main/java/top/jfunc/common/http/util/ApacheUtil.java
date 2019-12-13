@@ -80,7 +80,7 @@ public class ApacheUtil {
     /**
      * https://ss.xx.xx.ss:8080/dsda
      */
-    public static HttpClientBuilder getCloseableHttpClient(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
+    public static HttpClientBuilder getCloseableHttpClientBuilder(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
         return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext);
     }
 

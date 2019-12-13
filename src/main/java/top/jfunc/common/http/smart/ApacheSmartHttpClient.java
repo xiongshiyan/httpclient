@@ -40,13 +40,8 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
         /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
         String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
 
-        HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
-
-        //2.设置请求参数
-        setRequestProperty((HttpRequestBase) httpUriRequest,
-                getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()),
-                getReadTimeoutWithDefault(httpRequest.getReadTimeout()),
-                getProxyInfoWithDefault(httpRequest.getProxyInfo()));
+        //2.创建并配置
+        HttpUriRequest httpUriRequest = createAndConfigHttpUriRequest(httpRequest, method, completedUrl);
 
         //3.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
@@ -55,30 +50,14 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
             }
         }
 
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
-
-        //支持Cookie的话
-        headers = handleCookieIfNecessary(completedUrl, headers);
-
-        //4.设置请求头
-        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers);
+        configRequestHeaders(httpUriRequest, httpRequest, completedUrl);
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         HttpEntity entity = null;
         InputStream inputStream = null;
         try {
-            ////////////////////////////////////ssl处理///////////////////////////////////
-            HostnameVerifier hostnameVerifier = null;
-            SSLContext sslContext = null;
-            //https默认设置这些
-            if(ParamUtil.isHttps(completedUrl)){
-                hostnameVerifier = getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier());
-                sslContext = getSSLContextWithDefault(httpRequest.getSslContext());
-            }
-            ////////////////////////////////////ssl处理///////////////////////////////////
-
-            HttpClientBuilder clientBuilder = getCloseableHttpClient(completedUrl, hostnameVerifier, sslContext);
+            HttpClientBuilder clientBuilder = createClientBuilder(httpRequest, completedUrl);
 
             //给子类复写的机会
             doWithClient(clientBuilder , httpRequest);
@@ -89,31 +68,73 @@ public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnc
             int statusCode = response.getStatusLine().getStatusCode();
             entity = response.getEntity();
 
+            //7.处理返回值
             inputStream = getStreamFrom(entity , httpRequest.isIgnoreResponseBody());
 
-            boolean includeHeaders = httpRequest.isIncludeHeaders();
-            if(supportCookie()){
-                includeHeaders = HttpRequest.INCLUDE_HEADERS;
-            }
-            MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
-
-            //存入Cookie
-            if(supportCookie()){
-                if(null != getCookieHandler() && null != parseHeaders){
-                    CookieHandler cookieHandler = getCookieHandler();
-                    cookieHandler.put(URI.create(completedUrl) , parseHeaders);
-                }
-            }
+            //8.处理headers
+            MultiValueMap<String, String> responseHeaders = parseResponseHeaders(response, httpRequest, completedUrl);
 
             return resultCallback.convert(statusCode , inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
-                    parseHeaders);
+                    responseHeaders);
         }finally {
             IoUtil.close(inputStream);
             EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);
             IoUtil.close(httpClient);
         }
+    }
+
+    protected MultiValueMap<String, String> parseResponseHeaders(CloseableHttpResponse response, HttpRequest httpRequest, String completedUrl) throws IOException {
+        boolean includeHeaders = httpRequest.isIncludeHeaders();
+        if(supportCookie()){
+            includeHeaders = HttpRequest.INCLUDE_HEADERS;
+        }
+        MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
+
+        //存入Cookie
+        if(supportCookie()){
+            if(null != getCookieHandler() && null != parseHeaders){
+                CookieHandler cookieHandler = getCookieHandler();
+                cookieHandler.put(URI.create(completedUrl) , parseHeaders);
+            }
+        }
+        return parseHeaders;
+    }
+
+    protected HttpClientBuilder createClientBuilder(HttpRequest httpRequest, String completedUrl) throws Exception {
+        ////////////////////////////////////ssl处理///////////////////////////////////
+        HostnameVerifier hostnameVerifier = null;
+        SSLContext sslContext = null;
+        //https默认设置这些
+        if(ParamUtil.isHttps(completedUrl)){
+            hostnameVerifier = getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier());
+            sslContext = getSSLContextWithDefault(httpRequest.getSslContext());
+        }
+        ////////////////////////////////////ssl处理///////////////////////////////////
+
+        return getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext);
+    }
+
+    protected void configRequestHeaders(HttpUriRequest httpUriRequest, HttpRequest httpRequest, String completedUrl) throws IOException {
+        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+
+        //支持Cookie的话
+        headers = handleCookieIfNecessary(completedUrl, headers);
+
+        //4.设置请求头
+        setRequestHeaders(httpUriRequest, httpRequest.getContentType(), headers);
+    }
+
+    protected HttpUriRequest createAndConfigHttpUriRequest(HttpRequest httpRequest, Method method, String completedUrl) {
+        HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
+
+        //2.设置请求参数
+        setRequestProperty((HttpRequestBase) httpUriRequest,
+                getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()),
+                getReadTimeoutWithDefault(httpRequest.getReadTimeout()),
+                getProxyInfoWithDefault(httpRequest.getProxyInfo()));
+        return httpUriRequest;
     }
 
     protected void doWithClient(HttpClientBuilder httpClientBuilder , HttpRequest httpRequest) throws Exception{

@@ -58,7 +58,7 @@ public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequ
 
             //5.创建http客户端
             ///CloseableHttpClient httpClient = HttpClients.createDefault();
-            HttpClientBuilder clientBuilder = getCloseableHttpClient(completedUrl, getHostnameVerifier(), getSSLContext());
+            HttpClientBuilder clientBuilder = getCloseableHttpClientBuilder(completedUrl, getHostnameVerifier(), getSSLContext());
 
             //给子类复写的机会
             doWithClient(clientBuilder);
