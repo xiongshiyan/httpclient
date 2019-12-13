@@ -4,6 +4,7 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
@@ -11,6 +12,7 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.util.OkHttp3Util;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -37,30 +39,14 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
             /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
             /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
             String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
-
-            //1.构造OkHttpClient
-            OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
-                    .connectTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()), TimeUnit.MILLISECONDS)
-                    .readTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()), TimeUnit.MILLISECONDS);
-            //1.1如果存在就设置代理
-            ProxyInfo proxyInfo = getProxyInfoWithDefault(httpRequest.getProxyInfo());
-            if(null != proxyInfo){
-                clientBuilder.proxy(proxyInfo.getProxy());
-            }
-
-            ////////////////////////////////////ssl处理///////////////////////////////////
-            if(ParamUtil.isHttps(completedUrl)){
-                initSSL(clientBuilder , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                        getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
-                        getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()));
-            }
-            ////////////////////////////////////ssl处理///////////////////////////////////
+            //1.创建并配置builder
+            OkHttpClient.Builder clientBuilder = createAndConfigBuilder(httpRequest, completedUrl);
 
             //给子类复写的机会
             OkHttpClient client = createOkHttpClient(clientBuilder , httpRequest);
 
             //2.1设置URL
-            Request.Builder builder = new Request.Builder().url(completedUrl);
+            Request.Builder builder = createRequestBuilder(httpRequest , completedUrl);
 
             //2.2处理请求体
             if(null != contentCallback && method.hasContent()){
@@ -68,11 +54,7 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
             }
 
             //2.3设置headers
-            MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
-
-            headers = handleCookieIfNecessary(completedUrl, headers);
-
-            setRequestHeaders(builder , httpRequest.getContentType() , headers);
+            configBuilderHeaders(builder, httpRequest, completedUrl);
 
             //3.构造请求
             Request okRequest = builder.build();
@@ -84,19 +66,7 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
             inputStream = getStreamFrom(response , httpRequest.isIgnoreResponseBody());
 
             //6.处理header，包括Cookie的处理
-            boolean includeHeaders = httpRequest.isIncludeHeaders();
-            if(supportCookie()){
-                includeHeaders = HttpRequest.INCLUDE_HEADERS;
-            }
-            MultiValueMap<String, String> parseHeaders = parseHeaders(response, includeHeaders);
-
-            //存入Cookie
-            if(supportCookie()){
-                if(null != getCookieHandler() && null != parseHeaders){
-                    CookieHandler cookieHandler = getCookieHandler();
-                    cookieHandler.put(URI.create(completedUrl) , parseHeaders);
-                }
-            }
+            MultiValueMap<String, String> parseHeaders = parseResponseHeaders(response, httpRequest, completedUrl);
 
             return resultCallback.convert(response.code(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
@@ -107,6 +77,59 @@ public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Buil
         }
     }
 
+    protected MultiValueMap<String, String> parseResponseHeaders(Response response, HttpRequest httpRequest, String completedUrl) throws IOException {
+        boolean includeHeaders = httpRequest.isIncludeHeaders();
+        if(supportCookie()){
+            includeHeaders = HttpRequest.INCLUDE_HEADERS;
+        }
+        MultiValueMap<String, String> responseHeaders = parseHeaders(response, includeHeaders);
+
+        //存入Cookie
+        if(supportCookie()){
+            if(null != getCookieHandler() && null != responseHeaders){
+                CookieHandler cookieHandler = getCookieHandler();
+                cookieHandler.put(URI.create(completedUrl) , responseHeaders);
+            }
+        }
+        return responseHeaders;
+    }
+
+    protected Request.Builder createRequestBuilder(HttpRequest httpRequest , String completedUrl) {
+        return new Request.Builder().url(completedUrl);
+    }
+
+    protected void configBuilderHeaders(Request.Builder builder , HttpRequest httpRequest, String completedUrl) throws IOException {
+        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+
+        headers = handleCookieIfNecessary(completedUrl, headers);
+
+        setRequestHeaders(builder , httpRequest.getContentType() , headers);
+    }
+
+    protected OkHttpClient.Builder createAndConfigBuilder(HttpRequest httpRequest, String completedUrl) {
+        //1.构造OkHttpClient
+        OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
+                .connectTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()), TimeUnit.MILLISECONDS)
+                .readTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()), TimeUnit.MILLISECONDS);
+        //1.1如果存在就设置代理
+        ProxyInfo proxyInfo = getProxyInfoWithDefault(httpRequest.getProxyInfo());
+        if(null != proxyInfo){
+            clientBuilder.proxy(proxyInfo.getProxy());
+        }
+
+        ////////////////////////////////////ssl处理///////////////////////////////////
+        if(ParamUtil.isHttps(completedUrl)){
+            initSSL(clientBuilder , httpRequest);
+        }
+        ////////////////////////////////////ssl处理///////////////////////////////////
+        return clientBuilder;
+    }
+
+    protected void initSSL(OkHttpClient.Builder clientBuilder , HttpRequest httpRequest){
+        OkHttp3Util.initSSL(clientBuilder , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
+                getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
+                getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()));
+    }
     /**
      * 子类复写，增添更多的功能，保证返回OkHttpClient
      */
