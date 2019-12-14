@@ -77,8 +77,6 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
                 (HttpURLConnection)url.openConnection(proxyInfo.getProxy()) :
                 (HttpURLConnection) url.openConnection();
 
-
-
         ////////////////////////////////////ssl处理///////////////////////////////////
         if(connection instanceof HttpsURLConnection){
             //默认设置这些
@@ -102,22 +100,16 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
                 getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()));
     }
 
+    /**
+     * {@link HttpURLConnection} 自己实现了cookie的管理
+     * @param completedUrl URL
+     * @param headers 正常用户的Header Map
+     * @return 不改变原来的header
+     * @throws IOException IOException
+     */
     @Override
-    protected void configHeaders(Object target , HttpRequest httpRequest , String completedUrl) throws IOException{
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
-
-        ///HttpURLConnection不能用以下方法处理，会出现重复Cookie，即同样的Cookie框架自己弄了一份，我们手动又弄了一份
-            /*headerHolder = handleCookieIfNecessary(completedUrl, headerHolder);*/
-
-        //在需要开启Cookie功能的时候，只需要确保设置了CookieHandler的CookieHandler即可，HttpURLConnection会自动管理
-        ///这段代码放到设置CookieHandler的时候，不必每次都执行一下
-            /*if(null != getCookieHandler()){
-                if(null == CookieHandler.getDefault()){
-                    CookieHandler.setDefault(getCookieHandler());
-                }
-            }*/
-
-        setRequestHeaders(target, httpRequest, headers);
+    protected MultiValueMap<String, String> addCookieIfNecessary(String completedUrl, MultiValueMap<String, String> headers) throws IOException {
+        return headers;
     }
 
     @Override
@@ -135,22 +127,16 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
         return NativeUtil.getStreamFrom(connect, connect.getResponseCode(), httpRequest.isIgnoreResponseBody());
     }
 
+    /**
+     * {@link HttpURLConnection} 自己实现了cookie的管理
+     * @param httpRequest HttpRequest
+     * @param responseHeaders responseHeaders
+     * @param completedUrl URL
+     * @throws IOException IOException
+     */
     @Override
-    protected MultiValueMap<String , String> determineHeaders(Object source , HttpRequest httpRequest , String completedUr){
-        /// boolean includeHeaders = httpRequest.isIncludeHeaders();
-        if(supportCookie()){
-            ///includeHeaders = HttpRequest.INCLUDE_HEADERS;
-            httpRequest.includeHeaders();
-        }
-        return parseResponseHeaders(source, httpRequest);
-
-        ///框架自己会处理 存入Cookie
-        /*if(null != getCookieHandler() && null != responseHeaders){
-            CookieHandler cookieHandler = getCookieHandler();
-            cookieHandler.put(URI.create(completedUrl) , responseHeaders);
-        }*/
-
-        //return responseHeaders;
+    protected void saveCookieIfNecessary(HttpRequest httpRequest, MultiValueMap<String, String> responseHeaders, String completedUrl) throws IOException {
+        //do nothing，HttpURLConnection自己会处理
     }
 
     @Override

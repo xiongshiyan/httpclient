@@ -118,7 +118,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
 
         //2.处理cookie
-        headers = handleCookieIfNecessary(completedUrl, headers);
+        headers = addCookieIfNecessary(completedUrl, headers);
 
         //3.真正设置
         setRequestHeaders(target , httpRequest , headers);
@@ -143,32 +143,22 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
      */
     protected MultiValueMap<String, String> determineHeaders(Object source, HttpRequest httpRequest, String completedUrl) throws IOException {
         ///boolean includeHeaders = httpRequest.isIncludeHeaders();
-        ///如果要支持cookie，必须读取header
+        ///1.如果要支持cookie，必须读取header
         if(supportCookie()){
             //includeHeaders = HttpRequest.INCLUDE_HEADERS;
             httpRequest.includeHeaders();
         }
+        //2.从响应中获取headers
         MultiValueMap<String, String> responseHeaders = parseResponseHeaders(source, httpRequest);
 
-        handleCookies(httpRequest , responseHeaders, completedUrl);
+        //3.处理cookie
+        saveCookieIfNecessary(httpRequest , responseHeaders, completedUrl);
 
         return responseHeaders;
     }
 
-    /**
-     * 处理cookie相关的
-     * @param responseHeaders 响应的headers
-     * @param completedUrl completedUrl
-     * @throws IOException IOException
-     */
-    protected void handleCookies(HttpRequest httpRequest , MultiValueMap<String, String> responseHeaders, String completedUrl) throws IOException {
-        //存入Cookie
-        if(supportCookie()){
-            if(null != getCookieHandler() && MapUtil.notEmpty(responseHeaders)){
-                CookieHandler cookieHandler = getCookieHandler();
-                cookieHandler.put(URI.create(completedUrl) , responseHeaders);
-            }
-        }
+    protected void saveCookieIfNecessary(HttpRequest httpRequest , MultiValueMap<String, String> responseHeaders, String completedUrl) throws IOException {
+        saveCookieIfNecessary(responseHeaders, completedUrl);
     }
 
     /**
