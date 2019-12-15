@@ -3,6 +3,7 @@ package top.jfunc.common.http.base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.*;
+import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.*;
 
@@ -11,10 +12,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
-import java.net.CookieHandler;
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -71,10 +69,10 @@ public abstract class AbstractConfigurableHttp {
 
 
     /**
-     * 是否支持Cookie，默认设置了CookieHandler即表示支持
+     * 是否支持Cookie，默认设置了CookieJar即表示支持
      */
     protected boolean supportCookie(){
-        return null != getCookieHandler();
+        return null != getCookieJar();
     }
 
     /**
@@ -84,30 +82,26 @@ public abstract class AbstractConfigurableHttp {
      * @throws IOException IOException
      */
     protected List<String> getCookies(String completedUrl , MultiValueMap<String, String> headers) throws IOException {
-        if(null == getCookieHandler()){
+        CookieJar cookieJar = getCookieJar();
+        if(null == cookieJar){
             return null;
         }
-        CookieHandler cookieHandler = getCookieHandler();
-        //从源码知道CookieManager#get方法传入的Map基本没用，不为空即可，不知道这样设计干嘛的
-        MultiValueMap<String, String> nonNull = null != headers ? headers : new ArrayListMultiValueMap<>(0);
-        Map<String, List<String>> cookies = cookieHandler.get(URI.create(completedUrl), nonNull);
-        if(MapUtil.notEmpty(cookies)){
-            return cookies.get(HeaderRegular.COOKIE.toString());
-        }
-        return null;
+        return cookieJar.loadForRequest(completedUrl);
     }
 
     /**
      * 保存Cookie
-     * @param responseHeaders 响应的headers
      * @param completedUrl completedUrl
+     * @param responseHeaders 响应的headers
      * @throws IOException IOException
      */
-    protected void saveCookies(MultiValueMap<String, String> responseHeaders, String completedUrl) throws IOException {
-        if(null != getCookieHandler() && MapUtil.notEmpty(responseHeaders)){
-            CookieHandler cookieHandler = getCookieHandler();
-            cookieHandler.put(URI.create(completedUrl) , responseHeaders);
+    protected void saveCookies(String completedUrl, MultiValueMap<String, String> responseHeaders) throws IOException {
+        CookieJar cookieJar = getCookieJar();
+        if(null == cookieJar){
+            return;
         }
+
+        cookieJar.saveFromResponse(completedUrl , responseHeaders);
     }
 
     /**
@@ -137,17 +131,17 @@ public abstract class AbstractConfigurableHttp {
 
     /**
      * 处理cookie相关的
-     * @param responseHeaders 响应的headers
      * @param completedUrl completedUrl
+     * @param responseHeaders 响应的headers
      * @throws IOException IOException
      */
-    protected void saveCookieIfNecessary(MultiValueMap<String, String> responseHeaders, String completedUrl) throws IOException {
+    protected void saveCookieIfNecessary(String completedUrl, MultiValueMap<String, String> responseHeaders) throws IOException {
         //存入Cookie
         if(!supportCookie()){
             return;
         }
 
-        saveCookies(responseHeaders, completedUrl);
+        saveCookies(completedUrl, responseHeaders);
     }
 
     /**
@@ -258,7 +252,7 @@ public abstract class AbstractConfigurableHttp {
         return MapUtil.mergeMap(headers , getDefaultHeaders());
     }
 
-    protected CookieHandler getCookieHandler(){
-        return config.getCookieHandler();
+    protected CookieJar getCookieJar(){
+        return config.getCookieJar();
     }
 }

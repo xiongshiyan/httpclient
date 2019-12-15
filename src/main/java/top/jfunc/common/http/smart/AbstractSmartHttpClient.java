@@ -152,13 +152,13 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         MultiValueMap<String, String> responseHeaders = parseResponseHeaders(source, httpRequest);
 
         //3.处理cookie
-        saveCookieIfNecessary(httpRequest , responseHeaders, completedUrl);
+        saveCookieIfNecessary(httpRequest, completedUrl , responseHeaders);
 
         return responseHeaders;
     }
 
-    protected void saveCookieIfNecessary(HttpRequest httpRequest , MultiValueMap<String, String> responseHeaders, String completedUrl) throws IOException {
-        saveCookieIfNecessary(responseHeaders, completedUrl);
+    protected void saveCookieIfNecessary(HttpRequest httpRequest, String completedUrl , MultiValueMap<String, String> responseHeaders) throws IOException {
+        saveCookieIfNecessary(completedUrl, responseHeaders);
     }
 
     /**

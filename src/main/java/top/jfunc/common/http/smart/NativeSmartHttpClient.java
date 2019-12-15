@@ -101,7 +101,7 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
     }
 
     /**
-     * {@link HttpURLConnection} 自己实现了cookie的管理
+     * {@link HttpURLConnection} 自己实现了cookie的管理，所以直接返回原headers
      * @param completedUrl URL
      * @param headers 正常用户的Header Map
      * @return 不改变原来的header
@@ -135,7 +135,7 @@ public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnec
      * @throws IOException IOException
      */
     @Override
-    protected void saveCookieIfNecessary(HttpRequest httpRequest, MultiValueMap<String, String> responseHeaders, String completedUrl) throws IOException {
+    protected void saveCookieIfNecessary(HttpRequest httpRequest, String completedUrl, MultiValueMap<String, String> responseHeaders) throws IOException {
         //do nothing，HttpURLConnection自己会处理
     }
 

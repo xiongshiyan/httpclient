@@ -2,6 +2,7 @@ package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
 import top.jfunc.common.http.interceptor.Interceptor;
@@ -11,7 +12,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-import java.net.CookieHandler;
 
 /**
  * 全局公共配置
@@ -57,9 +57,10 @@ public class Config {
      */
     private ParamHolder queryParamHolder = new DefaultParamHolder();
     /**
-     * CookieHandler，只要设置了就表示支持Cookie
+     * CookieJar，处理Cookie
      */
-    private CookieHandler cookieHandler = null;
+    private CookieJar cookieJar = null;
+
     /**
      * 拦截器链
      */
@@ -201,16 +202,12 @@ public class Config {
         return queryParamHolder;
     }
 
-    public CookieHandler getCookieHandler() {
-        return cookieHandler;
+    public CookieJar getCookieJar() {
+        return cookieJar;
     }
 
-    public Config setCookieHandler(CookieHandler cookieHandler) {
-        configFrozen.ensureConfigNotFreeze();
-        this.cookieHandler = cookieHandler;
-        if(null == CookieHandler.getDefault()){
-            CookieHandler.setDefault(cookieHandler);
-        }
+    public Config setCookieJar(CookieJar cookieJar) {
+        this.cookieJar = cookieJar;
         return this;
     }
 

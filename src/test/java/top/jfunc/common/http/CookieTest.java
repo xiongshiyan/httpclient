@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.base.Config;
+import top.jfunc.common.http.cookie.CookieJar;
+import top.jfunc.common.http.cookie.JdkCookieJar;
 import top.jfunc.common.http.holderrequest.impl.HolderGetRequest;
 import top.jfunc.common.http.smart.*;
 
@@ -49,6 +51,7 @@ public class CookieTest {
 
 
     private CookieManager manager;
+    private CookieJar cookieJar;
 
     @Before
     public void init(){
@@ -59,34 +62,36 @@ public class CookieTest {
         // 保存这个定制的CookieManager
         //可调可不调
         // CookieHandler.setDefault(manager);
+
+        cookieJar = new JdkCookieJar(manager);
     }
 
     @Test
     public void testCookieOkHttp3()throws Exception{
         //只要设置了CookieHandler就支持Cookie
         SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
-        smartHttpClient.setConfig(Config.defaultConfig().setCookieHandler(manager));
+        smartHttpClient.setConfig(Config.defaultConfig().setCookieJar(cookieJar));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieApacheHttp()throws Exception{
         //只要设置了CookieHandler就支持Cookie
         SmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
-        smartHttpClient.setConfig(Config.defaultConfig().setCookieHandler(manager));
+        smartHttpClient.setConfig(Config.defaultConfig().setCookieJar(cookieJar));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieNativeHttp()throws Exception{
         //只要设置了CookieHandler就支持Cookie
         SmartHttpClient smartHttpClient = new NativeSmartHttpClient();
-        smartHttpClient.setConfig(Config.defaultConfig().setCookieHandler(manager));
+        smartHttpClient.setConfig(Config.defaultConfig().setCookieJar(cookieJar));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieJoddHttp() throws Exception{
         //只要设置了CookieHandler就支持Cookie
         SmartHttpClient smartHttpClient = new JoddSmartHttpClient();
-        smartHttpClient.setConfig(Config.defaultConfig().setCookieHandler(manager));
+        smartHttpClient.setConfig(Config.defaultConfig().setCookieJar(cookieJar));
         testCookie(smartHttpClient);
     }
 
