@@ -13,10 +13,11 @@ public interface CookieJar {
     /**
      * 获取请求可以携带的cookie，其形式为key=value
      * @param completedUrl 请求的URI
+     * @param requestHeaders 请求的headers
      * @return cookies maybe null if there is not cookie
      * @throws IOException IOException
      */
-    List<String> loadForRequest(String completedUrl) throws IOException;
+    List<String> loadForRequest(String completedUrl, MultiValueMap<String , String> requestHeaders) throws IOException;
 
     /**
      * 从http响应中保存cookie

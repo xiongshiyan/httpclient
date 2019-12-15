@@ -86,7 +86,7 @@ public abstract class AbstractConfigurableHttp {
         if(null == cookieJar){
             return null;
         }
-        return cookieJar.loadForRequest(completedUrl);
+        return cookieJar.loadForRequest(completedUrl , headers);
     }
 
     /**
@@ -107,26 +107,26 @@ public abstract class AbstractConfigurableHttp {
     /**
      * 如果支持Cookie，从CookieHandler中拿出来设置到Header Map中
      * @param completedUrl URL
-     * @param headers 正常用户的Header Map
+     * @param requestHeaders 正常用户的Header Map
      * @return 处理过的Header Map
      * @throws IOException IOException
      */
-    protected MultiValueMap<String, String> addCookieIfNecessary(String completedUrl, MultiValueMap<String, String> headers) throws IOException {
+    protected MultiValueMap<String, String> addCookieIfNecessary(String completedUrl, MultiValueMap<String, String> requestHeaders) throws IOException {
         if(!supportCookie()){
-            return headers;
+            return requestHeaders;
         }
 
-        List<String> cookies = getCookies(completedUrl , headers);
+        List<String> cookies = getCookies(completedUrl , requestHeaders);
         if(CollectionUtil.isEmpty(cookies)){
-            return headers;
+            return requestHeaders;
         }
 
-        if(null == headers){
-            headers = new ArrayListMultiValueMap<>();
+        if(null == requestHeaders){
+            requestHeaders = new ArrayListMultiValueMap<>();
         }
-        headers.add(HeaderRegular.COOKIE.toString() , Joiner.on(HttpConstants.SEMICOLON).join(cookies));
+        requestHeaders.add(HeaderRegular.COOKIE.toString() , Joiner.on(HttpConstants.SEMICOLON).join(cookies));
 
-        return headers;
+        return requestHeaders;
     }
 
     /**

@@ -115,13 +115,13 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
      */
     protected void configHeaders(Object target , HttpRequest httpRequest, String completedUrl) throws IOException {
         //1.合并默认headers
-        MultiValueMap<String, String> headers = mergeDefaultHeaders(httpRequest.getHeaders());
+        MultiValueMap<String, String> requestHeaders = mergeDefaultHeaders(httpRequest.getHeaders());
 
         //2.处理cookie
-        headers = addCookieIfNecessary(completedUrl, headers);
+        requestHeaders = addCookieIfNecessary(completedUrl, requestHeaders);
 
         //3.真正设置
-        setRequestHeaders(target , httpRequest , headers);
+        setRequestHeaders(target , httpRequest , requestHeaders);
     }
 
     /**
