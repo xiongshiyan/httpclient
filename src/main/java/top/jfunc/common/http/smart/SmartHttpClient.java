@@ -1,9 +1,10 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.base.Config;
+import top.jfunc.common.http.base.ConfigAccessor;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.HttpClient;
+import top.jfunc.common.http.basic.SimpleHttpClient;
 import top.jfunc.common.http.request.*;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -15,21 +16,10 @@ import java.io.IOException;
  * @author xiongshiyan at 2017/12/9
  * 针对Http超时和各种错误码分别处理
  * @see HttpClient
+ * @see HttpRequestResultCallbackHttpClient
  * 使用时，可以直接new实现类，也可以通过{@link top.jfunc.common.http.HttpUtil }获取，这样就不会与实现类绑定
  */
-public interface SmartHttpClient extends ResultCallbackHttpClient {
-    /**
-     * @inheritDoc
-     */
-    @Override
-    void setConfig(Config config);
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    Config getConfig();
-
+public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , SimpleHttpClient , ConfigAccessor {
     /**
      * GET方法，用于获取某个资源
      * @param request 请求参数

@@ -8,11 +8,15 @@ import top.jfunc.common.http.request.*;
 import java.io.IOException;
 
 /**
- * 利用 {@linkplain ResultCallback} 提供对返回值的全面处理
+ * 定义基于 {@link HttpRequest} 和 {@link ResultCallback} 的http支持
+ * <ul>
+ *     <li>1. {@link HttpRequest} 及子类定义请求参数</li>
+ *     <li>2. {@linkplain ResultCallback} 提供对返回值的全面处理</li>
+ * </ul>
  * @author xiongshiyan at 2019/11/10
  * @since 1.1.10
  */
-public interface ResultCallbackHttpClient extends HttpClient {
+public interface HttpRequestResultCallbackHttpClient {
     /**
      * GET方法，用于获取某个资源
      * @param request 请求参数
