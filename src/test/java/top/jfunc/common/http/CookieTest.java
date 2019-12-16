@@ -75,7 +75,7 @@ public class CookieTest {
         //可调可不调
         // CookieHandler.setDefault(manager);
 
-        cookieJar = new JdkCookieJar(manager);
+        this.cookieJar = new JdkCookieJar(manager , true);
     }
 
     @After
