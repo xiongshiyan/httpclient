@@ -16,7 +16,8 @@ import java.util.Map;
 
 /**
  * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
- * @see top.jfunc.common.http.basic.HttpClient
+ * @see top.jfunc.common.http.basic.SimpleHttpClient
+ * @see top.jfunc.common.http.smart.HttpRequestResultCallbackHttpClient
  * @see top.jfunc.common.http.smart.SmartHttpClient
  *
  * !!!此类作为以前的大杂烩，什么样的请求都放到一起，给设置参数的时候造成困扰，已经不适应快速发展的需要

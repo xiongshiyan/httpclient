@@ -20,7 +20,7 @@ import static top.jfunc.common.http.util.OkHttp3Util.*;
  * 使用OkHttp3实现的Http请求类
  * @author xiongshiyan at 2018/1/11
  */
-public class OkHttp3Client extends AbstractHttpClient<Request.Builder> implements HttpTemplate<Request.Builder>, HttpClient {
+public class OkHttp3Client extends AbstractHttpClient<Request.Builder> {
 
     @Override
     public  <R> R doInternalTemplate(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception{

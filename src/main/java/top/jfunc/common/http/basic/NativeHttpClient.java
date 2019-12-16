@@ -19,7 +19,7 @@ import static top.jfunc.common.http.util.NativeUtil.*;
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeHttpClient extends AbstractHttpClient<HttpURLConnection> implements HttpTemplate<HttpURLConnection>, HttpClient {
+public class NativeHttpClient extends AbstractHttpClient<HttpURLConnection> {
     @Override
     public <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception {
         //默认的https校验

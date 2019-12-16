@@ -25,7 +25,7 @@ import static top.jfunc.common.http.util.ApacheUtil.*;
  * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequest> implements HttpTemplate<HttpEntityEnclosingRequest>, HttpClient {
+public class ApacheHttpClient extends AbstractHttpClient<HttpEntityEnclosingRequest> {
     @Override
     public  <R> R doInternalTemplate(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws Exception {
         //1.获取完成的URL，创建请求

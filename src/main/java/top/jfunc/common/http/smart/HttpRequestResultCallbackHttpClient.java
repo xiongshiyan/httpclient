@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.HttpClient;
 import top.jfunc.common.http.request.*;
 
 import java.io.IOException;
