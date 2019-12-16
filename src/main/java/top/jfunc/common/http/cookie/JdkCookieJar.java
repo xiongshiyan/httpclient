@@ -21,6 +21,9 @@ import java.util.Map;
 public class JdkCookieJar implements CookieJar{
     private CookieHandler cookieHandler;
 
+    public JdkCookieJar(CookieHandler cookieHandler , boolean settingDefault) {
+        setCookieHandler(cookieHandler , settingDefault);
+    }
     public JdkCookieJar(CookieHandler cookieHandler) {
         setCookieHandler(cookieHandler);
     }
@@ -30,7 +33,17 @@ public class JdkCookieJar implements CookieJar{
 
     public void setCookieHandler(CookieHandler cookieHandler) {
         this.cookieHandler = cookieHandler;
-        if(null == CookieHandler.getDefault()){
+    }
+
+    /**
+     * @see CookieHandler#setDefault(CookieHandler)
+     * @see CookieHandler#getDefault()
+     * @param cookieHandler CookieHandler
+     * @param settingDefault 是否设置默认的CookieHandler
+     */
+    public void setCookieHandler(CookieHandler cookieHandler , boolean settingDefault) {
+        this.cookieHandler = cookieHandler;
+        if(settingDefault && null == CookieHandler.getDefault()){
             CookieHandler.setDefault(cookieHandler);
         }
     }
