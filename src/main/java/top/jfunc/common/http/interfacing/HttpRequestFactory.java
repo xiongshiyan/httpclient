@@ -1,10 +1,10 @@
 package top.jfunc.common.http.interfacing;
 
-import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
+import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.holderrequest.impl.HolderCommonBodyRequest;
 import top.jfunc.common.http.holderrequest.impl.HolderCommonRequest;
@@ -187,7 +187,7 @@ class HttpRequestFactory implements RequestFactory {
             this.headers.forEachKeyValue(httpRequest::addHeader);
         }
         if(null != contentType){
-            httpRequest.addHeader(HeaderRegular.CONTENT_TYPE.toString() , contentType.toString());
+            httpRequest.addHeader(HttpHeaders.CONTENT_TYPE , contentType.toString());
         }
 
 
@@ -522,7 +522,7 @@ class HttpRequestFactory implements RequestFactory {
             }
             String headerName = header.substring(0, colon);
             String headerValue = header.substring(colon + 1).trim();
-            if (HeaderRegular.CONTENT_TYPE.toString().equalsIgnoreCase(headerName)) {
+            if (HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(headerName)) {
                 try {
                     contentType = MediaType.parse(headerValue);
                 } catch (Exception e) {

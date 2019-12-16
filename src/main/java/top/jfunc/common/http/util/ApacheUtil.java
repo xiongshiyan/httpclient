@@ -20,11 +20,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
-import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.CharsetUtil;
@@ -261,7 +261,7 @@ public class ApacheUtil {
         }*/
 
         if(null != contentType){
-            request.setHeader(HeaderRegular.CONTENT_TYPE.toString(), contentType);
+            request.setHeader(HttpHeaders.CONTENT_TYPE, contentType);
         }
     }
 

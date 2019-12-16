@@ -124,7 +124,7 @@ public abstract class AbstractConfigurableHttp {
         if(null == requestHeaders){
             requestHeaders = new ArrayListMultiValueMap<>();
         }
-        requestHeaders.add(HeaderRegular.COOKIE.toString() , Joiner.on(HttpConstants.SEMICOLON).join(cookies));
+        requestHeaders.add(HttpHeaders.COOKIE, Joiner.on(HttpConstants.SEMICOLON).join(cookies));
 
         return requestHeaders;
     }

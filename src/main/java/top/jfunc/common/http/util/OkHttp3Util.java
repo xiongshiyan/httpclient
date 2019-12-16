@@ -4,9 +4,9 @@ import okhttp3.*;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
-import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -81,7 +81,7 @@ public class OkHttp3Util {
 
         if(null != formFiles){
             for (FormFile formFile : formFiles) {
-                builder.addPart(Headers.of(HeaderRegular.CONTENT_DISPOSITION.toString(), "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
+                builder.addPart(Headers.of(HttpHeaders.CONTENT_DISPOSITION, "form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"") ,
                         inputStreamBody(formFile.getContentType() , formFile.getInStream() , formFile.getFileLen()));
             }
         }
@@ -109,7 +109,7 @@ public class OkHttp3Util {
         }*/
 
         if(null != contentType){
-            builder.header(HeaderRegular.CONTENT_TYPE.toString(), contentType);
+            builder.header(HttpHeaders.CONTENT_TYPE, contentType);
         }
     }
 

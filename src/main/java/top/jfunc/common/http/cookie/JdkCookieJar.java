@@ -1,6 +1,6 @@
 package top.jfunc.common.http.cookie;
 
-import top.jfunc.common.http.HeaderRegular;
+import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -58,7 +58,7 @@ public class JdkCookieJar implements CookieJar{
         MultiValueMap<String, String> nonNull = null != requestHeaders ? requestHeaders : new ArrayListMultiValueMap<>(0);
         Map<String, List<String>> cookies = getCookieHandler().get(URI.create(completedUrl), nonNull);
         if(MapUtil.notEmpty(cookies)){
-            return cookies.get(HeaderRegular.COOKIE.toString());
+            return cookies.get(HttpHeaders.COOKIE);
         }
         return null;
     }

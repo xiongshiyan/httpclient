@@ -1,8 +1,8 @@
 package top.jfunc.common.http.util;
 
-import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -36,8 +36,8 @@ public class NativeUtil {
 
 
     public static void upload0(HttpURLConnection connection , Iterable<FormFile> formFiles) throws IOException {
-        connection.setRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(getFormFilesLen(formFiles) + END_LINE.length()));
-        connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString() , "multipart/form-data; boundary=" + BOUNDARY);
+        connection.setRequestProperty(HttpHeaders.CONTENT_LENGTH , String.valueOf(getFormFilesLen(formFiles) + END_LINE.length()));
+        connection.setRequestProperty(HttpHeaders.CONTENT_TYPE , "multipart/form-data; boundary=" + BOUNDARY);
 
         // 设置DataOutputStream
         DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
@@ -60,8 +60,8 @@ public class NativeUtil {
         // 计算传输给服务器的实体数据总长度
         int dataLength = textEntity.getBytes(paramCharset).length + fileDataLength + END_LINE.length();
 
-        connection.setRequestProperty(HeaderRegular.CONTENT_LENGTH.toString() , String.valueOf(dataLength));
-        connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString() , "multipart/form-data; boundary=" + BOUNDARY);
+        connection.setRequestProperty(HttpHeaders.CONTENT_LENGTH , String.valueOf(dataLength));
+        connection.setRequestProperty(HttpHeaders.CONTENT_TYPE , "multipart/form-data; boundary=" + BOUNDARY);
 
         DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
 
@@ -198,7 +198,7 @@ public class NativeUtil {
         }*/
 
         if(null != contentType){
-            connection.setRequestProperty(HeaderRegular.CONTENT_TYPE.toString(), contentType);
+            connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, contentType);
         }
     }
 

@@ -1,11 +1,11 @@
 package top.jfunc.common.http.smart;
 
 
-import top.jfunc.common.http.HeaderRegular;
 import top.jfunc.common.http.HttpStatus;
+import top.jfunc.common.http.base.HttpHeaders;
+import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.string.FromStringHandler;
-import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -162,7 +162,7 @@ public class Response implements Closeable{
      * @return 重定向地址
      */
     public String getRedirectUrl(){
-        return this.headers.get(HeaderRegular.LOCATION.toString()).get(0);
+        return this.headers.get(HttpHeaders.LOCATION).get(0);
     }
 
     @Override

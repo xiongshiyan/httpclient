@@ -1,9 +1,13 @@
 package top.jfunc.common.http;
 
+import top.jfunc.common.http.base.HttpHeaders;
+
 /**
  * Http常用头域
+ * @see HttpHeaders
  * @author Looly
  */
+@Deprecated
 public enum HeaderRegular {
 	
 	//------------------------------------------------------------- 通用头域
