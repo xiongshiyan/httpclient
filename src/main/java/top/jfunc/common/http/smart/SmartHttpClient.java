@@ -3,7 +3,7 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ConfigAccessor;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.SimpleHttpClient;
+import top.jfunc.common.http.basic.UnpackedParameterHttpClient;
 import top.jfunc.common.http.request.*;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -14,11 +14,11 @@ import java.io.IOException;
 /**
  * @author xiongshiyan at 2017/12/9
  * 针对Http超时和各种错误码分别处理
- * @see SimpleHttpClient
+ * @see UnpackedParameterHttpClient
  * @see HttpRequestResultCallbackHttpClient
  * 使用时，可以直接new实现类，也可以通过{@link top.jfunc.common.http.HttpUtil }获取，这样就不会与实现类绑定
  */
-public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , SimpleHttpClient , ConfigAccessor {
+public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , UnpackedParameterHttpClient, ConfigAccessor {
     /**
      * GET方法，用于获取某个资源
      * @param request 请求参数

@@ -4,6 +4,7 @@ import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.basic.UnpackedParameterHttpClient;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.holderrequest.*;
 import top.jfunc.common.http.holderrequest.impl.*;
@@ -16,9 +17,9 @@ import java.util.Map;
 
 /**
  * 代表一个Http请求的所有参数,基于Request-Response的可以更好地扩展功能
- * @see top.jfunc.common.http.basic.SimpleHttpClient
- * @see top.jfunc.common.http.smart.HttpRequestResultCallbackHttpClient
- * @see top.jfunc.common.http.smart.SmartHttpClient
+ * @see UnpackedParameterHttpClient
+ * @see HttpRequestResultCallbackHttpClient
+ * @see SmartHttpClient
  *
  * !!!此类作为以前的大杂烩，什么样的请求都放到一起，给设置参数的时候造成困扰，已经不适应快速发展的需要
  * 现将其一拆为多，针对不同的请求使用不同的请求即可
