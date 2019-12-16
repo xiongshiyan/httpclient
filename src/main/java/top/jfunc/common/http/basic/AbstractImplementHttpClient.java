@@ -47,4 +47,64 @@ public abstract class AbstractImplementHttpClient<CC> extends AbstractHttpClient
      * @throws Exception Exception
      */
     protected abstract <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception;
+
+
+    /**
+     * 处理请求的headers
+     * @param target 给谁设置，每个框架自行实现
+     * @param completedUrl completedUrl
+     * @param headers 请求的headers
+     * @throws IOException IOException
+     */
+    protected void configHeaders(Object target , String completedUrl , String contentType , MultiValueMap<String , String> headers) throws IOException {
+        //1.合并默认headers
+        MultiValueMap<String, String> requestHeaders = mergeDefaultHeaders(headers);
+
+        //2.处理cookie
+        requestHeaders = addCookieIfNecessary(completedUrl, requestHeaders);
+
+        //3.真正设置
+        setRequestHeaders(target , contentType , requestHeaders);
+    }
+
+    /**
+     * 每个框架自己实现自己的设置方法
+     * @param target 给谁设置
+     * @param contentType contentType
+     * @param handledHeaders 处理过后的headers
+     * @throws IOException IOException
+     */
+    protected abstract void setRequestHeaders(Object target, String contentType , MultiValueMap<String , String> handledHeaders) throws IOException;
+
+    /**
+     * 处理返回的header，并处理了cookie
+     * @param source 每种实现都有自己的
+     * @param completedUrl completedUrl
+     * @return headers
+     * @throws IOException IOException
+     */
+    protected MultiValueMap<String, String> determineHeaders(Object source, String completedUrl , boolean includeHeaders) throws IOException {
+        boolean s = includeHeaders;
+        ///1.如果要支持cookie，必须读取header
+        if(supportCookie()){
+            //includeHeaders = HttpRequest.INCLUDE_HEADERS;
+            s = true;
+        }
+        //2.从响应中获取headers
+        MultiValueMap<String, String> responseHeaders = parseResponseHeaders(source , s);
+
+        //3.处理cookie
+        saveCookieIfNecessary(completedUrl , responseHeaders);
+
+        return responseHeaders;
+    }
+
+    /**
+     * 每种实现真正实现自己的获取header的方法
+     * @param source 源
+     * @param includeHeaders 是否获取headers
+     * @return headers
+     */
+    protected abstract MultiValueMap<String, String> parseResponseHeaders(Object source , boolean includeHeaders);
+
 }

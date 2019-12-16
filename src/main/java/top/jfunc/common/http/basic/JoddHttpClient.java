@@ -7,9 +7,11 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.util.JoddUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import static top.jfunc.common.http.util.JoddUtil.*;
 
@@ -24,18 +26,8 @@ public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
         HttpResponse response = null;
         try {
             //1.获取完成的URL，创建请求
-            String completedUrl = addBaseUrlIfNecessary(url);
-            HttpRequest request = new HttpRequest();
-            request.method(method.name());
-            request.set(completedUrl);
-
-            //2.超时设置
-            request.connectionTimeout(getConnectionTimeoutWithDefault(connectTimeout));
-            request.timeout(getReadTimeoutWithDefault(readTimeout));
-
-
-            //3.SSL处理
-            initSSL(request , getHostnameVerifier() , getSSLSocketFactory() , getX509TrustManager() , null);
+            String completedUrl = handleUrlIfNecessary(url);
+            HttpRequest request = createAndConfigHttpRequest(method, completedUrl, connectTimeout, readTimeout);
 
             //4.处理body
             if(contentCallback != null && method.hasContent()){
@@ -43,7 +35,7 @@ public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
             }
 
             //5.设置header
-            setRequestHeaders(request , contentType , mergeDefaultHeaders(headers));
+            configHeaders(request , completedUrl , contentType , headers);
 
             //6.子类可以复写
             doWithHttpRequest(request);
@@ -51,11 +43,16 @@ public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
             //7.真正请求
             response = request.send();
 
+            //8.获取返回值
+            InputStream inputStream = getStreamFrom(response, false);
+
+            //9.返回header,包括Cookie处理
+            MultiValueMap<String , String> responseHeaders = determineHeaders(response , completedUrl , includeHeaders);
+
             //8.返回处理
-            return resultCallback.convert(response.statusCode() ,
-                    getStreamFrom(response , false),
+            return resultCallback.convert(response.statusCode() , inputStream,
                     getResultCharsetWithDefault(resultCharset) ,
-                    parseHeaders(response , includeHeaders));
+                    responseHeaders);
         } finally {
             if(null != response){
                 response.close();
@@ -63,7 +60,50 @@ public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
         }
     }
 
-    protected void doWithHttpRequest(HttpRequest httpRequest){}
+    protected InputStream getStreamFrom(HttpResponse httpResponse , boolean ignoreResponseBody) throws IOException{
+        return JoddUtil.getStreamFrom(httpResponse , ignoreResponseBody);
+    }
+
+    protected HttpRequest createAndConfigHttpRequest(Method method , String completedUrl , Integer connectionTimeout , Integer readTimeout){
+        HttpRequest request = new HttpRequest();
+        request.method(method.name());
+        request.set(completedUrl);
+
+
+        //2.超时设置
+        request.connectionTimeout(getConnectionTimeoutWithDefault(connectionTimeout));
+        request.timeout(getReadTimeoutWithDefault(readTimeout));
+
+        //3.SSL设置
+        initSSL(request);
+
+        return request;
+    }
+
+    protected void initSSL(HttpRequest request){
+        JoddUtil.initSSL(request , getHostnameVerifierWithDefault(getHostnameVerifier()) ,
+                getSSLSocketFactoryWithDefault(getSSLSocketFactory()) ,
+                getX509TrustManagerWithDefault(getX509TrustManager()),
+                getProxyInfoWithDefault(null));
+    }
+
+
+    @Override
+    protected void setRequestHeaders(Object target, String contentType, MultiValueMap<String, String> handledHeaders) throws IOException {
+        JoddUtil.setRequestHeaders((HttpRequest)target , contentType , handledHeaders);
+    }
+
+    /**
+     * 留给子类做更多的配置
+     * @param joddHttpRequest jodd的请求
+     */
+    protected void doWithHttpRequest(HttpRequest joddHttpRequest){}
+
+
+    @Override
+    protected MultiValueMap<String, String> parseResponseHeaders(Object source, boolean includeHeaders) {
+        return JoddUtil.parseHeaders((HttpResponse)source , includeHeaders);
+    }
 
     @Override
     protected ContentCallback<HttpRequest> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {

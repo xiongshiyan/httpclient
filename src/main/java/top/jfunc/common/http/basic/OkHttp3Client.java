@@ -5,7 +5,9 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.util.OkHttp3Util;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -28,28 +30,15 @@ public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> 
         Response response = null;
         InputStream inputStream = null;
         try {
-            String completedUrl = addBaseUrlIfNecessary(url);
-            //1.构造OkHttpClient
-            OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
-                    .connectTimeout(getConnectionTimeoutWithDefault(connectTimeout), TimeUnit.MILLISECONDS)
-                    .readTimeout(getReadTimeoutWithDefault(readTimeout), TimeUnit.MILLISECONDS);
-
-            ////////////////////////////////////ssl处理///////////////////////////////////
-            if(ParamUtil.isHttps(completedUrl)){
-                //默认设置这些
-                initSSL(clientBuilder , getHostnameVerifier() , getSSLSocketFactory() , getX509TrustManager());
-            }
-            ////////////////////////////////////ssl处理///////////////////////////////////
+            String completedUrl = handleUrlIfNecessary(url);
+            //1.创建并配置builder
+            OkHttpClient.Builder clientBuilder = createAndConfigBuilder(completedUrl , connectTimeout , readTimeout);
 
             //给子类复写的机会
-            doWithBuilder(clientBuilder , ParamUtil.isHttps(completedUrl));
-
-            OkHttpClient client = clientBuilder.build();
-
-            doWithClient(client);
+            OkHttpClient client = createOkHttpClient(clientBuilder);
 
             //2.1设置URL
-            Request.Builder builder = new Request.Builder().url(completedUrl);
+            Request.Builder builder = createRequestBuilder(completedUrl);
 
             //2.2处理请求体
             if(null != contentCallback && method.hasContent()){
@@ -57,7 +46,7 @@ public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> 
             }
 
             //2.3设置headers
-            setRequestHeaders(builder , contentType , mergeDefaultHeaders(headers));
+            configHeaders(builder, completedUrl , contentType, headers);
 
             //3.构造请求
             Request request = builder.build();
@@ -68,16 +57,75 @@ public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> 
             //5.获取响应
             inputStream = getStreamFrom(response , false);
 
-            return resultCallback.convert(response.code() , inputStream, getResultCharsetWithDefault(resultCharset), parseHeaders(response , includeHeaders));
+            //6.处理header，包括Cookie的处理
+            MultiValueMap<String, String> responseHeaders = determineHeaders(response, completedUrl , includeHeaders);
+
+            return resultCallback.convert(response.code() , inputStream,
+                    getResultCharsetWithDefault(resultCharset),
+                    responseHeaders);
         } finally {
             IoUtil.close(inputStream);
             IoUtil.close(response);
         }
     }
 
-    protected void doWithBuilder(OkHttpClient.Builder builder , boolean isHttps) throws Exception{
-        //default do nothing, give children a chance to do more config
+    protected InputStream getStreamFrom(Response response , boolean ignoreResponseBody){
+        return OkHttp3Util.getStreamFrom(response, ignoreResponseBody);
     }
+
+    @Override
+    protected MultiValueMap<String, String> parseResponseHeaders(Object source, boolean includeHeaders) {
+        return OkHttp3Util.parseHeaders((Response)source , includeHeaders);
+    }
+
+    protected Request.Builder createRequestBuilder(String completedUrl) {
+        return new Request.Builder().url(completedUrl);
+    }
+
+    @Override
+    protected void setRequestHeaders(Object target, String contentType, MultiValueMap<String, String> handledHeaders) throws IOException {
+        OkHttp3Util.setRequestHeaders((Request.Builder)target , contentType , handledHeaders);
+    }
+
+    protected OkHttpClient.Builder createAndConfigBuilder(String completedUrl , Integer connectionTimeout , Integer readTimeout) {
+        //1.构造OkHttpClient
+        OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
+                .connectTimeout(getConnectionTimeoutWithDefault(connectionTimeout), TimeUnit.MILLISECONDS)
+                .readTimeout(getReadTimeoutWithDefault(readTimeout), TimeUnit.MILLISECONDS);
+        //1.1如果存在就设置代理
+        ProxyInfo proxyInfo = getProxyInfoWithDefault(null);
+        if(null != proxyInfo){
+            clientBuilder.proxy(proxyInfo.getProxy());
+        }
+
+        ////////////////////////////////////ssl处理///////////////////////////////////
+        if(ParamUtil.isHttps(completedUrl)){
+            initSSL(clientBuilder);
+        }
+        ////////////////////////////////////ssl处理///////////////////////////////////
+        return clientBuilder;
+    }
+
+    protected void initSSL(OkHttpClient.Builder clientBuilder){
+        OkHttp3Util.initSSL(clientBuilder , getHostnameVerifierWithDefault(getHostnameVerifier()) ,
+                getSSLSocketFactoryWithDefault(getSSLSocketFactory()) ,
+                getX509TrustManagerWithDefault(getX509TrustManager()));
+    }
+    /**
+     * 子类复写，增添更多的功能，保证返回OkHttpClient
+     */
+    protected OkHttpClient createOkHttpClient(OkHttpClient.Builder builder) throws Exception{
+        //默认就使用builder生成
+        //可以进一步对builder进行处理
+        OkHttpClient okHttpClient = builder.build();
+        //对OkHttpClient单独处理
+        doWithClient(okHttpClient);
+        return okHttpClient;
+    }
+
+    /**
+     * 子类对ObHttpClient复写
+     */
     protected void doWithClient(OkHttpClient okHttpClient) throws Exception{
         //default do nothing, give children a chance to do more config
     }
