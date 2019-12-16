@@ -141,20 +141,23 @@ public class Response implements Closeable{
 
     /**
      * 请求是否OK
-     * @return true only if statusCode==200
      */
     public boolean isOk(){
-        return HttpStatus.HTTP_OK == this.statusCode;
+        return HttpStatus.isOk(statusCode);
+    }
+
+    /**
+     * 请求是否成功
+     */
+    public boolean isSuccess(){
+        return HttpStatus.isSuccess(statusCode);
     }
 
     /**
      * 是否需要重定向
-     * @return true if 301|302|303
      */
     public boolean needRedirect(){
-        return HttpStatus.HTTP_MOVED_PERM == this.statusCode
-                || HttpStatus.HTTP_MOVED_TEMP == this.statusCode
-                || HttpStatus.HTTP_SEE_OTHER == this.statusCode;
+        return HttpStatus.needRedirect(statusCode);
     }
 
     /**

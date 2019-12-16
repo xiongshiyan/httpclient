@@ -11,7 +11,7 @@ public final class HttpStatus {
 	private HttpStatus() {
 	}
 	
-	/* 2XX: generally "OK" */
+	/* 2XX: generally "success" */
 	
 	/**
 	 * HTTP Status-Code 200: OK.
@@ -184,6 +184,8 @@ public final class HttpStatus {
 	 */
 	public static final int HTTP_UNAVAILABLE = 503;
 
+
+
 	/**
 	 * HTTP Status-Code 504: Gateway Timeout.
 	 */
@@ -193,4 +195,30 @@ public final class HttpStatus {
 	 * HTTP Status-Code 505: HTTP Version Not Supported.
 	 */
 	public static final int HTTP_VERSION = 505;
+
+    /**
+     * 请求是否OK
+     * @return true only if statusCode==200
+     */
+    public static boolean isOk(int statusCode){
+        return HTTP_OK == statusCode;
+    }
+
+    /**
+     * 请求是否成功 2xx 都认为成功
+     * @return true if statusCode is between 200(include) and 300(un include)
+     */
+    public static boolean isSuccess(int statusCode){
+        return statusCode >= HTTP_OK && statusCode < HTTP_MULT_CHOICE;
+    }
+
+    /**
+     * 是否需要重定向
+     * @return true if 301|302|303
+     */
+    public static boolean needRedirect(int statusCode){
+        return HttpStatus.HTTP_MOVED_PERM == statusCode
+                || HttpStatus.HTTP_MOVED_TEMP == statusCode
+                || HttpStatus.HTTP_SEE_OTHER == statusCode;
+    }
 }

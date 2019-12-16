@@ -156,8 +156,7 @@ public class NativeUtil {
         }
 
         InputStream inputStream;
-        //2xx 都认为成功
-        if(statusCode >= HttpStatus.HTTP_OK && statusCode < HttpStatus.HTTP_MULT_CHOICE){
+        if(HttpStatus.isSuccess(statusCode)){
             inputStream = connect.getInputStream();
         }else {
             inputStream = connect.getErrorStream();
