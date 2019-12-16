@@ -2,10 +2,9 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.AbstractHttpClient;
-import top.jfunc.common.http.basic.HttpTemplate;
-import top.jfunc.common.http.basic.UnpackedParameterHttpClient;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
@@ -89,18 +88,6 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         httpRequest.setIncludeHeaders(includeHeader);
 
         return template(httpRequest , method , contentCallback , resultCallback);
-    }
-
-
-    /**
-     * {@link HttpTemplate}和{@link UnpackedParameterHttpClient}接口体系实现此方法，
-     * 而{@link top.jfunc.common.http.smart.SmartHttpTemplate}和{@link top.jfunc.common.http.smart.SmartHttpClient}接口体系不需要实现之
-     * 而是直接复写{@link HttpTemplate#template(String, Method, String, ContentCallback, MultiValueMap, Integer, Integer, String, boolean, ResultCallback)}
-     * 所以抛出异常
-     */
-    @Override
-    protected <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception{
-        throw new UnsupportedOperationException("HttpRequest实现体系不支持此种方式");
     }
 
     /**
@@ -293,5 +280,29 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         }
         return template(request, Method.TRACE , contentCallback, resultCallback);
     }
+
+
+    /**
+     * 处理请求体的回调
+     * @param method 请求方法
+     * @param body 请求体
+     * @param bodyCharset 编码
+     * @param contentType Content-Type
+     * @return ContentCallback<CC>
+     * @throws IOException IOException
+     */
+    @Override
+    abstract protected ContentCallback<CC> bodyContentCallback(Method method , String body , String bodyCharset , String contentType) throws IOException;
+
+    /**
+     * 处理文件上传
+     * @param params 参数，k-v，可能为null
+     * @param paramCharset 参数编码
+     * @param formFiles 文件信息
+     * @return ContentCallback<CC>
+     * @throws IOException IOException
+     */
+    @Override
+    protected abstract ContentCallback<CC> uploadContentCallback(MultiValueMap<String, String> params , String paramCharset , Iterable<FormFile> formFiles) throws IOException;
 }
 
