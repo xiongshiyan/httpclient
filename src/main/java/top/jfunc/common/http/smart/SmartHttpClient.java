@@ -17,7 +17,7 @@ import java.io.IOException;
  * @see HttpClient
  * 使用时，可以直接new实现类，也可以通过{@link top.jfunc.common.http.HttpUtil }获取，这样就不会与实现类绑定
  */
-public interface SmartHttpClient extends CallbackHttpClient {
+public interface SmartHttpClient extends ResultCallbackHttpClient {
     /**
      * @inheritDoc
      */

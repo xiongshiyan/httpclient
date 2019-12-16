@@ -8,14 +8,15 @@ import top.jfunc.common.http.request.*;
 import java.io.IOException;
 
 /**
- * 提供对返回值的全面处理{@linkplain ResultCallback}
+ * 利用 {@linkplain ResultCallback} 提供对返回值的全面处理
  * @author xiongshiyan at 2019/11/10
  * @since 1.1.10
  */
-public interface CallbackHttpClient extends HttpClient {
+public interface ResultCallbackHttpClient extends HttpClient {
     /**
      * GET方法，用于获取某个资源
      * @param request 请求参数
+     * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException 超时等IO异常
      */
@@ -24,6 +25,7 @@ public interface CallbackHttpClient extends HttpClient {
     /**
      * POST方法，用于新增
      * @param request 请求参数
+     * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException 超时等IO异常
      */
@@ -32,6 +34,7 @@ public interface CallbackHttpClient extends HttpClient {
     /**
      * POST方法，对form表单的语义化支持
      * @param request 请求参数
+     * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException 超时等IO异常
      */
@@ -40,6 +43,7 @@ public interface CallbackHttpClient extends HttpClient {
     /**
      * 下载文件
      * @param request 请求参数
+     * @param resultCallback 处理返回值
      * @return File 下载的文件
      * @throws IOException IOException
      */
@@ -50,6 +54,7 @@ public interface CallbackHttpClient extends HttpClient {
     /**
      * 文件上传
      * @param request 请求参数
+     * @param resultCallback 处理返回值
      * @return Response
      * @throws IOException IOException
      */
@@ -70,6 +75,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @see Method#HEAD
      * @param httpRequest 请求参数
+     * @param resultCallback 处理返回值
      * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
      */
@@ -79,17 +85,18 @@ public interface CallbackHttpClient extends HttpClient {
      * OPTIONS方法
      * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @see Method#OPTIONS
-    access-control-allow-credentials →true
-    access-control-allow-headers →Origin,X-Requested-With,Content-Type,Accept,Authorization,sourcetype,token
-    access-control-allow-methods →POST,GET,PUT,OPTIONS,DELETE
-    access-control-allow-origin →https://ossh5.palmte.cn
-    access-control-max-age →3600
-    connection →keep-alive
-    content-length →0, 0
-    content-type →application/octet-stream, text/plain
-    date →Thu, 01 Aug 2019 06:29:43 GMT
-    server →nginx
+            access-control-allow-credentials →true
+            access-control-allow-headers →Origin,X-Requested-With,Content-Type,Accept,Authorization,sourcetype,token
+            access-control-allow-methods →POST,GET,PUT,OPTIONS,DELETE
+            access-control-allow-origin →https://ossh5.palmte.cn
+            access-control-max-age →3600
+            connection →keep-alive
+            content-length →0, 0
+            content-type →application/octet-stream, text/plain
+            date →Thu, 01 Aug 2019 06:29:43 GMT
+            server →nginx
      * @param httpRequest 请求参数
+     * @param resultCallback 处理返回值
      * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
      */
@@ -101,6 +108,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @see SmartHttpClient#post(StringBodyRequest)
      * @see Method#PUT
      * @param httpRequest 请求参数
+     * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException IOException
      */
@@ -112,6 +120,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @see SmartHttpClient#post(StringBodyRequest)
      * @see Method#PATCH
      * @param httpRequest 请求参数
+     * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException IOException
      */
@@ -122,6 +131,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @see Method#DELETE
      * @param httpRequest 请求参数
+     * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException IOException
      */
@@ -132,6 +142,7 @@ public interface CallbackHttpClient extends HttpClient {
      * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @see Method#TRACE
      * @param httpRequest 请求参数
+     * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException IOException
      */
