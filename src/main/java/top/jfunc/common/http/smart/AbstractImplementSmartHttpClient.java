@@ -21,7 +21,7 @@ import java.io.IOException;
  * @see SmartHttpClient
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmartHttpClient<CC> {
+public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmartHttpClient<CC> implements TemplateInterceptor{
     /**
      * 统一的拦截和异常处理：最佳实践使用拦截器代替子类复写
      * @inheritDoc

@@ -20,7 +20,8 @@ import java.io.IOException;
  * @see AbstractSmartHttpClient#uploadContentCallback(MultiValueMap, String, Iterable)
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC>, TemplateInterceptor {
+public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC> {
+
     @Override
     public <R> R get(HttpRequest request , ResultCallback<R> resultCallback) throws IOException {
         return template(request, Method.GET , null , resultCallback);
