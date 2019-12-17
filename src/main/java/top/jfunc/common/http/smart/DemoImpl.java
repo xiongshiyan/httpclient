@@ -13,7 +13,7 @@ import java.net.Socket;
 /**
  * @author xiongshiyan at 2019/5/9 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DemoImpl extends AbstractSmartHttpClient<Socket> {
+public class DemoImpl extends AbstractImplementSmartHttpClient<Socket> {
 
     @Override
     protected ContentCallback<Socket> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
