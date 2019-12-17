@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.utils.Joiner;
@@ -404,7 +405,7 @@ public class HttpHeaders extends LinkedMultiValueMap<String, String> {
 	 * Set the (new) value of the {@code Access-Control-Allow-Methods} response header.
 	 */
 	public void setAccessControlAllowMethods(List<Method> allowedMethods) {
-		set(ACCESS_CONTROL_ALLOW_METHODS, Joiner.on(",").join(allowedMethods));
+		set(ACCESS_CONTROL_ALLOW_METHODS, Joiner.on(HttpConstants.COMMA).join(allowedMethods));
 	}
 
 	/**
@@ -414,7 +415,7 @@ public class HttpHeaders extends LinkedMultiValueMap<String, String> {
 		List<Method> result = new ArrayList<Method>();
 		String value = getFirst(ACCESS_CONTROL_ALLOW_METHODS);
 		if (value != null) {
-			String[] tokens = value.split(",");
+			String[] tokens = value.split(HttpConstants.COMMA);
 			for (String token : tokens) {
 				Method resolved = Method.valueOf(token);
 				result.add(resolved);
@@ -518,7 +519,7 @@ public class HttpHeaders extends LinkedMultiValueMap<String, String> {
 	public List<Charset> getAcceptCharset() {
 		String value = getFirst(ACCEPT_CHARSET);
 		if (value != null) {
-			String[] tokens = value.split(",");
+			String[] tokens = value.split(HttpConstants.COMMA);
 			List<Charset> result = new ArrayList<Charset>(tokens.length);
 			for (String token : tokens) {
 				int paramIdx = token.indexOf(';');
@@ -545,7 +546,7 @@ public class HttpHeaders extends LinkedMultiValueMap<String, String> {
 	 * as specified by the {@code Allow} header.
 	 */
 	public void setAllow(Set<Method> allowedMethods) {
-		set(ALLOW, Joiner.on(",").join(allowedMethods));
+		set(ALLOW, Joiner.on(HttpConstants.COMMA).join(allowedMethods));
 	}
 
 	/**
@@ -556,7 +557,7 @@ public class HttpHeaders extends LinkedMultiValueMap<String, String> {
 	public Set<Method> getAllow() {
 		String value = getFirst(ALLOW);
 		if (!StrUtil.isEmpty(value)) {
-			String[] tokens = value.split(",");
+			String[] tokens = value.split(HttpConstants.COMMA);
 			List<Method> result = new ArrayList<Method>(tokens.length);
 			for (String token : tokens) {
 				Method resolved = Method.valueOf(token);
@@ -970,7 +971,7 @@ public class HttpHeaders extends LinkedMultiValueMap<String, String> {
 			List<String> result = new ArrayList<String>();
 			for (String value : values) {
 				if (value != null) {
-					String[] tokens = value.split(",");
+					String[] tokens = value.split(HttpConstants.COMMA);
 					result.addAll(Arrays.asList(tokens));
 				}
 			}

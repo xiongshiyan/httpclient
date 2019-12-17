@@ -17,6 +17,7 @@ public class HttpConstants {
     public static final String EQUALS        = "=";
     public static final String COLON         = ":";
     public static final String SEMICOLON     = ";";
+    public static final String COMMA         = ",";
     public static final String COLON_SPLASH  = "://";
     public static final String HTTP          = "http";
     public static final String HTTPS         = "https";
