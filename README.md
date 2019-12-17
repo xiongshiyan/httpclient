@@ -138,19 +138,19 @@ private String baseUrl;
 /**
  * 连接超时时间
  */
-private Integer defaultConnectionTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+private int defaultConnectionTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 /**
  * 读数据超时时间
  */
-private Integer defaultReadTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
+private int defaultReadTimeout       = HttpConstants.DEFAULT_READ_TIMEOUT;
 /**
  * 请求体编码
  */
-private String defaultBodyCharset = HttpConstants.DEFAULT_CHARSET;
+private String defaultBodyCharset    = HttpConstants.DEFAULT_CHARSET;
 /**
  * 返回体编码
  */
-private String defaultResultCharset = HttpConstants.DEFAULT_CHARSET;
+private String defaultResultCharset  = HttpConstants.DEFAULT_CHARSET;
 
 ....
 

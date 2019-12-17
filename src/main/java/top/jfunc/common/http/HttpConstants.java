@@ -27,10 +27,13 @@ public class HttpConstants {
     public static final String HTTPS_PREFIX  = HTTPS + COLON_SPLASH;
 
 
-
-    public static final Integer DEFAULT_CONNECT_TIMEOUT  = 15000;
-    public static final Integer DEFAULT_READ_TIMEOUT     = 15000;
-    public static final String  DEFAULT_CHARSET          = CharsetUtil.UTF_8;
+    /**
+     * 未指定的时候，timeout相关设置就是默认的
+     */
+    public static final int TIMEOUT_UNSIGNED              = -1;
+    public static final int DEFAULT_CONNECT_TIMEOUT       = 15000;
+    public static final int DEFAULT_READ_TIMEOUT          = 15000;
+    public static final String  DEFAULT_CHARSET           = CharsetUtil.UTF_8;
 
     public static final String FORM_URLENCODED                      = "application/x-www-form-urlencoded";
     public static final String JSON                                 = "application/json";

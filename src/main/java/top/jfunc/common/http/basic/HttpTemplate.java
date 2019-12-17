@@ -30,6 +30,6 @@ public interface HttpTemplate<C>{
      * @throws IOException IOException
      */
     <R> R template(String url, Method method, String contentType, ContentCallback<C> contentCallback,
-                   MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout,
+                   MultiValueMap<String, String> headers, int connectTimeout, int readTimeout,
                    String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException;
 }

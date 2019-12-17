@@ -26,11 +26,11 @@ public class Config {
     /**
      * 连接超时时间
      */
-    private Integer defaultConnectionTimeout                = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+    private int defaultConnectionTimeout                    = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
     /**
      * 读数据超时时间
      */
-    private Integer defaultReadTimeout                      = HttpConstants.DEFAULT_READ_TIMEOUT;
+    private int defaultReadTimeout                          = HttpConstants.DEFAULT_READ_TIMEOUT;
     /**
      * 请求体编码
      */
@@ -97,27 +97,25 @@ public class Config {
     }
 
 
-    public Integer getDefaultConnectionTimeout() {
+    public int getDefaultConnectionTimeout() {
         return defaultConnectionTimeout;
     }
-    public Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
-        return getValueWithDefault(connectionTimeout , getDefaultConnectionTimeout());
+    public int getConnectionTimeoutWithDefault(int connectionTimeout){
+        return HttpConstants.TIMEOUT_UNSIGNED == connectionTimeout ? getDefaultConnectionTimeout() : connectionTimeout;
     }
-
-    public Config setDefaultConnectionTimeout(Integer defaultConnectionTimeout) {
+    public Config setDefaultConnectionTimeout(int defaultConnectionTimeout) {
         configFrozen.ensureConfigNotFreeze();
         this.defaultConnectionTimeout = defaultConnectionTimeout;
         return this;
     }
-    public Integer getDefaultReadTimeout() {
+
+    public int getDefaultReadTimeout() {
         return defaultReadTimeout;
     }
-
-    public Integer getReadTimeoutWithDefault(Integer readTimeout){
-        return getValueWithDefault(readTimeout , getDefaultReadTimeout());
+    public int getReadTimeoutWithDefault(int readTimeout){
+        return HttpConstants.TIMEOUT_UNSIGNED == readTimeout ? getDefaultReadTimeout() : readTimeout;
     }
-
-    public Config setDefaultReadTimeout(Integer defaultReadTimeout) {
+    public Config setDefaultReadTimeout(int defaultReadTimeout) {
         configFrozen.ensureConfigNotFreeze();
         this.defaultReadTimeout = defaultReadTimeout;
         return this;

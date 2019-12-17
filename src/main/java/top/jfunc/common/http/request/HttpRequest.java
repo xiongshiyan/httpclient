@@ -40,6 +40,7 @@ public interface HttpRequest {
 
     /**
      * 获取原始的URL，设置的什么就是什么
+     * @return 原始的URL
      */
     String getOriginalUrl();
 
@@ -202,26 +203,28 @@ public interface HttpRequest {
 
     /**
      * 连接超时时间 ms
+     * -1表示使用系统默认的
      * @return 连接超时时间 ms
      */
-    Integer getConnectionTimeout();
+    int getConnectionTimeout();
 
     /**
      * 设置connectionTimeout
-     * @param connectionTimeout connectionTimeout
+     * @param connectionTimeout connectionTimeout -1表示使用系统默认的
      * @return this
      */
     HttpRequest setConnectionTimeout(int connectionTimeout);
 
     /**
      * 读超时时间 ms
+     * -1表示使用系统默认的
      * @return 读超时时间 ms
      */
-    Integer getReadTimeout();
+    int getReadTimeout();
 
     /**
      * 设置readTimeout
-     * @param readTimeout readTimeout
+     * @param readTimeout readTimeout -1表示使用系统默认的
      * @return this
      */
     HttpRequest setReadTimeout(int readTimeout) ;

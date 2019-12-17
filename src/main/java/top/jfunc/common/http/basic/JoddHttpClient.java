@@ -22,7 +22,7 @@ import static top.jfunc.common.http.util.JoddUtil.*;
 public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
 
     @Override
-    public <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<HttpRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception {
+    public <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<HttpRequest> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception {
         HttpResponse response = null;
         try {
             //1.获取完成的URL，创建请求
@@ -64,7 +64,7 @@ public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
         return JoddUtil.getStreamFrom(httpResponse , ignoreResponseBody);
     }
 
-    protected HttpRequest createAndConfigHttpRequest(Method method , String completedUrl , Integer connectionTimeout , Integer readTimeout){
+    protected HttpRequest createAndConfigHttpRequest(Method method , String completedUrl , int connectionTimeout , int readTimeout){
         HttpRequest request = new HttpRequest();
         request.method(method.name());
         request.set(completedUrl);

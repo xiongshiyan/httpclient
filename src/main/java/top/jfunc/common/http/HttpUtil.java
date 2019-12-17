@@ -58,10 +58,10 @@ public class HttpUtil {
         return getSmartHttpClient().upload(request);
     }
     /*****************************************Proxy the method of HttpClient interface*************************************************/
-    public static String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException{
+    public static String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
         return getSmartHttpClient().get(url, params, headers, connectTimeout, readTimeout, resultCharset);
     }
-    public static String get(String url, Map<String, String> params, Map<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout) throws IOException{
         return getSmartHttpClient().get(url, params, headers, connectTimeout, readTimeout);
     }
     public static String get(String url, Map<String, String> params, Map<String, String> headers, String resultCharset) throws IOException{
@@ -70,10 +70,10 @@ public class HttpUtil {
     public static String get(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
         return getSmartHttpClient().get(url,params,headers);
     }
-    public static String get(String url, Map<String, String> params, Integer connectTimeout, Integer readTimeout, String resultCharset) throws IOException{
+    public static String get(String url, Map<String, String> params, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
         return getSmartHttpClient().get(url,params,connectTimeout,readTimeout,resultCharset);
     }
-    public static String get(String url, Map<String, String> params, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static String get(String url, Map<String, String> params, int connectTimeout, int readTimeout) throws IOException{
         return getSmartHttpClient().get(url,params,connectTimeout,readTimeout);
     }
     public static String get(String url, Map<String, String> params, String resultCharset) throws IOException{
@@ -89,10 +89,10 @@ public class HttpUtil {
         return getSmartHttpClient().get(url);
     }
 
-    public static String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException{
+    public static String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException{
         return getSmartHttpClient().post(url, body, contentType, headers, connectTimeout, readTimeout, bodyCharset, resultCharset);
     }
-    public static String post(String url, String body, String contentType, Map<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout) throws IOException{
         return getSmartHttpClient().post(url,body,contentType,headers,connectTimeout,readTimeout);
     }
     public static String post(String url, String body, String contentType, Map<String, String> headers, String bodyCharset, String resultCharset) throws IOException{
@@ -101,10 +101,10 @@ public class HttpUtil {
     public static String post(String url, String body, String contentType, Map<String, String> headers) throws IOException{
         return getSmartHttpClient().post(url, body, contentType, headers);
     }
-    public static String post(String url, String body, String contentType, Integer connectTimeout, Integer readTimeout, String bodyCharset, String resultCharset) throws IOException{
+    public static String post(String url, String body, String contentType, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException{
         return getSmartHttpClient().post(url,body,contentType,connectTimeout,readTimeout,bodyCharset,resultCharset);
     }
-    public static String post(String url, String body, String contentType, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static String post(String url, String body, String contentType, int connectTimeout, int readTimeout) throws IOException{
         return getSmartHttpClient().post(url,body,contentType,connectTimeout,readTimeout);
     }
     public static String post(String url, String body, String contentType, String bodyCharset, String resultCharset) throws IOException{
@@ -132,10 +132,10 @@ public class HttpUtil {
         return getSmartHttpClient().post(url, params);
     }
 
-    public static byte[] getAsBytes(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException{
         return getSmartHttpClient().getAsBytes(url, headers, connectTimeout, readTimeout);
     }
-    public static byte[] getAsBytes(String url, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static byte[] getAsBytes(String url, int connectTimeout, int readTimeout) throws IOException{
         return getSmartHttpClient().getAsBytes(url, connectTimeout , readTimeout);
     }
     public static byte[] getAsBytes(String url, MultiValueMap<String, String> headers) throws IOException{
@@ -145,10 +145,10 @@ public class HttpUtil {
         return getSmartHttpClient().getAsBytes(url);
     }
 
-    public static File getAsFile(String url, MultiValueMap<String, String> headers, File file, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException{
         return getSmartHttpClient().getAsFile(url, headers, file, connectTimeout, readTimeout);
     }
-    public static File getAsFile(String url, File file, Integer connectTimeout, Integer readTimeout) throws IOException{
+    public static File getAsFile(String url, File file, int connectTimeout, int readTimeout) throws IOException{
         return getSmartHttpClient().getAsFile(url, file , connectTimeout , readTimeout);
     }
     public static File getAsFile(String url, MultiValueMap<String, String> headers, File file) throws IOException{
@@ -158,23 +158,23 @@ public class HttpUtil {
         return getSmartHttpClient().getAsFile(url, file);
     }
 
-    public static String upload(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, headers, connectTimeout, readTimeout, resultCharset, files);
     }
-    public static String upload(String url, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, headers ,connectTimeout , readTimeout , files);
     }
     public static String upload(String url, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, headers ,files);
     }
-    public static String upload(String url, Integer connectTimeout, Integer readTimeout, FormFile... files) throws IOException{
+    public static String upload(String url, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url,connectTimeout , readTimeout , files);
     }
     public static String upload(String url, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, files);
     }
 
-    public static String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, FormFile... files) throws IOException{
+    public static String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, params, headers, connectTimeout, readTimeout, resultCharset, files);
     }
     public static String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
@@ -183,7 +183,7 @@ public class HttpUtil {
     public static String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, params ,headers , files);
     }
-    public static String upload(String url, Integer connectTimeout, Integer readTimeout, MultiValueMap<String, String> params, FormFile... files) throws IOException{
+    public static String upload(String url, int connectTimeout, int readTimeout, MultiValueMap<String, String> params, FormFile... files) throws IOException{
         return getSmartHttpClient().upload(url, params,connectTimeout , readTimeout, files);
     }
     public static String upload(String url, Map<String, String> params, FormFile... files) throws IOException{

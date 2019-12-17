@@ -70,18 +70,16 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
      * @inheritDoc
      */
     @Override
-    public  <R> R template(String url, Method method , String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
+    public  <R> R template(String url, Method method , String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
         HttpRequest httpRequest = CommonRequest.of(url);
         httpRequest.setContentType(contentType);
         if(null != headers){
             headers.forEachKeyValue((k,v)->httpRequest.addHeader(k , v));
         }
-        if(null != connectTimeout){
-            httpRequest.setConnectionTimeout(connectTimeout);
-        }
-        if(null != readTimeout){
-            httpRequest.setReadTimeout(readTimeout);
-        }
+
+        httpRequest.setConnectionTimeout(connectTimeout);
+        httpRequest.setReadTimeout(readTimeout);
+
         if(null != resultCharset){
             httpRequest.setResultCharset(resultCharset);
         }

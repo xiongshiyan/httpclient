@@ -159,11 +159,11 @@ public abstract class AbstractConfigurableHttp {
         return ParamUtil.concatUrlIfNecessary(getConfig().getBaseUrl() , inputUrl);
     }
 
-    protected Integer getConnectionTimeoutWithDefault(Integer connectionTimeout){
+    protected int getConnectionTimeoutWithDefault(int connectionTimeout){
         return config.getConnectionTimeoutWithDefault(connectionTimeout);
     }
 
-    protected Integer getReadTimeoutWithDefault(Integer readTimeout){
+    protected int getReadTimeoutWithDefault(int readTimeout){
         return config.getReadTimeoutWithDefault(readTimeout);
     }
 

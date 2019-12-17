@@ -23,7 +23,7 @@ import static top.jfunc.common.http.util.NativeUtil.*;
  */
 public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnection> {
     @Override
-    public <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception {
+    public <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<HttpURLConnection> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception {
         //默认的https校验
         // 后面会处理的，这里就不需要了 initDefaultSSL(sslVer);
 
@@ -66,7 +66,7 @@ public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnect
         }
     }
 
-    protected HttpURLConnection createAndConfigConnection(Method method , String completedUrl , Integer connectionTimeout , Integer readTimeout) throws Exception{
+    protected HttpURLConnection createAndConfigConnection(Method method , String completedUrl , int connectionTimeout , int readTimeout) throws Exception{
         URL url = new URL(completedUrl);
         //1.1如果需要则设置代理
         ProxyInfo proxyInfo = getProxyInfoWithDefault(null);

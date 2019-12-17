@@ -25,7 +25,7 @@ import static top.jfunc.common.http.util.OkHttp3Util.*;
 public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> {
 
     @Override
-    public  <R> R doInternalTemplate(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception{
+    public  <R> R doInternalTemplate(String url, Method method , String contentType , ContentCallback<Request.Builder> contentCallback , MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception{
         Objects.requireNonNull(url);
         Response response = null;
         InputStream inputStream = null;
@@ -87,7 +87,7 @@ public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> 
         OkHttp3Util.setRequestHeaders((Request.Builder)target , contentType , handledHeaders);
     }
 
-    protected OkHttpClient.Builder createAndConfigBuilder(String completedUrl , Integer connectionTimeout , Integer readTimeout) {
+    protected OkHttpClient.Builder createAndConfigBuilder(String completedUrl , int connectionTimeout , int readTimeout) {
         //1.构造OkHttpClient
         OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
                 .connectTimeout(getConnectionTimeoutWithDefault(connectionTimeout), TimeUnit.MILLISECONDS)

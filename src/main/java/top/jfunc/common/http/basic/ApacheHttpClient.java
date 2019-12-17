@@ -31,7 +31,7 @@ import static top.jfunc.common.http.util.ApacheUtil.*;
  */
 public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEnclosingRequest> {
     @Override
-    public  <R> R doInternalTemplate(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception {
+    public  <R> R doInternalTemplate(String url, Method method , String contentType, ContentCallback<HttpEntityEnclosingRequest> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeaders , ResultCallback<R> resultCallback) throws Exception {
         //1.获取完成的URL，创建请求
         String completedUrl = handleUrlIfNecessary(url);
 
@@ -114,7 +114,7 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
         ApacheUtil.setRequestHeaders((HttpUriRequest)target , contentType , handledHeaders);
     }
 
-    protected HttpUriRequest createAndConfigHttpUriRequest(Method method, String completedUrl , Integer connectionTimeout , Integer readTimeout) {
+    protected HttpUriRequest createAndConfigHttpUriRequest(Method method, String completedUrl , int connectionTimeout , int readTimeout) {
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
 
         setRequestProperty((HttpRequestBase) httpUriRequest,

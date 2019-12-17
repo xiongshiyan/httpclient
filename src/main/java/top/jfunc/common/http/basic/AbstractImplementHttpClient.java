@@ -22,7 +22,7 @@ public abstract class AbstractImplementHttpClient<CC> extends AbstractHttpClient
      * @inheritDoc
      */
     @Override
-    public <R> R template(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws IOException {
         try {
             return doInternalTemplate(url , method , contentType , contentCallback , headers , connectTimeout , readTimeout , resultCharset , includeHeaders , resultCallback);
         } catch (IOException e) {
@@ -48,7 +48,7 @@ public abstract class AbstractImplementHttpClient<CC> extends AbstractHttpClient
      * @return <R> R
      * @throws Exception Exception
      */
-    protected abstract <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, Integer connectTimeout, Integer readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception;
+    protected abstract <R> R doInternalTemplate(String url, Method method, String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, boolean includeHeaders, ResultCallback<R> resultCallback) throws Exception;
 
 
     /**
