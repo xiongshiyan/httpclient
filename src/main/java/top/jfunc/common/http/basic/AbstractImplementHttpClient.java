@@ -3,15 +3,17 @@ package top.jfunc.common.http.basic;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.smart.AbstractSmartHttpClient;
+import top.jfunc.common.http.smart.AbstractImplementSmartHttpClient;
 import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 
 /**
- * 这个类的地位在{@link HttpClient} 体系中的类比于在{@link SmartHttpClient}体系中的{@link AbstractSmartHttpClient}
+ * 这个类的地位在{@link HttpClient} 体系中的类比于在{@link SmartHttpClient}体系中的{@link AbstractImplementSmartHttpClient}
  * 提供统一异常处理、header处理
+ * @see UnpackedParameterHttpClient
+ * @see HttpTemplate
  * @author xiongshiyan at 2019/12/16 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractImplementHttpClient<CC> extends AbstractHttpClient<CC> {

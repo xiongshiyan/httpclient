@@ -22,7 +22,7 @@ import static top.jfunc.common.http.util.NativeUtil.*;
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
  */
-public class NativeSmartHttpClient extends AbstractSmartHttpClient<HttpURLConnection> {
+public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<HttpURLConnection> {
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws Exception {

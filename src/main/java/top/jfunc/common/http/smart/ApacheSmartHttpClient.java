@@ -25,11 +25,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static top.jfunc.common.http.util.ApacheUtil.*;
+
 /**
  * 使用Apache HttpClient 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class ApacheSmartHttpClient extends AbstractSmartHttpClient<HttpEntityEnclosingRequest> {
+public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<HttpEntityEnclosingRequest> {
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {

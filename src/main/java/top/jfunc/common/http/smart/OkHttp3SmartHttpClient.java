@@ -1,9 +1,7 @@
 package top.jfunc.common.http.smart;
 
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
@@ -26,11 +24,11 @@ import static top.jfunc.common.http.util.OkHttp3Util.*;
  * 使用OkHttp3 实现的Http请求类
  * @author xiongshiyan at 2018/1/11
  */
-public class OkHttp3SmartHttpClient extends AbstractSmartHttpClient<Request.Builder> {
+public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Request.Builder> {
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws Exception {
-        okhttp3.Response response = null;
+        Response response = null;
         InputStream inputStream = null;
         try {
             /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();

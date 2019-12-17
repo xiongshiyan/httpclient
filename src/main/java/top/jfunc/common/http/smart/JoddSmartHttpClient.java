@@ -13,13 +13,13 @@ import top.jfunc.common.utils.MultiValueMap;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static top.jfunc.common.http.util.JoddUtil.*;
+import static top.jfunc.common.http.util.JoddUtil.upload0;
 
 /**
  * 使用Jodd-http 实现的Http请求类
  * @author 熊诗言2017/12/01
  */
-public class JoddSmartHttpClient extends AbstractSmartHttpClient<HttpRequest> {
+public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRequest> {
 
     @Override
     protected <R> R doInternalTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
