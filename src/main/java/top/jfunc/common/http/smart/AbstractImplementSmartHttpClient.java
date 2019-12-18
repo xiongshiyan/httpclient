@@ -65,6 +65,10 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
      */
     abstract protected  <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws Exception;
 
+    protected String handleUrlIfNecessary(HttpRequest httpRequest){
+        return handleUrlIfNecessary(httpRequest.getUrl() , httpRequest.getRouteParams() , httpRequest.getQueryParams() , httpRequest.getQueryParamCharset());
+    }
+
     /**
      * 使用{@link HttpRequest}体系来实现{@link HttpTemplate}接口方法
      * @inheritDoc
@@ -105,6 +109,8 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         //3.真正设置
         setRequestHeaders(target , httpRequest , requestHeaders);
     }
+
+
 
     /**
      * 每个框架自己实现自己的设置方法

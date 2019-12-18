@@ -35,10 +35,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         //1.获取完整的URL
-        /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
-        /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-        /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
-        String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
+        String completedUrl = handleUrlIfNecessary(httpRequest);
 
         //2.创建并配置
         HttpUriRequest httpUriRequest = createAndConfigHttpUriRequest(httpRequest, method, completedUrl);

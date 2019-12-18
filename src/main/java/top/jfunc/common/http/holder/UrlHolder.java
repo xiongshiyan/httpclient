@@ -18,17 +18,6 @@ public interface UrlHolder{
     String getUrl();
 
     /**
-     * 获取原始的URL，设置的什么就是什么
-     */
-    String getOriginalUrl();
-
-    /**
-     * 重新计算全url，用于在计算了url了之后再调用可能引起更改的方法
-     * @return this
-     */
-    String recalculateUrl();
-
-    /**
      * 设置URL
      * @param url url
      * @return this

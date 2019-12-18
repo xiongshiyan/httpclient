@@ -1,10 +1,7 @@
 package top.jfunc.common.http;
 
 import top.jfunc.common.Editor;
-import top.jfunc.common.utils.ArrayListMultimap;
-import top.jfunc.common.utils.Joiner;
-import top.jfunc.common.utils.MultiValueMap;
-import top.jfunc.common.utils.StrUtil;
+import top.jfunc.common.utils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -245,7 +242,7 @@ public class ParamUtil {
      * @return 处理过后的URL
      */
     public static String replaceRouteParamsIfNecessary(String originUrl , Map<String , String> routeParams){
-        if(null == routeParams || routeParams.isEmpty()){
+        if(MapUtil.isEmpty(routeParams)){
             return originUrl;
         }
         String url = originUrl;

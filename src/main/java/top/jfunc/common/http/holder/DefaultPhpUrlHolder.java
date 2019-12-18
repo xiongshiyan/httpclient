@@ -26,23 +26,13 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
     private String path = SPLASH;
 
     /**
-     * 获取之后，最好就不要再更改参数了，或者在之前调用{@link PhpUrlHolder#recalculateUrl()}
      * @return 计算后的url
      */
     @Override
     public String getUrl() {
-        if(null != cacheFinalUrl){
-            return cacheFinalUrl;
-        }
-
-        RouteParamHolder routeParamHolder = routeParamHolder();
-        ParamHolder queryParamHolder = queryParamHolder();
-
+        //说明不是完整的路径
         if(null == protocol){
-            //说明不是完整的路径
-            this.path = ParamUtil.replaceRouteParamsIfNecessary(path , routeParamHolder.getMap());
-            this.cacheFinalUrl = ParamUtil.contactUrlParams(path, queryParamHolder.getParams() , queryParamHolder.getParamCharset());
-            return this.cacheFinalUrl;
+            return this.path;
         }
 
         //有协议说明肯定是完整路径
@@ -58,16 +48,12 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
         //拼装url
         String url = protocol.name().toLowerCase() + COLON_SPLASH
                 + host + COLON + port;
-        path = (path.startsWith(SPLASH) ? path : (SPLASH + path));
-        this.path = ParamUtil.replaceRouteParamsIfNecessary(path , routeParamHolder.getMap());
-        this.cacheFinalUrl = ParamUtil.contactUrlParams(url + path, queryParamHolder.getParams() , queryParamHolder.getParamCharset());
-
-        return cacheFinalUrl;
+        String p = (path.startsWith(SPLASH) ? path : (SPLASH + path));
+        return url + p;
     }
 
     @Override
     public PhpUrlHolder setUrl(String destination) {
-        //this.cacheFinalUrl = destination;
         // protocol
         int ndx = destination.indexOf(COLON_SPLASH);
         if (ndx != -1) {

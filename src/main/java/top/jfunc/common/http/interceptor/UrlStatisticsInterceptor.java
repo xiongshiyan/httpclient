@@ -1,7 +1,7 @@
 package top.jfunc.common.http.interceptor;
 
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.util.LinkedHashSet;
@@ -23,7 +23,7 @@ public class UrlStatisticsInterceptor extends InterceptorAdapter {
     /**
      * 保存url
      */
-    private Set<String> urls = new LinkedHashSet<>();
+    private Set<String> statisticsUrls = new LinkedHashSet<>();
 
     public UrlStatisticsInterceptor(boolean containsParams , boolean starting) {
         this.containsParams = containsParams;
@@ -49,29 +49,46 @@ public class UrlStatisticsInterceptor extends InterceptorAdapter {
      * @param url 将要处理的URL
      */
     protected void saveUrl(String url) {
-        urls.add(url);
+        statisticsUrls.add(url);
     }
 
     protected String evictParamsIfNecessary(HttpRequest httpRequest){
-        if(containsParams){
-            return httpRequest.getUrl();
+        String originUrl = httpRequest.getUrl();
+        //不包含参数的情况下，就统计原始URL
+        if(!containsParams){
+            return originUrl;
         }
-        //不包含路径参数和查询参数
-        String originalUrl = httpRequest.getOriginalUrl();
-        if(originalUrl.contains(HttpConstants.QUESTION_MARK)){
-            return originalUrl.substring(0, originalUrl.indexOf(HttpConstants.QUESTION_MARK));
-        }
-        return originalUrl;
+        //1.处理Route参数
+        String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , httpRequest.getRouteParams());
+        //2.处理Query参数
+        return ParamUtil.contactUrlParams(routeUrl, httpRequest.getQueryParams(), httpRequest.getQueryParamCharset());
     }
 
     public void start(){
-        starting = true;
+        setStarting(true);
     }
     public void stop(){
-        starting = false;
+        setStarting(false);
     }
 
-    public Set<String> getUrls() {
-        return urls;
+
+    public boolean isContainsParams() {
+        return containsParams;
+    }
+
+    public void setContainsParams(boolean containsParams) {
+        this.containsParams = containsParams;
+    }
+
+    public boolean isStarting() {
+        return starting;
+    }
+
+    public void setStarting(boolean starting) {
+        this.starting = starting;
+    }
+
+    public Set<String> getStatisticsUrls() {
+        return statisticsUrls;
     }
 }

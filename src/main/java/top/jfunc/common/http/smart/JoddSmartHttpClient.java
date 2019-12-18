@@ -26,10 +26,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         HttpResponse response = null;
         try {
             //1.获取完成的URL，创建请求
-            /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
-            /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-            /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
+            String completedUrl = handleUrlIfNecessary(httpRequest);
             HttpRequest request = createAndConfigHttpRequest(httpRequest, method, completedUrl);
 
             //4.处理body

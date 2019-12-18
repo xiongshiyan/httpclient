@@ -97,13 +97,13 @@ public class UrlStatisticsInterceptorTest {
         Set<String> set = new HashSet<>(2);
         set.add("http://localhost:50000/hello/{name}");
         set.add("http://localhost:50000/hell/ff");
-        Assert.assertEquals(set , statisticInterceptor.getUrls());
+        Assert.assertEquals(set , statisticInterceptor.getStatisticsUrls());
 
         Set<String> set2 = new HashSet<>(2);
         set2.add("http://localhost:50000/hello/John");
         set2.add("http://localhost:50000/hello/Mark");
         set2.add("http://localhost:50000/hello/Mark?k1=k2");
         set2.add("http://localhost:50000/hell/ff?k1=k2");
-        Assert.assertEquals(set2 , statisticInterceptor2.getUrls());
+        Assert.assertEquals(set2 , statisticInterceptor2.getStatisticsUrls());
     }
 }

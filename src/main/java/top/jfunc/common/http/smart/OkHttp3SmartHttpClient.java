@@ -31,11 +31,8 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         Response response = null;
         InputStream inputStream = null;
         try {
-            /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
-            /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-            /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
             //1.创建并配置builder
+            String completedUrl = handleUrlIfNecessary(httpRequest);
             OkHttpClient.Builder clientBuilder = createAndConfigBuilder(httpRequest, completedUrl);
 
             //给子类复写的机会

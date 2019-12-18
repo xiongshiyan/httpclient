@@ -13,6 +13,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -150,14 +151,32 @@ public abstract class AbstractConfigurableHttp {
      * @return 处理后的url
      */
     protected String handleUrlIfNecessary(String originUrl){
-        String urlWithBase = addBaseUrlIfNecessary(originUrl);
+        String urlWithBase = ParamUtil.concatUrlIfNecessary(getConfig().getBaseUrl() , originUrl);
         return ParamUtil.contactUrlParams(urlWithBase, getDefaultQueryParams(), getDefaultQueryCharset());
     }
 
-
-    protected String addBaseUrlIfNecessary(String inputUrl){
-        return ParamUtil.concatUrlIfNecessary(getConfig().getBaseUrl() , inputUrl);
+    /**
+     * 处理Route参数、BaseURL、Query参数
+     * @param originUrl 原始的URL
+     * @param routeParams 路径参数
+     * @param queryParams 查询参数
+     * @param queryParamCharset 查询参数编码
+     * @return 处理过后的URL
+     */
+    protected String handleUrlIfNecessary(String originUrl ,
+                                          Map<String, String> routeParams ,
+                                          MultiValueMap<String, String> queryParams ,
+                                          String queryParamCharset){
+        //1.处理Route参数
+        String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , routeParams);
+        //2.处理BaseUrl
+        String urlWithBase = ParamUtil.concatUrlIfNecessary(getConfig().getBaseUrl() , routeUrl);
+        //3.处理Query参数
+        MultiValueMap<String, String> params = MapUtil.mergeMap(queryParams, getDefaultQueryParams());
+        String queryCharsetWithDefault = getQueryCharsetWithDefault(queryParamCharset);
+        return ParamUtil.contactUrlParams(urlWithBase, params, queryCharsetWithDefault);
     }
+
 
     protected int getConnectionTimeoutWithDefault(int connectionTimeout){
         return config.getConnectionTimeoutWithDefault(connectionTimeout);
@@ -238,11 +257,25 @@ public abstract class AbstractConfigurableHttp {
     }
 
     protected MultiValueMap<String , String> getDefaultHeaders(){
-        return config.headerHolder().getHeaders();
+        MultiValueMap<String, String> headers = config.headerHolder().getHeaders();
+        if(null == headers){
+            return null;
+        }
+        //clone一份，防止全局设置被修改
+        final ArrayListMultiValueMap<String, String> temp = new ArrayListMultiValueMap<>(headers.size());
+        headers.forEachKeyValue(temp::add);
+        return temp;
     }
 
     protected MultiValueMap<String , String> getDefaultQueryParams(){
-        return config.queryParamHolder().getParams();
+        MultiValueMap<String, String> params = config.queryParamHolder().getParams();
+        if(null == params){
+            return null;
+        }
+        //clone一份，防止全局设置被修改
+        final ArrayListMultiValueMap<String, String> temp = new ArrayListMultiValueMap<>(params.size());
+        params.forEachKeyValue(temp::add);
+        return temp;
     }
 
     /**

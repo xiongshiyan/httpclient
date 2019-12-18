@@ -33,16 +33,10 @@ public interface HttpRequest {
     boolean REDIRECTABLE = true;
 
     /**
-     * 请求的URL：已经处理了route和query的
+     * 请求的URL
      * @return 请求的URL
      */
     String getUrl();
-
-    /**
-     * 获取原始的URL，设置的什么就是什么
-     * @return 原始的URL
-     */
-    String getOriginalUrl();
 
     /**
      * 设置URL

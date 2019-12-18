@@ -30,10 +30,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         InputStream inputStream = null;
         try {
             //1.获取连接
-            /// ParamHolder queryParamHolder = httpRequest.queryParamHolder();
-            /// RouteParamHolder routeParamHolder = httpRequest.routeParamHolder();
-            /// String completedUrl = handleUrlIfNecessary(httpRequest.getUrl() , routeParamHolder.getMap() , queryParamHolder.getParams() , queryParamHolder.getParamCharset());
-            String completedUrl = handleUrlIfNecessary(httpRequest.getUrl());
+            String completedUrl = handleUrlIfNecessary(httpRequest);
             //初始化connection
             connection = createAndConfigConnection(httpRequest, method , completedUrl);
 
