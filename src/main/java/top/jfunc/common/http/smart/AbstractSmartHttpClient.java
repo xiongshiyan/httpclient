@@ -144,6 +144,8 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         //设置忽略响应体
         httpRequest.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
 
+        /// trace没有body
+        /*
         ContentCallback<CC> contentCallback = null;
         if(httpRequest instanceof StringBodyRequest){
             StringBodyRequest stringBodyRequest = (StringBodyRequest) httpRequest;
@@ -151,8 +153,8 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
             stringBodyRequest.setBodyCharset(bodyCharset);
             String body = stringBodyRequest.getBody();
             contentCallback = bodyContentCallback(Method.TRACE ,body, bodyCharset, httpRequest.getContentType());
-        }
-        return template(httpRequest, Method.TRACE , contentCallback, resultCallback);
+        }*/
+        return template(httpRequest, Method.TRACE , null, resultCallback);
     }
 
 
