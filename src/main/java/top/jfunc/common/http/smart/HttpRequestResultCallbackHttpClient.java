@@ -18,50 +18,50 @@ import java.io.IOException;
 public interface HttpRequestResultCallbackHttpClient {
     /**
      * GET方法，用于获取某个资源
-     * @param request 请求参数
+     * @param httpRequest 请求参数
      * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    <R> R get(HttpRequest request, ResultCallback<R> resultCallback) throws IOException;
+    <R> R get(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * POST方法，用于新增
-     * @param request 请求参数
+     * @param stringBodyRequest 请求参数
      * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    <R> R post(StringBodyRequest request, ResultCallback<R> resultCallback) throws IOException;
+    <R> R post(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * POST方法，对form表单的语义化支持
-     * @param request 请求参数
+     * @param formRequest 请求参数
      * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    <R> R form(FormRequest request, ResultCallback<R> resultCallback) throws IOException;
+    <R> R form(FormRequest formRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * 下载文件
-     * @param request 请求参数
+     * @param downloadRequest 请求参数
      * @param resultCallback 处理返回值
      * @return File 下载的文件
      * @throws IOException IOException
      */
-    default <R> R download(DownloadRequest request, ResultCallback<R> resultCallback) throws IOException{
-        return get(request , resultCallback);
+    default <R> R download(DownloadRequest downloadRequest, ResultCallback<R> resultCallback) throws IOException{
+        return get(downloadRequest , resultCallback);
     }
 
     /**
      * 文件上传
-     * @param request 请求参数
+     * @param uploadRequest 请求参数
      * @param resultCallback 处理返回值
      * @return Response
      * @throws IOException IOException
      */
-    <R> R upload(UploadRequest request, ResultCallback<R> resultCallback) throws IOException;
+    <R> R upload(UploadRequest uploadRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * 接口对其他http方法的支持
@@ -110,24 +110,24 @@ public interface HttpRequestResultCallbackHttpClient {
      * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @see SmartHttpClient#post(StringBodyRequest)
      * @see Method#PUT
-     * @param httpRequest 请求参数
+     * @param stringBodyRequest 请求参数
      * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R put(StringBodyRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
+    <R> R put(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * PATCH方法，用于部分更新
      * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @see SmartHttpClient#post(StringBodyRequest)
      * @see Method#PATCH
-     * @param httpRequest 请求参数
+     * @param stringBodyRequest 请求参数
      * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R patch(StringBodyRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
+    <R> R patch(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException;
 
     /**
      * DELETE方法，用于删除某个资源

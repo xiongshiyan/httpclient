@@ -23,16 +23,17 @@ import java.io.IOException;
 public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC> {
 
     @Override
-    public <R> R get(HttpRequest request , ResultCallback<R> resultCallback) throws IOException {
-        return template(request, Method.GET , null , resultCallback);
+    public <R> R get(HttpRequest httpRequest , ResultCallback<R> resultCallback) throws IOException {
+        return template(httpRequest, Method.GET , null , resultCallback);
     }
 
     @Override
-    public <R> R post(StringBodyRequest request , ResultCallback<R> resultCallback) throws IOException {
-        String body = request.getBody();
-        String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
-        return template(request, Method.POST ,
-                bodyContentCallback(Method.POST , body, bodyCharset, request.getContentType()) ,
+    public <R> R post(StringBodyRequest stringBodyRequest , ResultCallback<R> resultCallback) throws IOException {
+        String bodyCharset = calculateBodyCharset(stringBodyRequest.getBodyCharset(), stringBodyRequest.getContentType());
+        stringBodyRequest.setBodyCharset(bodyCharset);
+        String body = stringBodyRequest.getBody();
+        return template(stringBodyRequest, Method.POST ,
+                bodyContentCallback(Method.POST , body, bodyCharset, stringBodyRequest.getContentType()) ,
                 resultCallback);
     }
 
@@ -42,30 +43,31 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
      * @see FormRequest
      */
     @Override
-    public <R> R form(FormRequest request, ResultCallback<R> resultCallback) throws IOException{
-        return post(request , resultCallback);
+    public <R> R form(FormRequest formRequest, ResultCallback<R> resultCallback) throws IOException{
+        return post(formRequest , resultCallback);
     }
 
     @Override
-    public <R> R upload(UploadRequest request , ResultCallback<R> resultCallback) throws IOException {
-        return template(request , Method.POST ,
-                uploadContentCallback(request.getFormParams(),
-                        calculateBodyCharset(request.getParamCharset() , request.getContentType()),
-                        request.getFormFiles()) , resultCallback);
+    public <R> R upload(UploadRequest uploadRequest , ResultCallback<R> resultCallback) throws IOException {
+        return template(uploadRequest , Method.POST ,
+                uploadContentCallback(uploadRequest.getFormParams(),
+                        calculateBodyCharset(uploadRequest.getParamCharset() , uploadRequest.getContentType()),
+                        uploadRequest.getFormFiles()) , resultCallback);
     }
 
     /*------------------------HTTP方法通用支持---------------------------*/
 
     @Override
-    public <R> R http(HttpRequest request, Method method, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
         ContentCallback<CC> contentCallback = null;
-        if(method.hasContent() && request instanceof StringBodyRequest){
-            StringBodyRequest bodyRequest = (StringBodyRequest) request;
-            String body = bodyRequest.getBody();
-            String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
-            contentCallback = bodyContentCallback(method ,body, bodyCharset, request.getContentType());
+        if(method.hasContent() && httpRequest instanceof StringBodyRequest){
+            StringBodyRequest stringBodyRequest = (StringBodyRequest) httpRequest;
+            String bodyCharset = calculateBodyCharset(stringBodyRequest.getBodyCharset() , stringBodyRequest.getContentType());
+            stringBodyRequest.setBodyCharset(bodyCharset);
+            String body = stringBodyRequest.getBody();
+            contentCallback = bodyContentCallback(method ,body, bodyCharset, httpRequest.getContentType());
         }
-        return template(request, method , contentCallback, resultCallback);
+        return template(httpRequest, method , contentCallback, resultCallback);
     }
 
 
@@ -99,11 +101,12 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------PUT---------------------------*/
 
     @Override
-    public <R> R put(StringBodyRequest request, ResultCallback<R> resultCallback) throws IOException {
-        String body = request.getBody();
-        String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
-        return template(request, Method.PUT ,
-                bodyContentCallback(Method.PUT , body, bodyCharset, request.getContentType()) ,
+    public <R> R put(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException {
+        String bodyCharset = calculateBodyCharset(stringBodyRequest.getBodyCharset(), stringBodyRequest.getContentType());
+        stringBodyRequest.setBodyCharset(bodyCharset);
+        String body = stringBodyRequest.getBody();
+        return template(stringBodyRequest, Method.PUT ,
+                bodyContentCallback(Method.PUT , body, bodyCharset, stringBodyRequest.getContentType()) ,
                 resultCallback);
     }
 
@@ -112,11 +115,12 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------PATCH---------------------------*/
 
     @Override
-    public <R> R patch(StringBodyRequest request, ResultCallback<R> resultCallback) throws IOException {
-        String body = request.getBody();
-        String bodyCharset = calculateBodyCharset(request.getBodyCharset(), request.getContentType());
-        return template(request, Method.PATCH ,
-                bodyContentCallback(Method.PATCH , body, bodyCharset, request.getContentType()) ,
+    public <R> R patch(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException {
+        String bodyCharset = calculateBodyCharset(stringBodyRequest.getBodyCharset(), stringBodyRequest.getContentType());
+        stringBodyRequest.setBodyCharset(bodyCharset);
+        String body = stringBodyRequest.getBody();
+        return template(stringBodyRequest, Method.PATCH ,
+                bodyContentCallback(Method.PATCH , body, bodyCharset, stringBodyRequest.getContentType()) ,
                 resultCallback);
     }
 
@@ -134,20 +138,21 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     /*------------------------TRACE---------------------------*/
 
     @Override
-    public <R> R trace(HttpRequest request, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R trace(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
         //必须要响应头
-        request.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
+        httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
         //设置忽略响应体
-        request.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
+        httpRequest.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
 
         ContentCallback<CC> contentCallback = null;
-        if(request instanceof StringBodyRequest){
-            StringBodyRequest bodyRequest = (StringBodyRequest) request;
-            String body = bodyRequest.getBody();
-            String bodyCharset = calculateBodyCharset(bodyRequest.getBodyCharset() , bodyRequest.getContentType());
-            contentCallback = bodyContentCallback(Method.TRACE ,body, bodyCharset, request.getContentType());
+        if(httpRequest instanceof StringBodyRequest){
+            StringBodyRequest stringBodyRequest = (StringBodyRequest) httpRequest;
+            String bodyCharset = calculateBodyCharset(stringBodyRequest.getBodyCharset() , stringBodyRequest.getContentType());
+            stringBodyRequest.setBodyCharset(bodyCharset);
+            String body = stringBodyRequest.getBody();
+            contentCallback = bodyContentCallback(Method.TRACE ,body, bodyCharset, httpRequest.getContentType());
         }
-        return template(request, Method.TRACE , contentCallback, resultCallback);
+        return template(httpRequest, Method.TRACE , contentCallback, resultCallback);
     }
 
 

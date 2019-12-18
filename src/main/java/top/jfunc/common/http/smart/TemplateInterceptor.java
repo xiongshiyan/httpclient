@@ -11,21 +11,21 @@ import java.util.Objects;
 public interface TemplateInterceptor {
     /**
      * 对请求参数拦截处理 , 比如统一添加header , 参数加密 , 默认不处理
-     * @param request Request
+     * @param httpRequest Request
      * @return Request
      */
-    default <T extends HttpRequest> T beforeTemplate(T request){
-        return Objects.requireNonNull(request);
+    default <T extends HttpRequest> T beforeTemplate(T httpRequest){
+        return Objects.requireNonNull(httpRequest);
     }
 
     /**
      * 对返回结果拦截处理 , 比如统一解密 , 默认不处理
-     * @param request Request
+     * @param httpRequest Request
      * @param response Response
      * @return Response
      * @throws IOException IOException
      */
-    default <R> R afterTemplate(HttpRequest request, R response) throws IOException{
+    default <R> R afterTemplate(HttpRequest httpRequest, R response) throws IOException{
         return response;
     }
 }

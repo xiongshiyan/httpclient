@@ -21,73 +21,73 @@ import java.io.IOException;
 public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , UnpackedParameterHttpClient, ConfigAccessor {
     /**
      * GET方法，用于获取某个资源
-     * @param request 请求参数
+     * @param httpRequest 请求参数
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    default Response get(HttpRequest request) throws IOException{
-        return get(request, Response::with);
+    default Response get(HttpRequest httpRequest) throws IOException{
+        return get(httpRequest, Response::with);
     }
 
     /**
      * 下载为字节数组
      * 也可以使用{@link SmartHttpClient#get(HttpRequest)}得到，再根据{@link Response#asBytes()}达到相同的效果
-     * @param request 请求参数
+     * @param httpRequest 请求参数
      * @return byte[]
      * @throws IOException IOException
      */
-    default byte[] getAsBytes(HttpRequest request) throws IOException{
-        return get(request, (s, b, r, h) -> IoUtil.stream2Bytes(b));
+    default byte[] getAsBytes(HttpRequest httpRequest) throws IOException{
+        return get(httpRequest, (s, b, r, h) -> IoUtil.stream2Bytes(b));
     }
 
     /**
      * 下载文件
-     * @param request 请求参数
+     * @param downloadRequest 请求参数
      * @return File 下载的文件
      * @throws IOException IOException
      */
-    default File getAsFile(DownloadRequest request) throws IOException{
-        return download(request);
+    default File getAsFile(DownloadRequest downloadRequest) throws IOException{
+        return download(downloadRequest);
     }
 
     /**
      * POST方法，用于新增
-     * @param request 请求参数
+     * @param stringBodyRequest 请求参数
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    default Response post(StringBodyRequest request) throws IOException{
-        return post(request , Response::with);
+    default Response post(StringBodyRequest stringBodyRequest) throws IOException{
+        return post(stringBodyRequest , Response::with);
     }
 
     /**
      * POST方法，对form表单的语义化支持
-     * @param request 请求参数
+     * @param formRequest 请求参数
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    default Response form(FormRequest request) throws IOException{
-        return form(request , Response::with);
+    default Response form(FormRequest formRequest) throws IOException{
+        return form(formRequest , Response::with);
     }
 
     /**
      * 下载文件
-     * @param request 请求参数
+     * @param downloadRequest 请求参数
      * @return File 下载的文件
      * @throws IOException IOException
      */
-    default File download(DownloadRequest request) throws IOException{
-        return download(request , (s, b, r, h) -> IoUtil.copy2File(b, request.getFile()));
+    default File download(DownloadRequest downloadRequest) throws IOException{
+        return download(downloadRequest , (s, b, r, h) -> IoUtil.copy2File(b, downloadRequest.getFile()));
     }
 
     /**
      * 文件上传
-     * @param request 请求参数
+     * @param uploadRequest 请求参数
      * @return Response
      * @throws IOException IOException
      */
-    default Response upload(UploadRequest request) throws IOException{
-        return upload(request , Response::with);
+    default Response upload(UploadRequest uploadRequest) throws IOException{
+        return upload(uploadRequest , Response::with);
     }
 
     /**
@@ -111,8 +111,8 @@ public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , U
     default Response put(StringBodyRequest httpRequest) throws IOException{
         return put(httpRequest , Response::with);
     }
-    default Response patch(StringBodyRequest httpRequest) throws IOException{
-        return patch(httpRequest , Response::with);
+    default Response patch(StringBodyRequest stringBodyRequest) throws IOException{
+        return patch(stringBodyRequest , Response::with);
     }
     default Response delete(HttpRequest httpRequest) throws IOException{
         return delete(httpRequest, Response::with);
