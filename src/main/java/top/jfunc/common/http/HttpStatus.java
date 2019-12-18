@@ -217,8 +217,8 @@ public final class HttpStatus {
      * @return true if 301|302|303
      */
     public static boolean needRedirect(int statusCode){
-        return HttpStatus.HTTP_MOVED_PERM == statusCode
-                || HttpStatus.HTTP_MOVED_TEMP == statusCode
-                || HttpStatus.HTTP_SEE_OTHER == statusCode;
+        return HTTP_MOVED_PERM == statusCode
+                || HTTP_MOVED_TEMP == statusCode
+                || HTTP_SEE_OTHER == statusCode;
     }
 }

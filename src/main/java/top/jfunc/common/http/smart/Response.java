@@ -1,19 +1,19 @@
 package top.jfunc.common.http.smart;
 
 
+import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.string.FromStringHandler;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.*;
 import java.util.List;
 import java.util.Objects;
-
-import static top.jfunc.common.http.HttpConstants.DEFAULT_CHARSET;
 
 /**
  * @author xiongshiyan at 2017/12/9
@@ -30,7 +30,7 @@ public class Response implements Closeable{
     /**
      * 返回体编码
      */
-    private String resultCharset = DEFAULT_CHARSET;
+    private String resultCharset = HttpConstants.DEFAULT_CHARSET;
     /**
      * 返回的header
      */
@@ -116,7 +116,7 @@ public class Response implements Closeable{
     }
 
     public List<String> getHeader(String key) {
-        if(null == headers || headers.isEmpty()){
+        if(MapUtil.isEmpty(headers)){
             return null;
         }
         return headers.get(key);
@@ -125,7 +125,7 @@ public class Response implements Closeable{
         return getFirstHeader(key);
     }
     public String getFirstHeader(String key) {
-        if(null == headers || headers.isEmpty()){
+        if(MapUtil.isEmpty(headers)){
             return null;
         }
         return headers.getFirst(key);

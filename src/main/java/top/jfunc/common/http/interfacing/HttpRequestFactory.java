@@ -11,6 +11,7 @@ import top.jfunc.common.http.holderrequest.impl.HolderCommonRequest;
 import top.jfunc.common.http.holderrequest.impl.HolderFormBodyRequest;
 import top.jfunc.common.http.holderrequest.impl.HolderUpLoadRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.lang.annotation.Annotation;
@@ -510,7 +511,7 @@ class HttpRequestFactory implements RequestFactory {
      * 解析方法上的Headers注解，用于静态header 形如 @Headers("k1:v1" , "k2:v2")
      */
     private MultiValueMap<String , String> parseHeaders(String[] headers) {
-        if(null == headers || 0 == headers.length){
+        if(ArrayUtil.isEmpty(headers)){
             return null;
         }
         MultiValueMap<String , String> h = new ArrayListMultiValueMap<>(headers.length);

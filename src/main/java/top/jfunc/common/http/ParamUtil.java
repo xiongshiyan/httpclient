@@ -48,7 +48,7 @@ public class ParamUtil {
      * @param value 键值对
      */
     public static String contactMap(Map<String, String> value , final String valueCharset){
-        if(null == value || value.isEmpty()){return BLANK;}
+        if(MapUtil.isEmpty(value)){return BLANK;}
 
         Editor<String> editor = (v)-> urlEncode(v , valueCharset);
         return Joiner.on(AND).withKeyValueSeparator(EQUALS,editor).useForNull(BLANK).join(value);
@@ -77,7 +77,7 @@ public class ParamUtil {
      * @param multiValueMap 键值对
      */
     public static String contactMap(MultiValueMap<String, String> multiValueMap , final String valueCharset){
-        if(null == multiValueMap || multiValueMap.isEmpty()){return BLANK;}
+        if(MapUtil.isEmpty(multiValueMap)){return BLANK;}
 
         Set<Map.Entry<String, List<String>>> entries = multiValueMap.entrySet();
 
@@ -108,7 +108,7 @@ public class ParamUtil {
      * @return 连接后的字符串
      */
     public static String contactIterable(Iterable<Map.Entry<String, List<String>>> entries , Editor<String> valueEditor){
-        if(null == entries || !entries.iterator().hasNext()){
+        if(null == entries){
             return BLANK;
         }
 

@@ -9,6 +9,7 @@ import jodd.http.up.Uploadable;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -97,7 +98,7 @@ public class JoddUtil {
             return emptyInputStream();
         }
         byte[] bodyBytes = httpResponse.bodyBytes();
-        if(null == bodyBytes || 0 == bodyBytes.length){
+        if(ArrayUtil.isEmpty(bodyBytes)){
             return emptyInputStream();
         }
         return new ByteArrayInputStream(bodyBytes);
