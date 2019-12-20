@@ -30,7 +30,7 @@ public interface HttpRequest {
     /**
      * 支持重定向
      */
-    boolean REDIRECTABLE = true;
+    boolean FOLLOW_REDIRECTS = true;
 
     /**
      * 请求的URL
@@ -286,24 +286,14 @@ public interface HttpRequest {
      * 是否重定向
      * @return 是否重定向
      */
-    boolean isRedirectable();
+    boolean followRedirects();
 
     /**
      * 设置是否支持重定向
-     * @param redirectable 是否支持重定向
+     * @param followRedirects 是否支持重定向
      * @return this
      */
-    HttpRequest setRedirectable(boolean redirectable);
-
-    /**
-     * 快捷设置
-     * @see HttpRequest#setRedirectable(boolean)
-     * @return this
-     */
-    default HttpRequest redirectable(){
-        setRedirectable(REDIRECTABLE);
-        return this;
-    }
+    HttpRequest followRedirects(boolean followRedirects);
 
     /**
      * 代理信息

@@ -3,7 +3,6 @@ package top.jfunc.common.http.request.basic;
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
@@ -42,10 +41,6 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
      */
     private MultiValueMap<String , String> headers;
     /**
-     * header，单值
-     */
-    //private Map<String , String> overwriteHeaders;
-    /**
      * 资源类型
      */
     private String contentType = null;
@@ -75,7 +70,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     /**
      * 是否支持重定向
      */
-    private boolean redirectable = !REDIRECTABLE;
+    private boolean followRedirects = !FOLLOW_REDIRECTS;
     /**
      * 代理设置,如果有就设置
      * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
@@ -314,19 +309,13 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
-    public boolean isRedirectable() {
-        return redirectable;
+    public boolean followRedirects() {
+        return followRedirects;
     }
 
     @Override
-    public THIS setRedirectable(boolean redirectable) {
-        this.redirectable = redirectable;
-        return myself();
-    }
-
-    @Override
-    public THIS redirectable() {
-        this.redirectable = REDIRECTABLE;
+    public THIS followRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
         return myself();
     }
 

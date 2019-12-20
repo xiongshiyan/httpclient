@@ -105,7 +105,7 @@ public class Non200Test {
 
         HttpRequest request = HolderGetRequest.of("http://localhost:50000/hello301/redirect");
 
-        request.redirectable();
+        request.followRedirects(HttpRequest.FOLLOW_REDIRECTS);
 
         Response response = smartHttpClient.get(request);
         Assert.assertEquals(200 , response.getStatusCode());

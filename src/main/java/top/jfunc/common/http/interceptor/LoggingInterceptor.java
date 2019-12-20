@@ -59,7 +59,7 @@ public class LoggingInterceptor extends InterceptorAdapter{
             builder.append("resultCharset:"+httpRequest.getResultCharset()+CRLF);
             builder.append("includeResponseHeaders:"+httpRequest.isIncludeHeaders()+CRLF);
             builder.append("ignoreResponseBody:"+httpRequest.isIgnoreResponseBody()+CRLF);
-            builder.append("redirectable:"+httpRequest.isRedirectable()+CRLF);
+            builder.append("followRedirects:"+httpRequest.followRedirects()+CRLF);
 
             if(notEmpty(httpRequest.getAttributes())){
                 builder.append("attributes:"+httpRequest.getAttributes()+CRLF);

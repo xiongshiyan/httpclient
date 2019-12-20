@@ -100,7 +100,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         }
 
         //是否重定向
-        clientBuilder.followRedirects(httpRequest.isRedirectable());
+        clientBuilder.followRedirects(httpRequest.followRedirects());
 
         ////////////////////////////////////ssl处理///////////////////////////////////
         if(ParamUtil.isHttps(completedUrl)){

@@ -73,7 +73,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         request.timeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
         //是否重定向
-        request.followRedirects(httpRequest.isRedirectable());
+        request.followRedirects(httpRequest.followRedirects());
 
         //3.SSL设置
         initSSL(request , httpRequest);

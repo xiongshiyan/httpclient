@@ -26,10 +26,6 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
      */
     private HeaderHolder headerHolder = new DefaultHeaderHolder();
     /**
-     * 请求头，通过set方式
-     */
-    //private OverwriteHeaderHolder overwriteHeaderHolder = new DefaultOverwriteHeaderHolder();
-    /**
      * 资源类型
      */
     private String contentType = null;
@@ -59,7 +55,7 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     /**
      * 是否支持重定向
      */
-    private boolean redirectable = !REDIRECTABLE;
+    private boolean followRedirects = !FOLLOW_REDIRECTS;
     /**
      * SSL相关设置
      */
@@ -171,25 +167,6 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
         return myself();
     }
 
-
-    ///
-    /*@Override
-    public OverwriteHeaderHolder overwriteHeaderHolder() {
-        return overwriteHeaderHolder;
-    }
-
-    @Override
-    public THIS putOverwriteHeader(String key, String value) {
-        overwriteHeaderHolder.put(key, value);
-        return myself();
-    }
-
-    @Override
-    public THIS putOverwriteHeaders(Map<String, String> headers) {
-        overwriteHeaderHolder().setMap(headers);
-        return myself();
-    }*/
-
     @Override
     public THIS setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
@@ -233,18 +210,8 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     }
 
     @Override
-    public THIS setRedirectable(boolean redirectable) {
-        this.redirectable = redirectable;
-        //要支持重定向必须header
-        if(redirectable){
-            this.includeHeaders = true;
-        }
-        return myself();
-    }
-
-    @Override
-    public THIS redirectable() {
-        setRedirectable(REDIRECTABLE);
+    public THIS followRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
         return myself();
     }
 
@@ -296,8 +263,8 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     }
 
     @Override
-    public boolean isRedirectable() {
-        return redirectable;
+    public boolean followRedirects() {
+        return followRedirects;
     }
 
     @Override

@@ -72,7 +72,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     public <R> R afterTemplate(HttpRequest httpRequest, R response) throws IOException {
         //1.设置支持重定向
         //2.返回值是Response
-        if(httpRequest.isRedirectable() && response instanceof Response){
+        if(httpRequest.followRedirects() && response instanceof Response){
             Response resp = (Response) response;
             if (resp.needRedirect()) {
                 return (R)get(GetRequest.of(resp.getRedirectUrl()));
@@ -108,7 +108,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         connection.setReadTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
         ///HttpUrlConnection的重定向貌似很多bug，自己来实现
-        ///connection.setInstanceFollowRedirects(httpRequest.isRedirectable());
+        ///connection.setInstanceFollowRedirects(httpRequest.followRedirects());
 
         return connection;
     }
@@ -161,7 +161,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     protected MultiValueMap<String, String> parseResponseHeaders(Object source, HttpRequest httpRequest) {
         boolean includeHeaders = httpRequest.isIncludeHeaders();
         //如果支持重定向，必须要获取headers
-        if(httpRequest.isRedirectable()){
+        if(httpRequest.followRedirects()){
             includeHeaders = true;
         }
         return NativeUtil.parseHeaders((HttpURLConnection)source , includeHeaders);

@@ -215,36 +215,6 @@ public interface HolderHttpRequest extends HttpRequest {
     }
 
     /**
-     * 获取到 {@link HeaderHolder} 可以对Header完全接管处理
-     * 用于处理重写的header，set方式处理
-     * @see HolderHttpRequest#headerHolder()
-     * @return HeaderHolder must not be null
-     */
-    //OverwriteHeaderHolder overwriteHeaderHolder();
-
-    /**
-     * 提供便捷的设置header的方法
-     * @param key key
-     * @param value value
-     * @return this
-     */
-    /*@Override
-    default HolderHttpRequest putOverwriteHeader(String key, String value){
-        overwriteHeaderHolder().put(key, value);
-        return this;
-    }*/
-
-    /**
-     * 提供便捷的设置header的方法
-     * @param headers 多个header
-     * @return this
-     */
-    /*default HolderHttpRequest putOverwriteHeaders(Map<String, String> headers){
-        overwriteHeaderHolder().setMap(headers);
-        return this;
-    }*/
-
-    /**
      * SSL相关设置的处理器
      * @return SSLHolder must not be null
      */
@@ -278,6 +248,7 @@ public interface HolderHttpRequest extends HttpRequest {
     }
     /**
      * 设置 HostNameVerifier
+     * @param hostnameVerifier HostNameVerifier
      * @return this
      */
     @Override
@@ -295,6 +266,7 @@ public interface HolderHttpRequest extends HttpRequest {
     }
     /**
      * 设置SSLContext
+     * @param sslContext SSLContext
      * @return this
      */
     @Override
@@ -320,6 +292,7 @@ public interface HolderHttpRequest extends HttpRequest {
     }
     /**
      * 设置 X509TrustManager
+     * @param x509TrustManager X509TrustManager
      * @return this
      */
     @Override
