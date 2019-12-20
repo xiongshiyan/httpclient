@@ -1,6 +1,5 @@
 package top.jfunc.common.http.util;
 
-import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
@@ -18,6 +17,8 @@ import java.net.HttpURLConnection;
 
 import static top.jfunc.common.http.HttpConstants.CRLF;
 import static top.jfunc.common.http.HttpConstants.TWO_HYPHENS;
+import static top.jfunc.common.http.HttpStatus.HTTP_BAD_REQUEST;
+import static top.jfunc.common.http.HttpStatus.HTTP_OK;
 import static top.jfunc.common.http.base.StreamUtil.emptyInputStream;
 
 /**
@@ -156,7 +157,7 @@ public class NativeUtil {
         }
 
         InputStream inputStream;
-        if(HttpStatus.isSuccess(statusCode)){
+        if(hasInputStream(statusCode)){
             inputStream = connect.getInputStream();
         }else {
             inputStream = connect.getErrorStream();
@@ -166,6 +167,14 @@ public class NativeUtil {
         }
         return inputStream;
     }
+
+    /**
+     * 200(包含)-400(不包含)之间的响应码，可以调用{@link HttpURLConnection#getInputStream()}，否则只能调用{@link HttpURLConnection#getErrorStream()}
+     */
+    private static boolean hasInputStream(int statusCode){
+        return statusCode >= HTTP_OK && statusCode < HTTP_BAD_REQUEST;
+    }
+
 
     /**
      * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build()
