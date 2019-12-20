@@ -99,6 +99,9 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             clientBuilder.proxy(proxyInfo.getProxy());
         }
 
+        //是否重定向
+        clientBuilder.followRedirects(httpRequest.isRedirectable());
+
         ////////////////////////////////////ssl处理///////////////////////////////////
         if(ParamUtil.isHttps(completedUrl)){
             initSSL(clientBuilder , httpRequest);

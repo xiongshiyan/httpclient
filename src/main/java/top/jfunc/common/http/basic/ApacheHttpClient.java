@@ -106,7 +106,7 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
-        return getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext);
+        return getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext , false);
     }
 
     @Override

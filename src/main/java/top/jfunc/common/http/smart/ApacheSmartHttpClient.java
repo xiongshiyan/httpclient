@@ -101,7 +101,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
-        return getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext);
+        return getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext , httpRequest.isRedirectable());
     }
 
     @Override

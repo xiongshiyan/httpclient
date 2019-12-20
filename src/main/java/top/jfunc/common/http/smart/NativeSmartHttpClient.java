@@ -6,6 +6,7 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.basic.GetRequest;
 import top.jfunc.common.http.util.NativeUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -66,6 +67,23 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R afterTemplate(HttpRequest httpRequest, R response) throws IOException {
+        //1.设置支持重定向
+        //2.返回值是Response
+        if(httpRequest.isRedirectable() && response instanceof Response){
+            Response resp = (Response) response;
+            if (resp.needRedirect()) {
+                return (R)get(GetRequest.of(resp.getRedirectUrl()));
+            }else {
+                return response;
+            }
+        }
+
+        return response;
+    }
+
     protected HttpURLConnection createAndConfigConnection(HttpRequest httpRequest , Method method , String completedUrl) throws Exception{
         URL url = new URL(completedUrl);
         //1.1如果需要则设置代理
@@ -88,6 +106,9 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         connection.setRequestMethod(method.name());
         connection.setConnectTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
         connection.setReadTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
+
+        ///HttpUrlConnection的重定向貌似很多bug，自己来实现
+        ///connection.setInstanceFollowRedirects(httpRequest.isRedirectable());
 
         return connection;
     }
@@ -138,7 +159,12 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     @Override
     protected MultiValueMap<String, String> parseResponseHeaders(Object source, HttpRequest httpRequest) {
-        return NativeUtil.parseHeaders((HttpURLConnection)source , httpRequest.isIncludeHeaders());
+        boolean includeHeaders = httpRequest.isIncludeHeaders();
+        //如果支持重定向，必须要获取headers
+        if(httpRequest.isRedirectable()){
+            includeHeaders = true;
+        }
+        return NativeUtil.parseHeaders((HttpURLConnection)source , includeHeaders);
     }
 
     @Override

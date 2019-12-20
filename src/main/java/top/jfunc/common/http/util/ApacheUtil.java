@@ -80,11 +80,11 @@ public class ApacheUtil {
     /**
      * https://ss.xx.xx.ss:8080/dsda
      */
-    public static HttpClientBuilder getCloseableHttpClientBuilder(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
-        return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext);
+    public static HttpClientBuilder getCloseableHttpClientBuilder(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws Exception{
+        return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext , redirectable);
     }
 
-    public static HttpClientBuilder createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext) throws Exception{
+    public static HttpClientBuilder createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws Exception{
         String hostname = url.split(SPLASH)[2];
         boolean isHttps = ParamUtil.isHttps(url);
         int port = isHttps ? 443 : 80;
@@ -120,10 +120,14 @@ public class ApacheUtil {
                 .setConnectionManager(cm)
                 .setRetryHandler(httpRequestRetryHandler);
 
+        //是否重定向
+        if(!redirectable){
+            httpClientBuilder.disableRedirectHandling();
+        }
+
         if(isHttps){
             initSSL(httpClientBuilder , hostnameVerifier , sslContext);
         }
-
         return httpClientBuilder;
     }
 
