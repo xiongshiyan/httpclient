@@ -134,7 +134,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         ///1.如果要支持cookie，必须读取header
         if(supportCookie()){
             //includeHeaders = HttpRequest.INCLUDE_HEADERS;
-            httpRequest.includeHeaders();
+            httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
         }
         //2.从响应中获取headers
         MultiValueMap<String, String> responseHeaders = parseResponseHeaders(source, httpRequest);

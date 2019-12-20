@@ -192,20 +192,8 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     }
 
     @Override
-    public THIS includeHeaders() {
-        setIncludeHeaders(INCLUDE_HEADERS);
-        return myself();
-    }
-
-    @Override
     public THIS setIgnoreResponseBody(boolean ignoreResponseBody) {
         this.ignoreResponseBody = ignoreResponseBody;
-        return myself();
-    }
-
-    @Override
-    public THIS ignoreResponseBody() {
-        setIgnoreResponseBody(IGNORE_RESPONSE_BODY);
         return myself();
     }
 

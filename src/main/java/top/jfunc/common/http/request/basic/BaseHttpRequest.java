@@ -286,12 +286,6 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
-    public THIS includeHeaders() {
-        this.includeHeaders = INCLUDE_HEADERS;
-        return myself();
-    }
-
-    @Override
     public boolean isIgnoreResponseBody() {
         return ignoreResponseBody;
     }
@@ -299,12 +293,6 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     @Override
     public THIS setIgnoreResponseBody(boolean ignoreResponseBody) {
         this.ignoreResponseBody = ignoreResponseBody;
-        return myself();
-    }
-
-    @Override
-    public THIS ignoreResponseBody() {
-        this.ignoreResponseBody = IGNORE_RESPONSE_BODY;
         return myself();
     }
 
