@@ -197,7 +197,7 @@ public abstract class AbstractConfigurableHttp {
     }
 
     /**
-     * bodyCharset->contentType->全局默认
+     * bodyCharset[StringHttpRequest中显式地设置为null]->contentType->全局默认
      */
     public String calculateBodyCharset(String bodyCharset , String contentType){
         //本身是可以的
