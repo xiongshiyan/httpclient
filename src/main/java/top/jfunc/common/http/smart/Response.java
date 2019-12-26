@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * 代表请求的响应，封装statusCode、body、headers
  * @author xiongshiyan at 2017/12/9
  */
 public class Response implements Closeable{
@@ -43,15 +44,11 @@ public class Response implements Closeable{
         this.headers = headers;
     }
 
-    public static Response with(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers){
-        try {
-            return new Response(statusCode ,
-                    null == inputStream ? new byte[]{} : IoUtil.stream2Bytes(inputStream) ,
-                    resultCharset ,
-                    headers);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static Response with(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
+        return new Response(statusCode ,
+                null == inputStream ? new byte[]{} : IoUtil.stream2Bytes(inputStream) ,
+                resultCharset ,
+                headers);
     }
 
     public byte[] asBytes() {

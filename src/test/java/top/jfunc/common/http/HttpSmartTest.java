@@ -321,7 +321,7 @@ public class HttpSmartTest {
     }
 
     @Test
-    public void testResponse(){
+    public void testResponse() throws IOException{
         Response response = Response.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
         SomeBean someBean = response.as(SomeBean.class, (s , c)->{
                     Assert.assertEquals("ss", s);
@@ -332,7 +332,7 @@ public class HttpSmartTest {
         Assert.assertEquals("ss" , someBean.getSs());
     }
     @Test
-    public void testResponse2(){
+    public void testResponse2() throws IOException{
         Response response = Response.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
         SomeBean someBean = response.asT(SomeBean.class, new FromString() {
                     @Override
