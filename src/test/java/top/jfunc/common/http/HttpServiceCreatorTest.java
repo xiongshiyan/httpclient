@@ -12,6 +12,7 @@ import top.jfunc.common.http.smart.ApacheSmartHttpClient;
 import top.jfunc.common.http.smart.Response;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,13 +104,13 @@ public class HttpServiceCreatorTest {
         System.out.println(formMap);
     }
     @Test
-    public void testUpload(){
+    public void testUpload() throws IOException{
         FormFile formFile = new FormFile(new File("F:\\xiongshiyan\\material\\构建工具\\Grunt\\code\\自动化构建工具说明.txt") , "file",null);
         Response upload = jfunc.upload(formFile);
         System.out.println(upload);
     }
     @Test
-    public void testUploadWithParam(){
+    public void testUploadWithParam() throws IOException{
         FormFile formFile = new FormFile(new File("F:\\xiongshiyan\\material\\构建工具\\Grunt\\code\\自动化构建工具说明.txt") , "file",null);
         Response upload = jfunc.uploadWithParam("xxxxxxx" , 12 , formFile);
         System.out.println(upload);

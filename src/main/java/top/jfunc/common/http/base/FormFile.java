@@ -23,20 +23,14 @@ public class FormFile {
     public static FormFile of(String filName, byte[] data, String parameterName, String contentType){
         return new FormFile(filName , data , parameterName , contentType);
     }
-    public static FormFile of(File file, String parameterName, String contentType){
+    public static FormFile of(File file, String parameterName, String contentType) throws IOException{
         return new FormFile(file , parameterName , contentType);
     }
     public static FormFile of(String fileName, InputStream inStream, long fileLen, String parameterName, String contentType){
         return new FormFile(fileName , inStream , fileLen , parameterName , contentType);
     }
-    public static FormFile of(String fileName, InputStream inStream, String parameterName, String contentType){
-        int available;
-        try {
-            available = inStream.available();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new FormFile(fileName , inStream , available , parameterName , contentType);
+    public static FormFile of(String fileName, InputStream inStream, String parameterName, String contentType) throws IOException{
+        return new FormFile(fileName , inStream , inStream.available() , parameterName , contentType);
     }
     public FormFile(String filName, byte[] data, String parameterName, String contentType){
         this.inStream = new ByteArrayInputStream(data);
@@ -45,13 +39,9 @@ public class FormFile {
 
 
 
-    public FormFile(File file, String parameterName, String contentType) {
-        try {
-            this.inStream = new FileInputStream(file);
-            init(file.getName() , file.length() , parameterName , contentType);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public FormFile(File file, String parameterName, String contentType) throws IOException{
+        this.inStream = new FileInputStream(file);
+        init(file.getName() , file.length() , parameterName , contentType);
     }
 
     public FormFile(String fileName, InputStream inStream, long fileLen, String parameterName, String contentType){
