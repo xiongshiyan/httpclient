@@ -1,7 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.base.ConfigAccessor;
+import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.UnpackedParameterHttpClient;
 import top.jfunc.common.http.request.*;
@@ -18,7 +18,7 @@ import java.io.IOException;
  * @see HttpRequestResultCallbackHttpClient
  * 使用时，可以直接new实现类，也可以通过{@link top.jfunc.common.http.HttpUtil }获取，这样就不会与实现类绑定
  */
-public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , UnpackedParameterHttpClient, ConfigAccessor {
+public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , UnpackedParameterHttpClient, FreezableConfigAccessor {
     /**
      * GET方法，用于获取某个资源
      * @param httpRequest 请求参数

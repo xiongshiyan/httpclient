@@ -3,7 +3,6 @@ package top.jfunc.common.http.base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.*;
-import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.*;
 
@@ -11,8 +10,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -70,89 +67,12 @@ public abstract class AbstractConfigurableHttp {
 
 
     /**
-     * 是否支持Cookie，默认设置了CookieJar即表示支持
-     */
-    protected boolean supportCookie(){
-        return null != getCookieJar();
-    }
-
-    /**
-     * 从CookieHandler中获取Cookies
-     * @param completedUrl URL
-     * @return Cookies
-     * @throws IOException IOException
-     */
-    protected List<String> getCookies(String completedUrl , MultiValueMap<String, String> headers) throws IOException {
-        CookieJar cookieJar = getCookieJar();
-        if(null == cookieJar){
-            return null;
-        }
-        return cookieJar.loadForRequest(completedUrl , headers);
-    }
-
-    /**
-     * 保存Cookie
-     * @param completedUrl completedUrl
-     * @param responseHeaders 响应的headers
-     * @throws IOException IOException
-     */
-    protected void saveCookies(String completedUrl, MultiValueMap<String, String> responseHeaders) throws IOException {
-        CookieJar cookieJar = getCookieJar();
-        if(null == cookieJar){
-            return;
-        }
-
-        cookieJar.saveFromResponse(completedUrl , responseHeaders);
-    }
-
-    /**
-     * 如果支持Cookie，从CookieHandler中拿出来设置到Header Map中
-     * @param completedUrl URL
-     * @param requestHeaders 正常用户的Header Map
-     * @return 处理过的Header Map
-     * @throws IOException IOException
-     */
-    protected MultiValueMap<String, String> addCookieIfNecessary(String completedUrl, MultiValueMap<String, String> requestHeaders) throws IOException {
-        if(!supportCookie()){
-            return requestHeaders;
-        }
-
-        List<String> cookies = getCookies(completedUrl , requestHeaders);
-        if(CollectionUtil.isEmpty(cookies)){
-            return requestHeaders;
-        }
-
-        if(null == requestHeaders){
-            requestHeaders = new ArrayListMultiValueMap<>();
-        }
-        requestHeaders.add(HttpHeaders.COOKIE, Joiner.on(HttpConstants.SEMICOLON).join(cookies));
-
-        return requestHeaders;
-    }
-
-    /**
-     * 处理cookie相关的
-     * @param completedUrl completedUrl
-     * @param responseHeaders 响应的headers
-     * @throws IOException IOException
-     */
-    protected void saveCookieIfNecessary(String completedUrl, MultiValueMap<String, String> responseHeaders) throws IOException {
-        //存入Cookie
-        if(!supportCookie()){
-            return;
-        }
-
-        saveCookies(completedUrl, responseHeaders);
-    }
-
-    /**
      * 处理基路径和默认Query参数：注意url可能已经带Query参数了
      * @param originUrl 客户设置的url
      * @return 处理后的url
      */
     protected String handleUrlIfNecessary(String originUrl){
-        String urlWithBase = ParamUtil.concatUrlIfNecessary(getConfig().getBaseUrl() , originUrl);
-        return ParamUtil.contactUrlParams(urlWithBase, getDefaultQueryParams(), getDefaultQueryCharset());
+        return config.handleUrlIfNecessary(originUrl , null , null , null);
     }
 
     /**
@@ -167,14 +87,7 @@ public abstract class AbstractConfigurableHttp {
                                           Map<String, String> routeParams ,
                                           MultiValueMap<String, String> queryParams ,
                                           String queryParamCharset){
-        //1.处理Route参数
-        String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , routeParams);
-        //2.处理BaseUrl
-        String urlWithBase = ParamUtil.concatUrlIfNecessary(getConfig().getBaseUrl() , routeUrl);
-        //3.处理Query参数
-        MultiValueMap<String, String> params = MapUtil.mergeMap(queryParams, getDefaultQueryParams());
-        String queryCharsetWithDefault = getQueryCharsetWithDefault(queryParamCharset);
-        return ParamUtil.contactUrlParams(urlWithBase, params, queryCharsetWithDefault);
+        return config.handleUrlIfNecessary(originUrl, routeParams, queryParams, queryParamCharset);
     }
 
 
@@ -186,12 +99,6 @@ public abstract class AbstractConfigurableHttp {
         return config.getReadTimeoutWithDefault(readTimeout);
     }
 
-    protected String getQueryCharsetWithDefault(String queryCharset){
-        return config.getQueryCharsetWithDefault(queryCharset);
-    }
-    protected String getDefaultQueryCharset() {
-        return config.getDefaultQueryCharset();
-    }
     protected String getDefaultBodyCharset() {
         return config.getDefaultBodyCharset();
     }
@@ -256,36 +163,10 @@ public abstract class AbstractConfigurableHttp {
         return config.getX509TrustManagerWithDefault(x509TrustManager);
     }
 
-    protected MultiValueMap<String , String> getDefaultHeaders(){
-        MultiValueMap<String, String> headers = config.headerHolder().getHeaders();
-        if(null == headers){
-            return null;
-        }
-        //clone一份，防止全局设置被修改
-        final ArrayListMultiValueMap<String, String> temp = new ArrayListMultiValueMap<>(headers.size());
-        headers.forEachKeyValue(temp::add);
-        return temp;
-    }
-
-    protected MultiValueMap<String , String> getDefaultQueryParams(){
-        MultiValueMap<String, String> params = config.queryParamHolder().getParams();
-        if(null == params){
-            return null;
-        }
-        //clone一份，防止全局设置被修改
-        final ArrayListMultiValueMap<String, String> temp = new ArrayListMultiValueMap<>(params.size());
-        params.forEachKeyValue(temp::add);
-        return temp;
-    }
-
     /**
      * 合并默认的header
      */
     protected MultiValueMap<String , String> mergeDefaultHeaders(final MultiValueMap<String , String> headers){
-        return MapUtil.mergeMap(headers , getDefaultHeaders());
-    }
-
-    protected CookieJar getCookieJar(){
-        return config.getCookieJar();
+        return config.mergeDefaultHeaders(headers);
     }
 }

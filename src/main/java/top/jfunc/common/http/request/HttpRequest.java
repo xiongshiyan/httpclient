@@ -1,6 +1,7 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.base.ConfigAccessor;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.utils.MultiValueMap;
@@ -18,7 +19,7 @@ import java.util.Map;
  * @since 1.1.6
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface HttpRequest {
+public interface HttpRequest extends ConfigAccessor{
     /**
      * 结果包含headers
      */

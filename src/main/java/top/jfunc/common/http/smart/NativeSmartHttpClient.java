@@ -3,19 +3,16 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.basic.GetRequest;
-import top.jfunc.common.http.util.NativeUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Objects;
 
 import static top.jfunc.common.http.util.NativeUtil.*;
 
@@ -25,35 +22,40 @@ import static top.jfunc.common.http.util.NativeUtil.*;
  */
 public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<HttpURLConnection> {
 
+    private CompletedUrlCreator completedUrlCreator                                 = new DefaultCompletedUrlCreator();
+    private RequesterFactory<HttpURLConnection> httpURLConnectionFactory            = new DefaultHttpURLConnectionFactory();
+    private HeaderHandler<HttpURLConnection> httpURLConnectionHeaderHandler         = new DefaultHttpURLConnectionHeaderHandler();
+    private RequestSender<HttpURLConnection , HttpURLConnection> connectionSender   = new DefaultHttpURLConnectionSender();
+    private StreamExtractor<HttpURLConnection> httpURLConnectionStreamExtractor     = new DefaultHttpURLConnectionStreamExtractor();
+    private HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor     = new DefaultHttpURLConnectionHeaderExtractor();
+
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
             //1.获取连接
-            String completedUrl = handleUrlIfNecessary(httpRequest);
+            String completedUrl = getCompletedUrlCreator().complete(httpRequest);
+
             //初始化connection
-            connection = createAndConfigConnection(httpRequest, method , completedUrl);
+            connection = getHttpURLConnectionFactory().create(httpRequest, method , completedUrl);
 
             //2.处理header
-            configHeaders(connection , httpRequest , completedUrl);
+            getHttpURLConnectionHeaderHandler().configHeaders(connection , httpRequest , completedUrl);
 
-            //3.留给子类复写的机会:给connection设置更多参数
-            doWithConnection(connection , httpRequest);
-
-            //4.写入内容，只对post有效
+            //3.写入内容，只对post有效
             if(contentCallback != null && method.hasContent()){
                 contentCallback.doWriteWith(connection);
             }
 
-            //5.连接
-            connection.connect();
+            //4.连接
+            getConnectionSender().send(connection);
 
-            //6.获取返回值
-            inputStream = getStreamFrom(connection , httpRequest);
+            //5.获取返回值
+            inputStream = getHttpURLConnectionStreamExtractor().extract(connection , httpRequest , completedUrl);
 
-            //7.返回header,包括Cookie处理
-            MultiValueMap<String, String> responseHeaders = determineHeaders(connection, httpRequest , completedUrl);
+            //6.返回header,包括Cookie处理
+            MultiValueMap<String, String> responseHeaders = getHttpURLConnectionHeaderExtractor().extract(connection, httpRequest, completedUrl);
 
             return resultCallback.convert(connection.getResponseCode(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
@@ -84,89 +86,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         return response;
     }
 
-    protected HttpURLConnection createAndConfigConnection(HttpRequest httpRequest , Method method , String completedUrl) throws Exception{
-        URL url = new URL(completedUrl);
-        //1.1如果需要则设置代理
-        ProxyInfo proxyInfo = getProxyInfoWithDefault(httpRequest.getProxyInfo());
-        HttpURLConnection connection = (null != proxyInfo) ?
-                (HttpURLConnection)url.openConnection(proxyInfo.getProxy()) :
-                (HttpURLConnection) url.openConnection();
-
-        ////////////////////////////////////ssl处理///////////////////////////////////
-        if(connection instanceof HttpsURLConnection){
-            //默认设置这些
-            initSSL((HttpsURLConnection)connection , httpRequest);
-        }
-        ////////////////////////////////////ssl处理///////////////////////////////////
-
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        connection.setUseCaches(false);
-
-        connection.setRequestMethod(method.name());
-        connection.setConnectTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
-        connection.setReadTimeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
-
-        ///HttpUrlConnection的重定向貌似很多bug，自己来实现
-        ///connection.setInstanceFollowRedirects(httpRequest.followRedirects());
-
-        return connection;
-    }
-
-    protected void initSSL(HttpsURLConnection connection , HttpRequest httpRequest){
-        NativeUtil.initSSL(connection, getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()));
-    }
-
-    /**
-     * {@link HttpURLConnection} 自己实现了cookie的管理，所以直接返回原headers
-     * @param completedUrl URL
-     * @param headers 正常用户的Header Map
-     * @return 不改变原来的header
-     * @throws IOException IOException
-     */
-    @Override
-    protected MultiValueMap<String, String> addCookieIfNecessary(String completedUrl, MultiValueMap<String, String> headers) throws IOException {
-        return headers;
-    }
-
-    @Override
-    protected void setRequestHeaders(Object target, HttpRequest httpRequest, MultiValueMap<String, String> handledHeaders) throws IOException {
-        NativeUtil.setRequestHeaders((HttpURLConnection)target , httpRequest.getContentType() , handledHeaders);
-    }
-
-    /**子类复写增加更多设置*/
-    protected void doWithConnection(HttpURLConnection connect , HttpRequest httpRequest) throws IOException{
-        //default do nothing, give children a chance to do more config
-    }
-
-
-    protected InputStream getStreamFrom(HttpURLConnection connect , HttpRequest httpRequest) throws IOException {
-        return NativeUtil.getStreamFrom(connect, connect.getResponseCode(), httpRequest.isIgnoreResponseBody());
-    }
-
-    /**
-     * {@link HttpURLConnection} 自己实现了cookie的管理
-     * @param httpRequest HttpRequest
-     * @param responseHeaders responseHeaders
-     * @param completedUrl URL
-     * @throws IOException IOException
-     */
-    @Override
-    protected void saveCookieIfNecessary(HttpRequest httpRequest, String completedUrl, MultiValueMap<String, String> responseHeaders) throws IOException {
-        //do nothing，HttpURLConnection自己会处理
-    }
-
-    @Override
-    protected MultiValueMap<String, String> parseResponseHeaders(Object source, HttpRequest httpRequest) {
-        boolean includeHeaders = httpRequest.isIncludeHeaders();
-        //如果支持重定向，必须要获取headers
-        if(httpRequest.followRedirects()){
-            includeHeaders = true;
-        }
-        return NativeUtil.parseHeaders((HttpURLConnection)source , includeHeaders);
-    }
-
     @Override
     protected ContentCallback<HttpURLConnection> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
         return connect -> writeContent(connect , body , bodyCharset);
@@ -175,6 +94,59 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     @Override
     protected ContentCallback<HttpURLConnection> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
         return connect -> upload0(connect , params , paramCharset , formFiles);
+    }
+
+
+
+
+
+
+    public CompletedUrlCreator getCompletedUrlCreator() {
+        return completedUrlCreator;
+    }
+
+    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
+        this.completedUrlCreator = Objects.requireNonNull(completedUrlCreator);
+    }
+
+    public RequesterFactory<HttpURLConnection> getHttpURLConnectionFactory() {
+        return httpURLConnectionFactory;
+    }
+
+    public void setHttpURLConnectionFactory(RequesterFactory<HttpURLConnection> httpURLConnectionFactory) {
+        this.httpURLConnectionFactory = Objects.requireNonNull(httpURLConnectionFactory);
+    }
+
+    public HeaderHandler<HttpURLConnection> getHttpURLConnectionHeaderHandler() {
+        return httpURLConnectionHeaderHandler;
+    }
+
+    public void setHttpURLConnectionHeaderHandler(HeaderHandler<HttpURLConnection> httpURLConnectionHeaderHandler) {
+        this.httpURLConnectionHeaderHandler = httpURLConnectionHeaderHandler;
+    }
+
+    public RequestSender<HttpURLConnection, HttpURLConnection> getConnectionSender() {
+        return connectionSender;
+    }
+
+    public void setConnectionSender(RequestSender<HttpURLConnection, HttpURLConnection> connectionSender) {
+        this.connectionSender = connectionSender;
+    }
+
+    public StreamExtractor<HttpURLConnection> getHttpURLConnectionStreamExtractor() {
+        return httpURLConnectionStreamExtractor;
+    }
+
+    public void setHttpURLConnectionStreamExtractor(StreamExtractor<HttpURLConnection> httpURLConnectionStreamExtractor) {
+        this.httpURLConnectionStreamExtractor = Objects.requireNonNull(httpURLConnectionStreamExtractor);
+    }
+
+    public HeaderExtractor<HttpURLConnection> getHttpURLConnectionHeaderExtractor() {
+        return httpURLConnectionHeaderExtractor;
+    }
+
+    public void setHttpURLConnectionHeaderExtractor(HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor) {
+        this.httpURLConnectionHeaderExtractor = Objects.requireNonNull(httpURLConnectionHeaderExtractor);
     }
 
     @Override

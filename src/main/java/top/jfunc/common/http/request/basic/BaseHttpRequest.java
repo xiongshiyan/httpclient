@@ -3,6 +3,7 @@ package top.jfunc.common.http.request.basic;
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
@@ -93,6 +94,10 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
      * 属性设置
      */
     private Map<String , Object> attributes;
+
+
+    /**用于接收系统的默认设置*/
+    private Config config;
 
     public BaseHttpRequest(String url){this.url = url;}
     public BaseHttpRequest(URL url){this.url = url.toString();}
@@ -208,21 +213,6 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
             headers = new ArrayListMultiValueMap<>(2);
         }
     }
-
-    ///
-    /*@Override
-    public Map<String, String> getOverwriteHeaders() {
-        return overwriteHeaders;
-    }
-
-    @Override
-    public THIS putOverwriteHeader(String key, String value) {
-        if(null == overwriteHeaders){
-            overwriteHeaders = new HashMap<>(2);
-        }
-        overwriteHeaders.put(key, value);
-        return myself();
-    }*/
 
     @Override
     public String getContentType() {
@@ -363,5 +353,20 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     @Override
     public Map<String, Object> getAttributes() {
         return attributes;
+    }
+
+
+    @Override
+    public Config getConfig() {
+        return config;
+    }
+
+    /**
+     * HttpRequest中的config都来自于实现类的初始化，调用此方法将系统的设置传递给HttpRequest
+     * @param config config
+     */
+    @Override
+    public void setConfig(Config config) {
+        this.config = config;
     }
 }

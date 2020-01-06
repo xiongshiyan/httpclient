@@ -3,6 +3,7 @@ package top.jfunc.common.http.holderrequest.impl;
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.holderrequest.HolderHttpRequest;
@@ -70,6 +71,10 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
      * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
      */
     private ProxyInfo proxyInfo = null;
+
+
+    /**用于接收系统的默认设置*/
+    private Config config;
 
     public BaseHolderHttpRequest(String url){this.urlHolder.setUrl(url);}
     public BaseHolderHttpRequest(URL url){this.urlHolder.setUrl(url);}
@@ -274,5 +279,19 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     public THIS addAttribute(String key, String value) {
         this.attributeHolder.addAttribute(key, value);
         return myself();
+    }
+
+    @Override
+    public Config getConfig() {
+        return config;
+    }
+
+    /**
+     * HttpRequest中的config都来自于实现类的初始化，调用此方法将系统的设置传递给HttpRequest
+     * @param config config
+     */
+    @Override
+    public void setConfig(Config config) {
+        this.config = config;
     }
 }

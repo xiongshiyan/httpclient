@@ -97,18 +97,6 @@ public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnect
                 getSSLSocketFactoryWithDefault(getSSLSocketFactory()));
     }
 
-    /**
-     * {@link HttpURLConnection} 自己实现了cookie的管理，所以直接返回原headers
-     * @param completedUrl URL
-     * @param headers 正常用户的Header Map
-     * @return 不改变原来的header
-     * @throws IOException IOException
-     */
-    @Override
-    protected MultiValueMap<String, String> addCookieIfNecessary(String completedUrl, MultiValueMap<String, String> headers) throws IOException {
-        return headers;
-    }
-
     @Override
     protected void setRequestHeaders(Object target, String contentType, MultiValueMap<String, String> handledHeaders) throws IOException {
         NativeUtil.setRequestHeaders((HttpURLConnection)target , contentType , handledHeaders);
@@ -122,17 +110,6 @@ public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnect
 
     protected InputStream getStreamFrom(HttpURLConnection connect , boolean ignoreResponseBody) throws IOException {
         return NativeUtil.getStreamFrom(connect, connect.getResponseCode(), ignoreResponseBody);
-    }
-
-    /**
-     * {@link HttpURLConnection} 自己实现了cookie的管理
-     * @param responseHeaders responseHeaders
-     * @param completedUrl URL
-     * @throws IOException IOException
-     */
-    @Override
-    protected void saveCookieIfNecessary(String completedUrl, MultiValueMap<String, String> responseHeaders) throws IOException {
-        //do nothing，HttpURLConnection自己会处理
     }
 
     @Override

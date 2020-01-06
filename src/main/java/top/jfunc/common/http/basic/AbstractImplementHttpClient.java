@@ -63,7 +63,7 @@ public abstract class AbstractImplementHttpClient<CC> extends AbstractHttpClient
         MultiValueMap<String, String> requestHeaders = mergeDefaultHeaders(headers);
 
         //2.处理cookie
-        requestHeaders = addCookieIfNecessary(completedUrl, requestHeaders);
+        //requestHeaders = addCookieIfNecessary(completedUrl, requestHeaders);
 
         //3.真正设置
         setRequestHeaders(target , contentType , requestHeaders);
@@ -86,17 +86,11 @@ public abstract class AbstractImplementHttpClient<CC> extends AbstractHttpClient
      * @throws IOException IOException
      */
     protected MultiValueMap<String, String> determineHeaders(Object source, String completedUrl , boolean includeHeaders) throws IOException {
-        boolean s = includeHeaders;
-        ///1.如果要支持cookie，必须读取header
-        if(supportCookie()){
-            //includeHeaders = HttpRequest.INCLUDE_HEADERS;
-            s = true;
-        }
-        //2.从响应中获取headers
-        MultiValueMap<String, String> responseHeaders = parseResponseHeaders(source , s);
+        //1.从响应中获取headers
+        MultiValueMap<String, String> responseHeaders = parseResponseHeaders(source , includeHeaders);
 
-        //3.处理cookie
-        saveCookieIfNecessary(completedUrl , responseHeaders);
+        //2.处理cookie
+        //saveCookieIfNecessary(completedUrl , responseHeaders);
 
         return responseHeaders;
     }

@@ -6,11 +6,6 @@ package top.jfunc.common.http.base;
  */
 public interface ConfigAccessor {
     /**
-     * 冻结配置
-     */
-    void freezeConfig();
-
-    /**
      * 设置全局默认配置,不调用就用系统设置的
      * @param config config
      */

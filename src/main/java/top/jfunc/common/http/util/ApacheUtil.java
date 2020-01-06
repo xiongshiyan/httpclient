@@ -80,11 +80,11 @@ public class ApacheUtil {
     /**
      * https://ss.xx.xx.ss:8080/dsda
      */
-    public static HttpClientBuilder getCloseableHttpClientBuilder(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws Exception{
+    public static HttpClientBuilder getCloseableHttpClientBuilder(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws IOException{
         return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext , redirectable);
     }
 
-    public static HttpClientBuilder createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws Exception{
+    public static HttpClientBuilder createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws IOException{
         String hostname = url.split(SPLASH)[2];
         boolean isHttps = ParamUtil.isHttps(url);
         int port = isHttps ? 443 : 80;
@@ -269,7 +269,7 @@ public class ApacheUtil {
         }
     }
 
-    public static MultiValueMap<String , String> parseHeaders(CloseableHttpResponse response, boolean isIncludeHeaders) {
+    public static MultiValueMap<String , String> parseHeaders(HttpResponse response, boolean isIncludeHeaders) {
         if(!isIncludeHeaders){
             return new ArrayListMultiValueMap<>(0);
         }

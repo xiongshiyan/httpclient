@@ -2,16 +2,21 @@ package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
 import top.jfunc.common.http.interceptor.Interceptor;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.MapUtil;
+import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
+import java.util.Map;
 
 /**
  * 全局公共配置
@@ -252,5 +257,65 @@ public class Config {
     private boolean hasInterceptors(){
         return null != this.compositeInterceptor
                 && this.compositeInterceptor.hasInterceptors();
+    }
+
+
+    /**
+     * clone一份，防止全局设置被无意修改
+     */
+    protected MultiValueMap<String , String> getDefaultQueryParams(){
+        MultiValueMap<String, String> params = queryParamHolder().getParams();
+        if(null == params){
+            return null;
+        }
+        //clone一份，防止全局设置被修改
+        final ArrayListMultiValueMap<String, String> temp = new ArrayListMultiValueMap<>(params.size());
+        params.forEachKeyValue(temp::add);
+        return temp;
+    }
+    /**
+     * clone一份，防止全局设置被无意修改
+     */
+    public MultiValueMap<String , String> getDefaultHeaders(){
+        MultiValueMap<String, String> headers = headerHolder().getHeaders();
+        if(null == headers){
+            return null;
+        }
+        final ArrayListMultiValueMap<String, String> temp = new ArrayListMultiValueMap<>(headers.size());
+        headers.forEachKeyValue(temp::add);
+        return temp;
+    }
+
+    public MultiValueMap<String , String> mergeDefaultHeaders(final MultiValueMap<String , String> headers){
+        return MapUtil.mergeMap(headers , getDefaultHeaders());
+    }
+
+    /**
+     * 处理Route参数、BaseURL、Query参数
+     * @param originUrl 原始的URL
+     * @param routeParams 路径参数
+     * @param queryParams 查询参数
+     * @param queryParamCharset 查询参数编码
+     * @return 处理过后的URL
+     */
+    public String handleUrlIfNecessary(String originUrl ,
+                                          Map<String, String> routeParams ,
+                                          MultiValueMap<String, String> queryParams ,
+                                          String queryParamCharset){
+        //1.处理Route参数
+        String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , routeParams);
+        //2.处理BaseUrl
+        String urlWithBase = ParamUtil.concatUrlIfNecessary(getBaseUrl() , routeUrl);
+        //3.处理Query参数
+        MultiValueMap<String, String> params = MapUtil.mergeMap(queryParams, getDefaultQueryParams());
+        String queryCharsetWithDefault = getQueryCharsetWithDefault(queryParamCharset);
+        return ParamUtil.contactUrlParams(urlWithBase, params, queryCharsetWithDefault);
+    }
+
+    /**
+     * 是否支持Cookie，默认设置了CookieJar即表示支持
+     */
+    public boolean supportCookie(){
+        return null != getCookieJar();
     }
 }

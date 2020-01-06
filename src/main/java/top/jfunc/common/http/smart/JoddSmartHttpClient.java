@@ -7,11 +7,11 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.util.JoddUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import static top.jfunc.common.http.util.JoddUtil.upload0;
 
@@ -21,13 +21,21 @@ import static top.jfunc.common.http.util.JoddUtil.upload0;
  */
 public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRequest> {
 
+    private CompletedUrlCreator completedUrlCreator                   = new DefaultCompletedUrlCreator();
+    private RequesterFactory<HttpRequest> httpRequestRequesterFactory = new DefaultJoddHttpRequestFactory();
+    private HeaderHandler<HttpRequest> httpRequestHeaderHandler       = new DefaultJoddHeaderHandler();
+    private RequestSender<HttpRequest , HttpResponse> requestSender   = new DefaultJoddSender();
+    private StreamExtractor<HttpResponse> httpResponseStreamExtractor = new DefaultJoddStreamExtractor();
+    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor = new DefaultJoddHeaderExtractor();
+
     @Override
     protected <R> R doInternalTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         HttpResponse response = null;
         try {
             //1.获取完成的URL，创建请求
-            String completedUrl = handleUrlIfNecessary(httpRequest);
-            HttpRequest request = createAndConfigHttpRequest(httpRequest, method, completedUrl);
+            String completedUrl = getCompletedUrlCreator().complete(httpRequest);
+
+            HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest, method, completedUrl);
 
             //4.处理body
             if(contentCallback != null && method.hasContent()){
@@ -35,19 +43,16 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             }
 
             //5.设置header
-            configHeaders(request , httpRequest , completedUrl);
+            getHttpRequestHeaderHandler().configHeaders(request , httpRequest , completedUrl);
 
-            //6.子类可以复写
-            doWithHttpRequest(request , httpRequest);
+            //6.真正请求
+            response = getRequestSender().send(request);
 
-            //7.真正请求
-            response = request.send();
+            //7.获取返回值
+            InputStream inputStream = getHttpResponseStreamExtractor().extract(response, httpRequest , completedUrl);
 
-            //8.获取返回值
-            InputStream inputStream = getStreamFrom(response, httpRequest);
-
-            //9.返回header,包括Cookie处理
-            MultiValueMap<String , String> responseHeaders = determineHeaders(response , httpRequest , completedUrl);
+            //8.返回header,包括Cookie处理
+            MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest, completedUrl);
 
             return resultCallback.convert(response.statusCode(), inputStream,
                     getResultCharsetWithDefault(httpRequest.getResultCharset()),
@@ -57,54 +62,6 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
                 response.close();
             }
         }
-    }
-
-    protected InputStream getStreamFrom(HttpResponse httpResponse , top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException{
-        return JoddUtil.getStreamFrom(httpResponse , httpRequest.isIgnoreResponseBody());
-    }
-
-    protected HttpRequest createAndConfigHttpRequest(top.jfunc.common.http.request.HttpRequest httpRequest , Method method , String completedUrl){
-        HttpRequest request = new HttpRequest();
-        request.method(method.name());
-        request.set(completedUrl);
-
-        //2.超时设置
-        request.connectionTimeout(getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
-        request.timeout(getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
-
-        //是否重定向
-        request.followRedirects(httpRequest.followRedirects());
-
-        //3.SSL设置
-        initSSL(request , httpRequest);
-
-        return request;
-    }
-
-    protected void initSSL(HttpRequest request , top.jfunc.common.http.request.HttpRequest httpRequest){
-        JoddUtil.initSSL(request , getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
-                getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()),
-                getProxyInfoWithDefault(httpRequest.getProxyInfo()));
-    }
-
-
-    @Override
-    protected void setRequestHeaders(Object target, top.jfunc.common.http.request.HttpRequest httpRequest, MultiValueMap<String, String> handledHeaders) throws IOException {
-        JoddUtil.setRequestHeaders((HttpRequest)target , httpRequest.getContentType() , handledHeaders);
-    }
-
-    /**
-     * 留给子类做更多的配置
-     * @param joddHttpRequest jodd的请求
-     * @param httpRequest 请求参数
-     */
-    protected void doWithHttpRequest(HttpRequest joddHttpRequest , top.jfunc.common.http.request.HttpRequest httpRequest){}
-
-
-    @Override
-    protected MultiValueMap<String, String> parseResponseHeaders(Object source, top.jfunc.common.http.request.HttpRequest httpRequest) {
-        return JoddUtil.parseHeaders((HttpResponse)source , httpRequest.isIncludeHeaders());
     }
 
     @Override
@@ -117,6 +74,58 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     @Override
     protected ContentCallback<HttpRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
         return httpRequest -> upload0(httpRequest , params , paramCharset , formFiles);
+    }
+
+
+
+
+
+
+    public CompletedUrlCreator getCompletedUrlCreator() {
+        return completedUrlCreator;
+    }
+
+    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
+        this.completedUrlCreator = Objects.requireNonNull(completedUrlCreator);
+    }
+    public RequesterFactory<HttpRequest> getHttpRequestRequesterFactory() {
+        return httpRequestRequesterFactory;
+    }
+
+    public void setHttpRequestRequesterFactory(RequesterFactory<HttpRequest> httpRequestRequesterFactory) {
+        this.httpRequestRequesterFactory = Objects.requireNonNull(httpRequestRequesterFactory);
+    }
+
+    public HeaderHandler<HttpRequest> getHttpRequestHeaderHandler() {
+        return httpRequestHeaderHandler;
+    }
+
+    public void setHttpRequestHeaderHandler(HeaderHandler<HttpRequest> httpRequestHeaderHandler) {
+        this.httpRequestHeaderHandler = Objects.requireNonNull(httpRequestHeaderHandler);
+    }
+
+    public RequestSender<HttpRequest, HttpResponse> getRequestSender() {
+        return requestSender;
+    }
+
+    public void setRequestSender(RequestSender<HttpRequest, HttpResponse> requestSender) {
+        this.requestSender = Objects.requireNonNull(requestSender);
+    }
+
+    public StreamExtractor<HttpResponse> getHttpResponseStreamExtractor() {
+        return httpResponseStreamExtractor;
+    }
+
+    public void setHttpResponseStreamExtractor(StreamExtractor<HttpResponse> httpResponseStreamExtractor) {
+        this.httpResponseStreamExtractor = Objects.requireNonNull(httpResponseStreamExtractor);
+    }
+
+    public HeaderExtractor<HttpResponse> getHttpResponseHeaderExtractor() {
+        return httpResponseHeaderExtractor;
+    }
+
+    public void setHttpResponseHeaderExtractor(HeaderExtractor<HttpResponse> httpResponseHeaderExtractor) {
+        this.httpResponseHeaderExtractor = Objects.requireNonNull(httpResponseHeaderExtractor);
     }
 
     @Override

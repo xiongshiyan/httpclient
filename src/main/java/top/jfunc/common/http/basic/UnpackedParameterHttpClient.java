@@ -2,7 +2,7 @@ package top.jfunc.common.http.basic;
 
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.ConfigAccessor;
+import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.smart.Request;
@@ -27,7 +27,7 @@ import static top.jfunc.common.http.HttpConstants.*;
  * @author 熊诗言
  * @since 2017/11/24
  */
-public interface UnpackedParameterHttpClient extends ConfigAccessor {
+public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      /**
      * HTTP GET请求
      * @param url URL，可以帶参数
