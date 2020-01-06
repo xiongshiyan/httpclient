@@ -10,7 +10,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -74,22 +73,6 @@ public abstract class AbstractConfigurableHttp {
     protected String handleUrlIfNecessary(String originUrl){
         return config.handleUrlIfNecessary(originUrl , null , null , null);
     }
-
-    /**
-     * 处理Route参数、BaseURL、Query参数
-     * @param originUrl 原始的URL
-     * @param routeParams 路径参数
-     * @param queryParams 查询参数
-     * @param queryParamCharset 查询参数编码
-     * @return 处理过后的URL
-     */
-    protected String handleUrlIfNecessary(String originUrl ,
-                                          Map<String, String> routeParams ,
-                                          MultiValueMap<String, String> queryParams ,
-                                          String queryParamCharset){
-        return config.handleUrlIfNecessary(originUrl, routeParams, queryParams, queryParamCharset);
-    }
-
 
     protected int getConnectionTimeoutWithDefault(int connectionTimeout){
         return config.getConnectionTimeoutWithDefault(connectionTimeout);
