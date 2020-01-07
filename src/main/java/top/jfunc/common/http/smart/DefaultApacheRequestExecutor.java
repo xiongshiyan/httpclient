@@ -4,7 +4,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
-import top.jfunc.common.http.smart.RequestExecutor;
 
 import java.io.IOException;
 

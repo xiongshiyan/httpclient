@@ -47,7 +47,7 @@ public interface FormRequest extends StringBodyRequest {
     @Override
     default String getBody() {
         MultiValueMap<String, String> formParams = getFormParams();
-        String bodyCharset = getBodyCharset();
+        String bodyCharset = getConfig().calculateBodyCharset(getBodyCharset(), getContentType());
         //没有显式设置就设置默认的
         if(null == getContentType()){
             setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));

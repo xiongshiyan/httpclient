@@ -60,7 +60,7 @@ public abstract class AbstractImplementHttpClient<CC> extends AbstractHttpClient
      */
     protected void configHeaders(Object target , String completedUrl , String contentType , MultiValueMap<String , String> headers) throws IOException {
         //1.合并默认headers
-        MultiValueMap<String, String> requestHeaders = mergeDefaultHeaders(headers);
+        MultiValueMap<String, String> requestHeaders = getConfig().mergeDefaultHeaders(headers);
 
         //2.处理cookie
         //requestHeaders = addCookieIfNecessary(completedUrl, requestHeaders);

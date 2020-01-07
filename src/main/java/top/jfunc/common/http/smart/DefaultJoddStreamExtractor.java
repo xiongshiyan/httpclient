@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import jodd.http.HttpResponse;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.StreamExtractor;
 import top.jfunc.common.http.util.JoddUtil;
 
 import java.io.IOException;

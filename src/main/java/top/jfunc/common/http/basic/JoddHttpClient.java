@@ -4,6 +4,7 @@ import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
@@ -13,7 +14,7 @@ import top.jfunc.common.utils.MultiValueMap;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static top.jfunc.common.http.util.JoddUtil.*;
+import static top.jfunc.common.http.util.JoddUtil.upload0;
 
 /**
  * 使用Jodd-Http 实现的Http请求类
@@ -51,7 +52,7 @@ public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
 
             //8.返回处理
             return resultCallback.convert(response.statusCode() , inputStream,
-                    getResultCharsetWithDefault(resultCharset) ,
+                    getConfig().getResultCharsetWithDefault(resultCharset) ,
                     responseHeaders);
         } finally {
             if(null != response){
@@ -71,8 +72,9 @@ public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
 
 
         //2.超时设置
-        request.connectionTimeout(getConnectionTimeoutWithDefault(connectionTimeout));
-        request.timeout(getReadTimeoutWithDefault(readTimeout));
+        Config config = getConfig();
+        request.connectionTimeout(config.getConnectionTimeoutWithDefault(connectionTimeout));
+        request.timeout(config.getReadTimeoutWithDefault(readTimeout));
 
         //3.SSL设置
         initSSL(request);
@@ -81,10 +83,11 @@ public class JoddHttpClient extends AbstractImplementHttpClient<HttpRequest> {
     }
 
     protected void initSSL(HttpRequest request){
-        JoddUtil.initSSL(request , getHostnameVerifierWithDefault(getHostnameVerifier()) ,
-                getSSLSocketFactoryWithDefault(getSSLSocketFactory()) ,
-                getX509TrustManagerWithDefault(getX509TrustManager()),
-                getProxyInfoWithDefault(null));
+        JoddUtil.initSSL(request ,
+                getDefaultHostnameVerifier() ,
+                getDefaultSSLSocketFactory() ,
+                getDefaultX509TrustManager(),
+                getConfig().getDefaultProxyInfo());
     }
 
 

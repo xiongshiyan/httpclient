@@ -4,7 +4,6 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.RequesterFactory;
 import top.jfunc.common.http.util.NativeUtil;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -15,7 +14,7 @@ import java.net.URL;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultHttpURLConnectionFactory implements RequesterFactory<HttpURLConnection> {
+public class DefaultJdkConnectionFactory implements RequesterFactory<HttpURLConnection> {
 
     @Override
     public HttpURLConnection create(HttpRequest httpRequest, Method method, String completedUrl) throws IOException{

@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.basic.GetRequest;
@@ -14,7 +13,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.Objects;
 
-import static top.jfunc.common.http.util.NativeUtil.*;
+import static top.jfunc.common.http.util.NativeUtil.disconnectQuietly;
 
 /**
  * 使用URLConnection实现的Http请求类
@@ -22,12 +21,22 @@ import static top.jfunc.common.http.util.NativeUtil.*;
  */
 public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<HttpURLConnection> {
 
-    private CompletedUrlCreator completedUrlCreator                                 = new DefaultCompletedUrlCreator();
-    private RequesterFactory<HttpURLConnection> httpURLConnectionFactory            = new DefaultHttpURLConnectionFactory();
-    private HeaderHandler<HttpURLConnection> httpURLConnectionHeaderHandler         = new DefaultHttpURLConnectionHeaderHandler();
-    private RequestSender<HttpURLConnection , HttpURLConnection> connectionSender   = new DefaultHttpURLConnectionSender();
-    private StreamExtractor<HttpURLConnection> httpURLConnectionStreamExtractor     = new DefaultHttpURLConnectionStreamExtractor();
-    private HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor     = new DefaultHttpURLConnectionHeaderExtractor();
+    private RequesterFactory<HttpURLConnection> httpURLConnectionFactory;
+    private HeaderHandler<HttpURLConnection> httpURLConnectionHeaderHandler;
+    private RequestSender<HttpURLConnection , HttpURLConnection> connectionSender;
+    private StreamExtractor<HttpURLConnection> httpURLConnectionStreamExtractor;
+    private HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor;
+
+    public NativeSmartHttpClient(){
+        setBodyContentCallbackCreator(new DefaultJdkBodyContentCallbackCreator());
+        setUploadContentCallbackCreator(new DefaultJdkUploadContentCallbackCreator());
+
+        setHttpURLConnectionFactory(new DefaultJdkConnectionFactory());
+        setHttpURLConnectionHeaderHandler(new DefaultJdkHeaderHandler());
+        setConnectionSender(new DefaultJdkConnectionSender());
+        setHttpURLConnectionStreamExtractor(new DefaultJdkStreamExtractor());
+        setHttpURLConnectionHeaderExtractor(new DefaultJdkHeaderExtractor());
+    }
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws Exception {
@@ -43,10 +52,8 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             //2.处理header
             getHttpURLConnectionHeaderHandler().configHeaders(connection , httpRequest , completedUrl);
 
-            //3.写入内容，只对post有效
-            if(contentCallback != null && method.hasContent()){
-                contentCallback.doWriteWith(connection);
-            }
+            //3.写入内容
+            getContentCallbackHandler().handle(connection , contentCallback , httpRequest , method);
 
             //4.连接
             getConnectionSender().send(connection);
@@ -58,7 +65,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             MultiValueMap<String, String> responseHeaders = getHttpURLConnectionHeaderExtractor().extract(connection, httpRequest, completedUrl);
 
             return resultCallback.convert(connection.getResponseCode(), inputStream,
-                    getResultCharsetWithDefault(httpRequest.getResultCharset()),
+                    getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
@@ -86,28 +93,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         return response;
     }
 
-    @Override
-    protected ContentCallback<HttpURLConnection> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
-        return connect -> writeContent(connect , body , bodyCharset);
-    }
-
-    @Override
-    protected ContentCallback<HttpURLConnection> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return connect -> upload0(connect , params , paramCharset , formFiles);
-    }
-
-
-
-
-
-
-    public CompletedUrlCreator getCompletedUrlCreator() {
-        return completedUrlCreator;
-    }
-
-    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
-        this.completedUrlCreator = Objects.requireNonNull(completedUrlCreator);
-    }
 
     public RequesterFactory<HttpURLConnection> getHttpURLConnectionFactory() {
         return httpURLConnectionFactory;

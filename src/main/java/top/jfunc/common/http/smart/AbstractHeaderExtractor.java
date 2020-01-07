@@ -3,7 +3,6 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.HeaderExtractor;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;

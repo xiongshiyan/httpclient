@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.HeaderHandler;
 import top.jfunc.common.http.util.NativeUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -12,7 +11,7 @@ import java.net.HttpURLConnection;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultHttpURLConnectionHeaderHandler implements HeaderHandler<HttpURLConnection> {
+public class DefaultJdkHeaderHandler implements HeaderHandler<HttpURLConnection> {
     @Override
     public void configHeaders(HttpURLConnection target, HttpRequest httpRequest, String completedUrl) throws IOException {
         Config config = httpRequest.getConfig();

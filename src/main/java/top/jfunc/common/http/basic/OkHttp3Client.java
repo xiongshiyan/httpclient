@@ -3,10 +3,7 @@ package top.jfunc.common.http.basic;
 import okhttp3.*;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.util.OkHttp3Util;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -61,7 +58,7 @@ public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> 
             MultiValueMap<String, String> responseHeaders = determineHeaders(response, completedUrl , includeHeaders);
 
             return resultCallback.convert(response.code() , inputStream,
-                    getResultCharsetWithDefault(resultCharset),
+                    getConfig().getResultCharsetWithDefault(resultCharset),
                     responseHeaders);
         } finally {
             IoUtil.close(inputStream);
@@ -88,12 +85,13 @@ public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> 
     }
 
     protected OkHttpClient.Builder createAndConfigBuilder(String completedUrl , int connectionTimeout , int readTimeout) {
+        Config config = getConfig();
         //1.构造OkHttpClient
         OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
-                .connectTimeout(getConnectionTimeoutWithDefault(connectionTimeout), TimeUnit.MILLISECONDS)
-                .readTimeout(getReadTimeoutWithDefault(readTimeout), TimeUnit.MILLISECONDS);
+                .connectTimeout(config.getConnectionTimeoutWithDefault(connectionTimeout), TimeUnit.MILLISECONDS)
+                .readTimeout(config.getReadTimeoutWithDefault(readTimeout), TimeUnit.MILLISECONDS);
         //1.1如果存在就设置代理
-        ProxyInfo proxyInfo = getProxyInfoWithDefault(null);
+        ProxyInfo proxyInfo = config.getDefaultProxyInfo();
         if(null != proxyInfo){
             clientBuilder.proxy(proxyInfo.getProxy());
         }
@@ -107,9 +105,9 @@ public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> 
     }
 
     protected void initSSL(OkHttpClient.Builder clientBuilder){
-        OkHttp3Util.initSSL(clientBuilder , getHostnameVerifierWithDefault(getHostnameVerifier()) ,
-                getSSLSocketFactoryWithDefault(getSSLSocketFactory()) ,
-                getX509TrustManagerWithDefault(getX509TrustManager()));
+        OkHttp3Util.initSSL(clientBuilder , getDefaultHostnameVerifier() ,
+                getDefaultSSLSocketFactory() ,
+                getDefaultX509TrustManager());
     }
     /**
      * 子类复写，增添更多的功能，保证返回OkHttpClient

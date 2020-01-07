@@ -230,15 +230,6 @@ public interface HolderHttpRequest extends HttpRequest {
     }
 
     /**
-     * 获取设置的header
-     * @return 单值header
-     */
-    /*@Override
-    default Map<String, String> getOverwriteHeaders() {
-        return overwriteHeaderHolder().getMap();
-    }
-    */
-    /**
      * 获取设置的 HostNameVerifier
      * @return HostnameVerifier
      */

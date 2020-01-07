@@ -90,7 +90,7 @@ public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest 
     @Override
     default String getBody() {
         ParamHolder formParamHolder = formParamHolder();
-        String bodyCharset = formParamHolder.getParamCharset();
+        String bodyCharset = getConfig().calculateBodyCharset(formParamHolder.getParamCharset(), getContentType());
         //没有显式设置就设置默认的
         if(null == getContentType()){
             setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));

@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import okhttp3.Response;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.StreamExtractor;
 import top.jfunc.common.http.util.OkHttp3Util;
 
 import java.io.IOException;

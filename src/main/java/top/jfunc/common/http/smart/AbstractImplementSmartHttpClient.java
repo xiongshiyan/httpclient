@@ -1,6 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.HttpTemplate;
@@ -21,7 +22,7 @@ import java.io.IOException;
  * @see SmartHttpClient
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmartHttpClient<CC> implements TemplateInterceptor{
+public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmartHttpClient<CC> implements TemplateInterceptor {
     /**
      * 统一的拦截和异常处理：最佳实践使用拦截器代替子类复写
      * @inheritDoc
@@ -29,30 +30,31 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
     @Override
     public <R> R template(HttpRequest httpRequest, Method method, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException {
         //0.初始化HttpRequest的Config，方便后续直接在HttpRequest中获取Config
-        httpRequest.setConfig(getConfig());
+        Config config = getConfig();
+        httpRequest.setConfig(config);
 
         //1.子类处理
         HttpRequest h = beforeTemplate(httpRequest);
         //2.拦截器在之前处理
-        HttpRequest request = onBeforeIfNecessary(h, method);
+        HttpRequest request = config.onBeforeIfNecessary(h, method);
         try {
             //3.真正的实现
             R response = doInternalTemplate(request , method , contentCallback , resultCallback);
             //4.拦截器过滤
-            onBeforeReturnIfNecessary(request , response);
+            config.onBeforeReturnIfNecessary(request , response);
             //5.子类处理
             return afterTemplate(request , response);
         } catch (IOException e) {
             //6.1.拦截器在抛异常的时候处理
-            onErrorIfNecessary(request , e);
+            config.onErrorIfNecessary(request , e);
             throw e;
         } catch (Exception e) {
             //6.2.拦截器在抛异常的时候处理
-            onErrorIfNecessary(request, e);
+            config.onErrorIfNecessary(request, e);
             throw new RuntimeException(e);
         }finally {
             //7.拦截器在任何时候都处理
-            onFinallyIfNecessary(httpRequest);
+            config.onFinallyIfNecessary(httpRequest);
         }
     }
 

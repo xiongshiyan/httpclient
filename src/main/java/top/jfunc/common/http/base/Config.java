@@ -1,6 +1,7 @@
 package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.cookie.CookieJar;
@@ -11,6 +12,7 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.StrUtil;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -90,18 +92,6 @@ public class Config {
         return this;
     }
 
-    /**
-     * 统一的获取实际的值：逻辑是输入的不等于空就返回输入的，否则返回默认的
-     * @param input 输入值，可能为null
-     * @param defaultValue 默认值
-     * @param <T> 泛型参数
-     * @return 输入的值或者默认值
-     */
-    public <T> T getValueWithDefault(T input , T defaultValue){
-        return null == input ? defaultValue : input;
-    }
-
-
     public int getDefaultConnectionTimeout() {
         return defaultConnectionTimeout;
     }
@@ -131,7 +121,7 @@ public class Config {
     }
 
     public String getQueryCharsetWithDefault(String queryCharset){
-        return getValueWithDefault(queryCharset , getDefaultQueryCharset());
+        return StrUtil.isNotEmpty(queryCharset) ? queryCharset : getDefaultQueryCharset();
     }
 
     public Config setDefaultQueryCharset(String defaultQueryCharset) {
@@ -145,7 +135,7 @@ public class Config {
     }
 
     public String getBodyCharsetWithDefault(String bodyCharset){
-        return getValueWithDefault(bodyCharset , getDefaultBodyCharset());
+        return StrUtil.isNotEmpty(bodyCharset) ? bodyCharset : getDefaultBodyCharset();
     }
     public Config setDefaultBodyCharset(String defaultBodyCharset) {
         configFrozen.ensureConfigNotFreeze();
@@ -157,7 +147,7 @@ public class Config {
         return defaultResultCharset;
     }
     public String getResultCharsetWithDefault(String resultCharset){
-        return getValueWithDefault(resultCharset , getDefaultResultCharset());
+        return StrUtil.isNotEmpty(resultCharset) ? resultCharset : getDefaultResultCharset();
     }
 
     public Config setDefaultResultCharset(String defaultResultCharset) {
@@ -166,10 +156,10 @@ public class Config {
         return this;
     }
     public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
-        return getValueWithDefault(proxyInfo , getProxyInfo());
+        return null != proxyInfo ? proxyInfo : getDefaultProxyInfo();
     }
 
-    public ProxyInfo getProxyInfo() {
+    public ProxyInfo getDefaultProxyInfo() {
         return proxyInfo;
     }
 
@@ -179,19 +169,19 @@ public class Config {
         return this;
     }
     public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
-        return getValueWithDefault(hostnameVerifier , sslHolder.getHostnameVerifier());
+        return null != hostnameVerifier ? hostnameVerifier : sslHolder.getHostnameVerifier();
     }
 
     public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
-        return getValueWithDefault(sslContext , sslHolder.getSslContext());
+        return null != sslContext ? sslContext : sslHolder.getSslContext();
     }
 
     public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
-        return getValueWithDefault(sslSocketFactory , sslHolder.getSslSocketFactory());
+        return null != sslSocketFactory ? sslSocketFactory : sslHolder.getSslSocketFactory();
     }
 
     public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
-        return getValueWithDefault(x509TrustManager , sslHolder.getX509TrustManager());
+        return null != x509TrustManager ? x509TrustManager : sslHolder.getX509TrustManager();
     }
     public SSLHolder sslHolder(){
         return sslHolder;
@@ -232,24 +222,24 @@ public class Config {
         return this;
     }
 
-    HttpRequest onBeforeIfNecessary(HttpRequest httpRequest , Method method){
+    public HttpRequest onBeforeIfNecessary(HttpRequest httpRequest , Method method){
         if(hasInterceptors()){
             return compositeInterceptor.onBefore(httpRequest, method);
         }
         return httpRequest;
     }
 
-    void onBeforeReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
+    public void onBeforeReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
         if(hasInterceptors()){
             compositeInterceptor.onBeforeReturn(httpRequest, returnValue);
         }
     }
-    void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
+    public void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
         if(hasInterceptors()){
             compositeInterceptor.onError(httpRequest, exception);
         }
     }
-    void onFinallyIfNecessary(HttpRequest httpRequest){
+    public void onFinallyIfNecessary(HttpRequest httpRequest){
         if(hasInterceptors()){
             compositeInterceptor.onFinally(httpRequest);
         }
@@ -311,11 +301,23 @@ public class Config {
         String queryCharsetWithDefault = getQueryCharsetWithDefault(queryParamCharset);
         return ParamUtil.contactUrlParams(urlWithBase, params, queryCharsetWithDefault);
     }
-
     /**
-     * 是否支持Cookie，默认设置了CookieJar即表示支持
+     * bodyCharset[StringHttpRequest中显式地设置为null]->contentType->全局默认
      */
-    public boolean supportCookie(){
-        return null != getCookieJar();
+    public String calculateBodyCharset(String bodyCharset , String contentType){
+        //本身是可以的
+        if(StrUtil.isNotEmpty(bodyCharset)){
+            return bodyCharset;
+        }
+        if(StrUtil.isEmpty(contentType)){
+            return getDefaultBodyCharset();
+        }
+        MediaType mediaType = MediaType.parse(contentType);
+        //content-type不正确或者没带字符编码
+        if(null == mediaType || null == mediaType.charset()){
+            return getDefaultBodyCharset();
+        }
+
+        return mediaType.charset().name();
     }
 }

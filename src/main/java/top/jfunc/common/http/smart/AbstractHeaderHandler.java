@@ -5,7 +5,6 @@ import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.HeaderHandler;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.CollectionUtil;
 import top.jfunc.common.utils.Joiner;

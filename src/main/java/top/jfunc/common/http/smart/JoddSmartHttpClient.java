@@ -2,18 +2,13 @@ package top.jfunc.common.http.smart;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
-import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-
-import static top.jfunc.common.http.util.JoddUtil.upload0;
 
 /**
  * 使用Jodd-http 实现的Http请求类
@@ -21,12 +16,22 @@ import static top.jfunc.common.http.util.JoddUtil.upload0;
  */
 public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRequest> {
 
-    private CompletedUrlCreator completedUrlCreator                   = new DefaultCompletedUrlCreator();
-    private RequesterFactory<HttpRequest> httpRequestRequesterFactory = new DefaultJoddHttpRequestFactory();
-    private HeaderHandler<HttpRequest> httpRequestHeaderHandler       = new DefaultJoddHeaderHandler();
-    private RequestSender<HttpRequest , HttpResponse> requestSender   = new DefaultJoddSender();
-    private StreamExtractor<HttpResponse> httpResponseStreamExtractor = new DefaultJoddStreamExtractor();
-    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor = new DefaultJoddHeaderExtractor();
+    private RequesterFactory<HttpRequest> httpRequestRequesterFactory;
+    private HeaderHandler<HttpRequest> httpRequestHeaderHandler;
+    private RequestSender<HttpRequest , HttpResponse> requestSender;
+    private StreamExtractor<HttpResponse> httpResponseStreamExtractor;
+    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
+
+    public JoddSmartHttpClient(){
+        setBodyContentCallbackCreator(new DefaultJoddBodyContentCallbackCreator());
+        setUploadContentCallbackCreator(new DefaultJoddUploadContentCallbackCreator());
+
+        setHttpRequestRequesterFactory(new DefaultJoddHttpRequestFactory());
+        setHttpRequestHeaderHandler(new DefaultJoddHeaderHandler());
+        setRequestSender(new DefaultJoddSender());
+        setHttpResponseStreamExtractor(new DefaultJoddStreamExtractor());
+        setHttpResponseHeaderExtractor(new DefaultJoddHeaderExtractor());
+    }
 
     @Override
     protected <R> R doInternalTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
@@ -38,9 +43,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest, method, completedUrl);
 
             //4.处理body
-            if(contentCallback != null && method.hasContent()){
-                contentCallback.doWriteWith(request);
-            }
+            getContentCallbackHandler().handle(request , contentCallback , httpRequest , method);
 
             //5.设置header
             getHttpRequestHeaderHandler().configHeaders(request , httpRequest , completedUrl);
@@ -55,7 +58,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest, completedUrl);
 
             return resultCallback.convert(response.statusCode(), inputStream,
-                    getResultCharsetWithDefault(httpRequest.getResultCharset()),
+                    getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
             if(null != response){
@@ -64,30 +67,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         }
     }
 
-    @Override
-    protected ContentCallback<HttpRequest> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
-        String type = null == contentType ?
-                MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : contentType;
-        return httpRequest -> httpRequest.bodyText(body , type, bodyCharset);
-    }
 
-    @Override
-    protected ContentCallback<HttpRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return httpRequest -> upload0(httpRequest , params , paramCharset , formFiles);
-    }
-
-
-
-
-
-
-    public CompletedUrlCreator getCompletedUrlCreator() {
-        return completedUrlCreator;
-    }
-
-    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
-        this.completedUrlCreator = Objects.requireNonNull(completedUrlCreator);
-    }
     public RequesterFactory<HttpRequest> getHttpRequestRequesterFactory() {
         return httpRequestRequesterFactory;
     }

@@ -3,7 +3,6 @@ package top.jfunc.common.http.smart;
 import okhttp3.Request;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.RequesterFactory;
 
 import java.io.IOException;
 

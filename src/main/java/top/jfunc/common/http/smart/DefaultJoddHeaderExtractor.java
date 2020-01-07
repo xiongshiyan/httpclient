@@ -8,7 +8,7 @@ import top.jfunc.common.utils.MultiValueMap;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultJoddHeaderExtractor extends AbstractHeaderExtractor<HttpResponse>{
+public class DefaultJoddHeaderExtractor extends AbstractHeaderExtractor<HttpResponse> {
     @Override
     protected MultiValueMap<String, String> doExtractHeaders(HttpResponse httpResponse, HttpRequest httpRequest) {
         return JoddUtil.parseHeaders(httpResponse , httpRequest.isIncludeHeaders());

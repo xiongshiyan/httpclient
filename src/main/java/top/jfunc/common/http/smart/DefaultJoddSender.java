@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
-import top.jfunc.common.http.smart.RequestSender;
 
 import java.io.IOException;
 

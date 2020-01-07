@@ -10,18 +10,13 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-
-import static top.jfunc.common.http.util.ApacheUtil.setRequestBody;
-import static top.jfunc.common.http.util.ApacheUtil.upload0;
 
 /**
  * 使用Apache HttpClient 实现的Http请求类
@@ -29,13 +24,24 @@ import static top.jfunc.common.http.util.ApacheUtil.upload0;
  */
 public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<HttpEntityEnclosingRequest> {
 
-    private CompletedUrlCreator completedUrlCreator                           = new DefaultCompletedUrlCreator();
-    private RequesterFactory<HttpUriRequest> httpUriRequestRequesterFactory   = new DefaultApacheRequestFactory();
-    private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler         = new DefaultApacheHeaderHandler();
-    private RequesterFactory<HttpClientBuilder> clientBuilderRequesterFactory = new DefaultApacheClientBuilderFactory();
-    private RequestExecutor<CloseableHttpClient , HttpUriRequest , CloseableHttpResponse> requestExecutor = new DefaultApacheRequestExecutor();
-    private StreamExtractor<HttpEntity> httpEntityStreamExtractor             = new DefaultApacheStreamExtractor();
-    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor         = new DefaultApacheHeaderExtractor();
+    private RequesterFactory<HttpUriRequest> httpUriRequestRequesterFactory;
+    private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler;
+    private RequesterFactory<HttpClientBuilder> clientBuilderRequesterFactory;
+    private RequestExecutor<CloseableHttpClient , HttpUriRequest , CloseableHttpResponse> requestExecutor;
+    private StreamExtractor<HttpEntity> httpEntityStreamExtractor;
+    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
+
+    public ApacheSmartHttpClient(){
+        setBodyContentCallbackCreator(new DefaultApacheBodyContentCallbackCreator());
+        setUploadContentCallbackCreator(new DefaultApacheUploadContentCallbackCreator());
+
+        setHttpUriRequestRequesterFactory(new DefaultApacheRequestFactory());
+        setHttpUriRequestHeaderHandler(new DefaultApacheHeaderHandler());
+        setClientBuilderRequesterFactory(new DefaultApacheClientBuilderFactory());
+        setRequestExecutor(new DefaultApacheRequestExecutor());
+        setHttpEntityStreamExtractor(new DefaultApacheStreamExtractor());
+        setHttpResponseHeaderExtractor(new DefaultApacheHeaderExtractor());
+    }
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
@@ -47,9 +53,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
         //3.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
-            if(contentCallback != null){
-                contentCallback.doWriteWith((HttpEntityEnclosingRequest)httpUriRequest);
-            }
+            getContentCallbackHandler().handle((HttpEntityEnclosingRequest)httpUriRequest , contentCallback , httpRequest , method);
         }
 
         getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest, completedUrl);
@@ -73,7 +77,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest, completedUrl);
 
             return resultCallback.convert(response.getStatusLine().getStatusCode() , inputStream,
-                    getResultCharsetWithDefault(httpRequest.getResultCharset()),
+                    getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         }finally {
             IoUtil.close(inputStream);
@@ -83,28 +87,6 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         }
     }
 
-    @Override
-    protected ContentCallback<HttpEntityEnclosingRequest> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
-        return request -> setRequestBody(request , body , bodyCharset);
-    }
-
-    @Override
-    protected ContentCallback<HttpEntityEnclosingRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return request -> upload0(request, params , paramCharset , formFiles);
-    }
-
-
-
-
-
-
-    public CompletedUrlCreator getCompletedUrlCreator() {
-        return completedUrlCreator;
-    }
-
-    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
-        this.completedUrlCreator = Objects.requireNonNull(completedUrlCreator);
-    }
 
     public RequesterFactory<HttpUriRequest> getHttpUriRequestRequesterFactory() {
         return httpUriRequestRequesterFactory;

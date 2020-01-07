@@ -24,14 +24,14 @@ import java.util.Map;
 public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp implements HttpClient, HttpTemplate<CC> {
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
-        return template(ParamUtil.contactUrlParams(url , params , getDefaultBodyCharset()), Method.GET,null,null,
+        return template(ParamUtil.contactUrlParams(url , params , getConfig().getDefaultBodyCharset()), Method.GET,null,null,
                 ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout,readTimeout , resultCharset,false,(s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        String charset = calculateBodyCharset(bodyCharset, contentType);
+        String charset = getConfig().calculateBodyCharset(bodyCharset, contentType);
         return template(url, Method.POST, contentType, bodyContentCallback(Method.POST , body, charset, contentType),
                 ArrayListMultiValueMap.fromMap(headers),
                 connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
@@ -54,13 +54,13 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
 
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
-        return template(url, Method.POST, null, uploadContentCallback(null , getDefaultBodyCharset() , Arrays.asList(files)),
+        return template(url, Method.POST, null, uploadContentCallback(null , getConfig().getDefaultBodyCharset() , Arrays.asList(files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
-        return template(url, Method.POST, null, uploadContentCallback(params , getDefaultBodyCharset() , Arrays.asList(files)),
+        return template(url, Method.POST, null, uploadContentCallback(params , getConfig().getDefaultBodyCharset() , Arrays.asList(files)),
                 headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
     }
 

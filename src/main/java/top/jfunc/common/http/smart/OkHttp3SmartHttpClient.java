@@ -1,21 +1,17 @@
 package top.jfunc.common.http.smart;
 
-import okhttp3.*;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-
-import static top.jfunc.common.http.util.OkHttp3Util.*;
 
 /**
  * 使用OkHttp3 实现的Http请求类
@@ -23,13 +19,26 @@ import static top.jfunc.common.http.util.OkHttp3Util.*;
  */
 public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Request.Builder> {
 
-    private CompletedUrlCreator completedUrlCreator                    = new DefaultCompletedUrlCreator();
-    private RequesterFactory<OkHttpClient> okHttpClientFactory         = new DefaultOkHttp3ClientFactory();
-    private RequesterFactory<Request.Builder> requestBuilderFactory    = new DefaultOkHttp3RequestBuilderFactory();
-    private HeaderHandler<Request.Builder> requestBuilderHeaderHandler = new DefaultOkHttp3HeaderHandler();
-    private RequestExecutor<OkHttpClient , Request.Builder , Response> requestExecutor = new DefaultOkHttp3RequestExecutor();
-    private StreamExtractor<Response> responseStreamExtractor          = new DefaultOkHttp3StreamExtractor();
-    private HeaderExtractor<Response> responseHeaderExtractor          = new DefaultOkHttp3HeaderExtractor();
+
+    private RequesterFactory<OkHttpClient> okHttpClientFactory;
+    private RequesterFactory<Request.Builder> requestBuilderFactory;
+    private HeaderHandler<Request.Builder> requestBuilderHeaderHandler;
+    private RequestExecutor<OkHttpClient , Request.Builder , Response> requestExecutor;
+    private StreamExtractor<Response> responseStreamExtractor;
+    private HeaderExtractor<Response> responseHeaderExtractor;
+
+    public OkHttp3SmartHttpClient(){
+        setBodyContentCallbackCreator(new DefaultOkHttp3BodyContentCallbackCreator());
+        setUploadContentCallbackCreator(new DefaultOkHttp3UploadContentCallbackCreator());
+
+        setOkHttpClientFactory(new DefaultOkHttp3ClientFactory());
+        setRequestBuilderFactory(new DefaultOkHttp3RequestBuilderFactory());
+        setRequestBuilderHeaderHandler(new DefaultOkHttp3HeaderHandler());
+        setRequestExecutor(new DefaultOkHttp3RequestExecutor());
+        setResponseStreamExtractor(new DefaultOkHttp3StreamExtractor());
+        setResponseHeaderExtractor(new DefaultOkHttp3HeaderExtractor());
+    }
+
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws Exception {
@@ -45,9 +54,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             Request.Builder builder = getRequestBuilderFactory().create(httpRequest , method , completedUrl);
 
             //2.2处理请求体
-            if(null != contentCallback && method.hasContent()){
-                contentCallback.doWriteWith(builder);
-            }
+            getContentCallbackHandler().handle(builder , contentCallback , httpRequest , method);
 
             //2.3设置headers
             getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest , completedUrl);
@@ -62,7 +69,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             MultiValueMap<String, String> responseHeaders = getResponseHeaderExtractor().extract(response, httpRequest, completedUrl);
 
             return resultCallback.convert(response.code(), inputStream,
-                    getResultCharsetWithDefault(httpRequest.getResultCharset()),
+                    getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
             IoUtil.close(inputStream);
@@ -70,29 +77,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         }
     }
 
-    @Override
-    protected ContentCallback<Request.Builder> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
-        RequestBody stringBody = stringBody(body, bodyCharset, contentType);
-        return d -> setRequestBody(d, method, stringBody);
-    }
 
-    @Override
-    protected ContentCallback<Request.Builder> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        MultipartBody filesBody = filesBody(params , formFiles);
-        return d -> setRequestBody(d, Method.POST , filesBody);
-    }
-
-
-
-
-
-    public CompletedUrlCreator getCompletedUrlCreator() {
-        return completedUrlCreator;
-    }
-
-    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
-        this.completedUrlCreator = Objects.requireNonNull(completedUrlCreator);
-    }
 
     public RequesterFactory<OkHttpClient> getOkHttpClientFactory() {
         return okHttpClientFactory;

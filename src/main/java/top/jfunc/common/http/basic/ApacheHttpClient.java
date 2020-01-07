@@ -11,6 +11,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
@@ -56,7 +57,7 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
 
             //5.创建http客户端
             ///CloseableHttpClient httpClient = HttpClients.createDefault();
-            ///HttpClientBuilder clientBuilder = getCloseableHttpClientBuilder(completedUrl, getHostnameVerifier(), getSSLContext());
+            ///HttpClientBuilder clientBuilder = getCloseableHttpClientBuilder(completedUrl, getDefaultHostnameVerifier(), getDefaultSSLContext());
             HttpClientBuilder clientBuilder = createClientBuilder(completedUrl);
 
             //给子类复写的机会
@@ -76,7 +77,7 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
 
 
             return resultCallback.convert(response.getStatusLine().getStatusCode() , inputStream,
-                    getResultCharsetWithDefault(resultCharset),
+                    getConfig().getResultCharsetWithDefault(resultCharset),
                     responseHeaders);
         }finally {
             IoUtil.close(inputStream);
@@ -101,8 +102,8 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
         SSLContext sslContext = null;
         //https默认设置这些
         if(ParamUtil.isHttps(completedUrl)){
-            hostnameVerifier = getHostnameVerifierWithDefault(getHostnameVerifier());
-            sslContext = getSSLContextWithDefault(getSSLContext());
+            hostnameVerifier = getDefaultHostnameVerifier();
+            sslContext = getDefaultSSLContext();
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
@@ -117,10 +118,11 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
     protected HttpUriRequest createAndConfigHttpUriRequest(Method method, String completedUrl , int connectionTimeout , int readTimeout) {
         HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
 
+        Config config = getConfig();
         setRequestProperty((HttpRequestBase) httpUriRequest,
-                getConnectionTimeoutWithDefault(connectionTimeout),
-                getReadTimeoutWithDefault(readTimeout),
-                getProxyInfoWithDefault(null));
+                config.getConnectionTimeoutWithDefault(connectionTimeout),
+                config.getReadTimeoutWithDefault(readTimeout),
+                config.getDefaultProxyInfo());
         return httpUriRequest;
     }
 

@@ -3,7 +3,6 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.RequesterFactory;
 import top.jfunc.common.http.util.JoddUtil;
 
 import java.io.IOException;

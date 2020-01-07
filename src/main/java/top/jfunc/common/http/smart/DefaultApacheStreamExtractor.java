@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import org.apache.http.HttpEntity;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.StreamExtractor;
 import top.jfunc.common.http.util.ApacheUtil;
 
 import java.io.IOException;

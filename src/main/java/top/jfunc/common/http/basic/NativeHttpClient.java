@@ -1,10 +1,7 @@
 package top.jfunc.common.http.basic;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.util.NativeUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -55,7 +52,7 @@ public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnect
             MultiValueMap<String, String> responseHeaders = determineHeaders(connection, completedUrl, includeHeaders);
 
             return resultCallback.convert(connection.getResponseCode() , inputStream,
-                    getResultCharsetWithDefault(resultCharset),
+                    getConfig().getResultCharsetWithDefault(resultCharset),
                     responseHeaders);
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
@@ -67,9 +64,10 @@ public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnect
     }
 
     protected HttpURLConnection createAndConfigConnection(Method method , String completedUrl , int connectionTimeout , int readTimeout) throws Exception{
+        Config config = getConfig();
         URL url = new URL(completedUrl);
         //1.1如果需要则设置代理
-        ProxyInfo proxyInfo = getProxyInfoWithDefault(null);
+        ProxyInfo proxyInfo = config.getDefaultProxyInfo();
         HttpURLConnection connection = (null != proxyInfo) ?
                 (HttpURLConnection)url.openConnection(proxyInfo.getProxy()) :
                 (HttpURLConnection) url.openConnection();
@@ -86,15 +84,16 @@ public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnect
         connection.setUseCaches(false);
 
         connection.setRequestMethod(method.name());
-        connection.setConnectTimeout(getConnectionTimeoutWithDefault(connectionTimeout));
-        connection.setReadTimeout(getReadTimeoutWithDefault(readTimeout));
+        connection.setConnectTimeout(config.getConnectionTimeoutWithDefault(connectionTimeout));
+        connection.setReadTimeout(config.getReadTimeoutWithDefault(readTimeout));
 
         return connection;
     }
 
     protected void initSSL(HttpsURLConnection connection){
-        NativeUtil.initSSL(connection, getHostnameVerifierWithDefault(getHostnameVerifier()) ,
-                getSSLSocketFactoryWithDefault(getSSLSocketFactory()));
+        NativeUtil.initSSL(connection,
+                getDefaultHostnameVerifier() ,
+                getDefaultSSLSocketFactory());
     }
 
     @Override

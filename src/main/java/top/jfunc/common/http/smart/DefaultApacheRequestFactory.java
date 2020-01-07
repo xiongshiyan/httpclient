@@ -5,7 +5,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.RequesterFactory;
 
 import java.io.IOException;
 
