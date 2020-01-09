@@ -20,6 +20,6 @@ public class DefaultOkHttp3UploadContentCallbackCreator extends AbstractUploadCo
     @Override
     public ContentCallback<Request.Builder> create(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
         MultipartBody filesBody = filesBody(params , formFiles);
-        return d -> setRequestBody(d, Method.POST , filesBody);
+        return builder -> setRequestBody(builder, Method.POST , filesBody);
     }
 }

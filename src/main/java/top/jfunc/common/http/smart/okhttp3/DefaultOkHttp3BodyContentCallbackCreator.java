@@ -18,6 +18,6 @@ public class DefaultOkHttp3BodyContentCallbackCreator extends AbstractBodyConten
     @Override
     public ContentCallback<Request.Builder> create(Method method, String body, String bodyCharset, String contentType) throws IOException {
         RequestBody stringBody = stringBody(body, bodyCharset, contentType);
-        return d -> setRequestBody(d, method, stringBody);
+        return builder -> setRequestBody(builder, method, stringBody);
     }
 }

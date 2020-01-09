@@ -5,20 +5,19 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.RequesterFactory;
+import top.jfunc.common.http.smart.AbstractRequesterFactory;
+import top.jfunc.common.http.util.ApacheUtil;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 
-import static top.jfunc.common.http.util.ApacheUtil.getCloseableHttpClientBuilder;
-
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultApacheClientBuilderFactory implements RequesterFactory<HttpClientBuilder> {
+public class DefaultApacheClientBuilderFactory extends AbstractRequesterFactory<HttpClientBuilder> {
     @Override
-    public HttpClientBuilder create(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
+    public HttpClientBuilder doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
         Config config = httpRequest.getConfig();
         ////////////////////////////////////ssl处理///////////////////////////////////
         HostnameVerifier hostnameVerifier = null;
@@ -30,14 +29,6 @@ public class DefaultApacheClientBuilderFactory implements RequesterFactory<HttpC
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
-        HttpClientBuilder httpClientBuilder = getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext, httpRequest.followRedirects());
-
-        doWithClient(httpClientBuilder , httpRequest);
-
-        return httpClientBuilder;
-    }
-
-    protected void doWithClient(HttpClientBuilder httpClientBuilder , HttpRequest httpRequest) throws IOException{
-        //default do nothing, give children a chance to do more config
+        return ApacheUtil.getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext, httpRequest.followRedirects());
     }
 }

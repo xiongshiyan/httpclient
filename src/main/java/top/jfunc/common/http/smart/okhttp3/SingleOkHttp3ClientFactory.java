@@ -6,7 +6,7 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.RequesterFactory;
+import top.jfunc.common.http.smart.AbstractRequesterFactory;
 import top.jfunc.common.http.util.OkHttp3Util;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @see DefaultOkHttp3ClientFactory
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class SingleOkHttp3ClientFactory implements RequesterFactory<OkHttpClient> {
+public class SingleOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttpClient> {
     private OkHttpClient client;
 
     public SingleOkHttp3ClientFactory(){
@@ -30,7 +30,7 @@ public class SingleOkHttp3ClientFactory implements RequesterFactory<OkHttpClient
     }
 
     @Override
-    public OkHttpClient create(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
+    public OkHttpClient doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
 
         Config config = httpRequest.getConfig();
 

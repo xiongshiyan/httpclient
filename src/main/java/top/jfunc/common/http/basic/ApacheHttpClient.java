@@ -24,7 +24,6 @@ import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static top.jfunc.common.http.util.ApacheUtil.*;
 
 /**
  * 使用Apache HttpClient 实现的Http请求类
@@ -107,7 +106,7 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
-        return getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext , false);
+        return ApacheUtil.getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext , false);
     }
 
     @Override
@@ -116,10 +115,10 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
     }
 
     protected HttpUriRequest createAndConfigHttpUriRequest(Method method, String completedUrl , int connectionTimeout , int readTimeout) {
-        HttpUriRequest httpUriRequest = createHttpUriRequest(completedUrl, method);
+        HttpUriRequest httpUriRequest = ApacheUtil.createHttpUriRequest(completedUrl, method);
 
         Config config = getConfig();
-        setRequestProperty((HttpRequestBase) httpUriRequest,
+        ApacheUtil.setRequestProperty((HttpRequestBase) httpUriRequest,
                 config.getConnectionTimeoutWithDefault(connectionTimeout),
                 config.getReadTimeoutWithDefault(readTimeout),
                 config.getDefaultProxyInfo());
@@ -132,12 +131,12 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
 
     @Override
     protected ContentCallback<HttpEntityEnclosingRequest> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
-        return request -> setRequestBody(request , body , bodyCharset);
+        return request -> ApacheUtil.setRequestBody(request , body , bodyCharset);
     }
 
     @Override
     protected ContentCallback<HttpEntityEnclosingRequest> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return request -> upload0(request, params, paramCharset, formFiles);
+        return request -> ApacheUtil.upload0(request, params, paramCharset, formFiles);
     }
 
     @Override

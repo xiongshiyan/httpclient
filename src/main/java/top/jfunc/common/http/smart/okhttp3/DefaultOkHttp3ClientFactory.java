@@ -6,7 +6,7 @@ import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.RequesterFactory;
+import top.jfunc.common.http.smart.AbstractRequesterFactory;
 import top.jfunc.common.http.util.OkHttp3Util;
 
 import java.io.IOException;
@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
  * @see SingleOkHttp3ClientFactory
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultOkHttp3ClientFactory implements RequesterFactory<OkHttpClient> {
+public class DefaultOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttpClient> {
     @Override
-    public OkHttpClient create(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
+    public OkHttpClient doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
         OkHttpClient.Builder clientBuilder = createAndConfigBuilder(httpRequest, completedUrl);
-        return createOkHttpClient(clientBuilder , httpRequest);
+        return clientBuilder.build();
     }
 
     protected OkHttpClient.Builder createAndConfigBuilder(HttpRequest httpRequest, String completedUrl) {
@@ -56,24 +56,5 @@ public class DefaultOkHttp3ClientFactory implements RequesterFactory<OkHttpClien
         OkHttp3Util.initSSL(clientBuilder , config.getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
                 config.getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
                 config.getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()));
-    }
-
-    /**
-     * 子类复写，增添更多的功能，保证返回OkHttpClient
-     */
-    protected OkHttpClient createOkHttpClient(OkHttpClient.Builder builder , HttpRequest httpRequest) throws IOException{
-        //默认就使用builder生成
-        //可以进一步对builder进行处理
-        OkHttpClient okHttpClient = builder.build();
-        //对OkHttpClient单独处理
-        doWithClient(okHttpClient , httpRequest);
-        return okHttpClient;
-    }
-
-    /**
-     * 子类对ObHttpClient复写
-     */
-    protected void doWithClient(OkHttpClient okHttpClient , HttpRequest httpRequest) throws IOException{
-        //default do nothing, give children a chance to do more config
     }
 }

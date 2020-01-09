@@ -3,7 +3,7 @@ package top.jfunc.common.http.smart.jodd;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.RequesterFactory;
+import top.jfunc.common.http.smart.AbstractRequesterFactory;
 import top.jfunc.common.http.util.JoddUtil;
 
 import java.io.IOException;
@@ -11,10 +11,10 @@ import java.io.IOException;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultJoddHttpRequestFactory implements RequesterFactory<jodd.http.HttpRequest> {
+public class DefaultJoddHttpRequestFactory extends AbstractRequesterFactory<jodd.http.HttpRequest> {
 
     @Override
-    public jodd.http.HttpRequest create(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
+    public jodd.http.HttpRequest doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
         Config config = httpRequest.getConfig();
 
         jodd.http.HttpRequest request = new jodd.http.HttpRequest();
@@ -31,8 +31,6 @@ public class DefaultJoddHttpRequestFactory implements RequesterFactory<jodd.http
         //3.SSL设置
         initSSL(request , httpRequest);
 
-        doWithHttpRequest(request , httpRequest);
-
         return request;
     }
 
@@ -43,11 +41,4 @@ public class DefaultJoddHttpRequestFactory implements RequesterFactory<jodd.http
                 config.getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()),
                 config.getProxyInfoWithDefault(httpRequest.getProxyInfo()));
     }
-
-    /**
-     * 留给子类做更多的配置
-     * @param joddHttpRequest jodd的请求
-     * @param httpRequest 请求参数
-     */
-    protected void doWithHttpRequest(jodd.http.HttpRequest joddHttpRequest , top.jfunc.common.http.request.HttpRequest httpRequest){}
 }

@@ -13,8 +13,6 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import static top.jfunc.common.http.util.OkHttp3Util.*;
-
 /**
  * 使用OkHttp3实现的Http请求类
  * @author xiongshiyan at 2018/1/11
@@ -131,14 +129,14 @@ public class OkHttp3Client extends AbstractImplementHttpClient<Request.Builder> 
 
     @Override
     protected ContentCallback<Request.Builder> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
-        RequestBody stringBody = stringBody(body, bodyCharset, contentType);
-        return d -> setRequestBody(d, method, stringBody);
+        RequestBody stringBody = OkHttp3Util.stringBody(body, bodyCharset, contentType);
+        return d -> OkHttp3Util.setRequestBody(d, method, stringBody);
     }
 
     @Override
     protected ContentCallback<Request.Builder> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        MultipartBody filesBody = filesBody(params , formFiles);
-        return d -> setRequestBody(d, Method.POST , filesBody);
+        MultipartBody filesBody = OkHttp3Util.filesBody(params , formFiles);
+        return d -> OkHttp3Util.setRequestBody(d, Method.POST , filesBody);
     }
     @Override
     public String toString() {
