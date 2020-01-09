@@ -12,8 +12,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static top.jfunc.common.http.util.NativeUtil.*;
-
 /**
  * 使用URLConnection实现的Http请求类
  * @author 熊诗言2017/11/24
@@ -57,7 +55,7 @@ public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnect
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接
-            disconnectQuietly(connection);
+            NativeUtil.disconnectQuietly(connection);
             //2 . 关闭流
             IoUtil.close(inputStream);
         }
@@ -119,12 +117,12 @@ public class NativeHttpClient extends AbstractImplementHttpClient<HttpURLConnect
 
     @Override
     protected ContentCallback<HttpURLConnection> bodyContentCallback(Method method , String body, String bodyCharset, String contentType) throws IOException {
-        return connect -> writeContent(connect , body , bodyCharset);
+        return connect -> NativeUtil.writeContent(connect , body , bodyCharset);
     }
 
     @Override
     protected ContentCallback<HttpURLConnection> uploadContentCallback(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return connect -> upload0(connect , params , paramCharset , formFiles);
+        return connect -> NativeUtil.upload0(connect , params , paramCharset , formFiles);
     }
 
     @Override

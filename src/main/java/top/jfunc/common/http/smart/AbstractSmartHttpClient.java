@@ -5,6 +5,7 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.AbstractHttpClient;
+import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;

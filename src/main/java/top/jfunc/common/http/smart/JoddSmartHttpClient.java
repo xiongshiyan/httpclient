@@ -5,7 +5,8 @@ import jodd.http.HttpResponse;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.smart.jodd.*;
+import top.jfunc.common.http.component.*;
+import top.jfunc.common.http.component.jodd.*;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.InputStream;

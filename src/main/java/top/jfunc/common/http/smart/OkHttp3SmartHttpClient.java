@@ -6,8 +6,9 @@ import okhttp3.Response;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.component.*;
+import top.jfunc.common.http.component.okhttp3.*;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.okhttp3.*;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 

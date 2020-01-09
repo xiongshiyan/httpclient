@@ -3,9 +3,11 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.basic.GetRequest;
-import top.jfunc.common.http.smart.jdk.*;
+import top.jfunc.common.http.component.jdk.*;
+import top.jfunc.common.http.util.NativeUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -13,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.Objects;
-
-import static top.jfunc.common.http.util.NativeUtil.disconnectQuietly;
 
 /**
  * 使用URLConnection实现的Http请求类
@@ -71,7 +71,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接
-            disconnectQuietly(connection);
+            NativeUtil.disconnectQuietly(connection);
             //2 . 关闭流
             IoUtil.close(inputStream);
         }
