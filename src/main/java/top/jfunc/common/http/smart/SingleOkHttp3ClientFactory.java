@@ -9,31 +9,39 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.OkHttp3Util;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @see SingleOkHttp3ClientFactory
+ * 保持全局只有一个OkHttpClient，而不是每个请求都创建一个，提高性能
+ * @see DefaultOkHttp3ClientFactory
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultOkHttp3ClientFactory implements RequesterFactory<OkHttpClient> {
-    @Override
-    public OkHttpClient create(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
-        OkHttpClient.Builder clientBuilder = createAndConfigBuilder(httpRequest, completedUrl);
-        return createOkHttpClient(clientBuilder , httpRequest);
+public class SingleOkHttp3ClientFactory implements RequesterFactory<OkHttpClient> {
+    private OkHttpClient client;
+
+    public SingleOkHttp3ClientFactory(){
+        this.client = new OkHttpClient();
     }
 
-    protected OkHttpClient.Builder createAndConfigBuilder(HttpRequest httpRequest, String completedUrl) {
+    public SingleOkHttp3ClientFactory(OkHttpClient client) {
+        this.client = Objects.requireNonNull(client);
+    }
+
+    @Override
+    public OkHttpClient create(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
+
         Config config = httpRequest.getConfig();
-        //1.构造OkHttpClient
-        OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
-                .connectTimeout(config.getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()), TimeUnit.MILLISECONDS)
-                .readTimeout(config.getReadTimeoutWithDefault(httpRequest.getReadTimeout()), TimeUnit.MILLISECONDS);
+
+        OkHttpClient.Builder clientBuilder = this.client.newBuilder();
+        clientBuilder.connectTimeout(config.getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()) , TimeUnit.MILLISECONDS)
+                .readTimeout(config.getReadTimeoutWithDefault(httpRequest.getReadTimeout()) , TimeUnit.MILLISECONDS);
+
         //1.1如果存在就设置代理
         ProxyInfo proxyInfo = config.getProxyInfoWithDefault(httpRequest.getProxyInfo());
         if(null != proxyInfo){
             clientBuilder.proxy(proxyInfo.getProxy());
         }
-
         //是否重定向
         clientBuilder.followRedirects(httpRequest.followRedirects());
 
@@ -44,11 +52,11 @@ public class DefaultOkHttp3ClientFactory implements RequesterFactory<OkHttpClien
 
         doWithBuilder(clientBuilder , httpRequest);
 
-        ////////////////////////////////////ssl处理///////////////////////////////////
-        return clientBuilder;
+
+        this.client = clientBuilder.build();
+        return this.client;
     }
 
-    protected void doWithBuilder(OkHttpClient.Builder clientBuilder , HttpRequest httpRequest){ }
 
     protected void initSSL(OkHttpClient.Builder clientBuilder , HttpRequest httpRequest){
         Config config = httpRequest.getConfig();
@@ -57,22 +65,6 @@ public class DefaultOkHttp3ClientFactory implements RequesterFactory<OkHttpClien
                 config.getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()));
     }
 
-    /**
-     * 子类复写，增添更多的功能，保证返回OkHttpClient
-     */
-    protected OkHttpClient createOkHttpClient(OkHttpClient.Builder builder , HttpRequest httpRequest) throws IOException{
-        //默认就使用builder生成
-        //可以进一步对builder进行处理
-        OkHttpClient okHttpClient = builder.build();
-        //对OkHttpClient单独处理
-        doWithClient(okHttpClient , httpRequest);
-        return okHttpClient;
-    }
 
-    /**
-     * 子类对ObHttpClient复写
-     */
-    protected void doWithClient(OkHttpClient okHttpClient , HttpRequest httpRequest) throws IOException{
-        //default do nothing, give children a chance to do more config
-    }
+    protected void doWithBuilder(OkHttpClient.Builder clientBuilder , HttpRequest httpRequest){ }
 }
