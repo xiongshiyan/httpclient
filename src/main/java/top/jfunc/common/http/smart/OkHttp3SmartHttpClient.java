@@ -8,9 +8,9 @@ import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.okhttp3.*;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -28,6 +28,9 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
     private StreamExtractor<Response> responseStreamExtractor;
     private HeaderExtractor<Response> responseHeaderExtractor;
 
+    private Closer inputStreamCloser;
+    private Closer responseCloser;
+
     public OkHttp3SmartHttpClient(){
         setBodyContentCallbackCreator(new DefaultOkHttp3BodyContentCallbackCreator());
         setUploadContentCallbackCreator(new DefaultOkHttp3UploadContentCallbackCreator());
@@ -38,6 +41,9 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         setRequestExecutor(new DefaultOkHttp3RequestExecutor());
         setResponseStreamExtractor(new DefaultOkHttp3StreamExtractor());
         setResponseHeaderExtractor(new DefaultOkHttp3HeaderExtractor());
+
+        setInputStreamCloser(new DefaultCloser());
+        setResponseCloser(new DefaultCloser());
     }
 
 
@@ -71,11 +77,18 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
-            IoUtil.close(inputStream);
-            IoUtil.close(response);
+            closeInputStream(inputStream);
+            closeResponse(response);
         }
     }
 
+    protected void closeResponse(Response response) throws IOException {
+        getResponseCloser().close(response);
+    }
+
+    protected void closeInputStream(InputStream inputStream) throws IOException {
+        getInputStreamCloser().close(inputStream);
+    }
 
 
     public RequesterFactory<OkHttpClient> getOkHttpClientFactory() {
@@ -124,6 +137,22 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
 
     public void setResponseHeaderExtractor(HeaderExtractor<Response> responseHeaderExtractor) {
         this.responseHeaderExtractor = Objects.requireNonNull(responseHeaderExtractor);
+    }
+
+    public Closer getInputStreamCloser() {
+        return inputStreamCloser;
+    }
+
+    public void setInputStreamCloser(Closer inputStreamCloser) {
+        this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
+    }
+
+    public Closer getResponseCloser() {
+        return responseCloser;
+    }
+
+    public void setResponseCloser(Closer responseCloser) {
+        this.responseCloser = Objects.requireNonNull(responseCloser);
     }
 
     @Override

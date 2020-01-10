@@ -7,7 +7,6 @@ import top.jfunc.common.http.component.jdk.*;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.basic.GetRequest;
 import top.jfunc.common.http.util.NativeUtil;
-import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
@@ -27,6 +26,9 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     private StreamExtractor<HttpURLConnection> httpURLConnectionStreamExtractor;
     private HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor;
 
+    private Closer connectionCloser;
+    private Closer inputStreamCloser;
+
     public NativeSmartHttpClient(){
         setBodyContentCallbackCreator(new DefaultJdkBodyContentCallbackCreator());
         setUploadContentCallbackCreator(new DefaultJdkUploadContentCallbackCreator());
@@ -36,6 +38,11 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         setConnectionSender(new DefaultJdkConnectionSender());
         setHttpURLConnectionStreamExtractor(new DefaultJdkStreamExtractor());
         setHttpURLConnectionHeaderExtractor(new DefaultJdkHeaderExtractor());
+
+
+        setConnectionCloser(new DefaultCloser());
+        setInputStreamCloser(new DefaultCloser());
+
     }
 
     @Override
@@ -67,10 +74,23 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
             //1 . 关闭连接
-            NativeUtil.disconnectQuietly(connection);
+            closeConnection(connection);
             //2 . 关闭流
-            IoUtil.close(inputStream);
+            closeInputStream(inputStream);
         }
+    }
+
+    protected void closeInputStream(InputStream inputStream) throws IOException {
+        getInputStreamCloser().close(inputStream);
+    }
+
+    protected void closeConnection(HttpURLConnection connection) throws IOException {
+        getConnectionCloser().close(new AbstractCloseAdapter<HttpURLConnection>(connection) {
+            @Override
+            protected void doClose(HttpURLConnection connection) throws IOException {
+                NativeUtil.disconnectQuietly(connection);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -129,6 +149,22 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     public void setHttpURLConnectionHeaderExtractor(HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor) {
         this.httpURLConnectionHeaderExtractor = Objects.requireNonNull(httpURLConnectionHeaderExtractor);
+    }
+
+    public Closer getConnectionCloser() {
+        return connectionCloser;
+    }
+
+    public void setConnectionCloser(Closer connectionCloser) {
+        this.connectionCloser = Objects.requireNonNull(connectionCloser);
+    }
+
+    public Closer getInputStreamCloser() {
+        return inputStreamCloser;
+    }
+
+    public void setInputStreamCloser(Closer inputStreamCloser) {
+        this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
     }
 
     @Override

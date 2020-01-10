@@ -8,6 +8,7 @@ import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.jodd.*;
 import top.jfunc.common.utils.MultiValueMap;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -23,6 +24,8 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     private StreamExtractor<HttpResponse> httpResponseStreamExtractor;
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
 
+    private Closer responseCloser;
+
     public JoddSmartHttpClient(){
         setBodyContentCallbackCreator(new DefaultJoddBodyContentCallbackCreator());
         setUploadContentCallbackCreator(new DefaultJoddUploadContentCallbackCreator());
@@ -32,6 +35,8 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         setRequestSender(new DefaultJoddSender());
         setHttpResponseStreamExtractor(new DefaultJoddStreamExtractor());
         setHttpResponseHeaderExtractor(new DefaultJoddHeaderExtractor());
+
+        setResponseCloser(new DefaultCloser());
     }
 
     @Override
@@ -60,10 +65,17 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
-            if(null != response){
+            closeResponse(response);
+        }
+    }
+
+    protected void closeResponse(HttpResponse response) throws IOException {
+        getResponseCloser().close(new AbstractCloseAdapter<HttpResponse>(response) {
+            @Override
+            protected void doClose(HttpResponse response) throws IOException {
                 response.close();
             }
-        }
+        });
     }
 
 
@@ -105,6 +117,14 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
 
     public void setHttpResponseHeaderExtractor(HeaderExtractor<HttpResponse> httpResponseHeaderExtractor) {
         this.httpResponseHeaderExtractor = Objects.requireNonNull(httpResponseHeaderExtractor);
+    }
+
+    public Closer getResponseCloser() {
+        return responseCloser;
+    }
+
+    public void setResponseCloser(Closer responseCloser) {
+        this.responseCloser = Objects.requireNonNull(responseCloser);
     }
 
     @Override
