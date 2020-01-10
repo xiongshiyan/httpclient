@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
  */
 public class DefaultJdkStreamExtractor implements StreamExtractor<HttpURLConnection> {
     @Override
-    public InputStream extract(HttpURLConnection connection, HttpRequest httpRequest , String completedUrl) throws IOException {
+    public InputStream extract(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
         return NativeUtil.getStreamFrom(connection, connection.getResponseCode(), httpRequest.isIgnoreResponseBody());
     }
 }

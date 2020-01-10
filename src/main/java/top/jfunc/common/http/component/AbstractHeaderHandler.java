@@ -19,13 +19,13 @@ import java.util.List;
  */
 public abstract class AbstractHeaderHandler<C> implements HeaderHandler<C> {
     @Override
-    public void configHeaders(C target, HttpRequest httpRequest, String completedUrl) throws IOException {
+    public void configHeaders(C target, HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
         //1.合并默认headers
         MultiValueMap<String, String> handledHeaders = config.mergeDefaultHeaders(httpRequest.getHeaders());
 
         //2.处理cookie
-        handledHeaders = addCookieIfNecessary(config.getCookieJar() , completedUrl, handledHeaders);
+        handledHeaders = addCookieIfNecessary(config.getCookieJar() , httpRequest.getCompletedUrl(), handledHeaders);
 
         //3.真正设置
         doConfigHeaders(target , httpRequest , handledHeaders);

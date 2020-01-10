@@ -14,12 +14,12 @@ import java.io.IOException;
 public class DefaultJoddHttpRequestFactory extends AbstractRequesterFactory<jodd.http.HttpRequest> {
 
     @Override
-    public jodd.http.HttpRequest doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
+    public jodd.http.HttpRequest doCreate(HttpRequest httpRequest, Method method) throws IOException {
         Config config = httpRequest.getConfig();
 
         jodd.http.HttpRequest request = new jodd.http.HttpRequest();
         request.method(method.name());
-        request.set(completedUrl);
+        request.set(httpRequest.getCompletedUrl());
 
         //2.超时设置
         request.connectionTimeout(config.getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));

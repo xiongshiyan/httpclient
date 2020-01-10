@@ -13,8 +13,7 @@ public interface HeaderHandler<C> {
      * 处理header
      * @param target 设置给谁
      * @param httpRequest HttpRequest
-     * @param completedUrl 真正请求的URL
      * @throws IOException IOException
      */
-    void configHeaders(C target, HttpRequest httpRequest, String completedUrl)  throws IOException;
+    void configHeaders(C target, HttpRequest httpRequest)  throws IOException;
 }

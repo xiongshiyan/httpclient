@@ -44,14 +44,11 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
-            //1.获取连接
-            String completedUrl = getCompletedUrlCreator().complete(httpRequest);
-
-            //初始化connection
-            connection = getHttpURLConnectionFactory().create(httpRequest, method , completedUrl);
+            //1.初始化connection
+            connection = getHttpURLConnectionFactory().create(httpRequest, method);
 
             //2.处理header
-            getHttpURLConnectionHeaderHandler().configHeaders(connection , httpRequest , completedUrl);
+            getHttpURLConnectionHeaderHandler().configHeaders(connection , httpRequest);
 
             //3.写入内容
             getContentCallbackHandler().handle(connection , contentCallback , httpRequest , method);
@@ -60,10 +57,10 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             getConnectionSender().send(connection);
 
             //5.获取返回值
-            inputStream = getHttpURLConnectionStreamExtractor().extract(connection , httpRequest , completedUrl);
+            inputStream = getHttpURLConnectionStreamExtractor().extract(connection , httpRequest);
 
             //6.返回header,包括Cookie处理
-            MultiValueMap<String, String> responseHeaders = getHttpURLConnectionHeaderExtractor().extract(connection, httpRequest, completedUrl);
+            MultiValueMap<String, String> responseHeaders = getHttpURLConnectionHeaderExtractor().extract(connection, httpRequest);
 
             return resultCallback.convert(connection.getResponseCode(), inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),

@@ -39,25 +39,23 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     protected <R> R doInternalTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         HttpResponse response = null;
         try {
-            //1.获取完成的URL，创建请求
-            String completedUrl = getCompletedUrlCreator().complete(httpRequest);
-
-            HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest, method, completedUrl);
+            //1.获取Request
+            HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest, method);
 
             //4.处理body
             getContentCallbackHandler().handle(request , contentCallback , httpRequest , method);
 
             //5.设置header
-            getHttpRequestHeaderHandler().configHeaders(request , httpRequest , completedUrl);
+            getHttpRequestHeaderHandler().configHeaders(request , httpRequest);
 
             //6.真正请求
             response = getRequestSender().send(request);
 
             //7.获取返回值
-            InputStream inputStream = getHttpResponseStreamExtractor().extract(response, httpRequest , completedUrl);
+            InputStream inputStream = getHttpResponseStreamExtractor().extract(response, httpRequest);
 
             //8.返回header,包括Cookie处理
-            MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest, completedUrl);
+            MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest);
 
             return resultCallback.convert(response.statusCode(), inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),

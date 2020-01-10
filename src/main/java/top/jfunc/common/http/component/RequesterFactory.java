@@ -15,9 +15,8 @@ public interface RequesterFactory<C> {
      * 创建请求处理器
      * @param httpRequest HttpRequest
      * @param method Method
-     * @param completedUrl completedUrl计算后的真实的URL {@link top.jfunc.common.http.base.Config#handleUrlIfNecessary(String, Map, MultiValueMap, String)}
      * @return HttpURLConnection
      * @throws IOException IOException
      */
-    C create(HttpRequest httpRequest, Method method , String completedUrl) throws IOException;
+    C create(HttpRequest httpRequest, Method method) throws IOException;
 }

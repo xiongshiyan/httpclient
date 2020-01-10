@@ -40,6 +40,13 @@ public interface HttpRequest extends ConfigAccessor{
     String getUrl();
 
     /**
+     * 获取真正请求的URL，可能是经过一系列处理的
+     * @since 1.2.0
+     * @return 真正请求的URL
+     */
+    String getCompletedUrl();
+
+    /**
      * 设置URL
      * @param url url
      * @return this
@@ -154,20 +161,6 @@ public interface HttpRequest extends ConfigAccessor{
      * @return this
      */
     HttpRequest setHeaders(Map<String, String> headers);
-
-    /**
-     * 请求的不可重复key的Header
-     * @return 请求的Header
-     */
-    //Map<String, String> getOverwriteHeaders();
-
-    /**
-     * 提供便捷的设置header的方法
-     * @param key key
-     * @param value value
-     * @return this
-     */
-    //HttpRequest putOverwriteHeader(String key, String value);
 
     /**
      * Content-Type
@@ -328,16 +321,6 @@ public interface HttpRequest extends ConfigAccessor{
         SSLContext sslContext = getSslContext();
         return null == sslContext ? null : sslContext.getSocketFactory();
     }
-
-    /**
-     * 设置SSLSocketFactory
-     * 废弃此方法,调用{@link HttpRequest#setSslContext(SSLContext)}设置
-     * @see HttpRequest#setSslContext(SSLContext)
-     * @param sslSocketFactory SSLSocketFactory
-     * @return this
-     */
-    //@Deprecated
-    //HttpRequest setSslSocketFactory(SSLSocketFactory sslSocketFactory);
 
     /**
      * X509TrustManager

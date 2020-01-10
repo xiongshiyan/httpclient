@@ -13,7 +13,7 @@ import java.io.InputStream;
  */
 public class DefaultOkHttp3StreamExtractor implements StreamExtractor<Response> {
     @Override
-    public InputStream extract(Response response, HttpRequest httpRequest , String completedUrl) throws IOException {
+    public InputStream extract(Response response, HttpRequest httpRequest) throws IOException {
         return OkHttp3Util.getStreamFrom(response, httpRequest.isIgnoreResponseBody());
     }
 }

@@ -13,7 +13,7 @@ import java.io.InputStream;
  */
 public class DefaultApacheEntityStreamExtractor implements StreamExtractor<HttpEntity> {
     @Override
-    public InputStream extract(HttpEntity httpEntity, HttpRequest httpRequest , String completedUrl) throws IOException {
+    public InputStream extract(HttpEntity httpEntity, HttpRequest httpRequest) throws IOException {
         return ApacheUtil.getStreamFrom(httpEntity, httpRequest.isIgnoreResponseBody());
     }
 }

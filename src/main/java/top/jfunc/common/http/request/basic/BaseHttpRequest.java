@@ -5,6 +5,8 @@ import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
+import top.jfunc.common.http.component.CompletedUrlCreator;
+import top.jfunc.common.http.component.DefaultCompletedUrlCreator;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
@@ -25,6 +27,11 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
      * 设置的URL
      */
     private String url;
+    private String cacheCompletedUrl;
+    /**
+     * 完整URL处理器
+     */
+    private CompletedUrlCreator completedUrlCreator = new DefaultCompletedUrlCreator();
     /**
      * 路径参数
      */
@@ -109,6 +116,14 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
+    public String getCompletedUrl() {
+        if(null == this.cacheCompletedUrl){
+            this.cacheCompletedUrl = getCompletedUrlCreator().complete(this);
+        }
+        return this.cacheCompletedUrl;
+    }
+
+    @Override
     public THIS setUrl(String url) {
         this.url = url;
         return myself();
@@ -118,6 +133,14 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     public HttpRequest setUrl(URL url) {
         setUrl(url.toString());
         return myself();
+    }
+
+    public CompletedUrlCreator getCompletedUrlCreator() {
+        return completedUrlCreator;
+    }
+
+    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
+        this.completedUrlCreator = completedUrlCreator;
     }
 
     @Override

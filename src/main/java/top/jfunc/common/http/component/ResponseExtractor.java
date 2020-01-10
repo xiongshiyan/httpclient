@@ -12,9 +12,8 @@ public interface ResponseExtractor<S , R>{
      * 从请求响应中获取信息
      * @param s 请求响应
      * @param httpRequest HttpRequest
-     * @param completedUrl completedUrl
      * @return R
      * @throws IOException IOException
      */
-    R extract(S s, HttpRequest httpRequest , String completedUrl) throws IOException;
+    R extract(S s, HttpRequest httpRequest) throws IOException;
 }

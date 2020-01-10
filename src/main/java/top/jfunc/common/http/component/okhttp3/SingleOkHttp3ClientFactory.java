@@ -30,7 +30,7 @@ public class SingleOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttpC
     }
 
     @Override
-    public OkHttpClient doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
+    public OkHttpClient doCreate(HttpRequest httpRequest, Method method) throws IOException {
 
         Config config = httpRequest.getConfig();
 
@@ -47,7 +47,7 @@ public class SingleOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttpC
         clientBuilder.followRedirects(httpRequest.followRedirects());
 
         ////////////////////////////////////ssl处理///////////////////////////////////
-        if(ParamUtil.isHttps(completedUrl)){
+        if(ParamUtil.isHttps(httpRequest.getCompletedUrl())){
             initSSL(clientBuilder , httpRequest);
         }
 

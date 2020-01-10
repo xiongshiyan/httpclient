@@ -13,7 +13,6 @@ public interface RequesterCustomizer<C> {
      * @param c 被处理的
      * @param httpRequest HttpRequest
      * @param method  Method
-     * @param completedUrl 真正请求的URL
      */
-    void customize(C c , HttpRequest httpRequest, Method method, String completedUrl);
+    void customize(C c , HttpRequest httpRequest, Method method);
 }

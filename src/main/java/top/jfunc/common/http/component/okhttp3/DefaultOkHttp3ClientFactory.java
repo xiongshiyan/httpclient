@@ -18,12 +18,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttpClient> {
     @Override
-    public OkHttpClient doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
-        OkHttpClient.Builder clientBuilder = createAndConfigBuilder(httpRequest, completedUrl);
+    public OkHttpClient doCreate(HttpRequest httpRequest, Method method) throws IOException {
+        OkHttpClient.Builder clientBuilder = createAndConfigBuilder(httpRequest);
         return clientBuilder.build();
     }
 
-    protected OkHttpClient.Builder createAndConfigBuilder(HttpRequest httpRequest, String completedUrl) {
+    protected OkHttpClient.Builder createAndConfigBuilder(HttpRequest httpRequest) {
         Config config = httpRequest.getConfig();
         //1.构造OkHttpClient
         OkHttpClient.Builder clientBuilder = new OkHttpClient().newBuilder()
@@ -39,7 +39,7 @@ public class DefaultOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttp
         clientBuilder.followRedirects(httpRequest.followRedirects());
 
         ////////////////////////////////////ssl处理///////////////////////////////////
-        if(ParamUtil.isHttps(completedUrl)){
+        if(ParamUtil.isHttps(httpRequest.getCompletedUrl())){
             initSSL(clientBuilder , httpRequest);
         }
 

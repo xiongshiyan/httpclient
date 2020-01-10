@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
  */
 public class DefaultJdkHeaderExtractor implements HeaderExtractor<HttpURLConnection> {
     @Override
-    public MultiValueMap<String, String> extract(HttpURLConnection connection, HttpRequest httpRequest, String completedUrl) throws IOException {
+    public MultiValueMap<String, String> extract(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
         ///1.如果支持重定向，必须读取header
         if(httpRequest.followRedirects()){
             //includeHeaders = HttpRequest.INCLUDE_HEADERS;

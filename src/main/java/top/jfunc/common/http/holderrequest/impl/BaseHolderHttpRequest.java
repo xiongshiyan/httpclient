@@ -5,6 +5,8 @@ import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
+import top.jfunc.common.http.component.CompletedUrlCreator;
+import top.jfunc.common.http.component.DefaultCompletedUrlCreator;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.holderrequest.HolderHttpRequest;
 import top.jfunc.common.utils.MultiValueMap;
@@ -22,6 +24,11 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
      * 请求的URL
      */
     private UrlHolder urlHolder = new DefaultUrlHolder();
+    private String cacheCompletedUrl;
+    /**
+     * 完整URL处理器
+     */
+    private CompletedUrlCreator completedUrlCreator = new DefaultCompletedUrlCreator();
     /**
      * 请求头
      */
@@ -81,6 +88,14 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     public BaseHolderHttpRequest(){}
 
     @Override
+    public String getCompletedUrl() {
+        if(null == this.cacheCompletedUrl){
+            this.cacheCompletedUrl = getCompletedUrlCreator().complete(this);
+        }
+        return this.cacheCompletedUrl;
+    }
+
+    @Override
     public THIS setUrl(String url) {
         this.urlHolder.setUrl(url);
         return myself();
@@ -89,6 +104,14 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     public THIS setUrl(URL url) {
         this.urlHolder.setUrl(url);
         return myself();
+    }
+
+    public CompletedUrlCreator getCompletedUrlCreator() {
+        return completedUrlCreator;
+    }
+
+    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
+        this.completedUrlCreator = completedUrlCreator;
     }
 
     @Override

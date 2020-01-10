@@ -1,7 +1,6 @@
 package top.jfunc.common.http.interceptor;
 
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.util.LinkedHashSet;
@@ -38,7 +37,7 @@ public class UrlStatisticsInterceptor extends InterceptorAdapter {
     @Override
     public HttpRequest onBefore(HttpRequest httpRequest, Method method) {
         if(starting){
-            String url = evictParamsIfNecessary(httpRequest);
+            String url = getSaveUrl(httpRequest);
             saveUrl(url);
         }
         return super.onBefore(httpRequest, method);
@@ -52,16 +51,14 @@ public class UrlStatisticsInterceptor extends InterceptorAdapter {
         statisticsUrls.add(url);
     }
 
-    protected String evictParamsIfNecessary(HttpRequest httpRequest){
+    protected String getSaveUrl(HttpRequest httpRequest){
         String originUrl = httpRequest.getUrl();
         //不包含参数的情况下，就统计原始URL
         if(!containsParams){
             return originUrl;
         }
-        //1.处理Route参数
-        String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , httpRequest.getRouteParams());
-        //2.处理Query参数
-        return ParamUtil.contactUrlParams(routeUrl, httpRequest.getQueryParams(), httpRequest.getQueryParamCharset());
+
+        return httpRequest.getCompletedUrl();
     }
 
     public void start(){

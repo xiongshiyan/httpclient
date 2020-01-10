@@ -18,8 +18,8 @@ import java.net.URL;
 public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpURLConnection> {
 
     @Override
-    public HttpURLConnection doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException{
-        URL url = new URL(completedUrl);
+    public HttpURLConnection doCreate(HttpRequest httpRequest, Method method) throws IOException{
+        URL url = new URL(httpRequest.getCompletedUrl());
         //1.1如果需要则设置代理
         Config config = httpRequest.getConfig();
         ProxyInfo proxyInfo = config.getProxyInfoWithDefault(httpRequest.getProxyInfo());

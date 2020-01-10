@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
     @Override
-    public MultiValueMap<String, String> extract(S s, HttpRequest httpRequest, String completedUrl) throws IOException {
+    public MultiValueMap<String, String> extract(S s, HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
 
         ///1.如果要支持cookie，必须读取header
@@ -24,7 +24,7 @@ public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
         MultiValueMap<String, String> responseHeaders = doExtractHeaders(s , httpRequest);
 
         //3.处理cookie
-        saveCookieIfNecessary(config.getCookieJar(), completedUrl , responseHeaders);
+        saveCookieIfNecessary(config.getCookieJar(), httpRequest.getCompletedUrl() , responseHeaders);
 
         return responseHeaders;
     }

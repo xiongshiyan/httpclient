@@ -47,35 +47,32 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
-        //1.获取完整的URL
-        String completedUrl = getCompletedUrlCreator().complete(httpRequest);
-
         //2.创建并配置
-        HttpUriRequest httpUriRequest = getHttpUriRequestRequesterFactory().create(httpRequest, method, completedUrl);
+        HttpUriRequest httpUriRequest = getHttpUriRequestRequesterFactory().create(httpRequest, method);
 
         //3.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
             getContentCallbackHandler().handle((HttpEntityEnclosingRequest)httpUriRequest , contentCallback , httpRequest , method);
         }
 
-        getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest, completedUrl);
+        getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         ///HttpEntity entity = null;
         InputStream inputStream = null;
         try {
-            httpClient = getCloseableHttpClientRequesterFactory().create(httpRequest, method ,completedUrl);
+            httpClient = getCloseableHttpClientRequesterFactory().create(httpRequest, method);
 
             //4.发送请求
             response = getRequestExecutor().execute(httpClient , httpUriRequest);
 
             //5.处理返回值
             ///HttpEntity entity = response.getEntity();
-            inputStream = getResponseStreamExtractor().extract(response , httpRequest , completedUrl);
+            inputStream = getResponseStreamExtractor().extract(response , httpRequest);
 
             //6.处理headers
-            MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest, completedUrl);
+            MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest);
 
             return resultCallback.convert(response.getStatusLine().getStatusCode() , inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),

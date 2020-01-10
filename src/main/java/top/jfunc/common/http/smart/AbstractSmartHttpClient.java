@@ -13,7 +13,6 @@ import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * 提供了{@link SmartHttpClient}接口的实现
@@ -28,12 +27,9 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     private UploadContentCallbackCreator<CC> uploadContentCallbackCreator;
     /**ContentCallback处理器*/
     private ContentCallbackHandler<CC> contentCallbackHandler;
-    /**处理URL的*/
-    private CompletedUrlCreator completedUrlCreator;
 
     public AbstractSmartHttpClient(){
         setContentCallbackHandler(new DefaultContentCallbackHandler<>());
-        setCompletedUrlCreator(new DefaultCompletedUrlCreator());
     }
 
 
@@ -194,13 +190,6 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         this.contentCallbackHandler = contentCallbackHandler;
     }
 
-    public CompletedUrlCreator getCompletedUrlCreator() {
-        return completedUrlCreator;
-    }
-
-    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
-        this.completedUrlCreator = Objects.requireNonNull(completedUrlCreator);
-    }
     /**
      * 处理请求体的回调
      * @param method 请求方法

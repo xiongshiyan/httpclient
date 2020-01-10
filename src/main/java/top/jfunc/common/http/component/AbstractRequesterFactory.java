@@ -16,12 +16,12 @@ public abstract class AbstractRequesterFactory<C> implements RequesterFactory<C>
     private List<RequesterCustomizer<C>> requesterCustomizers;
 
     @Override
-    public C create(HttpRequest httpRequest, Method method, String completedUrl) throws IOException{
-        C c = doCreate(httpRequest, method, completedUrl);
+    public C create(HttpRequest httpRequest, Method method) throws IOException{
+        C c = doCreate(httpRequest, method);
 
         if(CollectionUtil.isNotEmpty(getRequesterCustomizers())){
             for (RequesterCustomizer<C> customer : getRequesterCustomizers()) {
-                customer.customize(c , httpRequest , method , completedUrl);
+                customer.customize(c , httpRequest , method);
             }
         }
 
@@ -29,7 +29,7 @@ public abstract class AbstractRequesterFactory<C> implements RequesterFactory<C>
     }
 
     /**真正的创建*/
-    protected abstract C doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException;
+    protected abstract C doCreate(HttpRequest httpRequest, Method method) throws IOException;
 
 
     public List<RequesterCustomizer<C>> getRequesterCustomizers() {

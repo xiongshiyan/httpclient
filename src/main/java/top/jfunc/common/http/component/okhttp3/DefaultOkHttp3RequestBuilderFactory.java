@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class DefaultOkHttp3RequestBuilderFactory extends AbstractRequesterFactory<Request.Builder> {
     @Override
-    public Request.Builder doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
-        return new Request.Builder().url(completedUrl);
+    public Request.Builder doCreate(HttpRequest httpRequest, Method method) throws IOException {
+        return new Request.Builder().url(httpRequest.getCompletedUrl());
     }
 }

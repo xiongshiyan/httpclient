@@ -13,7 +13,7 @@ import java.io.InputStream;
  */
 public class DefaultJoddStreamExtractor implements StreamExtractor<HttpResponse> {
     @Override
-    public InputStream extract(HttpResponse httpResponse, HttpRequest httpRequest , String completedUrl) throws IOException {
+    public InputStream extract(HttpResponse httpResponse, HttpRequest httpRequest) throws IOException {
         return JoddUtil.getStreamFrom(httpResponse , httpRequest.isIgnoreResponseBody());
     }
 }

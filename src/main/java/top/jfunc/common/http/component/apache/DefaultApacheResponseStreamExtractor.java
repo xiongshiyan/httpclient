@@ -13,7 +13,7 @@ import java.io.InputStream;
  */
 public class DefaultApacheResponseStreamExtractor implements StreamExtractor<CloseableHttpResponse> {
     @Override
-    public InputStream extract(CloseableHttpResponse response, HttpRequest httpRequest , String completedUrl) throws IOException {
+    public InputStream extract(CloseableHttpResponse response, HttpRequest httpRequest) throws IOException {
         return ApacheUtil.getStreamFrom(response.getEntity(), httpRequest.isIgnoreResponseBody());
     }
 }

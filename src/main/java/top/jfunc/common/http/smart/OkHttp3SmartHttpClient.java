@@ -47,28 +47,26 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         Response response = null;
         InputStream inputStream = null;
         try {
-            //1.创建并配置builder
-            String completedUrl = getCompletedUrlCreator().complete(httpRequest);
-
-            OkHttpClient client = getOkHttpClientFactory().create(httpRequest , method , completedUrl);
+            //1.创建并配置OkHttpClient
+            OkHttpClient client = getOkHttpClientFactory().create(httpRequest , method);
 
             //2.1设置URL
-            Request.Builder builder = getRequestBuilderFactory().create(httpRequest , method , completedUrl);
+            Request.Builder builder = getRequestBuilderFactory().create(httpRequest , method);
 
             //2.2处理请求体
             getContentCallbackHandler().handle(builder , contentCallback , httpRequest , method);
 
             //2.3设置headers
-            getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest , completedUrl);
+            getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest);
 
             //3.执行请求
             response = getRequestExecutor().execute(client , builder);
 
             //4.获取响应
-            inputStream = getResponseStreamExtractor().extract(response , httpRequest , completedUrl);
+            inputStream = getResponseStreamExtractor().extract(response , httpRequest);
 
             //5.处理header，包括Cookie的处理
-            MultiValueMap<String, String> responseHeaders = getResponseHeaderExtractor().extract(response, httpRequest, completedUrl);
+            MultiValueMap<String, String> responseHeaders = getResponseHeaderExtractor().extract(response, httpRequest);
 
             return resultCallback.convert(response.code(), inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),

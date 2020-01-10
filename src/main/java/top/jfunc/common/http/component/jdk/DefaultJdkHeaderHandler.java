@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
  */
 public class DefaultJdkHeaderHandler implements HeaderHandler<HttpURLConnection> {
     @Override
-    public void configHeaders(HttpURLConnection target, HttpRequest httpRequest, String completedUrl) throws IOException {
+    public void configHeaders(HttpURLConnection target, HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
 
         //1.合并默认headers

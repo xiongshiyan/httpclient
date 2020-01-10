@@ -18,11 +18,12 @@ import java.io.IOException;
  */
 public class DefaultApacheClientFactory extends AbstractRequesterFactory<CloseableHttpClient> {
     @Override
-    public CloseableHttpClient doCreate(HttpRequest httpRequest, Method method, String completedUrl) throws IOException {
+    public CloseableHttpClient doCreate(HttpRequest httpRequest, Method method) throws IOException {
         Config config = httpRequest.getConfig();
         ////////////////////////////////////ssl处理///////////////////////////////////
         HostnameVerifier hostnameVerifier = null;
         SSLContext sslContext = null;
+        String completedUrl = httpRequest.getCompletedUrl();
         //https默认设置这些
         if(ParamUtil.isHttps(completedUrl)){
             hostnameVerifier = config.getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier());
