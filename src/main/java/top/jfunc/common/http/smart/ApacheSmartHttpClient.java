@@ -6,7 +6,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
@@ -28,7 +27,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     private RequesterFactory<HttpUriRequest> httpUriRequestRequesterFactory;
     private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler;
-    private RequesterFactory<HttpClientBuilder> clientBuilderRequesterFactory;
+    private RequesterFactory<CloseableHttpClient> closeableHttpClientRequesterFactory;
     private RequestExecutor<CloseableHttpClient , HttpUriRequest , CloseableHttpResponse> requestExecutor;
     private StreamExtractor<HttpEntity> httpEntityStreamExtractor;
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
@@ -39,7 +38,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
         setHttpUriRequestRequesterFactory(new DefaultApacheRequestFactory());
         setHttpUriRequestHeaderHandler(new DefaultApacheHeaderHandler());
-        setClientBuilderRequesterFactory(new DefaultApacheClientBuilderFactory());
+        setCloseableHttpClientRequesterFactory(new DefaultApacheClientFactory());
         setRequestExecutor(new DefaultApacheRequestExecutor());
         setHttpEntityStreamExtractor(new DefaultApacheStreamExtractor());
         setHttpResponseHeaderExtractor(new DefaultApacheHeaderExtractor());
@@ -65,10 +64,9 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         HttpEntity entity = null;
         InputStream inputStream = null;
         try {
-            HttpClientBuilder clientBuilder = getClientBuilderRequesterFactory().create(httpRequest, method ,completedUrl);
+            httpClient = getCloseableHttpClientRequesterFactory().create(httpRequest, method ,completedUrl);
 
             //4.发送请求
-            httpClient = clientBuilder.build();
             response = getRequestExecutor().execute(httpClient , httpUriRequest);
 
             //5.处理返回值
@@ -106,12 +104,12 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         this.httpUriRequestHeaderHandler = Objects.requireNonNull(httpUriRequestHeaderHandler);
     }
 
-    public RequesterFactory<HttpClientBuilder> getClientBuilderRequesterFactory() {
-        return clientBuilderRequesterFactory;
+    public RequesterFactory<CloseableHttpClient> getCloseableHttpClientRequesterFactory() {
+        return closeableHttpClientRequesterFactory;
     }
 
-    public void setClientBuilderRequesterFactory(RequesterFactory<HttpClientBuilder> clientBuilderRequesterFactory) {
-        this.clientBuilderRequesterFactory = Objects.requireNonNull(clientBuilderRequesterFactory);
+    public void setCloseableHttpClientRequesterFactory(RequesterFactory<CloseableHttpClient> closeableHttpClientRequesterFactory) {
+        this.closeableHttpClientRequesterFactory = closeableHttpClientRequesterFactory;
     }
 
     public RequestExecutor<CloseableHttpClient, HttpUriRequest, CloseableHttpResponse> getRequestExecutor() {
