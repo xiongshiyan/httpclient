@@ -106,7 +106,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     }
 
     public void setCloseableHttpClientRequesterFactory(RequesterFactory<CloseableHttpClient> closeableHttpClientRequesterFactory) {
-        this.closeableHttpClientRequesterFactory = closeableHttpClientRequesterFactory;
+        this.closeableHttpClientRequesterFactory = Objects.requireNonNull(closeableHttpClientRequesterFactory);
     }
 
     public RequestExecutor<CloseableHttpClient, HttpUriRequest, CloseableHttpResponse> getRequestExecutor() {
@@ -122,7 +122,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     }
 
     public void setResponseStreamExtractor(StreamExtractor<CloseableHttpResponse> responseStreamExtractor) {
-        this.responseStreamExtractor = responseStreamExtractor;
+        this.responseStreamExtractor = Objects.requireNonNull(responseStreamExtractor);
     }
 
     public HeaderExtractor<HttpResponse> getHttpResponseHeaderExtractor() {

@@ -104,7 +104,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     }
 
     public void setHttpURLConnectionHeaderHandler(HeaderHandler<HttpURLConnection> httpURLConnectionHeaderHandler) {
-        this.httpURLConnectionHeaderHandler = httpURLConnectionHeaderHandler;
+        this.httpURLConnectionHeaderHandler = Objects.requireNonNull(httpURLConnectionHeaderHandler);
     }
 
     public RequestSender<HttpURLConnection, HttpURLConnection> getConnectionSender() {
@@ -112,7 +112,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     }
 
     public void setConnectionSender(RequestSender<HttpURLConnection, HttpURLConnection> connectionSender) {
-        this.connectionSender = connectionSender;
+        this.connectionSender = Objects.requireNonNull(connectionSender);
     }
 
     public StreamExtractor<HttpURLConnection> getHttpURLConnectionStreamExtractor() {
