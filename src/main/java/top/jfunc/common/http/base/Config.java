@@ -253,7 +253,7 @@ public class Config {
     /**
      * clone一份，防止全局设置被无意修改
      */
-    protected MultiValueMap<String , String> getDefaultQueryParams(){
+    public MultiValueMap<String , String> getDefaultQueryParams(){
         MultiValueMap<String, String> params = queryParamHolder().getParams();
         if(null == params){
             return null;
