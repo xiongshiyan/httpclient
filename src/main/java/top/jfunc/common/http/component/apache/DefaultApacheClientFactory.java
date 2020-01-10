@@ -1,6 +1,6 @@
 package top.jfunc.common.http.component.apache;
 
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
@@ -15,9 +15,9 @@ import java.io.IOException;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultApacheClientFactory extends AbstractRequesterFactory<CloseableHttpClient> {
+public class DefaultApacheClientFactory extends AbstractRequesterFactory<HttpClient> {
     @Override
-    public CloseableHttpClient doCreate(HttpRequest httpRequest) throws IOException {
+    public HttpClient doCreate(HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
         ////////////////////////////////////ssl处理///////////////////////////////////
         HostnameVerifier hostnameVerifier = null;

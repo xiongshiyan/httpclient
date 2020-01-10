@@ -2,9 +2,8 @@ package top.jfunc.common.http.smart;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
@@ -13,6 +12,7 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
+import java.io.Closeable;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -24,11 +24,11 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     private RequesterFactory<HttpUriRequest> httpUriRequestRequesterFactory;
     private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler;
-    private RequesterFactory<CloseableHttpClient> closeableHttpClientRequesterFactory;
-    private RequestExecutor<CloseableHttpClient , HttpUriRequest , CloseableHttpResponse> requestExecutor;
+    private RequesterFactory<HttpClient> httpClientRequesterFactory;
+    private RequestExecutor<HttpClient , HttpUriRequest , HttpResponse> requestExecutor;
     ///private StreamExtractor<HttpEntity> httpEntityStreamExtractor;
 
-    private StreamExtractor<CloseableHttpResponse> responseStreamExtractor;
+    private StreamExtractor<HttpResponse> responseStreamExtractor;
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
 
     public ApacheSmartHttpClient(){
@@ -37,7 +37,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
         setHttpUriRequestRequesterFactory(new DefaultApacheRequestFactory());
         setHttpUriRequestHeaderHandler(new DefaultApacheHeaderHandler());
-        setCloseableHttpClientRequesterFactory(new DefaultApacheClientFactory());
+        setHttpClientRequesterFactory(new DefaultApacheClientFactory());
         setRequestExecutor(new DefaultApacheRequestExecutor());
         ///setHttpEntityStreamExtractor(new DefaultApacheEntityStreamExtractor());
         setResponseStreamExtractor(new DefaultApacheResponseStreamExtractor());
@@ -56,12 +56,12 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
         getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);
 
-        CloseableHttpClient httpClient = null;
-        CloseableHttpResponse response = null;
+        HttpClient httpClient = null;
+        HttpResponse response = null;
         ///HttpEntity entity = null;
         InputStream inputStream = null;
         try {
-            httpClient = getCloseableHttpClientRequesterFactory().create(httpRequest);
+            httpClient = getHttpClientRequesterFactory().create(httpRequest);
 
             //4.发送请求
             response = getRequestExecutor().execute(httpClient , httpUriRequest);
@@ -79,8 +79,18 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         }finally {
             IoUtil.close(inputStream);
             ///EntityUtils.consumeQuietly(entity);
-            IoUtil.close(response);
-            IoUtil.close(httpClient);
+            closeIfNecessary(response);
+            closeIfNecessary(httpClient);
+        }
+    }
+
+    /**
+     * @see org.apache.http.impl.client.CloseableHttpClient
+     * @see org.apache.http.client.methods.CloseableHttpResponse
+     */
+    protected void closeIfNecessary(Object o) {
+        if(o instanceof Closeable){
+            IoUtil.close((Closeable)o);
         }
     }
 
@@ -101,27 +111,27 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         this.httpUriRequestHeaderHandler = Objects.requireNonNull(httpUriRequestHeaderHandler);
     }
 
-    public RequesterFactory<CloseableHttpClient> getCloseableHttpClientRequesterFactory() {
-        return closeableHttpClientRequesterFactory;
+    public RequesterFactory<HttpClient> getHttpClientRequesterFactory() {
+        return httpClientRequesterFactory;
     }
 
-    public void setCloseableHttpClientRequesterFactory(RequesterFactory<CloseableHttpClient> closeableHttpClientRequesterFactory) {
-        this.closeableHttpClientRequesterFactory = Objects.requireNonNull(closeableHttpClientRequesterFactory);
+    public void setHttpClientRequesterFactory(RequesterFactory<HttpClient> httpClientRequesterFactory) {
+        this.httpClientRequesterFactory = Objects.requireNonNull(httpClientRequesterFactory);
     }
 
-    public RequestExecutor<CloseableHttpClient, HttpUriRequest, CloseableHttpResponse> getRequestExecutor() {
+    public RequestExecutor<HttpClient, HttpUriRequest, HttpResponse> getRequestExecutor() {
         return requestExecutor;
     }
 
-    public void setRequestExecutor(RequestExecutor<CloseableHttpClient, HttpUriRequest, CloseableHttpResponse> requestExecutor) {
+    public void setRequestExecutor(RequestExecutor<HttpClient, HttpUriRequest, HttpResponse> requestExecutor) {
         this.requestExecutor = Objects.requireNonNull(requestExecutor);
     }
 
-    public StreamExtractor<CloseableHttpResponse> getResponseStreamExtractor() {
+    public StreamExtractor<HttpResponse> getResponseStreamExtractor() {
         return responseStreamExtractor;
     }
 
-    public void setResponseStreamExtractor(StreamExtractor<CloseableHttpResponse> responseStreamExtractor) {
+    public void setResponseStreamExtractor(StreamExtractor<HttpResponse> responseStreamExtractor) {
         this.responseStreamExtractor = Objects.requireNonNull(responseStreamExtractor);
     }
 
