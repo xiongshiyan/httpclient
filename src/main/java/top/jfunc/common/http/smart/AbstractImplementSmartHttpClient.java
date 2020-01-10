@@ -29,9 +29,8 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
      */
     @Override
     public <R> R template(HttpRequest httpRequest, Method method, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException {
-        //0.初始化HttpRequest的Config，方便后续直接在HttpRequest中获取Config
-        Config config = getConfig();
-        httpRequest.setConfig(config);
+        //在接口方法入口处调用了init(HttpRequest)方法将系统Config设置到HttpRequest了
+        Config config = httpRequest.getConfig();
 
         //1.子类处理
         HttpRequest h = beforeTemplate(httpRequest);
@@ -77,6 +76,8 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
     @Override
     public  <R> R template(String url, Method method , String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
         HttpRequest httpRequest = CommonRequest.of(url);
+        init(httpRequest);
+
         httpRequest.setContentType(contentType);
         if(null != headers){
             headers.forEachKeyValue((k,v)->httpRequest.addHeader(k , v));
@@ -89,6 +90,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
             httpRequest.setResultCharset(resultCharset);
         }
         httpRequest.setIncludeHeaders(includeHeader);
+
 
         return template(httpRequest , method , contentCallback , resultCallback);
     }
