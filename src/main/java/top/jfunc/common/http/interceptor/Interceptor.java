@@ -1,6 +1,5 @@
 package top.jfunc.common.http.interceptor;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.HttpRequest;
 
 /**
@@ -13,10 +12,9 @@ public interface Interceptor {
     /**
      * 执行之前拦截 before
      * @param httpRequest HttpRequest
-     * @param method 请求方法
      * @return 可能被修改后的HttpRequest
      */
-    HttpRequest onBefore(HttpRequest httpRequest, Method method);
+    HttpRequest onBefore(HttpRequest httpRequest);
 
     /**
      * 执行之后拦截 beforeReturn

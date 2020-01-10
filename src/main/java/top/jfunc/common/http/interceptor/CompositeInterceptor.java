@@ -1,6 +1,5 @@
 package top.jfunc.common.http.interceptor;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
 
@@ -72,13 +71,13 @@ public class CompositeInterceptor implements Interceptor {
     }
 
     @Override
-    public HttpRequest onBefore(HttpRequest httpRequest, Method method) {
+    public HttpRequest onBefore(HttpRequest httpRequest) {
         HttpRequest temp = httpRequest;
         //循环执行拦截器代码
         if (null != this.interceptors && !this.interceptors.isEmpty()) {
-            ///this.interceptors.forEach(executeInterceptor -> executeInterceptor.onBefore(httpRequest, method));
+            ///this.interceptors.forEach(executeInterceptor -> executeInterceptor.onBefore(httpRequest));
             for (Interceptor interceptor : this.interceptors) {
-                temp = interceptor.onBefore(temp, method);
+                temp = interceptor.onBefore(temp);
             }
         }
         return temp;

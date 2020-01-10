@@ -1,6 +1,5 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
@@ -14,7 +13,7 @@ import java.net.Socket;
  */
 public class DemoImpl extends AbstractImplementSmartHttpClient<Socket> {
     @Override
-    protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<Socket> contentCallback, ResultCallback<R> resultCallback) throws Exception {
+    protected <R> R doInternalTemplate(HttpRequest httpRequest, ContentCallback<Socket> contentCallback, ResultCallback<R> resultCallback) throws Exception {
 
         //1.获取真实请求的URL
         String completedUrl = httpRequest.getCompletedUrl();
@@ -25,7 +24,7 @@ public class DemoImpl extends AbstractImplementSmartHttpClient<Socket> {
         //4.设置body...
 
         Socket socket = null;
-        getContentCallbackHandler().handle(socket , contentCallback , httpRequest , method);
+        getContentCallbackHandler().handle(socket , contentCallback , httpRequest);
 
         //5.获取执行器执行
 

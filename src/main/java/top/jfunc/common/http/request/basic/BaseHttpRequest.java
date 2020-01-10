@@ -3,6 +3,7 @@ package top.jfunc.common.http.request.basic;
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.component.CompletedUrlCreator;
@@ -102,9 +103,13 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
      */
     private Map<String , Object> attributes;
 
-
     /**用于接收系统的默认设置*/
     private Config config;
+
+    /**
+     * method
+     */
+    private Method method;
 
     public BaseHttpRequest(String url){this.url = url;}
     public BaseHttpRequest(URL url){this.url = url.toString();}
@@ -130,7 +135,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
-    public HttpRequest setUrl(URL url) {
+    public THIS setUrl(URL url) {
         setUrl(url.toString());
         return myself();
     }
@@ -220,13 +225,13 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
-    public HttpRequest setHeaders(MultiValueMap<String, String> headers) {
+    public THIS setHeaders(MultiValueMap<String, String> headers) {
         this.headers = Objects.requireNonNull(headers);
         return myself();
     }
 
     @Override
-    public HttpRequest setHeaders(Map<String, String> headers) {
+    public THIS setHeaders(Map<String, String> headers) {
         this.headers = ArrayListMultiValueMap.fromMap(Objects.requireNonNull(headers));
         return myself();
     }
@@ -391,5 +396,16 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     @Override
     public void setConfig(Config config) {
         this.config = config;
+    }
+
+    @Override
+    public Method getMethod() {
+        return method;
+    }
+
+    @Override
+    public THIS setMethod(Method method) {
+        this.method = method;
+        return myself();
     }
 }

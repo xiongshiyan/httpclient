@@ -1,6 +1,5 @@
 package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.CollectionUtil;
 
@@ -12,16 +11,16 @@ import java.util.List;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractRequesterFactory<C> implements RequesterFactory<C>{
+public abstract class AbstractRequesterFactory<C> implements RequesterFactory<C> {
     private List<RequesterCustomizer<C>> requesterCustomizers;
 
     @Override
-    public C create(HttpRequest httpRequest, Method method) throws IOException{
-        C c = doCreate(httpRequest, method);
+    public C create(HttpRequest httpRequest) throws IOException{
+        C c = doCreate(httpRequest);
 
         if(CollectionUtil.isNotEmpty(getRequesterCustomizers())){
             for (RequesterCustomizer<C> customer : getRequesterCustomizers()) {
-                customer.customize(c , httpRequest , method);
+                customer.customize(c , httpRequest);
             }
         }
 
@@ -29,7 +28,7 @@ public abstract class AbstractRequesterFactory<C> implements RequesterFactory<C>
     }
 
     /**真正的创建*/
-    protected abstract C doCreate(HttpRequest httpRequest, Method method) throws IOException;
+    protected abstract C doCreate(HttpRequest httpRequest) throws IOException;
 
 
     public List<RequesterCustomizer<C>> getRequesterCustomizers() {

@@ -1,10 +1,9 @@
 package top.jfunc.common.http.component.jdk;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
+import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.NativeUtil;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -18,7 +17,7 @@ import java.net.URL;
 public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpURLConnection> {
 
     @Override
-    public HttpURLConnection doCreate(HttpRequest httpRequest, Method method) throws IOException{
+    public HttpURLConnection doCreate(HttpRequest httpRequest) throws IOException{
         URL url = new URL(httpRequest.getCompletedUrl());
         //1.1如果需要则设置代理
         Config config = httpRequest.getConfig();
@@ -38,7 +37,7 @@ public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpUR
         connection.setDoOutput(true);
         connection.setUseCaches(false);
 
-        connection.setRequestMethod(method.name());
+        connection.setRequestMethod(httpRequest.getMethod().name());
         connection.setConnectTimeout(config.getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
         connection.setReadTimeout(config.getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 

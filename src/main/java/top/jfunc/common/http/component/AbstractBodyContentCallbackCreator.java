@@ -1,6 +1,5 @@
 package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.request.HttpRequest;
@@ -14,12 +13,12 @@ import java.io.IOException;
 public abstract class AbstractBodyContentCallbackCreator<CC> implements BodyContentCallbackCreator<CC> {
 
     @Override
-    public ContentCallback<CC> create(HttpRequest httpRequest, Method method) throws IOException{
+    public ContentCallback<CC> create(HttpRequest httpRequest) throws IOException{
         StringBodyRequest stringBodyRequest = (StringBodyRequest) httpRequest;
         String body = stringBodyRequest.getBody();
         Config config = httpRequest.getConfig();
         String bodyCharset = config.calculateBodyCharset(stringBodyRequest.getBodyCharset() , stringBodyRequest.getContentType());
 
-        return create(method , body , bodyCharset , stringBodyRequest.getContentType());
+        return create(httpRequest.getMethod() , body , bodyCharset , stringBodyRequest.getContentType());
     }
 }

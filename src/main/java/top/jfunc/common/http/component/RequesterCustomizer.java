@@ -1,6 +1,5 @@
 package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.HttpRequest;
 
 /**
@@ -12,7 +11,6 @@ public interface RequesterCustomizer<C> {
      * 对组件进行自定义处理
      * @param c 被处理的
      * @param httpRequest HttpRequest
-     * @param method  Method
      */
-    void customize(C c , HttpRequest httpRequest, Method method);
+    void customize(C c, HttpRequest httpRequest);
 }

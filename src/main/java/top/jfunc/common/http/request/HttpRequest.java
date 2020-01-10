@@ -1,6 +1,7 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ConfigAccessor;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
@@ -19,7 +20,7 @@ import java.util.Map;
  * @since 1.1.6
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface HttpRequest extends ConfigAccessor{
+public interface HttpRequest extends ConfigAccessor {
     /**
      * 结果包含headers
      */
@@ -81,7 +82,7 @@ public interface HttpRequest extends ConfigAccessor{
      * @param routeParams 多个路径参数
      * @return this
      */
-    HttpRequest setRouteParams(Map<String , String> routeParams);
+    HttpRequest setRouteParams(Map<String, String> routeParams);
 
     /**
      * 获取设置的Query参数
@@ -137,7 +138,7 @@ public interface HttpRequest extends ConfigAccessor{
      * @param value value
      * @return this
      */
-    HttpRequest setHeader(String key , String value);
+    HttpRequest setHeader(String key, String value);
 
     /**
      * 提供便捷的设置header的方法，add方式，相同key那么value就成为多值
@@ -348,4 +349,20 @@ public interface HttpRequest extends ConfigAccessor{
      * @return 属性map
      */
     Map<String , Object> getAttributes();
+
+    /**
+     * 获取设置的Method
+     * @since 1.2.0
+     * @return Method
+     */
+    Method getMethod();
+
+    /**
+     * 设置Method
+     * 此方法一般在接口入口处由框架调用，用户自己设置的就以用户的为准，一般不需要设置
+     * @since 1.2.0
+     * @param method Method
+     * @return this
+     */
+    HttpRequest setMethod(Method method);
 }

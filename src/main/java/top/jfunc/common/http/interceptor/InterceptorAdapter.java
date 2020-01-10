@@ -1,6 +1,5 @@
 package top.jfunc.common.http.interceptor;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.HttpRequest;
 
 /**
@@ -9,7 +8,7 @@ import top.jfunc.common.http.request.HttpRequest;
  */
 public class InterceptorAdapter implements Interceptor {
     @Override
-    public HttpRequest onBefore(HttpRequest httpRequest, Method method) {
+    public HttpRequest onBefore(HttpRequest httpRequest) {
         return httpRequest;
     }
 

@@ -5,7 +5,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
@@ -46,13 +45,13 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     }
 
     @Override
-    protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
+    protected <R> R doInternalTemplate(HttpRequest httpRequest , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         //2.创建并配置
-        HttpUriRequest httpUriRequest = getHttpUriRequestRequesterFactory().create(httpRequest, method);
+        HttpUriRequest httpUriRequest = getHttpUriRequestRequesterFactory().create(httpRequest);
 
         //3.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
-            getContentCallbackHandler().handle((HttpEntityEnclosingRequest)httpUriRequest , contentCallback , httpRequest , method);
+            getContentCallbackHandler().handle((HttpEntityEnclosingRequest)httpUriRequest , contentCallback , httpRequest);
         }
 
         getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);
@@ -62,7 +61,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         ///HttpEntity entity = null;
         InputStream inputStream = null;
         try {
-            httpClient = getCloseableHttpClientRequesterFactory().create(httpRequest, method);
+            httpClient = getCloseableHttpClientRequesterFactory().create(httpRequest);
 
             //4.发送请求
             response = getRequestExecutor().execute(httpClient , httpUriRequest);

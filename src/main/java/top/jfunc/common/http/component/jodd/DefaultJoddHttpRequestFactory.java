@@ -1,9 +1,8 @@
 package top.jfunc.common.http.component.jodd;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
-import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
+import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.JoddUtil;
 
 import java.io.IOException;
@@ -14,11 +13,11 @@ import java.io.IOException;
 public class DefaultJoddHttpRequestFactory extends AbstractRequesterFactory<jodd.http.HttpRequest> {
 
     @Override
-    public jodd.http.HttpRequest doCreate(HttpRequest httpRequest, Method method) throws IOException {
+    public jodd.http.HttpRequest doCreate(HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
 
         jodd.http.HttpRequest request = new jodd.http.HttpRequest();
-        request.method(method.name());
+        request.method(httpRequest.getMethod().name());
         request.set(httpRequest.getCompletedUrl());
 
         //2.超时设置

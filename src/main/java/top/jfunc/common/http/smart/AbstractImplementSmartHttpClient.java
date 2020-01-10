@@ -28,17 +28,17 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
      * @inheritDoc
      */
     @Override
-    public <R> R template(HttpRequest httpRequest, Method method, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException {
         //在接口方法入口处调用了init(HttpRequest)方法将系统Config设置到HttpRequest了
         Config config = httpRequest.getConfig();
 
         //1.子类处理
         HttpRequest h = beforeTemplate(httpRequest);
         //2.拦截器在之前处理
-        HttpRequest request = config.onBeforeIfNecessary(h, method);
+        HttpRequest request = config.onBeforeIfNecessary(h);
         try {
             //3.真正的实现
-            R response = doInternalTemplate(request , method , contentCallback , resultCallback);
+            R response = doInternalTemplate(request , contentCallback , resultCallback);
             //4.拦截器过滤
             config.onBeforeReturnIfNecessary(request , response);
             //5.子类处理
@@ -60,14 +60,13 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
     /**
      * 子类实现真正的自己的
      * @param httpRequest HttpRequest
-     * @param method 请求方法
      * @param contentCallback 处理请求体的
      * @param resultCallback 结果处理器
      * @param <R> 处理的结果
      * @return 处理的结果
      * @throws Exception Exception
      */
-    abstract protected  <R> R doInternalTemplate(HttpRequest httpRequest, Method method, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws Exception;
+    abstract protected  <R> R doInternalTemplate(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws Exception;
 
     /**
      * 使用{@link HttpRequest}体系来实现{@link HttpTemplate}接口方法
@@ -76,7 +75,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
     @Override
     public  <R> R template(String url, Method method , String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
         HttpRequest httpRequest = CommonRequest.of(url);
-        init(httpRequest);
+        init(httpRequest , method);
 
         httpRequest.setContentType(contentType);
         if(null != headers){
@@ -92,7 +91,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         httpRequest.setIncludeHeaders(includeHeader);
 
 
-        return template(httpRequest , method , contentCallback , resultCallback);
+        return template(httpRequest , contentCallback , resultCallback);
     }
 }
 

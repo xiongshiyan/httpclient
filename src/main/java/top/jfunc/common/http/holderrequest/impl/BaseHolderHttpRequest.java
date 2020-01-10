@@ -3,6 +3,7 @@ package top.jfunc.common.http.holderrequest.impl;
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.component.CompletedUrlCreator;
@@ -79,9 +80,13 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
      */
     private ProxyInfo proxyInfo = null;
 
-
     /**用于接收系统的默认设置*/
     private Config config;
+
+    /**
+     * method
+     */
+    private Method method;
 
     public BaseHolderHttpRequest(String url){this.urlHolder.setUrl(url);}
     public BaseHolderHttpRequest(URL url){this.urlHolder.setUrl(url);}
@@ -316,5 +321,16 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     @Override
     public void setConfig(Config config) {
         this.config = config;
+    }
+
+    @Override
+    public Method getMethod() {
+        return method;
+    }
+
+    @Override
+    public THIS setMethod(Method method) {
+        this.method = method;
+        return myself();
     }
 }

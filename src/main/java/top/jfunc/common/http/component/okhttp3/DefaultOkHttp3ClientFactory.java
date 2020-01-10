@@ -1,12 +1,11 @@
 package top.jfunc.common.http.component.okhttp3;
 
 import okhttp3.OkHttpClient;
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
+import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.OkHttp3Util;
 
 import java.io.IOException;
@@ -18,9 +17,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttpClient> {
     @Override
-    public OkHttpClient doCreate(HttpRequest httpRequest, Method method) throws IOException {
-        OkHttpClient.Builder clientBuilder = createAndConfigBuilder(httpRequest);
-        return clientBuilder.build();
+    public OkHttpClient doCreate(HttpRequest httpRequest) throws IOException {
+        return createAndConfigBuilder(httpRequest).build();
     }
 
     protected OkHttpClient.Builder createAndConfigBuilder(HttpRequest httpRequest) {

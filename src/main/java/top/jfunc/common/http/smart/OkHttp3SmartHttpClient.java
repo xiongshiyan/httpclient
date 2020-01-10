@@ -3,7 +3,6 @@ package top.jfunc.common.http.smart;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
@@ -43,18 +42,18 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
 
 
     @Override
-    protected <R> R doInternalTemplate(HttpRequest httpRequest, Method method , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws Exception {
+    protected <R> R doInternalTemplate(HttpRequest httpRequest , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         Response response = null;
         InputStream inputStream = null;
         try {
             //1.创建并配置OkHttpClient
-            OkHttpClient client = getOkHttpClientFactory().create(httpRequest , method);
+            OkHttpClient client = getOkHttpClientFactory().create(httpRequest);
 
             //2.1设置URL
-            Request.Builder builder = getRequestBuilderFactory().create(httpRequest , method);
+            Request.Builder builder = getRequestBuilderFactory().create(httpRequest);
 
             //2.2处理请求体
-            getContentCallbackHandler().handle(builder , contentCallback , httpRequest , method);
+            getContentCallbackHandler().handle(builder , contentCallback , httpRequest);
 
             //2.3设置headers
             getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest);

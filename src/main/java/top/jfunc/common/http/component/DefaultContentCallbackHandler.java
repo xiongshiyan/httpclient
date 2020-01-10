@@ -1,6 +1,5 @@
 package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.request.HttpRequest;
 
@@ -11,8 +10,8 @@ import java.io.IOException;
  */
 public class DefaultContentCallbackHandler<CC> implements ContentCallbackHandler<CC> {
     @Override
-    public void handle(CC cc , ContentCallback<CC> contentCallback, HttpRequest httpRequest, Method method) throws IOException {
-        if(null != contentCallback && method.hasContent()){
+    public void handle(CC cc , ContentCallback<CC> contentCallback, HttpRequest httpRequest) throws IOException {
+        if(null != contentCallback && httpRequest.getMethod().hasContent()){
             contentCallback.doWriteWith(cc);
         }
     }

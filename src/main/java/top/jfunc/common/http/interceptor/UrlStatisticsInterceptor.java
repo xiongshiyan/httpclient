@@ -1,6 +1,5 @@
 package top.jfunc.common.http.interceptor;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.util.LinkedHashSet;
@@ -35,12 +34,12 @@ public class UrlStatisticsInterceptor extends InterceptorAdapter {
     }
 
     @Override
-    public HttpRequest onBefore(HttpRequest httpRequest, Method method) {
+    public HttpRequest onBefore(HttpRequest httpRequest) {
         if(starting){
             String url = getSaveUrl(httpRequest);
             saveUrl(url);
         }
-        return super.onBefore(httpRequest, method);
+        return super.onBefore(httpRequest);
     }
 
     /**

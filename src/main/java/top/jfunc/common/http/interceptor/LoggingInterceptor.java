@@ -2,7 +2,6 @@ package top.jfunc.common.http.interceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.request.*;
 import top.jfunc.common.http.smart.Response;
 
@@ -16,7 +15,7 @@ import static top.jfunc.common.http.HttpConstants.CRLF;
  * 打印日志的拦截器
  * @author xiongshiyan at 2019/7/24 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class LoggingInterceptor extends InterceptorAdapter{
+public class LoggingInterceptor extends InterceptorAdapter {
     private static final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
     /**默认超过1M就不打印了*/
     private static final int DEFAULT_THRESHOLD = 1024*1024;
@@ -30,9 +29,9 @@ public class LoggingInterceptor extends InterceptorAdapter{
     }
 
     @Override
-    public HttpRequest onBefore(HttpRequest httpRequest, Method method) {
+    public HttpRequest onBefore(HttpRequest httpRequest) {
         try {
-            logger.info("请求方法:"+method.name());
+            logger.info("请求方法:"+httpRequest.getMethod().name());
             logger.info("httpRequestClass:"+httpRequest.getClass());
             StringBuilder builder = new StringBuilder("url:"+httpRequest.getUrl()+CRLF);
             if(notEmpty(httpRequest.getRouteParams())){
@@ -91,7 +90,7 @@ public class LoggingInterceptor extends InterceptorAdapter{
         } catch (Exception e) {
             logger.error(e.getMessage() , e);
         }
-        return super.onBefore(httpRequest, method);
+        return super.onBefore(httpRequest);
     }
 
     protected boolean notEmpty(Object o){

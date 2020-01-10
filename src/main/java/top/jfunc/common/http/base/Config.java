@@ -2,7 +2,6 @@ package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.holder.*;
@@ -222,9 +221,9 @@ public class Config {
         return this;
     }
 
-    public HttpRequest onBeforeIfNecessary(HttpRequest httpRequest , Method method){
+    public HttpRequest onBeforeIfNecessary(HttpRequest httpRequest){
         if(hasInterceptors()){
-            return compositeInterceptor.onBefore(httpRequest, method);
+            return compositeInterceptor.onBefore(httpRequest);
         }
         return httpRequest;
     }

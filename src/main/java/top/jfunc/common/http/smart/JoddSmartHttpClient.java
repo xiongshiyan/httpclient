@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
@@ -36,14 +35,14 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     }
 
     @Override
-    protected <R> R doInternalTemplate(top.jfunc.common.http.request.HttpRequest httpRequest, Method method , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
+    protected <R> R doInternalTemplate(top.jfunc.common.http.request.HttpRequest httpRequest , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         HttpResponse response = null;
         try {
             //1.获取Request
-            HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest, method);
+            HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest);
 
             //4.处理body
-            getContentCallbackHandler().handle(request , contentCallback , httpRequest , method);
+            getContentCallbackHandler().handle(request , contentCallback , httpRequest);
 
             //5.设置header
             getHttpRequestHeaderHandler().configHeaders(request , httpRequest);

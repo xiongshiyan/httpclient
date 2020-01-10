@@ -1,6 +1,5 @@
 package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.request.HttpRequest;
 
@@ -15,8 +14,7 @@ public interface ContentCallbackHandler<CC> {
      * @param cc 给谁设置body
      * @param contentCallback ContentCallback
      * @param httpRequest HttpRequest
-     * @param method Method
      * @throws IOException IOException
      */
-    void handle(CC cc, ContentCallback<CC> contentCallback, HttpRequest httpRequest, Method method) throws IOException;
+    void handle(CC cc, ContentCallback<CC> contentCallback, HttpRequest httpRequest) throws IOException;
 }
