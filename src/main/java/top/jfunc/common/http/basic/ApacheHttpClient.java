@@ -8,7 +8,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
@@ -50,7 +49,6 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
-        HttpEntity entity = null;
         InputStream inputStream = null;
         try {
 
@@ -69,8 +67,7 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
             /*String resultString = EntityUtils.toString(response.getEntity(), resultCharset);*/
 
             //7.处理返回值
-            entity = response.getEntity();
-            inputStream = getStreamFrom(entity, false);
+            inputStream = getStreamFrom(response.getEntity(), false);
 
             MultiValueMap<String, String> responseHeaders = determineHeaders(response, completedUrl, includeHeaders);
 
@@ -80,7 +77,6 @@ public class ApacheHttpClient extends AbstractImplementHttpClient<HttpEntityEncl
                     responseHeaders);
         }finally {
             IoUtil.close(inputStream);
-            EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);
             IoUtil.close(httpClient);
         }

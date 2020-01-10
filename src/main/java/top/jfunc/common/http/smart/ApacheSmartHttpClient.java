@@ -1,12 +1,10 @@
 package top.jfunc.common.http.smart;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
@@ -29,7 +27,9 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler;
     private RequesterFactory<CloseableHttpClient> closeableHttpClientRequesterFactory;
     private RequestExecutor<CloseableHttpClient , HttpUriRequest , CloseableHttpResponse> requestExecutor;
-    private StreamExtractor<HttpEntity> httpEntityStreamExtractor;
+    ///private StreamExtractor<HttpEntity> httpEntityStreamExtractor;
+
+    private StreamExtractor<CloseableHttpResponse> responseStreamExtractor;
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
 
     public ApacheSmartHttpClient(){
@@ -40,7 +40,8 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         setHttpUriRequestHeaderHandler(new DefaultApacheHeaderHandler());
         setCloseableHttpClientRequesterFactory(new DefaultApacheClientFactory());
         setRequestExecutor(new DefaultApacheRequestExecutor());
-        setHttpEntityStreamExtractor(new DefaultApacheStreamExtractor());
+        ///setHttpEntityStreamExtractor(new DefaultApacheEntityStreamExtractor());
+        setResponseStreamExtractor(new DefaultApacheResponseStreamExtractor());
         setHttpResponseHeaderExtractor(new DefaultApacheHeaderExtractor());
     }
 
@@ -61,7 +62,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
-        HttpEntity entity = null;
+        ///HttpEntity entity = null;
         InputStream inputStream = null;
         try {
             httpClient = getCloseableHttpClientRequesterFactory().create(httpRequest, method ,completedUrl);
@@ -70,8 +71,8 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             response = getRequestExecutor().execute(httpClient , httpUriRequest);
 
             //5.处理返回值
-            entity = response.getEntity();
-            inputStream = getHttpEntityStreamExtractor().extract(entity , httpRequest , completedUrl);
+            ///HttpEntity entity = response.getEntity();
+            inputStream = getResponseStreamExtractor().extract(response , httpRequest , completedUrl);
 
             //6.处理headers
             MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest, completedUrl);
@@ -81,7 +82,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
                     responseHeaders);
         }finally {
             IoUtil.close(inputStream);
-            EntityUtils.consumeQuietly(entity);
+            ///EntityUtils.consumeQuietly(entity);
             IoUtil.close(response);
             IoUtil.close(httpClient);
         }
@@ -120,12 +121,12 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         this.requestExecutor = Objects.requireNonNull(requestExecutor);
     }
 
-    public StreamExtractor<HttpEntity> getHttpEntityStreamExtractor() {
-        return httpEntityStreamExtractor;
+    public StreamExtractor<CloseableHttpResponse> getResponseStreamExtractor() {
+        return responseStreamExtractor;
     }
 
-    public void setHttpEntityStreamExtractor(StreamExtractor<HttpEntity> httpEntityStreamExtractor) {
-        this.httpEntityStreamExtractor = Objects.requireNonNull(httpEntityStreamExtractor);
+    public void setResponseStreamExtractor(StreamExtractor<CloseableHttpResponse> responseStreamExtractor) {
+        this.responseStreamExtractor = responseStreamExtractor;
     }
 
     public HeaderExtractor<HttpResponse> getHttpResponseHeaderExtractor() {

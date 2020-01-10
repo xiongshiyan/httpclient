@@ -11,7 +11,7 @@ import java.io.InputStream;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultApacheStreamExtractor implements StreamExtractor<HttpEntity> {
+public class DefaultApacheEntityStreamExtractor implements StreamExtractor<HttpEntity> {
     @Override
     public InputStream extract(HttpEntity httpEntity, HttpRequest httpRequest , String completedUrl) throws IOException {
         return ApacheUtil.getStreamFrom(httpEntity, httpRequest.isIgnoreResponseBody());
