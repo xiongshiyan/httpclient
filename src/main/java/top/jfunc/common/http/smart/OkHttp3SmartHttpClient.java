@@ -24,7 +24,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
     private RequesterFactory<OkHttpClient> okHttpClientFactory;
     private RequesterFactory<Request.Builder> requestBuilderFactory;
     private HeaderHandler<Request.Builder> requestBuilderHeaderHandler;
-    private RequestExecutor<OkHttpClient , Request.Builder , Response> requestExecutor;
+    private RequestExecutor<OkHttpClient , Request , Response> requestExecutor;
     private StreamExtractor<Response> responseStreamExtractor;
     private HeaderExtractor<Response> responseHeaderExtractor;
 
@@ -59,7 +59,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest);
 
             //3.执行请求
-            response = getRequestExecutor().execute(client , builder);
+            response = getRequestExecutor().execute(client , builder.build());
 
             //4.获取响应
             inputStream = getResponseStreamExtractor().extract(response , httpRequest);
@@ -102,11 +102,11 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         this.requestBuilderHeaderHandler = Objects.requireNonNull(requestBuilderHeaderHandler);
     }
 
-    public RequestExecutor<OkHttpClient, Request.Builder, Response> getRequestExecutor() {
+    public RequestExecutor<OkHttpClient, Request, Response> getRequestExecutor() {
         return requestExecutor;
     }
 
-    public void setRequestExecutor(RequestExecutor<OkHttpClient, Request.Builder, Response> requestExecutor) {
+    public void setRequestExecutor(RequestExecutor<OkHttpClient, Request, Response> requestExecutor) {
         this.requestExecutor = Objects.requireNonNull(requestExecutor);
     }
 
