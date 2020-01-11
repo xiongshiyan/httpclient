@@ -45,7 +45,7 @@
 
 ##### 项目管理工具导入 
 
-项目已经发布至 `jcenter` 和 `maven` 中央仓库 最新版本version: **1.1.12**
+项目已经发布至 `jcenter` 和 `maven` 中央仓库 最新版本version: **1.2.0**
 
 Gradle:
 
