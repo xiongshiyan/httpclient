@@ -86,8 +86,8 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
                     responseHeaders);
         }finally {
             closeInputStream(inputStream);
-            closeResponseIfNecessary(response);
-            closeHttpClientIfNecessary(httpClient);
+            closeResponse(response);
+            closeHttpClient(httpClient);
         }
     }
 
@@ -99,7 +99,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         getInputStreamCloser().close(inputStream);
     }
 
-    protected void closeResponseIfNecessary(HttpResponse response) throws IOException {
+    protected void closeResponse(HttpResponse response) throws IOException {
         getHttpResponseCloser().close(new AbstractCloseAdapter<HttpResponse>(response) {
             @Override
             protected void doClose(HttpResponse httpResponse) throws IOException {
@@ -109,7 +109,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             }
         });
     }
-    protected void closeHttpClientIfNecessary(HttpClient httpClient) throws IOException {
+    protected void closeHttpClient(HttpClient httpClient) throws IOException {
         getHttpClientCloser().close(new AbstractCloseAdapter<HttpClient>(httpClient) {
             @Override
             protected void doClose(HttpClient httpClient) throws IOException {
