@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class DefaultJoddSender implements RequestSender<HttpRequest , HttpResponse> {
     @Override
-    public HttpResponse send(HttpRequest httpRequest) throws IOException{
-        return httpRequest.send();
+    public HttpResponse send(HttpRequest request , top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException{
+        return request.send();
     }
 }

@@ -60,7 +60,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             getContentCallbackHandler().handle(connection , contentCallback , httpRequest);
 
             //4.连接
-            getConnectionSender().send(connection);
+            connect(connection, httpRequest);
 
             //5.获取返回值
             inputStream = getHttpURLConnectionStreamExtractor().extract(connection , httpRequest);
@@ -78,6 +78,10 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             //2 . 关闭流
             closeInputStream(inputStream);
         }
+    }
+
+    protected HttpURLConnection connect(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
+        return getConnectionSender().send(connection , httpRequest);
     }
 
     protected void closeInputStream(InputStream inputStream) throws IOException {

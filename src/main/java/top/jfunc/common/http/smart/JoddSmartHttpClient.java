@@ -53,7 +53,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             getHttpRequestHeaderHandler().configHeaders(request , httpRequest);
 
             //6.真正请求
-            response = getRequestSender().send(request);
+            response = send(request, httpRequest);
 
             //7.获取返回值
             InputStream inputStream = getHttpResponseStreamExtractor().extract(response, httpRequest);
@@ -67,6 +67,10 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         } finally {
             closeResponse(response);
         }
+    }
+
+    protected HttpResponse send(HttpRequest request, top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException {
+        return getRequestSender().send(request , httpRequest);
     }
 
     protected void closeResponse(HttpResponse response) throws IOException {

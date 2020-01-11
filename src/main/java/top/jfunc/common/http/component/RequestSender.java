@@ -1,5 +1,7 @@
 package top.jfunc.common.http.component;
 
+import top.jfunc.common.http.request.HttpRequest;
+
 import java.io.IOException;
 
 /**
@@ -11,8 +13,9 @@ public interface RequestSender<Request , Response> {
     /**
      * Request发起请求，得到响应Response
      * @param request Request
+     * @param httpRequest HttpRequest
      * @return Response
      * @throws IOException IOException
      */
-    Response send(Request request) throws IOException;
+    Response send(Request request , HttpRequest httpRequest) throws IOException;
 }

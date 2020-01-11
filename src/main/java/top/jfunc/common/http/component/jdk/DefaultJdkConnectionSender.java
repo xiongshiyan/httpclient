@@ -1,6 +1,7 @@
 package top.jfunc.common.http.component.jdk;
 
 import top.jfunc.common.http.component.RequestSender;
+import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -10,7 +11,7 @@ import java.net.HttpURLConnection;
  */
 public class DefaultJdkConnectionSender implements RequestSender<HttpURLConnection , HttpURLConnection> {
     @Override
-    public HttpURLConnection send(HttpURLConnection connection) throws IOException{
+    public HttpURLConnection send(HttpURLConnection connection , HttpRequest httpRequest) throws IOException{
         connection.connect();
         return connection;
     }

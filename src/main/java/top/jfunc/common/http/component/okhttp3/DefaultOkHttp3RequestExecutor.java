@@ -4,6 +4,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import top.jfunc.common.http.component.RequestExecutor;
+import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
 
@@ -12,7 +13,7 @@ import java.io.IOException;
  */
 public class DefaultOkHttp3RequestExecutor implements RequestExecutor<OkHttpClient, Request, Response> {
     @Override
-    public Response execute(OkHttpClient okHttpClient, Request request) throws IOException {
+    public Response execute(OkHttpClient okHttpClient, Request request , HttpRequest httpRequest) throws IOException {
         return okHttpClient.newCall(request).execute();
     }
 }

@@ -65,7 +65,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest);
 
             //3.执行请求
-            response = getRequestExecutor().execute(client , builder.build());
+            response = execute(client, httpRequest, builder);
 
             //4.获取响应
             inputStream = getResponseStreamExtractor().extract(response , httpRequest);
@@ -80,6 +80,10 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             closeInputStream(inputStream);
             closeResponse(response);
         }
+    }
+
+    protected Response execute(OkHttpClient client, HttpRequest httpRequest, Request.Builder builder) throws IOException {
+        return getRequestExecutor().execute(client , builder.build() , httpRequest);
     }
 
     protected void closeResponse(Response response) throws IOException {

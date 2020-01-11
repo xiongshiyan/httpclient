@@ -73,7 +73,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             httpClient = getHttpClientRequesterFactory().create(httpRequest);
 
             //4.发送请求
-            response = getRequestExecutor().execute(httpClient , httpUriRequest);
+            response = execute(httpClient, httpUriRequest , httpRequest);
 
             //5.处理返回值
             inputStream = getResponseStreamExtractor().extract(response , httpRequest);
@@ -89,6 +89,10 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             closeResponseIfNecessary(response);
             closeHttpClientIfNecessary(httpClient);
         }
+    }
+
+    protected HttpResponse execute(HttpClient httpClient, HttpUriRequest httpUriRequest , HttpRequest httpRequest) throws IOException {
+        return getRequestExecutor().execute(httpClient , httpUriRequest , httpRequest);
     }
 
     protected void closeInputStream(InputStream inputStream) throws IOException {
