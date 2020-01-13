@@ -15,15 +15,14 @@
 ### features
 
 - [x] `HttpClient`接口体系
-- [x] `SmartHttpClient`（继承HttpClient）接口体系：基于`Request-Response`
+- [x] `SmartHttpClient`（继承HttpClient）接口体系：基于`Request(HttpRequest)-Response`，可以通过设置一个特定过程的组件替换默认实现
 - [x] `Request`支持链式调用、支持基于策略接口的Java对象转换为String、支持路径参数
 - [x] `Response`支持基于策略接口的String转换为Java对象
 - [x] 支持文件上传、下载
 - [x] 支持https
 - [x] 支持无代码修改的`OkHttp3、ApacheHttpClient、HttpURLConnection、JoddHttp`的切换
 - [x] HttpUtil支持根据jar包的存在性加载实现
-- [x] 配置项可以通过`-D或者System.setProperty()`全局设置，可以对某个实现的对象例如 `NativeSmartHttpClient` 全局设置，也可以针对某一个请求Request单独设置，优先级逐渐升高
-- [x] ~~支持返回值和JavaBean之间的转换，基于项目 https://gitee.com/xxssyyyyssxx/httpclient-converter~~
+- [x] 可以对某个实现的对象例如 `NativeSmartHttpClient` 全局设置，也可以针对某一个请求Request单独设置，优先级逐渐升高
 - [x] 通过`Config`全局配置默认参数
 - [x] 支持全局header设置、全局Query参数
 - [x] 支持请求之前之后加入特定的处理,复写`SmartHttpClient`的`beforeTemplate`和`afterTemplate`方法
