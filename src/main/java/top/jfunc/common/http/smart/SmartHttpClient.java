@@ -103,10 +103,10 @@ public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , U
     }
 
     default MultiValueMap<String , String> head(HttpRequest httpRequest) throws IOException{
-        return head(httpRequest, ResultCallback::headers);
+        return head(httpRequest, (statusCode, inputStream, resultCharset, headers) -> headers);
     }
     default MultiValueMap<String , String> options(HttpRequest httpRequest) throws IOException{
-        return options(httpRequest, ResultCallback::headers);
+        return options(httpRequest, (statusCode, inputStream, resultCharset, headers) -> headers);
     }
     default Response put(StringBodyRequest httpRequest) throws IOException{
         return put(httpRequest , Response::with);
