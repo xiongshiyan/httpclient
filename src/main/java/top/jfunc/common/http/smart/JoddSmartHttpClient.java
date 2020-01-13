@@ -25,6 +25,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
 
     private Closer responseCloser;
+    private Closer inputStreamCloser;
 
     public JoddSmartHttpClient(){
         setBodyContentCallbackCreator(new DefaultJoddBodyContentCallbackCreator());
@@ -36,12 +37,14 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         setHttpResponseStreamExtractor(new DefaultJoddStreamExtractor());
         setHttpResponseHeaderExtractor(new DefaultJoddHeaderExtractor());
 
+        setInputStreamCloser(new DefaultCloser());
         setResponseCloser(new DefaultCloser());
     }
 
     @Override
     protected <R> R doInternalTemplate(top.jfunc.common.http.request.HttpRequest httpRequest , ContentCallback<HttpRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         HttpResponse response = null;
+        InputStream inputStream = null;
         try {
             //1.获取Request
             HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest);
@@ -56,7 +59,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             response = send(request, httpRequest);
 
             //7.获取返回值
-            InputStream inputStream = getHttpResponseStreamExtractor().extract(response, httpRequest);
+            inputStream = getHttpResponseStreamExtractor().extract(response, httpRequest);
 
             //8.返回header,包括Cookie处理
             MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest);
@@ -65,8 +68,13 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
+            closeInputSteam(inputStream);
             closeResponse(response);
         }
+    }
+
+    protected void closeInputSteam(InputStream inputStream) throws IOException {
+        getInputStreamCloser().close(inputStream);
     }
 
     protected HttpResponse send(HttpRequest request, top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException {
@@ -129,6 +137,14 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
 
     public void setResponseCloser(Closer responseCloser) {
         this.responseCloser = Objects.requireNonNull(responseCloser);
+    }
+
+    public Closer getInputStreamCloser() {
+        return inputStreamCloser;
+    }
+
+    public void setInputStreamCloser(Closer inputStreamCloser) {
+        this.inputStreamCloser = inputStreamCloser;
     }
 
     @Override
