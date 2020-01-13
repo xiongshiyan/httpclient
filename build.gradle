@@ -20,9 +20,9 @@ buildscript {
     ext{
         CommonUtilVersion       = '1.8.3.2'
         //SpringBootVersion       = '1.5.7.RELEASE'
-        OkHttp3Version          = '3.11.0'
-        JoddVersion             = '5.0.12'
-        ApacheHttpCleintVersion = '4.5.3'
+        OkHttp3Version          = '3.14.4'
+        JoddVersion             = '5.1.0-20190624'
+        ApacheHttpCleintVersion = '4.5.10'
 
         JUnitVersion            = '4.12'
         HamcrestVersion         = '1.3'
