@@ -14,6 +14,6 @@ import java.net.HttpURLConnection;
 public class DefaultJdkBodyContentCallbackCreator extends AbstractBodyContentCallbackCreator<HttpURLConnection> {
     @Override
     public ContentCallback<HttpURLConnection> create(Method method, String body, String bodyCharset, String contentType) throws IOException {
-        return connect -> NativeUtil.writeContent(connect , body , bodyCharset);
+        return connection -> NativeUtil.writeContent(connection , body , bodyCharset);
     }
 }

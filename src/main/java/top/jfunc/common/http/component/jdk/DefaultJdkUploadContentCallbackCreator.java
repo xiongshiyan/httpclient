@@ -15,6 +15,6 @@ import java.net.HttpURLConnection;
 public class DefaultJdkUploadContentCallbackCreator extends AbstractUploadContentCallbackCreator<HttpURLConnection> {
     @Override
     public ContentCallback<HttpURLConnection> create(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return connect -> NativeUtil.upload0(connect , params , paramCharset , formFiles);
+        return connection -> NativeUtil.upload0(connection , params , paramCharset , formFiles);
     }
 }
