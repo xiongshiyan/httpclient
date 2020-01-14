@@ -25,7 +25,6 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
 
     private Closer responseCloser;
-    private Closer inputStreamCloser;
 
     public JoddSmartHttpClient(){
         setBodyContentCallbackCreator(new DefaultJoddBodyContentCallbackCreator());
@@ -37,7 +36,6 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         setHttpResponseStreamExtractor(new DefaultJoddStreamExtractor());
         setHttpResponseHeaderExtractor(new DefaultJoddHeaderExtractor());
 
-        setInputStreamCloser(new DefaultCloser());
         setResponseCloser(new DefaultCloser());
     }
 
@@ -137,14 +135,6 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
 
     public void setResponseCloser(Closer responseCloser) {
         this.responseCloser = Objects.requireNonNull(responseCloser);
-    }
-
-    public Closer getInputStreamCloser() {
-        return inputStreamCloser;
-    }
-
-    public void setInputStreamCloser(Closer inputStreamCloser) {
-        this.inputStreamCloser = inputStreamCloser;
     }
 
     @Override

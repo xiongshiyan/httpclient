@@ -5,10 +5,7 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.basic.AbstractHttpClient;
-import top.jfunc.common.http.component.BodyContentCallbackCreator;
-import top.jfunc.common.http.component.ContentCallbackHandler;
-import top.jfunc.common.http.component.DefaultContentCallbackHandler;
-import top.jfunc.common.http.component.UploadContentCallbackCreator;
+import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
@@ -16,6 +13,7 @@ import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 提供了{@link SmartHttpClient}接口的实现
@@ -30,9 +28,12 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     private UploadContentCallbackCreator<CC> uploadContentCallbackCreator;
     /**ContentCallback处理器*/
     private ContentCallbackHandler<CC> contentCallbackHandler;
+    /**InputStream关闭器*/
+    private Closer inputStreamCloser;
 
     public AbstractSmartHttpClient(){
         setContentCallbackHandler(new DefaultContentCallbackHandler<>());
+        setInputStreamCloser(new DefaultCloser());
     }
 
 
@@ -178,7 +179,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     }
 
     public void setBodyContentCallbackCreator(BodyContentCallbackCreator<CC> bodyContentCallbackCreator) {
-        this.bodyContentCallbackCreator = bodyContentCallbackCreator;
+        this.bodyContentCallbackCreator = Objects.requireNonNull(bodyContentCallbackCreator);
     }
 
     public UploadContentCallbackCreator<CC> getUploadContentCallbackCreator() {
@@ -186,7 +187,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     }
 
     public void setUploadContentCallbackCreator(UploadContentCallbackCreator<CC> uploadContentCallbackCreator) {
-        this.uploadContentCallbackCreator = uploadContentCallbackCreator;
+        this.uploadContentCallbackCreator = Objects.requireNonNull(uploadContentCallbackCreator);
     }
 
     public ContentCallbackHandler<CC> getContentCallbackHandler() {
@@ -194,7 +195,15 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
     }
 
     public void setContentCallbackHandler(ContentCallbackHandler<CC> contentCallbackHandler) {
-        this.contentCallbackHandler = contentCallbackHandler;
+        this.contentCallbackHandler = Objects.requireNonNull(contentCallbackHandler);
+    }
+
+    public Closer getInputStreamCloser() {
+        return inputStreamCloser;
+    }
+
+    public void setInputStreamCloser(Closer inputStreamCloser) {
+        this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
     }
 
     /**

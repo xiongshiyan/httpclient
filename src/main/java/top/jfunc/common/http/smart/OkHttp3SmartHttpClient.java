@@ -28,7 +28,6 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
     private StreamExtractor<Response> responseStreamExtractor;
     private HeaderExtractor<Response> responseHeaderExtractor;
 
-    private Closer inputStreamCloser;
     private Closer responseCloser;
 
     public OkHttp3SmartHttpClient(){
@@ -42,7 +41,6 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         setResponseStreamExtractor(new DefaultOkHttp3StreamExtractor());
         setResponseHeaderExtractor(new DefaultOkHttp3HeaderExtractor());
 
-        setInputStreamCloser(new DefaultCloser());
         setResponseCloser(new DefaultCloser());
     }
 
@@ -141,14 +139,6 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
 
     public void setResponseHeaderExtractor(HeaderExtractor<Response> responseHeaderExtractor) {
         this.responseHeaderExtractor = Objects.requireNonNull(responseHeaderExtractor);
-    }
-
-    public Closer getInputStreamCloser() {
-        return inputStreamCloser;
-    }
-
-    public void setInputStreamCloser(Closer inputStreamCloser) {
-        this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
     }
 
     public Closer getResponseCloser() {

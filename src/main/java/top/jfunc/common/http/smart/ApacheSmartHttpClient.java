@@ -32,7 +32,6 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     private StreamExtractor<HttpResponse> responseStreamExtractor;
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
 
-    private Closer inputStreamCloser;
     private Closer httpResponseCloser;
     private Closer httpClientCloser;
 
@@ -49,7 +48,6 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         setHttpResponseHeaderExtractor(new DefaultApacheHeaderExtractor());
 
 
-        setInputStreamCloser(new DefaultCloser());
         setHttpResponseCloser(new DefaultCloser());
         setHttpClientCloser(new DefaultCloser());
     }
@@ -168,14 +166,6 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     public void setHttpResponseHeaderExtractor(HeaderExtractor<HttpResponse> httpResponseHeaderExtractor) {
         this.httpResponseHeaderExtractor = Objects.requireNonNull(httpResponseHeaderExtractor);
-    }
-
-    public Closer getInputStreamCloser() {
-        return inputStreamCloser;
-    }
-
-    public void setInputStreamCloser(Closer inputStreamCloser) {
-        this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
     }
 
     public Closer getHttpResponseCloser() {
