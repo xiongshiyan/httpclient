@@ -2,6 +2,8 @@ package top.jfunc.common.http.interceptor;
 
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.utils.ArrayUtil;
+import top.jfunc.common.utils.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +49,7 @@ public class CompositeInterceptor implements Interceptor {
     public CompositeInterceptor add(Interceptor interceptor , Interceptor... interceptors){
         init();
         this.interceptors.add(interceptor);
-        if(null != interceptors && interceptors.length > 0){
+        if(ArrayUtil.isNotEmpty(interceptors)){
             this.interceptors.addAll(Arrays.asList(interceptors));
         }
         return this;
@@ -61,7 +63,7 @@ public class CompositeInterceptor implements Interceptor {
      * 判断是否有具体的拦截器
      */
     public boolean hasInterceptors(){
-        return null != this.interceptors && !this.interceptors.isEmpty();
+        return CollectionUtil.isNotEmpty(getInterceptors());
     }
 
     private void init(){
@@ -74,9 +76,9 @@ public class CompositeInterceptor implements Interceptor {
     public HttpRequest onBefore(HttpRequest httpRequest) {
         HttpRequest temp = httpRequest;
         //循环执行拦截器代码
-        if (null != this.interceptors && !this.interceptors.isEmpty()) {
+        if (CollectionUtil.isNotEmpty(getInterceptors())) {
             ///this.interceptors.forEach(executeInterceptor -> executeInterceptor.onBefore(httpRequest));
-            for (Interceptor interceptor : this.interceptors) {
+            for (Interceptor interceptor : getInterceptors()) {
                 temp = interceptor.onBefore(temp);
             }
         }
@@ -86,9 +88,10 @@ public class CompositeInterceptor implements Interceptor {
     @Override
     public void onBeforeReturn(HttpRequest httpRequest, Object returnValue) {
         //逆序循环执行拦截器代码
-        if (null != this.interceptors && !this.interceptors.isEmpty()) {
-            for (int i = this.interceptors.size() - 1; i >= 0; i--) {
-                this.interceptors.get(i).onBeforeReturn(httpRequest, returnValue);
+        List<Interceptor> interceptors = getInterceptors();
+        if (CollectionUtil.isNotEmpty(interceptors)) {
+            for (int i = interceptors.size() - 1; i >= 0; i--) {
+                interceptors.get(i).onBeforeReturn(httpRequest, returnValue);
             }
         }
     }
@@ -96,17 +99,19 @@ public class CompositeInterceptor implements Interceptor {
     @Override
     public void onError(HttpRequest httpRequest, Exception exception) {
         //循环执行拦截器代码
-        if (null != this.interceptors && !this.interceptors.isEmpty()) {
-            this.interceptors.forEach(executeInterceptor -> executeInterceptor.onError(httpRequest, exception));
+        List<Interceptor> interceptors = getInterceptors();
+        if (CollectionUtil.isNotEmpty(interceptors)) {
+            getInterceptors().forEach(executeInterceptor -> executeInterceptor.onError(httpRequest, exception));
         }
     }
 
     @Override
     public void onFinally(HttpRequest httpRequest) {
         //逆序循环执行拦截器代码
-        if (null != this.interceptors && !this.interceptors.isEmpty()) {
-            for (int i = this.interceptors.size() - 1; i >= 0; i--) {
-                this.interceptors.get(i).onFinally(httpRequest);
+        List<Interceptor> interceptors = getInterceptors();
+        if (CollectionUtil.isNotEmpty(interceptors)) {
+            for (int i = interceptors.size() - 1; i >= 0; i--) {
+                interceptors.get(i).onFinally(httpRequest);
             }
         }
     }
