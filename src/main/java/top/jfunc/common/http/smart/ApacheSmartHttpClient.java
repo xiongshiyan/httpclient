@@ -99,24 +99,10 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     }
 
     protected void closeResponse(HttpResponse response) throws IOException {
-        getHttpResponseCloser().close(new AbstractCloseAdapter<HttpResponse>(response) {
-            @Override
-            protected void doClose(HttpResponse httpResponse) throws IOException {
-                if(httpResponse instanceof CloseableHttpResponse){
-                    ((CloseableHttpResponse) httpResponse).close();
-                }
-            }
-        });
+        getHttpResponseCloser().close(new HttpResponseCloser(response));
     }
     protected void closeHttpClient(HttpClient httpClient) throws IOException {
-        getHttpClientCloser().close(new AbstractCloseAdapter<HttpClient>(httpClient) {
-            @Override
-            protected void doClose(HttpClient httpClient) throws IOException {
-                if(httpClient instanceof CloseableHttpClient){
-                    ((CloseableHttpClient) httpClient).close();
-                }
-            }
-        });
+        getHttpClientCloser().close(new HttpClientCloser(httpClient));
     }
 
 
@@ -187,5 +173,30 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     @Override
     public String toString() {
         return "SmartHttpClient implemented by Apache's httpcomponents";
+    }
+
+
+
+    private static class HttpClientCloser extends AbstractCloseAdapter<HttpClient>{
+        private HttpClientCloser(HttpClient httpClient){
+            super(httpClient);
+        }
+        @Override
+        protected void doClose(HttpClient httpClient) throws IOException {
+            if(httpClient instanceof CloseableHttpClient){
+                ((CloseableHttpClient) httpClient).close();
+            }
+        }
+    }
+    protected static class HttpResponseCloser extends AbstractCloseAdapter<HttpResponse>{
+        protected HttpResponseCloser(HttpResponse httpResponse){
+            super(httpResponse);
+        }
+        @Override
+        protected void doClose(HttpResponse httpResponse) throws IOException {
+            if(httpResponse instanceof CloseableHttpResponse){
+                ((CloseableHttpResponse) httpResponse).close();
+            }
+        }
     }
 }

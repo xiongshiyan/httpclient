@@ -2,6 +2,7 @@ package top.jfunc.common.http.smart;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
@@ -80,12 +81,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     }
 
     protected void closeResponse(HttpResponse response) throws IOException {
-        getResponseCloser().close(new AbstractCloseAdapter<HttpResponse>(response) {
-            @Override
-            protected void doClose(HttpResponse response) throws IOException {
-                response.close();
-            }
-        });
+        getResponseCloser().close(new HttpResponseCloser(response));
     }
 
 
@@ -140,5 +136,17 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     @Override
     public String toString() {
         return "SmartHttpClient implemented by Jodd-Http";
+    }
+
+
+
+    protected static class HttpResponseCloser extends AbstractCloseAdapter<HttpResponse>{
+        protected HttpResponseCloser(HttpResponse httpResponse){
+            super(httpResponse);
+        }
+        @Override
+        protected void doClose(HttpResponse httpResponse) throws IOException {
+            httpResponse.close();
+        }
     }
 }

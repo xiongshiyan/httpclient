@@ -86,12 +86,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     }
 
     protected void closeConnection(HttpURLConnection connection) throws IOException {
-        getConnectionCloser().close(new AbstractCloseAdapter<HttpURLConnection>(connection) {
-            @Override
-            protected void doClose(HttpURLConnection connection) throws IOException {
-                NativeUtil.disconnectQuietly(connection);
-            }
-        });
+        getConnectionCloser().close(new HttpURLConnectionCloser(connection));
     }
 
     @SuppressWarnings("unchecked")
@@ -163,5 +158,17 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     @Override
     public String toString() {
         return "SmartHttpClient implemented by JDK's HttpURLConnection";
+    }
+
+
+
+    protected static class HttpURLConnectionCloser extends AbstractCloseAdapter<HttpURLConnection>{
+        protected HttpURLConnectionCloser(HttpURLConnection connection){
+            super(connection);
+        }
+        @Override
+        protected void doClose(HttpURLConnection connection) throws IOException {
+            NativeUtil.disconnectQuietly(connection);
+        }
     }
 }
