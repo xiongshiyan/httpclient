@@ -37,7 +37,7 @@ public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , U
      * @throws IOException IOException
      */
     default byte[] getAsBytes(HttpRequest httpRequest) throws IOException{
-        return get(httpRequest, (s, b, r, h) -> IoUtil.stream2Bytes(b));
+        return get(httpRequest, (statusCode, inputStream, resultCharset, headers) -> IoUtil.stream2Bytes(inputStream));
     }
 
     /**
@@ -77,7 +77,8 @@ public interface SmartHttpClient extends HttpRequestResultCallbackHttpClient , U
      * @throws IOException IOException
      */
     default File download(DownloadRequest downloadRequest) throws IOException{
-        return download(downloadRequest , (s, b, r, h) -> IoUtil.copy2File(b, downloadRequest.getFile()));
+        return download(downloadRequest ,
+                (statusCode, inputStream, resultCharset, headers) -> IoUtil.copy2File(inputStream, downloadRequest.getFile()));
     }
 
     /**

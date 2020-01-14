@@ -26,7 +26,8 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
         return template(ParamUtil.contactUrlParams(url , params , getConfig().getDefaultBodyCharset()), Method.GET,null,null,
                 ArrayListMultiValueMap.fromMap(headers),
-                connectTimeout,readTimeout , resultCharset,false,(s, b,r,h)-> IoUtil.read(b ,r));
+                connectTimeout,readTimeout , resultCharset,false,
+                (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
     }
 
     @Override
@@ -34,34 +35,37 @@ public abstract class AbstractHttpClient<CC> extends AbstractConfigurableHttp im
         String charset = getConfig().calculateBodyCharset(bodyCharset, contentType);
         return template(url, Method.POST, contentType, bodyContentCallback(Method.POST , body, charset, contentType),
                 ArrayListMultiValueMap.fromMap(headers),
-                connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
+                connectTimeout, readTimeout , resultCharset,false,
+                (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
     }
 
     @Override
     public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
         return template(url, Method.GET,null,null, headers,
                 connectTimeout,readTimeout , null,false,
-                (s, b,r,h)-> IoUtil.stream2Bytes(b));
+                (statusCode, inputStream, rc, h)-> IoUtil.stream2Bytes(inputStream));
     }
 
     @Override
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
         return template(url, Method.GET,null,null, headers ,
                 connectTimeout,readTimeout , null,false,
-                (s, b,r,h)-> IoUtil.copy2File(b, file));
+                (statusCode, inputStream, rc, h)-> IoUtil.copy2File(inputStream, file));
     }
 
 
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
         return template(url, Method.POST, null, uploadContentCallback(null , getConfig().getDefaultBodyCharset() , Arrays.asList(files)),
-                headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
+                headers, connectTimeout, readTimeout , resultCharset,false,
+                (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
         return template(url, Method.POST, null, uploadContentCallback(params , getConfig().getDefaultBodyCharset() , Arrays.asList(files)),
-                headers, connectTimeout, readTimeout , resultCharset,false, (s, b,r,h)-> IoUtil.read(b ,r));
+                headers, connectTimeout, readTimeout , resultCharset,false,
+                (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
     }
 
     /**

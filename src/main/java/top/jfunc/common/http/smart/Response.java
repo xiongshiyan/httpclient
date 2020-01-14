@@ -37,7 +37,7 @@ public class Response implements Closeable{
      */
     private MultiValueMap<String, String> headers = null;
 
-    private Response(int statusCode, byte[] bodyBytes, String resultCharset, MultiValueMap<String, String> headers) {
+    public Response(int statusCode, byte[] bodyBytes, String resultCharset, MultiValueMap<String, String> headers) {
         this.statusCode = statusCode;
         this.bodyBytes = bodyBytes;
         this.resultCharset = resultCharset;
