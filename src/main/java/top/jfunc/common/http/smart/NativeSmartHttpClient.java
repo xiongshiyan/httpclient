@@ -53,7 +53,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             //1.初始化connection
             connection = getHttpURLConnectionFactory().create(httpRequest);
 
-            //2.处理header
+            //2.处理header[必须在写入body之前就设置好header]
             getHttpURLConnectionHeaderHandler().configHeaders(connection , httpRequest);
 
             //3.写入内容

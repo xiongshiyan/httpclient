@@ -56,14 +56,15 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest , ContentCallback<HttpEntityEnclosingRequest> contentCallback , ResultCallback<R> resultCallback) throws Exception {
-        //2.创建并配置
+        //1.创建并配置
         HttpUriRequest httpUriRequest = getHttpUriRequestRequesterFactory().create(httpRequest);
 
-        //3.创建请求内容，如果有的话
+        //2.创建请求内容，如果有的话
         if(httpUriRequest instanceof HttpEntityEnclosingRequest){
             getContentCallbackHandler().handle((HttpEntityEnclosingRequest)httpUriRequest , contentCallback , httpRequest);
         }
 
+        //3.设置header
         getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);
 
         HttpClient httpClient = null;

@@ -49,19 +49,19 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             //1.获取Request
             HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest);
 
-            //4.处理body
+            //2.处理body
             getContentCallbackHandler().handle(request , contentCallback , httpRequest);
 
-            //5.设置header
+            //3.设置header
             getHttpRequestHeaderHandler().configHeaders(request , httpRequest);
 
-            //6.真正请求
+            //4.真正请求
             response = send(request, httpRequest);
 
-            //7.获取返回值
+            //5.获取返回值
             inputStream = getHttpResponseStreamExtractor().extract(response, httpRequest);
 
-            //8.返回header,包括Cookie处理
+            //6.返回header,包括Cookie处理
             MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest);
 
             return resultCallback.convert(response.statusCode(), inputStream,
