@@ -342,10 +342,10 @@ public interface HttpRequest extends ConfigAccessor {
      * @param value value
      * @return this
      */
-    HttpRequest addAttribute(String key, String value);
+    HttpRequest addAttribute(String key, Object value);
 
     /**
-     * 获取设置的属性
+     * 获取设置的属性,maybe null
      * @return 属性map
      */
     Map<String , Object> getAttributes();

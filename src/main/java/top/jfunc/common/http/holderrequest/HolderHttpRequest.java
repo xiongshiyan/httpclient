@@ -305,7 +305,7 @@ public interface HolderHttpRequest extends HttpRequest {
      * @return this
      */
     @Override
-    default HolderHttpRequest addAttribute(String key, String value){
+    default HolderHttpRequest addAttribute(String key, Object value){
         attributeHolder().addAttribute(key , value);
         return this;
     }

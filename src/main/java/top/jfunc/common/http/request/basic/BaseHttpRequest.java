@@ -370,7 +370,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
     @Override
-    public THIS addAttribute(String key, String value) {
+    public THIS addAttribute(String key, Object value) {
         if(null == attributes){
             attributes = new HashMap<>(2);
         }
