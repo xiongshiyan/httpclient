@@ -12,8 +12,13 @@ public class DownLoadRequest extends BaseHttpRequest<DownLoadRequest> implements
     public DownLoadRequest(String url){
         super(url);
     }
+    public DownLoadRequest(){
+    }
     public static DownLoadRequest of(String url){
         return new DownLoadRequest(url);
+    }
+    public static DownLoadRequest of(){
+        return new DownLoadRequest();
     }
     public static DownLoadRequest of(String url , File file){
         DownLoadRequest downLoadFileRequest = new DownLoadRequest(url);

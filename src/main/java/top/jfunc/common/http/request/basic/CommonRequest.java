@@ -7,7 +7,12 @@ public class CommonRequest extends BaseHttpRequest<CommonRequest> {
     public CommonRequest(String url){
         super(url);
     }
+    public CommonRequest(){
+    }
     public static CommonRequest of(String url){
         return new CommonRequest(url);
+    }
+    public static CommonRequest of(){
+        return new CommonRequest();
     }
 }

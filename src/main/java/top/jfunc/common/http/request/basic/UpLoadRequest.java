@@ -16,8 +16,13 @@ public class UpLoadRequest extends BaseHttpRequest<UpLoadRequest> implements Upl
     public UpLoadRequest(String url){
         super(url);
     }
+    public UpLoadRequest(){
+    }
     public static UpLoadRequest of(String url){
         return new UpLoadRequest(url);
+    }
+    public static UpLoadRequest of(){
+        return new UpLoadRequest();
     }
 
     private MultiValueMap<String , String> formParams = new ArrayListMultiValueMap<>(2);

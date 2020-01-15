@@ -6,13 +6,9 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
-import top.jfunc.common.http.request.FormRequest;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.StringBodyRequest;
-import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.http.request.basic.GetRequest;
-import top.jfunc.common.http.request.basic.PostBodyRequest;
-import top.jfunc.common.http.request.basic.UpLoadRequest;
+import top.jfunc.common.http.component.httprequest.*;
+import top.jfunc.common.http.request.*;
+import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -38,9 +34,17 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
     /**InputStream关闭器*/
     private Closer inputStreamCloser;
 
+    private HttpRequestFactory httpRequestFactory;
+    private StringBodyHttpRequestFactory stringBodyHttpRequestFactory;
+    private UploadRequestFactory uploadRequestFactory;
+
     public AbstractSmartHttpClient(){
         setContentCallbackHandler(new DefaultContentCallbackHandler<>());
         setInputStreamCloser(new DefaultCloser());
+
+        setHttpRequestFactory(new DefaultHttpRequestFactory());
+        setStringBodyHttpRequestFactory(new DefaultStringBodyHttpRequestFactory());
+        setUploadRequestFactory(new DefaultUploadRequestFactory());
     }
 
 
@@ -159,15 +163,6 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
         //设置忽略响应体
         httpRequest.setIgnoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
 
-        /// trace没有body
-        /*
-        ContentCallback<CC> contentCallback = null;
-        if(httpRequest instanceof StringBodyRequest){
-            StringBodyRequest stringBodyRequest = (StringBodyRequest) httpRequest;
-            String bodyCharset = getConfig().calculateBodyCharset(stringBodyRequest.getBodyCharset() , stringBodyRequest.getContentType());
-            String body = stringBodyRequest.getBody();
-            contentCallback = bodyContentCallback(Method.TRACE ,body, bodyCharset, httpRequest.getContentType());
-        }*/
         return template(httpRequest , null, resultCallback);
     }
 
@@ -186,60 +181,47 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
-        GetRequest getRequest = GetRequest.of(url);
-        getRequest.setQueryParams(params).setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
-        if(null != resultCharset){
-            getRequest.setResultCharset(resultCharset);
+        MultiValueMap<String , String> p = null;
+        if(MapUtil.notEmpty(params)){
+            p = ArrayListMultiValueMap.fromMap(params);
         }
-        return get(getRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+        MultiValueMap<String , String> h = null;
+        if(MapUtil.notEmpty(params)){
+            h = ArrayListMultiValueMap.fromMap(headers);
+        }
+        HttpRequest httpRequest = getHttpRequestFactory().create(url, p, h, connectTimeout, readTimeout, resultCharset);
+        return get(httpRequest , (statusCode, inputStream, rc, hd)-> IoUtil.read(inputStream ,rc));
     }
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        PostBodyRequest postBodyRequest = PostBodyRequest.of(url);
-        postBodyRequest.setBody(body , contentType).setBodyCharset(bodyCharset).setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
-        if(null != resultCharset){
-            postBodyRequest.setResultCharset(resultCharset);
-        }
-        return post(postBodyRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+        MutableStringBodyRequest stringBodyRequest = getStringBodyHttpRequestFactory().create(url, body, contentType, headers, connectTimeout, readTimeout, bodyCharset, resultCharset);
+        return post(stringBodyRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
     }
 
     @Override
     public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
-        GetRequest getRequest = GetRequest.of(url);
-        getRequest.setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
-        return get(getRequest , (statusCode, inputStream, rc, h)-> IoUtil.stream2Bytes(inputStream));
+        HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
+        return get(httpRequest , (statusCode, inputStream, rc, h)-> IoUtil.stream2Bytes(inputStream));
     }
 
     @Override
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
-        GetRequest getRequest = GetRequest.of(url);
-        getRequest.setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
-        return get(getRequest , (statusCode, inputStream, rc, h)-> IoUtil.copy2File(inputStream, file));
+        HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
+        return get(httpRequest , (statusCode, inputStream, rc, h)-> IoUtil.copy2File(inputStream, file));
     }
 
 
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
-        UpLoadRequest upLoadRequest = UpLoadRequest.of(url);
-        upLoadRequest.addFormFile(files).setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
-        if(null != resultCharset){
-            upLoadRequest.setResultCharset(resultCharset);
-        }
-        return upload(upLoadRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+        UploadRequest uploadRequest = getUploadRequestFactory().create(url, null, headers, connectTimeout, readTimeout, resultCharset, files);
+        return upload(uploadRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
-        UpLoadRequest upLoadRequest = UpLoadRequest.of(url);
-        upLoadRequest.addFormFile(files).setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
-        if(null != resultCharset){
-            upLoadRequest.setResultCharset(resultCharset);
-        }
-        if(MapUtil.notEmpty(params)){
-            upLoadRequest.setFormParams(params);
-        }
-        return upload(upLoadRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+        UploadRequest uploadRequest = getUploadRequestFactory().create(url, params, headers, connectTimeout, readTimeout, resultCharset, files);
+        return upload(uploadRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
     }
 
 
@@ -277,6 +259,30 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
 
     public void setInputStreamCloser(Closer inputStreamCloser) {
         this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
+    }
+
+    public HttpRequestFactory getHttpRequestFactory() {
+        return httpRequestFactory;
+    }
+
+    public void setHttpRequestFactory(HttpRequestFactory httpRequestFactory) {
+        this.httpRequestFactory = Objects.requireNonNull(httpRequestFactory);
+    }
+
+    public StringBodyHttpRequestFactory getStringBodyHttpRequestFactory() {
+        return stringBodyHttpRequestFactory;
+    }
+
+    public void setStringBodyHttpRequestFactory(StringBodyHttpRequestFactory stringBodyHttpRequestFactory) {
+        this.stringBodyHttpRequestFactory = Objects.requireNonNull(stringBodyHttpRequestFactory);
+    }
+
+    public UploadRequestFactory getUploadRequestFactory() {
+        return uploadRequestFactory;
+    }
+
+    public void setUploadRequestFactory(UploadRequestFactory uploadRequestFactory) {
+        this.uploadRequestFactory = Objects.requireNonNull(uploadRequestFactory);
     }
 }
 

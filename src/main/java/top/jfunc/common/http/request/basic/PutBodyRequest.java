@@ -8,8 +8,14 @@ public class PutBodyRequest extends CommonBodyRequest {
     public PutBodyRequest(String url){
         super(url);
     }
+    public PutBodyRequest(){
+        super();
+    }
     public static PutBodyRequest of(String url){
         return new PutBodyRequest(url);
+    }
+    public static PutBodyRequest of(){
+        return new PutBodyRequest();
     }
     public static PutBodyRequest of(String url , String body , String contentType){
         PutBodyRequest putBodyRequest = new PutBodyRequest(url);

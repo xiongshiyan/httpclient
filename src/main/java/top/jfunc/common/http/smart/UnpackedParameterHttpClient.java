@@ -1,6 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.base.FormFile;
@@ -319,7 +320,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, Map<String, String> params, Map<String, String> headers, String bodyCharset, String resultCharset) throws IOException{
-        return post(url, ParamUtil.contactMap(params , bodyCharset),FORM_URLENCODED_WITH_DEFAULT_CHARSET,headers,bodyCharset,resultCharset);
+        return post(url, ParamUtil.contactMap(params , bodyCharset), MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset).toString(),headers,bodyCharset,resultCharset);
     }
 
     /**

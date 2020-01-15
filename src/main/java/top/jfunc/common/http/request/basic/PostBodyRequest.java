@@ -8,6 +8,12 @@ public class PostBodyRequest extends CommonBodyRequest {
     public PostBodyRequest(String url){
         super(url);
     }
+    public PostBodyRequest(){
+    }
+
+    public static PostBodyRequest of(){
+        return new PostBodyRequest();
+    }
     public static PostBodyRequest of(String url){
         return new PostBodyRequest(url);
     }

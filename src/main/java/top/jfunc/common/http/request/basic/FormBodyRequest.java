@@ -17,8 +17,13 @@ public class FormBodyRequest extends BaseHttpRequest<FormBodyRequest> implements
     public FormBodyRequest(String url){
         super(url);
     }
+    public FormBodyRequest(){
+    }
     public static FormBodyRequest of(String url){
         return new FormBodyRequest(url);
+    }
+    public static FormBodyRequest of(){
+        return new FormBodyRequest();
     }
 
     private MultiValueMap<String , String> formParams = new ArrayListMultiValueMap<>(2);

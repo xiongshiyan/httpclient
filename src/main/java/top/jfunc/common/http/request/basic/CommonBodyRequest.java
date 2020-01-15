@@ -11,6 +11,11 @@ public class CommonBodyRequest extends BaseHttpRequest<CommonBodyRequest> implem
     public CommonBodyRequest(String url){
         super(url);
     }
+    public CommonBodyRequest(){
+    }
+    public static CommonBodyRequest of(){
+        return new CommonBodyRequest();
+    }
     public static CommonBodyRequest of(String url){
         return new CommonBodyRequest(url);
     }
