@@ -1,18 +1,25 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.AbstractConfigurableHttp;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.AbstractHttpClient;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.request.basic.GetRequest;
+import top.jfunc.common.http.request.basic.PostBodyRequest;
+import top.jfunc.common.http.request.basic.UpLoadRequest;
+import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -20,7 +27,7 @@ import java.util.Objects;
  * @see SmartHttpClient
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC> {
+public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHttp implements SmartHttpClient, SmartHttpTemplate<CC> {
 
     /**处理一般包含body的*/
     private BodyContentCallbackCreator<CC> bodyContentCallbackCreator;
@@ -174,6 +181,72 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
         }
     }
 
+
+    /////////////////////////////////////////////////////UnpackedParameterHttpClient///////////////////////////////////////////////////////////////
+
+    @Override
+    public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
+        GetRequest getRequest = GetRequest.of(url);
+        getRequest.setQueryParams(params).setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
+        if(null != resultCharset){
+            getRequest.setResultCharset(resultCharset);
+        }
+        return get(getRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+    }
+
+    @Override
+    public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
+        PostBodyRequest postBodyRequest = PostBodyRequest.of(url);
+        postBodyRequest.setBody(body , contentType).setBodyCharset(bodyCharset).setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
+        if(null != resultCharset){
+            postBodyRequest.setResultCharset(resultCharset);
+        }
+        return post(postBodyRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+    }
+
+    @Override
+    public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
+        GetRequest getRequest = GetRequest.of(url);
+        getRequest.setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
+        return get(getRequest , (statusCode, inputStream, rc, h)-> IoUtil.stream2Bytes(inputStream));
+    }
+
+    @Override
+    public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
+        GetRequest getRequest = GetRequest.of(url);
+        getRequest.setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
+        return get(getRequest , (statusCode, inputStream, rc, h)-> IoUtil.copy2File(inputStream, file));
+    }
+
+
+    @Override
+    public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
+        UpLoadRequest upLoadRequest = UpLoadRequest.of(url);
+        upLoadRequest.addFormFile(files).setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
+        if(null != resultCharset){
+            upLoadRequest.setResultCharset(resultCharset);
+        }
+        return upload(upLoadRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+    }
+
+    @Override
+    public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
+        UpLoadRequest upLoadRequest = UpLoadRequest.of(url);
+        upLoadRequest.addFormFile(files).setHeaders(headers).setConnectionTimeout(connectTimeout).setReadTimeout(readTimeout);
+        if(null != resultCharset){
+            upLoadRequest.setResultCharset(resultCharset);
+        }
+        if(MapUtil.notEmpty(params)){
+            upLoadRequest.setFormParams(params);
+        }
+        return upload(upLoadRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+    }
+
+
+
+
+
+
     public BodyContentCallbackCreator<CC> getBodyContentCallbackCreator() {
         return bodyContentCallbackCreator;
     }
@@ -204,33 +277,6 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractHttpClient<CC>
 
     public void setInputStreamCloser(Closer inputStreamCloser) {
         this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
-    }
-
-    /**
-     * 处理请求体的回调
-     * @param method 请求方法
-     * @param body 请求体
-     * @param bodyCharset 编码
-     * @param contentType Content-Type
-     * @return ContentCallback<CC>
-     * @throws IOException IOException
-     */
-    @Override
-    protected ContentCallback<CC> bodyContentCallback(Method method , String body , String bodyCharset , String contentType) throws IOException{
-        return getBodyContentCallbackCreator().create(method, body, bodyCharset, contentType);
-    }
-
-    /**
-     * 处理文件上传
-     * @param params 参数，k-v，可能为null
-     * @param paramCharset 参数编码
-     * @param formFiles 文件信息
-     * @return ContentCallback<CC>
-     * @throws IOException IOException
-     */
-    @Override
-    protected ContentCallback<CC> uploadContentCallback(MultiValueMap<String, String> params , String paramCharset , Iterable<FormFile> formFiles) throws IOException{
-        return getUploadContentCallbackCreator().create(params, paramCharset, formFiles);
     }
 }
 

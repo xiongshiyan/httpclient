@@ -1,12 +1,10 @@
-package top.jfunc.common.http.basic;
+package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.smart.Request;
-import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 

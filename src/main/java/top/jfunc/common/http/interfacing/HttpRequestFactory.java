@@ -170,8 +170,10 @@ class HttpRequestFactory implements RequestFactory {
         HttpRequest httpRequest = initHttpRequest();
 
         //如果直接传递的是HttpRequest，就忽略其他的注解，因为他已经包含了请求所需的所有信息
-        if(args[0] instanceof HttpRequest){
-            httpRequest = (HttpRequest) (args[0]);
+        if(ArrayUtil.isNotEmpty(args)){
+            if(args[0] instanceof HttpRequest){
+                httpRequest = (HttpRequest) (args[0]);
+            }
         }
 
 

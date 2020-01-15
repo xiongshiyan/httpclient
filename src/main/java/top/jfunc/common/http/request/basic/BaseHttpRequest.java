@@ -10,6 +10,7 @@ import top.jfunc.common.http.component.CompletedUrlCreator;
 import top.jfunc.common.http.component.DefaultCompletedUrlCreator;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -18,7 +19,6 @@ import javax.net.ssl.X509TrustManager;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author xiongshiyan at 2019/7/5 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -195,13 +195,15 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
 
     @Override
     public THIS setQueryParams(MultiValueMap<String, String> params) {
-        this.queryParams = Objects.requireNonNull(params);
+        this.queryParams = params;
         return myself();
     }
 
     @Override
     public THIS setQueryParams(Map<String, String> params) {
-        this.queryParams = ArrayListMultiValueMap.fromMap(Objects.requireNonNull(params));
+        if(MapUtil.notEmpty(params)){
+            this.queryParams = ArrayListMultiValueMap.fromMap(params);
+        }
         return myself();
     }
 
@@ -226,13 +228,15 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
 
     @Override
     public THIS setHeaders(MultiValueMap<String, String> headers) {
-        this.headers = Objects.requireNonNull(headers);
+        this.headers = headers;
         return myself();
     }
 
     @Override
     public THIS setHeaders(Map<String, String> headers) {
-        this.headers = ArrayListMultiValueMap.fromMap(Objects.requireNonNull(headers));
+        if(MapUtil.notEmpty(headers)){
+            this.headers = ArrayListMultiValueMap.fromMap(headers);
+        }
         return myself();
     }
 

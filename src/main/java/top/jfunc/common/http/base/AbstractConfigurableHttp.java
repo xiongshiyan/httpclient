@@ -3,10 +3,6 @@ package top.jfunc.common.http.base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 import java.util.Objects;
 
 /**
@@ -46,30 +42,5 @@ public abstract class AbstractConfigurableHttp {
         configFrozen.freezeConfig();
         //Config冻结
         config.freezeConfig();
-    }
-
-    /**
-     * 处理基路径和默认Query参数：注意url可能已经带Query参数了
-     * @param originUrl 客户设置的url
-     * @return 处理后的url
-     */
-    protected String handleUrlIfNecessary(String originUrl){
-        return config.handleUrlIfNecessary(originUrl , null , null , null);
-    }
-
-
-    ///////////////////////////////以下几个方法太长了，提供便捷方式///////////////////////////////////////
-
-    protected HostnameVerifier getDefaultHostnameVerifier() {
-        return config.sslHolder().getHostnameVerifier();
-    }
-    protected SSLContext getDefaultSSLContext() {
-        return config.sslHolder().getSslContext();
-    }
-    protected SSLSocketFactory getDefaultSSLSocketFactory() {
-        return config.sslHolder().getSslSocketFactory();
-    }
-    protected X509TrustManager getDefaultX509TrustManager() {
-        return config.sslHolder().getX509TrustManager();
     }
 }

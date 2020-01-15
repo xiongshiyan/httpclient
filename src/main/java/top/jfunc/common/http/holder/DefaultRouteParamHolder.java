@@ -2,7 +2,6 @@ package top.jfunc.common.http.holder;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -32,7 +31,7 @@ public class DefaultRouteParamHolder implements RouteParamHolder {
 
     @Override
     public RouteParamHolder setMap(Map<String, String> routeParams) {
-        this.routeParams = Objects.requireNonNull(routeParams);
+        this.routeParams = routeParams;
         return this;
     }
 

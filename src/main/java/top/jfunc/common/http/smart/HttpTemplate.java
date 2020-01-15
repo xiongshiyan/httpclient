@@ -1,4 +1,4 @@
-package top.jfunc.common.http.basic;
+package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.ContentCallback;

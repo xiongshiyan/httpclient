@@ -3,6 +3,8 @@ package top.jfunc.common.http.request;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.utils.MultiValueMap;
 
+import java.util.Map;
+
 /**
  * 文件上传请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -22,6 +24,20 @@ public interface UploadRequest extends HttpRequest {
      * @return this
      */
     UploadRequest addFormParam(String key, String value, String... values);
+
+    /**
+     * 设置form参数
+     * @param formParams formParams
+     * @return this
+     */
+    UploadRequest setFormParams(MultiValueMap<String , String> formParams);
+
+    /**
+     * 设置form参数
+     * @param formParams formParams
+     * @return this
+     */
+    UploadRequest setFormParams(Map<String , String> formParams);
 
     /**
      * 获取charset

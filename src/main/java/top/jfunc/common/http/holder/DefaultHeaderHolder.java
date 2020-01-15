@@ -6,7 +6,6 @@ import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * wrap of {@link MultiValueMap} and impl HeaderHolder
@@ -27,20 +26,22 @@ public class DefaultHeaderHolder implements HeaderHolder {
 
     @Override
     public HeaderHolder setHeaders(MultiValueMap<String, String> headers) {
-        this.headers = Objects.requireNonNull(headers);
+        this.headers = headers;
         return this;
     }
 
     @Override
     public HeaderHolder setHeaders(ArrayListMultimap<String, String> headers) {
-        Objects.requireNonNull(headers);
-        this.headers = ArrayListMultiValueMap.fromMap(headers);
+        if(null != headers){
+            this.headers = ArrayListMultiValueMap.fromMap(headers);
+        }
         return this;
     }
     @Override
     public HeaderHolder setHeaders(Map<String, String> headers) {
-        Objects.requireNonNull(headers);
-        this.headers = ArrayListMultiValueMap.fromMap(headers);
+        if(null != headers){
+            this.headers = ArrayListMultiValueMap.fromMap(headers);
+        }
         return this;
     }
 

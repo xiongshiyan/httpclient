@@ -1,4 +1,4 @@
-package top.jfunc.common.http.basic;
+package top.jfunc.common.http.smart;
 
 /**
  * 兼容以前

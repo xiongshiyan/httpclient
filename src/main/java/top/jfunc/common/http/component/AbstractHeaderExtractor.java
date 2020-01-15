@@ -17,7 +17,7 @@ public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
         Config config = httpRequest.getConfig();
 
         ///1.如果要支持cookie，必须读取header
-        if(null != config.getCookieJar()){
+        if(null != config.getCookieJar() || httpRequest.followRedirects()){
             httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
         }
         //2.从响应中获取headers
@@ -47,6 +47,7 @@ public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
      * @param s S
      * @param httpRequest HttpRequest
      * @return headers
+     * @throws IOException IOException
      */
-    protected abstract MultiValueMap<String, String> doExtractHeaders(S s , HttpRequest httpRequest);
+    protected abstract MultiValueMap<String, String> doExtractHeaders(S s , HttpRequest httpRequest) throws IOException;
 }

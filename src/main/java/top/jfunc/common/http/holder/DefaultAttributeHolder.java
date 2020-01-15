@@ -2,7 +2,6 @@ package top.jfunc.common.http.holder;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -17,7 +16,7 @@ public class DefaultAttributeHolder implements AttributeHolder {
 
     @Override
     public AttributeHolder setAttributes(Map<String, Object> attributes) {
-        this.attributes = Objects.requireNonNull(attributes);
+        this.attributes = attributes;
         return this;
     }
 

@@ -6,10 +6,7 @@ import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 多文件、参数同时支持的上传请求
@@ -40,6 +37,19 @@ public class UpLoadRequest extends BaseHttpRequest<UpLoadRequest> implements Upl
     @Override
     public UpLoadRequest addFormParam(String key, String value, String... values) {
         formParams.add(key, value, values);
+        return myself();
+    }
+
+    @Override
+    public UpLoadRequest setFormParams(MultiValueMap<String, String> formParams) {
+        this.formParams = formParams;
+        return myself();
+    }
+
+    @Override
+    public UpLoadRequest setFormParams(Map<String, String> formParams) {
+        Objects.requireNonNull(formParams);
+        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
         return myself();
     }
 

@@ -1,11 +1,11 @@
 package top.jfunc.common.http.holder;
 
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.utils.ArrayUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author xiongshiyan at 2019/6/2 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -23,7 +23,7 @@ public class DefaultFormFileHolder implements FormFileHolder {
 
     @Override
     public FormFileHolder addFormFile(FormFile... formFiles) {
-        if(null != formFiles && formFiles.length > 0){
+        if(ArrayUtil.isNotEmpty(formFiles)){
             this.formFiles.addAll(Arrays.asList(formFiles));
         }
         return this;
@@ -31,8 +31,9 @@ public class DefaultFormFileHolder implements FormFileHolder {
 
     @Override
     public FormFileHolder addFormFiles(Iterable<FormFile> formFiles) {
-        Objects.requireNonNull(formFiles);
-        formFiles.forEach(this.formFiles::add);
+        if(null != formFiles){
+            formFiles.forEach(this.formFiles::add);
+        }
         return this;
     }
 }

@@ -1,21 +1,14 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
-import top.jfunc.common.http.basic.HttpTemplate;
-import top.jfunc.common.http.basic.UnpackedParameterHttpClient;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.request.basic.CommonRequest;
-import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 
 /**
- * 更具体的实现相关的公共部分
- * 实现者只需要实现HttpTemplate接口、处理POST Body、文件上传Body即可
- * @see HttpTemplate
+ * 统一异常处理
  * @see SmartHttpTemplate
  * @see UnpackedParameterHttpClient
  * @see HttpRequestResultCallbackHttpClient
@@ -67,31 +60,5 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
      * @throws Exception Exception
      */
     abstract protected  <R> R doInternalTemplate(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws Exception;
-
-    /**
-     * 使用{@link HttpRequest}体系来实现{@link HttpTemplate}接口方法
-     * @inheritDoc
-     */
-    @Override
-    public  <R> R template(String url, Method method , String contentType, ContentCallback<CC> contentCallback, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset , boolean includeHeader , ResultCallback<R> resultCallback) throws IOException {
-        HttpRequest httpRequest = CommonRequest.of(url);
-        init(httpRequest , method);
-
-        httpRequest.setContentType(contentType);
-        if(null != headers){
-            headers.forEachKeyValue((k,v)->httpRequest.addHeader(k , v));
-        }
-
-        httpRequest.setConnectionTimeout(connectTimeout);
-        httpRequest.setReadTimeout(readTimeout);
-
-        if(null != resultCharset){
-            httpRequest.setResultCharset(resultCharset);
-        }
-        httpRequest.setIncludeHeaders(includeHeader);
-
-
-        return template(httpRequest , contentCallback , resultCallback);
-    }
 }
 

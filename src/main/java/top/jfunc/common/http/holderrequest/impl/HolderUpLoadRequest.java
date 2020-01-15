@@ -6,8 +6,11 @@ import top.jfunc.common.http.holder.DefaultParamHolder;
 import top.jfunc.common.http.holder.FormFileHolder;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.holderrequest.HolderUploadRequest;
+import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.utils.MultiValueMap;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * 多文件、参数同时支持的上传请求
@@ -59,6 +62,18 @@ public class HolderUpLoadRequest extends BaseHolderHttpRequest<HolderUpLoadReque
     @Override
     public HolderUpLoadRequest addFormParam(String key, String value, String... values) {
         formParamHolder().addParam(key, value, values);
+        return myself();
+    }
+
+    @Override
+    public UploadRequest setFormParams(Map<String, String> formParams) {
+        formParamHolder().setParams(formParams);
+        return myself();
+    }
+
+    @Override
+    public UploadRequest setFormParams(MultiValueMap<String, String> formParams) {
+        formParamHolder().setParams(formParams);
         return myself();
     }
 

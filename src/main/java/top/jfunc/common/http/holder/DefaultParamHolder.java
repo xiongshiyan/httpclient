@@ -4,10 +4,10 @@ import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * wrap of {@link MultiValueMap} and impl ParamHolder
@@ -45,20 +45,22 @@ public class DefaultParamHolder implements ParamHolder {
 
     @Override
     public ParamHolder setParams(MultiValueMap<String, String> params) {
-        this.params = Objects.requireNonNull(params);
+        this.params = params;
         return this;
     }
 
     @Override
     public ParamHolder setParams(ArrayListMultimap<String, String> params) {
-        Objects.requireNonNull(params);
-        this.params = ArrayListMultiValueMap.fromMap(params);
+        if(null != params){
+            this.params = ArrayListMultiValueMap.fromMap(params);
+        }
         return this;
     }
     @Override
     public ParamHolder setParams(Map<String, String> params) {
-        Objects.requireNonNull(params);
-        this.params = ArrayListMultiValueMap.fromMap(params);
+        if(MapUtil.notEmpty(params)){
+            this.params = ArrayListMultiValueMap.fromMap(params);
+        }
         return this;
     }
     @Override

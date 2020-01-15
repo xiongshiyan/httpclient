@@ -3,10 +3,10 @@ package top.jfunc.common.http.request.basic;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Form表单请求
@@ -26,13 +26,14 @@ public class FormBodyRequest extends BaseHttpRequest<FormBodyRequest> implements
 
     @Override
     public FormBodyRequest setFormParams(Map<String, String> params) {
-        Objects.requireNonNull(params);
-        this.formParams = ArrayListMultiValueMap.fromMap(params);
+        if(MapUtil.notEmpty(params)){
+            this.formParams = ArrayListMultiValueMap.fromMap(params);
+        }
         return myself();
     }
     @Override
     public FormBodyRequest setFormParams(MultiValueMap<String, String> params) {
-        this.formParams = Objects.requireNonNull(params);
+        this.formParams = params;
         return myself();
     }
 
