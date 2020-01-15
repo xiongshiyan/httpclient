@@ -195,33 +195,33 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        MutableStringBodyRequest stringBodyRequest = getStringBodyHttpRequestFactory().create(url, body, contentType, headers, connectTimeout, readTimeout, bodyCharset, resultCharset);
-        return post(stringBodyRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+        StringBodyRequest stringBodyRequest = getStringBodyHttpRequestFactory().create(url, body, contentType, headers, connectTimeout, readTimeout, bodyCharset, resultCharset);
+        return post(stringBodyRequest , (statusCode, inputStream, rc, hd)-> IoUtil.read(inputStream ,rc));
     }
 
     @Override
     public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
         HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
-        return get(httpRequest , (statusCode, inputStream, rc, h)-> IoUtil.stream2Bytes(inputStream));
+        return get(httpRequest , (statusCode, inputStream, rc, hd)-> IoUtil.stream2Bytes(inputStream));
     }
 
     @Override
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
         HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
-        return get(httpRequest , (statusCode, inputStream, rc, h)-> IoUtil.copy2File(inputStream, file));
+        return get(httpRequest , (statusCode, inputStream, rc, hd)-> IoUtil.copy2File(inputStream, file));
     }
 
 
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
         UploadRequest uploadRequest = getUploadRequestFactory().create(url, null, headers, connectTimeout, readTimeout, resultCharset, files);
-        return upload(uploadRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+        return upload(uploadRequest , (statusCode, inputStream, rc, hd)-> IoUtil.read(inputStream ,rc));
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
         UploadRequest uploadRequest = getUploadRequestFactory().create(url, params, headers, connectTimeout, readTimeout, resultCharset, files);
-        return upload(uploadRequest , (statusCode, inputStream, rc, h)-> IoUtil.read(inputStream ,rc));
+        return upload(uploadRequest , (statusCode, inputStream, rc, hd)-> IoUtil.read(inputStream ,rc));
     }
 
 

@@ -1,6 +1,6 @@
 package top.jfunc.common.http.component.httprequest;
 
-import top.jfunc.common.http.request.MutableStringBodyRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.basic.CommonBodyRequest;
 
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class DefaultStringBodyHttpRequestFactory implements StringBodyHttpRequestFactory {
     @Override
-    public MutableStringBodyRequest create(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) {
+    public StringBodyRequest create(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) {
         CommonBodyRequest stringBodyRequest = CommonBodyRequest.of(url);
         stringBodyRequest.setBody(body , contentType)
                 .setBodyCharset(bodyCharset)
