@@ -6,25 +6,23 @@ package top.jfunc.common.http;
  */
 public enum Protocol {
     /**
-     * Http
-     * @see HttpConstants#HTTP
+     * Http，默认端口80
      */
-    HTTP(80) ,
+    HTTP{
+        @Override
+        public int getDefaultPort() {
+            return 80;
+        }
+    } ,
     /**
-     * Https
-     * @see HttpConstants#HTTPS
+     * Https，默认端口443
      */
-    HTTPS(443);
+    HTTPS{
+        @Override
+        public int getDefaultPort() {
+            return 443;
+        }
+    };
 
-    /**
-     * 默认端口
-     */
-    int port;
-    Protocol(int defaultPort){
-        this.port = defaultPort;
-    }
-
-    public int getPort() {
-        return port;
-    }
+    public abstract int getDefaultPort();
 }

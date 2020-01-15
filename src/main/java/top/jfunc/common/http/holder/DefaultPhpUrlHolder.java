@@ -40,9 +40,9 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
             throw new IllegalArgumentException("host 未指定");
         }
 
-        //如果port为指定
+        //如果port未指定
         if(DEFAULT_PORT == port){
-            port = protocol.getPort();
+            port = protocol.getDefaultPort();
         }
 
         //拼装url
