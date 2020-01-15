@@ -12,13 +12,13 @@ import static top.jfunc.common.http.HttpConstants.*;
  * @author xiongshiyan at 2019/6/28 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolder {
-    private static final int DEFAULT_PORT = -1;
+    private static final int UNSIGNED_PORT = -1;
     /**
      * 下面三个参数可能都没有
      */
     private Protocol protocol;
     private String host;
-    private int port = DEFAULT_PORT;
+    private int port = UNSIGNED_PORT;
 
     /**
      * 路径，不包括query参数的
@@ -41,7 +41,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
         }
 
         //如果port未指定
-        if(DEFAULT_PORT == port){
+        if(UNSIGNED_PORT == port){
             port = protocol.getDefaultPort();
         }
 
