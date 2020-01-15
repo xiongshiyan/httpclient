@@ -4,6 +4,7 @@ import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.*;
@@ -53,8 +54,9 @@ public class UpLoadRequest extends BaseHttpRequest<UpLoadRequest> implements Upl
 
     @Override
     public UpLoadRequest setFormParams(Map<String, String> formParams) {
-        Objects.requireNonNull(formParams);
-        this.formParams = ArrayListMultiValueMap.fromMap(formParams);
+        if(MapUtil.notEmpty(formParams)){
+            this.formParams = ArrayListMultiValueMap.fromMap(formParams);
+        }
         return myself();
     }
 

@@ -3,6 +3,7 @@ package top.jfunc.common.http.holder;
 import top.jfunc.common.http.kv.Header;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayListMultimap;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.util.Map;
@@ -39,7 +40,7 @@ public class DefaultHeaderHolder implements HeaderHolder {
     }
     @Override
     public HeaderHolder setHeaders(Map<String, String> headers) {
-        if(null != headers){
+        if(MapUtil.notEmpty(headers)){
             this.headers = ArrayListMultiValueMap.fromMap(headers);
         }
         return this;

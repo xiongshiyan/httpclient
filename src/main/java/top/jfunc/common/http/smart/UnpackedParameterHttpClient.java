@@ -3,10 +3,11 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
@@ -67,7 +68,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, Map<String, String> params, Map<String, String> headers, String resultCharset) throws IOException{
-        return get(url,params,headers, HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED,resultCharset);
+        return get(url,params,headers, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,resultCharset);
     }
 
     /**
@@ -80,7 +81,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
-        return get(url,params,headers,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED);
+        return get(url,params,headers, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
     }
 
     /**
@@ -122,7 +123,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, Map<String, String> params, String resultCharset) throws IOException{
-        return get(url,params,null,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED,resultCharset);
+        return get(url,params,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,resultCharset);
     }
 
     /**
@@ -134,7 +135,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, Map<String, String> params) throws IOException{
-        return get(url,params,null, HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED);
+        return get(url,params,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
     }
 
     /**
@@ -146,7 +147,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, String resultCharset) throws IOException{
-        return get(url,null,null,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED, resultCharset);
+        return get(url,null,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED, resultCharset);
     }
 
     /**
@@ -157,7 +158,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url) throws IOException{
-        return get(url,null,null,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED);
+        return get(url,null,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
     }
 
     /**
@@ -204,7 +205,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, Map<String, String> headers, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,contentType,headers,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
+        return post(url,body,contentType,headers, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
     }
 
     /**
@@ -218,7 +219,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, Map<String, String> headers) throws IOException{
-        return post(url,body,contentType,headers,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED);
+        return post(url,body,contentType,headers, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
     }
 
     /**
@@ -265,7 +266,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,contentType,null,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
+        return post(url,body,contentType,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
     }
 
     /**
@@ -278,7 +279,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType) throws IOException{
-        return post(url,body,contentType,null,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED);
+        return post(url,body,contentType,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
     }
 
     /**
@@ -292,7 +293,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String postJson(String url, String body, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
+        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
     }
 
     /**
@@ -304,7 +305,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String postJson(String url, String body) throws IOException{
-        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null,HttpConstants.TIMEOUT_UNSIGNED,HttpConstants.TIMEOUT_UNSIGNED);
+        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
     }
 
     /**
@@ -566,7 +567,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
-        return upload(url, params ,headers ,HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED, null , files);
+        return upload(url, params ,headers , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED, null , files);
     }
 
     /**
@@ -594,7 +595,10 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String upload(String url, Map<String, String> params, FormFile... files) throws IOException{
-        MultiValueMap<String , String> multimap = ArrayListMultiValueMap.fromMap(params);
-        return upload(url, multimap ,null , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED, null , files);
+        MultiValueMap<String , String> p = null;
+        if(MapUtil.notEmpty(params)){
+            p = ArrayListMultiValueMap.fromMap(params);
+        }
+        return upload(url, p ,null , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED, null , files);
     }
 }
