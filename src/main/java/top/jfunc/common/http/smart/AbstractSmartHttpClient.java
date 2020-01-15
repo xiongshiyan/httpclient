@@ -186,7 +186,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
             p = ArrayListMultiValueMap.fromMap(params);
         }
         MultiValueMap<String , String> h = null;
-        if(MapUtil.notEmpty(params)){
+        if(MapUtil.notEmpty(headers)){
             h = ArrayListMultiValueMap.fromMap(headers);
         }
         HttpRequest httpRequest = getHttpRequestFactory().create(url, p, h, connectTimeout, readTimeout, resultCharset);
