@@ -7,7 +7,10 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.httprequest.*;
-import top.jfunc.common.http.request.*;
+import top.jfunc.common.http.request.FormRequest;
+import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.StringBodyRequest;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MapUtil;
@@ -190,19 +193,19 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
             h = ArrayListMultiValueMap.fromMap(headers);
         }
         HttpRequest httpRequest = getHttpRequestFactory().create(url, p, h, connectTimeout, readTimeout, resultCharset);
-        return get(httpRequest , (statusCode, inputStream, rc, hd)-> IoUtil.read(inputStream ,rc));
+        return get(httpRequest , Response::extractString);
     }
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
         StringBodyRequest stringBodyRequest = getStringBodyHttpRequestFactory().create(url, body, contentType, headers, connectTimeout, readTimeout, bodyCharset, resultCharset);
-        return post(stringBodyRequest , (statusCode, inputStream, rc, hd)-> IoUtil.read(inputStream ,rc));
+        return post(stringBodyRequest , Response::extractString);
     }
 
     @Override
     public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
         HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
-        return get(httpRequest , (statusCode, inputStream, rc, hd)-> IoUtil.stream2Bytes(inputStream));
+        return get(httpRequest , Response::extractBytes);
     }
 
     @Override
@@ -215,13 +218,13 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
         UploadRequest uploadRequest = getUploadRequestFactory().create(url, null, headers, connectTimeout, readTimeout, resultCharset, files);
-        return upload(uploadRequest , (statusCode, inputStream, rc, hd)-> IoUtil.read(inputStream ,rc));
+        return upload(uploadRequest , Response::extractString);
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
         UploadRequest uploadRequest = getUploadRequestFactory().create(url, params, headers, connectTimeout, readTimeout, resultCharset, files);
-        return upload(uploadRequest , (statusCode, inputStream, rc, hd)-> IoUtil.read(inputStream ,rc));
+        return upload(uploadRequest , Response::extractString);
     }
 
 

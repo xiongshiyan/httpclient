@@ -47,7 +47,7 @@ public interface HttpRequestResultCallbackHttpClient extends FreezableConfigAcce
      * @throws IOException IOException
      */
     default byte[] getAsBytes(HttpRequest httpRequest) throws IOException{
-        return get(httpRequest, (statusCode, inputStream, resultCharset, headers) -> IoUtil.stream2Bytes(inputStream));
+        return get(httpRequest, Response::extractBytes);
     }
 
     /**
@@ -173,7 +173,7 @@ public interface HttpRequestResultCallbackHttpClient extends FreezableConfigAcce
     <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     default MultiValueMap<String , String> head(HttpRequest httpRequest) throws IOException{
-        return head(httpRequest, (statusCode, inputStream, resultCharset, headers) -> headers);
+        return head(httpRequest, Response::extractHeaders);
     }
 
     /**
@@ -198,7 +198,7 @@ public interface HttpRequestResultCallbackHttpClient extends FreezableConfigAcce
     <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     default MultiValueMap<String , String> options(HttpRequest httpRequest) throws IOException{
-        return options(httpRequest, (statusCode, inputStream, resultCharset, headers) -> headers);
+        return options(httpRequest, Response::extractHeaders);
     }
 
     /**

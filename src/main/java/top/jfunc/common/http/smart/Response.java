@@ -55,6 +55,34 @@ public class Response implements Closeable{
                 headers);
     }
 
+    /**
+     * 获取响应码
+     */
+    public static int extractStatusCode(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
+        return statusCode;
+    }
+
+    /**
+     * 获取响应体，String
+     */
+    public static String extractString(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
+        return IoUtil.read(null != inputStream ? inputStream : new ByteArrayInputStream(new byte[0]), resultCharset);
+    }
+
+    /**
+     * 获取响应体，byte[]
+     */
+    public static byte[] extractBytes(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
+        return null != inputStream ? IoUtil.stream2Bytes(inputStream) : new byte[0];
+    }
+
+    /**
+     * 获取响应header
+     */
+    public static MultiValueMap<String, String> extractHeaders(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
+        return headers;
+    }
+
     public byte[] asBytes() {
         return this.bodyBytes;
     }
