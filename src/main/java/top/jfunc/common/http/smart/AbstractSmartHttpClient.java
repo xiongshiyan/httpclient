@@ -7,6 +7,8 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.httprequest.*;
+import top.jfunc.common.http.cookie.CookieAccessor;
+import top.jfunc.common.http.cookie.DefaultCookieAccessor;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
@@ -41,6 +43,9 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
     private StringBodyHttpRequestFactory stringBodyHttpRequestFactory;
     private UploadRequestFactory uploadRequestFactory;
 
+    /**处理Cookie*/
+    private CookieAccessor cookieAccessor;
+
     public AbstractSmartHttpClient(){
         setContentCallbackHandler(new DefaultContentCallbackHandler<>());
         setInputStreamCloser(new DefaultCloser());
@@ -48,6 +53,8 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
         setHttpRequestFactory(new DefaultHttpRequestFactory());
         setStringBodyHttpRequestFactory(new DefaultStringBodyHttpRequestFactory());
         setUploadRequestFactory(new DefaultUploadRequestFactory());
+
+        setCookieAccessor(new DefaultCookieAccessor());
     }
 
 
@@ -286,6 +293,14 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
 
     public void setUploadRequestFactory(UploadRequestFactory uploadRequestFactory) {
         this.uploadRequestFactory = Objects.requireNonNull(uploadRequestFactory);
+    }
+
+    public CookieAccessor getCookieAccessor() {
+        return cookieAccessor;
+    }
+
+    public void setCookieAccessor(CookieAccessor cookieAccessor) {
+        this.cookieAccessor = Objects.requireNonNull(cookieAccessor);
     }
 }
 

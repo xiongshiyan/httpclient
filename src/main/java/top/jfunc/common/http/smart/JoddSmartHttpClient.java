@@ -52,7 +52,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             getContentCallbackHandler().handle(request , contentCallback , httpRequest);
 
             //3.设置header
-            getHttpRequestHeaderHandler().configHeaders(request , httpRequest);
+            handleHeaders(request , httpRequest);
 
             //4.真正请求
             response = send(request, httpRequest);
@@ -63,6 +63,9 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             //6.返回header,包括Cookie处理
             MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest);
 
+            //7.处理Cookie
+            getCookieAccessor().saveCookieIfNecessary(httpRequest , responseHeaders);
+
             return resultCallback.convert(response.statusCode(), inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
@@ -70,6 +73,11 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             closeInputSteam(inputStream);
             closeResponse(response);
         }
+    }
+
+    private void handleHeaders(HttpRequest request , top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException {
+        getCookieAccessor().addCookieIfNecessary(httpRequest);
+        getHttpRequestHeaderHandler().configHeaders(request , httpRequest);
     }
 
     protected void closeInputSteam(InputStream inputStream) throws IOException {

@@ -40,6 +40,8 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
 
         setConnectionCloser(new DefaultCloser());
+
+        setCookieAccessor(new JdkCookieAccessor());
     }
 
     @Override
@@ -51,7 +53,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             connection = getHttpURLConnectionFactory().create(httpRequest);
 
             //2.处理header[必须在写入body之前就设置好header]
-            getHttpURLConnectionHeaderHandler().configHeaders(connection , httpRequest);
+            handleHeaders(connection, httpRequest);
 
             //3.写入内容
             getContentCallbackHandler().handle(connection , contentCallback , httpRequest);
@@ -65,6 +67,9 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             //6.返回header,包括Cookie处理
             MultiValueMap<String, String> responseHeaders = getHttpURLConnectionHeaderExtractor().extract(connection, httpRequest);
 
+            //7.处理Cookie
+            getCookieAccessor().saveCookieIfNecessary(httpRequest , responseHeaders);
+
             return resultCallback.convert(connection.getResponseCode(), inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
@@ -75,6 +80,11 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             //2 . 关闭流
             closeInputStream(inputStream);
         }
+    }
+
+    private void handleHeaders(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
+        getCookieAccessor().addCookieIfNecessary(httpRequest);
+        getHttpURLConnectionHeaderHandler().configHeaders(connection , httpRequest);
     }
 
     protected HttpURLConnection connect(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {

@@ -63,7 +63,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         }
 
         //3.设置header
-        getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);
+        handleHeaders(httpUriRequest, httpRequest);
 
         HttpClient httpClient = null;
         HttpResponse response = null;
@@ -80,6 +80,9 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             //6.处理headers
             MultiValueMap<String, String> responseHeaders = getHttpResponseHeaderExtractor().extract(response, httpRequest);
 
+            //7.处理Cookie
+            getCookieAccessor().saveCookieIfNecessary(httpRequest, responseHeaders);
+
             return resultCallback.convert(response.getStatusLine().getStatusCode() , inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
@@ -88,6 +91,11 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             closeResponse(response);
             closeHttpClient(httpClient);
         }
+    }
+
+    private void handleHeaders(HttpUriRequest httpUriRequest, HttpRequest httpRequest) throws IOException {
+        getCookieAccessor().addCookieIfNecessary(httpRequest);
+        getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);
     }
 
     protected HttpResponse execute(HttpClient httpClient, HttpUriRequest httpUriRequest , HttpRequest httpRequest) throws IOException {

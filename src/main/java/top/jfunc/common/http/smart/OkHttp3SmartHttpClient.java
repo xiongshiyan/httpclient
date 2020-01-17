@@ -60,7 +60,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             getContentCallbackHandler().handle(builder , contentCallback , httpRequest);
 
             //2.3设置headers
-            getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest);
+            handleHeaders(builder , httpRequest);
 
             //3.执行请求
             response = execute(client, httpRequest, builder);
@@ -71,6 +71,9 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             //5.处理header，包括Cookie的处理
             MultiValueMap<String, String> responseHeaders = getResponseHeaderExtractor().extract(response, httpRequest);
 
+            //6.处理Cookie
+            getCookieAccessor().saveCookieIfNecessary(httpRequest , responseHeaders);
+
             return resultCallback.convert(response.code(), inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
@@ -78,6 +81,11 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             closeInputStream(inputStream);
             closeResponse(response);
         }
+    }
+
+    private void handleHeaders(Request.Builder builder , HttpRequest httpRequest) throws IOException {
+        getCookieAccessor().addCookieIfNecessary(httpRequest);
+        getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest);
     }
 
     protected Response execute(OkHttpClient client, HttpRequest httpRequest, Request.Builder builder) throws IOException {
