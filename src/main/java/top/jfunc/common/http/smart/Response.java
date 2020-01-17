@@ -7,6 +7,7 @@ import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.string.FromStringHandler;
+import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -40,7 +41,9 @@ public class Response implements Closeable{
     private Response(int statusCode, byte[] bodyBytes, String resultCharset, MultiValueMap<String, String> headers) {
         this.statusCode = statusCode;
         this.bodyBytes = bodyBytes;
-        this.resultCharset = resultCharset;
+        if(null != resultCharset){
+            this.resultCharset = resultCharset;
+        }
         this.headers = headers;
     }
 
@@ -49,10 +52,8 @@ public class Response implements Closeable{
     }
 
     public static Response with(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
-        return new Response(statusCode ,
-                null == inputStream ? new byte[]{} : IoUtil.stream2Bytes(inputStream) ,
-                resultCharset ,
-                headers);
+        byte[] bodyBytes = null != inputStream ? IoUtil.stream2Bytes(inputStream) : new byte[]{};
+        return with(statusCode, bodyBytes, resultCharset, headers);
     }
 
     /**
@@ -66,7 +67,7 @@ public class Response implements Closeable{
      * 获取响应体，String
      */
     public static String extractString(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
-        return IoUtil.read(null != inputStream ? inputStream : new ByteArrayInputStream(new byte[0]), resultCharset);
+        return null != inputStream ? IoUtil.read(inputStream , resultCharset) : "";
     }
 
     /**
@@ -129,8 +130,13 @@ public class Response implements Closeable{
      *
      */
     public File asFile(File fileToSave){
+        if(ArrayUtil.isEmpty(bodyBytes)){
+            return fileToSave;
+        }
         try {
-            return IoUtil.copy2File(new ByteArrayInputStream(bodyBytes), fileToSave);
+            FileOutputStream fileOutputStream = new FileOutputStream(fileToSave);
+            fileOutputStream.write(this.bodyBytes , 0 , bodyBytes.length);
+            return fileToSave;
         } catch (IOException e){
             throw new RuntimeException(e);
         }
