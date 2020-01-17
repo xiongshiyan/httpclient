@@ -84,7 +84,7 @@ public class HttpServiceCreatorTest {
         System.out.println(headerMap);
     }
     @Test
-    public void testDownLoad(){
+    public void testDownLoad() throws IOException{
         Response download = jfunc.download();
         System.out.println(download.asFile(new File("xx.txt")));
     }
