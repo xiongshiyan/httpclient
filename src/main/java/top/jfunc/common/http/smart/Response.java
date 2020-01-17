@@ -115,7 +115,7 @@ public class Response implements Closeable{
         return stringHandler.as(asString() , toClass);
     }
 
-    public File asFile(String fileName){
+    public File asFile(String fileName) throws IOException{
         return asFile(new File(fileName));
     }
     /**
@@ -129,16 +129,14 @@ public class Response implements Closeable{
      * 如果只需要保存为文件，那么请调用 {@link SmartHttpClient#getAsFile(DownloadRequest)}
      *
      */
-    public File asFile(File fileToSave){
+    public File asFile(File fileToSave) throws IOException{
         if(ArrayUtil.isEmpty(bodyBytes)){
             return fileToSave;
         }
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(fileToSave);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(fileToSave)){
             fileOutputStream.write(this.bodyBytes , 0 , bodyBytes.length);
+            fileOutputStream.flush();
             return fileToSave;
-        } catch (IOException e){
-            throw new RuntimeException(e);
         }
     }
 
