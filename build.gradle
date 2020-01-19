@@ -2,7 +2,7 @@ def VERSION = '1.2.1'
 def ARTIFACT_ID = 'httpclient'
 def GROUP_ID = 'top.jfunc.network'
 def TYPE = 'jar'
-def DESCRIPTION = 'http客户端请求工具类，有多种实现：OkHttp3、ApacheHttpClient、HttpURLConnection、Jodd-Http，可以随意切换http实现'
+def DESCRIPTION = 'http客户端请求工具类，有多种实现：OkHttp3、ApacheHttpComponents、HttpURLConnection、Jodd-Http，可以随意切换http实现'
 def gitUrl = 'https://gitee.com/xxssyyyyssxx/httpclient.git'
 def siteUrl = 'https://gitee.com/xxssyyyyssxx/httpclient'
 def REPO_NAME = 'network'
@@ -18,15 +18,14 @@ buildscript {
     }
 
     ext{
-        CommonUtilVersion       = '1.8.3.2'
-        //SpringBootVersion       = '1.5.7.RELEASE'
-        OkHttp3Version          = '3.14.4'
-        JoddVersion             = '5.1.0-20190624'
-        ApacheHttpCleintVersion = '4.5.10'
+        CommonUtilVersion           = '1.8.3.2'
+        OkHttp3Version              = '3.14.4'
+        JoddVersion                 = '5.1.0-20190624'
+        ApacheHttpComponentsVersion = '4.5.10'
 
-        JUnitVersion            = '4.12'
-        HamcrestVersion         = '1.3'
-        MockServerVersion       = '5.5.4'
+        JUnitVersion                = '4.12'
+        HamcrestVersion             = '1.3'
+        MockServerVersion           = '5.5.4'
     }
 
     dependencies {
@@ -75,10 +74,10 @@ dependencies {
     compile ("top.jfunc.common:utils:${CommonUtilVersion}")
 
     compile ("com.squareup.okhttp3:okhttp:${OkHttp3Version}")
-    compile ("org.apache.httpcomponents:httpclient:${ApacheHttpCleintVersion}"){
+    compile ("org.apache.httpcomponents:httpclient:${ApacheHttpComponentsVersion}"){
         exclude group:'commons-logging'
     }
-    compile ("org.apache.httpcomponents:httpmime:${ApacheHttpCleintVersion}"){
+    compile ("org.apache.httpcomponents:httpmime:${ApacheHttpComponentsVersion}"){
         exclude group:'commons-logging'
     }
     // https://mvnrepository.com/artifact/org.jodd/jodd-http
