@@ -3,7 +3,6 @@ package top.jfunc.common.http.cookie;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * 处理Cookie的接口，想法来源于OkHttp3重构代码提出此接口

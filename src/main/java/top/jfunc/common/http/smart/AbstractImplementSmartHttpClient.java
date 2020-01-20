@@ -10,8 +10,8 @@ import java.io.IOException;
 /**
  * 统一异常处理
  * @see SmartHttpTemplate
- * @see UnpackedParameterHttpClient
- * @see HttpRequestResultCallbackHttpClient
+ * @see SimpleHttpClient
+ * @see HttpRequestHttpClient
  * @see SmartHttpClient
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */

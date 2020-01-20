@@ -19,7 +19,7 @@ import java.io.IOException;
  * @author xiongshiyan at 2019/11/10
  * @since 1.1.10
  */
-public interface HttpRequestResultCallbackHttpClient extends FreezableConfigAccessor {
+public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     /**
      * GET方法，用于获取某个资源
      * @param httpRequest 请求参数

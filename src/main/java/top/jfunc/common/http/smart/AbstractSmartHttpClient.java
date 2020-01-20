@@ -25,7 +25,8 @@ import java.util.Objects;
 
 /**
  * 提供了{@link SmartHttpClient}接口的实现
- * @see SmartHttpClient
+ * @see SimpleHttpClient
+ * @see HttpRequestHttpClient
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHttp implements SmartHttpClient, SmartHttpTemplate<CC> {
@@ -187,7 +188,7 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
     }
 
 
-    /////////////////////////////////////////////////////UnpackedParameterHttpClient///////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////SimpleHttpClient///////////////////////////////////////////////////////////////
 
     @Override
     public String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{

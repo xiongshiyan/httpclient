@@ -57,7 +57,7 @@ public class HttpUtil {
     public static Response upload(UploadRequest request) throws IOException{
         return getSmartHttpClient().upload(request);
     }
-    /*****************************************Proxy the method of HttpClient interface*************************************************/
+    /*****************************************Proxy the method of SimpleHttpClient interface*************************************************/
     public static String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
         return getSmartHttpClient().get(url, params, headers, connectTimeout, readTimeout, resultCharset);
     }

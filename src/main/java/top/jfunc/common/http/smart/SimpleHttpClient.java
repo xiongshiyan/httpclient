@@ -27,7 +27,7 @@ import static top.jfunc.common.http.HttpConstants.*;
  * @author 熊诗言
  * @since 2017/11/24
  */
-public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
+public interface SimpleHttpClient extends FreezableConfigAccessor {
      /**
      * HTTP GET请求
      * @param url URL，可以帶参数
@@ -44,7 +44,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @param params params
      * @param headers headers
@@ -59,7 +59,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @param params params
      * @param headers headers
@@ -73,7 +73,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @param params params
      * @param headers headers
@@ -86,7 +86,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @param params params
      * @param connectTimeout connectTimeout
@@ -101,7 +101,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @param params params
      * @param connectTimeout connectTimeout
@@ -115,7 +115,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @param params params
      * @param resultCharset resultCharset
@@ -128,7 +128,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @param params params
      * @return String
@@ -140,7 +140,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @param resultCharset resultCharset
      * @return String
@@ -152,7 +152,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP GET请求
-     * @see UnpackedParameterHttpClient#get(String, Map, Map, int, int, String)
+     * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
      * @return String
      * @throws IOException IOException
@@ -178,7 +178,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @param contentType contentType
@@ -194,7 +194,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @param contentType contentType
@@ -210,7 +210,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @param contentType contentType
@@ -224,7 +224,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @param contentType contentType
@@ -241,7 +241,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @param contentType contentType
@@ -256,7 +256,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @param contentType contentType
@@ -271,7 +271,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @param contentType contentType
@@ -284,7 +284,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @param bodyCharset bodyCharset
@@ -298,7 +298,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @param url url
      * @param body body
      * @return String
@@ -310,7 +310,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST form
-     * @see UnpackedParameterHttpClient#post(String, String, String, Map, int, int, String, String)
+     * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @see ParamUtil#contactMap(Map)
      * @param url url
      * @param params params 参数用 =和& 连接
@@ -326,7 +326,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST form
-     * @see UnpackedParameterHttpClient#post(String, Map, Map, String, String)
+     * @see SimpleHttpClient#post(String, Map, Map, String, String)
      * @param url url
      * @param params params 参数用 =和& 连接
      * @param headers headers
@@ -339,7 +339,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST form
-     * @see UnpackedParameterHttpClient#post(String, Map, Map, String, String)
+     * @see SimpleHttpClient#post(String, Map, Map, String, String)
      * @param url url
      * @param params params 参数用 =和& 连接
      * @param bodyCharset bodyCharset
@@ -353,7 +353,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * HTTP POST form
-     * @see UnpackedParameterHttpClient#post(String, Map, Map, String, String)
+     * @see SimpleHttpClient#post(String, Map, Map, String, String)
      * @param url url
      * @param params params 参数用 =和& 连接
      * @return String
@@ -376,7 +376,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 下载为字节数组
-     * @see UnpackedParameterHttpClient#getAsBytes(String, MultiValueMap, int, int)
+     * @see SimpleHttpClient#getAsBytes(String, MultiValueMap, int, int)
      * @param url url
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
@@ -389,7 +389,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 下载为字节数组
-     * @see UnpackedParameterHttpClient#getAsBytes(String, MultiValueMap, int, int)
+     * @see SimpleHttpClient#getAsBytes(String, MultiValueMap, int, int)
      * @param url url
      * @param headers headers
      * @return byte[]
@@ -401,7 +401,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 下载为字节数组
-     * @see UnpackedParameterHttpClient#getAsBytes(String, MultiValueMap, int, int)
+     * @see SimpleHttpClient#getAsBytes(String, MultiValueMap, int, int)
      * @param url url
      * @return byte[]
      * @throws IOException IOException
@@ -424,7 +424,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 下载为文件
-     * @see UnpackedParameterHttpClient#getAsFile(String, File, int, int)
+     * @see SimpleHttpClient#getAsFile(String, File, int, int)
      * @param url url
      * @param file file
      * @param connectTimeout connectTimeout
@@ -437,7 +437,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
     }
     /**
      * 下载为文件
-     * @see UnpackedParameterHttpClient#getAsFile(String, File, int, int)
+     * @see SimpleHttpClient#getAsFile(String, File, int, int)
      * @param url url
      * @param headers headers
      * @param file file
@@ -449,7 +449,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
     }
     /**
      * 下载为文件
-     * @see UnpackedParameterHttpClient#getAsFile(String, File, int, int)
+     * @see SimpleHttpClient#getAsFile(String, File, int, int)
      * @param url url
      * @param file file
      * @return File
@@ -474,7 +474,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 上传文件
-     * @see UnpackedParameterHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
+     * @see SimpleHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param headers headers
      * @param connectTimeout connectTimeout
@@ -489,7 +489,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 上传文件
-     * @see UnpackedParameterHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
+     * @see SimpleHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param headers headers
      * @param files files
@@ -502,7 +502,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 上传文件
-     * @see UnpackedParameterHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
+     * @see SimpleHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
@@ -516,7 +516,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 上传文件
-     * @see UnpackedParameterHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
+     * @see SimpleHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param files files
      * @return String
@@ -542,7 +542,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 上传文件和key-value数据
-     * @see UnpackedParameterHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
+     * @see SimpleHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param params params
      * @param headers headers
@@ -558,7 +558,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 上传文件和key-value数据
-     * @see UnpackedParameterHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
+     * @see SimpleHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param params params
      * @param headers headers
@@ -572,7 +572,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 上传文件和key-value数据
-     * @see UnpackedParameterHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
+     * @see SimpleHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param params params
      * @param connectTimeout connectTimeout
@@ -587,7 +587,7 @@ public interface UnpackedParameterHttpClient extends FreezableConfigAccessor {
 
     /**
      * 上传文件和key-value数据
-     * @see UnpackedParameterHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
+     * @see SimpleHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param params params
      * @param files files
