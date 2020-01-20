@@ -14,6 +14,6 @@ import java.io.IOException;
 public class DefaultJoddHeaderExtractor extends AbstractHeaderExtractor<HttpResponse> {
     @Override
     protected MultiValueMap<String, String> doExtractHeaders(HttpResponse httpResponse, HttpRequest httpRequest) throws IOException {
-        return JoddUtil.parseHeaders(httpResponse , httpRequest.isIncludeHeaders());
+        return JoddUtil.parseHeaders(httpResponse);
     }
 }

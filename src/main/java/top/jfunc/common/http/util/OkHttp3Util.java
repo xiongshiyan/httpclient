@@ -21,23 +21,13 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
-import static top.jfunc.common.http.base.StreamUtil.emptyInputStream;
-
 /**
  * @author xiongshiyan at 2019/7/12 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class OkHttp3Util {
-    public static InputStream getStreamFrom(Response response , boolean ignoreResponseBody) {
-        //忽略返回body的情况下，直接返回空的
-        if(ignoreResponseBody){
-            return emptyInputStream();
-        }
+    public static InputStream getStreamFrom(Response response) {
         ResponseBody body = response.body();
-        InputStream inputStream = (body != null) ? body.byteStream() : emptyInputStream();
-        if(null == inputStream){
-            inputStream = emptyInputStream();
-        }
-        return inputStream;
+        return (body != null) ? body.byteStream() : IoUtil.emptyStream();
     }
 
     /**
@@ -116,10 +106,7 @@ public class OkHttp3Util {
     /**
      * 获取响应中的headers
      */
-    public static MultiValueMap<String , String> parseHeaders(Response response , boolean includeHeaders) {
-        if(!includeHeaders){
-            return new ArrayListMultiValueMap<>(0);
-        }
+    public static MultiValueMap<String , String> parseHeaders(Response response) {
         Headers resHeaders = response.headers();
         MultiValueMap<String , String> headers = new ArrayListMultiValueMap<>(resHeaders.size());
         Map<String, List<String>> stringListMap = resHeaders.toMultimap();

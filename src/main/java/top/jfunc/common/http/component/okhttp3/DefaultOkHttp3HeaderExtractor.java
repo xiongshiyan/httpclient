@@ -14,6 +14,6 @@ import java.io.IOException;
 public class DefaultOkHttp3HeaderExtractor extends AbstractHeaderExtractor<Response> {
     @Override
     protected MultiValueMap<String, String> doExtractHeaders(Response response, HttpRequest httpRequest) throws IOException {
-        return OkHttp3Util.parseHeaders(response , httpRequest.isIncludeHeaders());
+        return OkHttp3Util.parseHeaders(response);
     }
 }

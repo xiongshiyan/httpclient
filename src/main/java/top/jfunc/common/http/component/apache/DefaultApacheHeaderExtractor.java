@@ -14,6 +14,6 @@ import java.io.IOException;
 public class DefaultApacheHeaderExtractor extends AbstractHeaderExtractor<HttpResponse> {
     @Override
     protected MultiValueMap<String, String> doExtractHeaders(HttpResponse httpResponse, HttpRequest httpRequest) throws IOException {
-        return ApacheUtil.parseHeaders(httpResponse , httpRequest.isIncludeHeaders());
+        return ApacheUtil.parseHeaders(httpResponse);
     }
 }

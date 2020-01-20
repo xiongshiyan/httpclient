@@ -1,7 +1,7 @@
 package top.jfunc.common.http.component.jdk;
 
+import top.jfunc.common.http.component.AbstractStreamExtractor;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.component.StreamExtractor;
 import top.jfunc.common.http.util.NativeUtil;
 
 import java.io.IOException;
@@ -11,9 +11,9 @@ import java.net.HttpURLConnection;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultJdkStreamExtractor implements StreamExtractor<HttpURLConnection> {
+public class DefaultJdkStreamExtractor extends AbstractStreamExtractor<HttpURLConnection> {
     @Override
-    public InputStream extract(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
-        return NativeUtil.getStreamFrom(connection, connection.getResponseCode(), httpRequest.isIgnoreResponseBody());
+    public InputStream doExtract(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
+        return NativeUtil.getStreamFrom(connection, connection.getResponseCode());
     }
 }

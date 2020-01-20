@@ -11,14 +11,28 @@ import java.io.IOException;
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
+    /**
+     * @param s 请求响应
+     * @param httpRequest HttpRequest
+     * @return 可能返回null
+     * @throws IOException IOException
+     */
     @Override
     public MultiValueMap<String, String> extract(S s, HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
 
+        boolean includeHeaders = httpRequest.isIncludeHeaders();
+
         ///1.如果要支持cookie，必须读取header
         if(null != config.getCookieJar() || httpRequest.followRedirects()){
-            httpRequest.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
+            includeHeaders = HttpRequest.INCLUDE_HEADERS;
         }
+
+        //要求不需要解析header
+        if(!includeHeaders){
+            return null;
+        }
+
         //2.从响应中获取headers
         return doExtractHeaders(s , httpRequest);
     }

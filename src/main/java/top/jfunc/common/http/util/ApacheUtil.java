@@ -28,6 +28,7 @@ import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.CharsetUtil;
+import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -45,20 +46,15 @@ import java.net.UnknownHostException;
 
 import static top.jfunc.common.http.HttpConstants.COLON;
 import static top.jfunc.common.http.HttpConstants.SPLASH;
-import static top.jfunc.common.http.base.StreamUtil.emptyInputStream;
 
 /**
  * @author xiongshiyan at 2019/7/9 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class ApacheUtil {
-    public static InputStream getStreamFrom(HttpEntity entity , boolean ignoreResponseBody) throws IOException {
-        //忽略返回body的情况下，直接返回空的
-        if(ignoreResponseBody){
-            return emptyInputStream();
-        }
+    public static InputStream getStreamFrom(HttpEntity entity) throws IOException {
         InputStream inputStream = entity.getContent();
         if(null == inputStream){
-            inputStream = emptyInputStream();
+            inputStream = IoUtil.emptyStream();
         }
         return inputStream;
     }
@@ -269,10 +265,7 @@ public class ApacheUtil {
         }
     }
 
-    public static MultiValueMap<String , String> parseHeaders(HttpResponse response, boolean isIncludeHeaders) {
-        if(!isIncludeHeaders){
-            return new ArrayListMultiValueMap<>(0);
-        }
+    public static MultiValueMap<String , String> parseHeaders(HttpResponse response) {
         Header[] allHeaders = response.getAllHeaders();
         MultiValueMap<String,String> arrayListMultimap = new ArrayListMultiValueMap<>(allHeaders.length);
         for (Header header : allHeaders) {

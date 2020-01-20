@@ -24,8 +24,6 @@ import java.net.Proxy;
 import java.util.Collection;
 import java.util.List;
 
-import static top.jfunc.common.http.base.StreamUtil.emptyInputStream;
-
 /**
  * @author xiongshiyan at 2019/7/12 , contact me with email yanshixiong@126.com or phone 15208384257
  */
@@ -50,11 +48,7 @@ public class JoddUtil {
         }
     }
 
-    public static MultiValueMap<String , String> parseHeaders(HttpResponse response , boolean isIncludeHeaders) {
-        if(!isIncludeHeaders){
-            return new ArrayListMultiValueMap<>(0);
-        }
-
+    public static MultiValueMap<String , String> parseHeaders(HttpResponse response) {
         Collection<String> headerNames = response.headerNames();
         MultiValueMap<String,String> arrayListMultimap = new ArrayListMultiValueMap<>(headerNames.size());
         for (String headerName : headerNames) {
@@ -92,14 +86,10 @@ public class JoddUtil {
         httpRequest.withConnectionProvider(httpConnectionProvider);
     }
 
-    public static InputStream getStreamFrom(HttpResponse httpResponse , boolean ignoreResponseBody) throws IOException{
-        //忽略返回body的情况下，直接返回空的
-        if(ignoreResponseBody){
-            return emptyInputStream();
-        }
+    public static InputStream getStreamFrom(HttpResponse httpResponse) throws IOException{
         byte[] bodyBytes = httpResponse.bodyBytes();
         if(ArrayUtil.isEmpty(bodyBytes)){
-            return emptyInputStream();
+            return IoUtil.emptyStream();
         }
         return new ByteArrayInputStream(bodyBytes);
     }

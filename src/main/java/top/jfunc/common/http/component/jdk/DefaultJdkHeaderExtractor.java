@@ -14,6 +14,6 @@ import java.net.HttpURLConnection;
 public class DefaultJdkHeaderExtractor extends AbstractHeaderExtractor<HttpURLConnection> {
     @Override
     public MultiValueMap<String, String> doExtractHeaders(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
-        return NativeUtil.parseHeaders(connection , httpRequest.isIncludeHeaders());
+        return NativeUtil.parseHeaders(connection);
     }
 }

@@ -19,7 +19,6 @@ import static top.jfunc.common.http.HttpConstants.CRLF;
 import static top.jfunc.common.http.HttpConstants.TWO_HYPHENS;
 import static top.jfunc.common.http.HttpStatus.HTTP_BAD_REQUEST;
 import static top.jfunc.common.http.HttpStatus.HTTP_OK;
-import static top.jfunc.common.http.base.StreamUtil.emptyInputStream;
 
 /**
  * @author xiongshiyan at 2019/7/12 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -150,12 +149,7 @@ public class NativeUtil {
         return headers;
     }*/
 
-    public static InputStream getStreamFrom(HttpURLConnection connect , int statusCode , boolean ignoreResponseBody) throws IOException{
-        //忽略返回body的情况下，直接返回空的
-        if(ignoreResponseBody){
-            return emptyInputStream();
-        }
-
+    public static InputStream getStreamFrom(HttpURLConnection connect , int statusCode) throws IOException{
         InputStream inputStream;
         if(hasInputStream(statusCode)){
             inputStream = connect.getInputStream();
@@ -163,7 +157,7 @@ public class NativeUtil {
             inputStream = connect.getErrorStream();
         }
         if(null == inputStream){
-            inputStream = emptyInputStream();
+            inputStream = IoUtil.emptyStream();
         }
         return inputStream;
     }
@@ -228,11 +222,8 @@ public class NativeUtil {
         out.close();*/
     }
 
-    public static MultiValueMap<String , String> parseHeaders(HttpURLConnection connect, boolean includeHeaders) {
-        if(!includeHeaders){
-            return new ArrayListMultiValueMap<>(0);
-        }
-        return new ArrayListMultiValueMap<>(connect.getHeaderFields());
+    public static MultiValueMap<String , String> parseHeaders(HttpURLConnection connection) {
+        return new ArrayListMultiValueMap<>(connection.getHeaderFields());
     }
 
 
