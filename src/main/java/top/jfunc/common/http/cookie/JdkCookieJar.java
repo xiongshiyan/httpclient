@@ -55,9 +55,9 @@ public class JdkCookieJar implements CookieJar{
     }
 
     @Override
-    public MultiValueMap<String , String> loadForRequest(String completedUrl , MultiValueMap<String , String> requestHeaders) throws IOException{
+    public MultiValueMap<String , String> loadForRequest(String completedUrl) throws IOException{
         //从源码知道CookieManager#get方法传入的Map基本没用，不为空即可，不知道这样设计干嘛的
-        MultiValueMap<String, String> nonNull = null != requestHeaders ? requestHeaders : new ArrayListMultiValueMap<>(0);
+        MultiValueMap<String, String> nonNull = new ArrayListMultiValueMap<>(0);
         Map<String, List<String>> cookies = getCookieHandler().get(URI.create(completedUrl), nonNull);
         if(MapUtil.notEmpty(cookies)){
             List<String> list = cookies.get(HttpHeaders.COOKIE);

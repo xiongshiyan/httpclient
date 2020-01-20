@@ -22,7 +22,7 @@ public class DefaultCookieAccessor implements CookieAccessor{
             return;
         }
 
-        MultiValueMap<String, String> forRequest = cookieJar.loadForRequest(httpRequest.getCompletedUrl(), httpRequest.getHeaders());
+        MultiValueMap<String, String> forRequest = cookieJar.loadForRequest(httpRequest.getCompletedUrl());
 
         if(MapUtil.notEmpty(forRequest)){
             forRequest.forEachKeyValue(httpRequest::addHeader);
