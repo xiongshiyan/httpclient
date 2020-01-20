@@ -2,6 +2,7 @@ package top.jfunc.common.http.component.httprequest;
 
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.basic.CommonRequest;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 /**
@@ -11,11 +12,15 @@ public class DefaultHttpRequestFactory implements HttpRequestFactory {
     @Override
     public HttpRequest create(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) {
         HttpRequest httpRequest = CommonRequest.of(url);
-        httpRequest.setQueryParams(params)
-                .setHeaders(headers)
-                .setConnectionTimeout(connectTimeout)
-                .setReadTimeout(readTimeout);
+        httpRequest.setConnectionTimeout(connectTimeout)
+                    .setReadTimeout(readTimeout);
 
+        if(MapUtil.notEmpty(params)){
+            httpRequest.setQueryParams(params);
+        }
+        if(MapUtil.notEmpty(headers)){
+            httpRequest.setHeaders(headers);
+        }
         if(null != resultCharset){
             httpRequest.setResultCharset(resultCharset);
         }
