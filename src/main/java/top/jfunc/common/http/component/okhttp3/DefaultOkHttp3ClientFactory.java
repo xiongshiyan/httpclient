@@ -1,5 +1,6 @@
 package top.jfunc.common.http.component.okhttp3;
 
+import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.Config;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 每次都创建一个，会有性能问题，高并发的话很快就会报内存溢出
  * @see SingleOkHttp3ClientFactory
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
@@ -40,6 +42,9 @@ public class DefaultOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttp
         if(ParamUtil.isHttps(httpRequest.getCompletedUrl())){
             initSSL(clientBuilder , httpRequest);
         }
+
+        //因为每次都创建一个OkHttpClient，也就会创建一个连接池，如果高并发的话就会内存溢出
+        clientBuilder.connectionPool(new ConnectionPool(5 , 30, TimeUnit.SECONDS));
 
         doWithBuilder(clientBuilder , httpRequest);
 

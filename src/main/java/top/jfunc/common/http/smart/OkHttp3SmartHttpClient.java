@@ -34,7 +34,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         setBodyContentCallbackCreator(new DefaultOkHttp3BodyContentCallbackCreator());
         setUploadContentCallbackCreator(new DefaultOkHttp3UploadContentCallbackCreator());
 
-        setOkHttpClientFactory(new DefaultOkHttp3ClientFactory());
+        setOkHttpClientFactory(new SingleOkHttp3ClientFactory());
         setRequestBuilderFactory(new DefaultOkHttp3RequestBuilderFactory());
         setRequestBuilderHeaderHandler(new DefaultOkHttp3HeaderHandler());
         setRequestExecutor(new DefaultOkHttp3RequestExecutor());
