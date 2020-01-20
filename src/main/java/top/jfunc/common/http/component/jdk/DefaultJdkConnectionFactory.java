@@ -15,7 +15,6 @@ import java.net.URL;
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpURLConnection> {
-
     @Override
     public HttpURLConnection doCreate(HttpRequest httpRequest) throws IOException{
         URL url = new URL(httpRequest.getCompletedUrl());
@@ -33,9 +32,7 @@ public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpUR
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        connection.setUseCaches(false);
+        configInOutput(connection , httpRequest);
 
         connection.setRequestMethod(httpRequest.getMethod().name());
         connection.setConnectTimeout(config.getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
@@ -45,6 +42,12 @@ public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpUR
         ///connection.setInstanceFollowRedirects(httpRequest.followRedirects());
 
         return connection;
+    }
+
+    protected void configInOutput(HttpURLConnection connection , HttpRequest httpRequest) {
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setUseCaches(false);
     }
 
     protected void initSSL(HttpsURLConnection connection , HttpRequest httpRequest){
