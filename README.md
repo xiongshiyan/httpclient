@@ -14,8 +14,8 @@
 
 ### features
 
-- [x] `HttpClient`接口体系
-- [x] `SmartHttpClient`（继承HttpClient）接口体系：基于`Request(HttpRequest)-Response`，可以通过设置一个特定过程的组件替换默认实现
+- [x] `SmartHttpClient`接口体系：基于`Request(HttpRequest)-Response`，可以通过设置一个特定过程的组件替换默认实现
+- [x] `SmartHttpClient`接口继承于`HttpRequestResultCallbackHttpClient`和`UnpackedParameterHttpClient`，前者提供基于`HttpRequest`的请求，后者提供简单点的参数请求方式
 - [x] `Request`支持链式调用、支持基于策略接口的Java对象转换为String、支持路径参数
 - [x] `Response`支持基于策略接口的String转换为Java对象
 - [x] 支持文件上传、下载
