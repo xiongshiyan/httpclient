@@ -14,7 +14,6 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -153,7 +152,7 @@ public class CookieTest {
 
         //客户端自动带上Cookie
         Response response1 = smartHttpClient.get(HolderGetRequest.of("http://localhost:50000/hello/setCookie"));
-        Assert.assertEquals("body2", response1.getBody());
+        Assert.assertEquals("body2", response1.getBodyAsString());
         Assert.assertEquals(200 , response1.getStatusCode());
     }
 }

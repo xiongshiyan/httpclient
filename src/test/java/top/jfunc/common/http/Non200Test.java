@@ -65,7 +65,7 @@ public class Non200Test {
 
         HttpRequest request = HolderGetRequest.of("http://localhost:50000/hello/400");
         Response response = smartHttpClient.get(request);
-        Assert.assertEquals(BODY , response.asString());
+        Assert.assertEquals(BODY , response.getBodyAsString());
         Assert.assertEquals(400 , response.getStatusCode());
     }
     private void test301(SmartHttpClient smartHttpClient) throws IOException {
@@ -86,9 +86,9 @@ public class Non200Test {
         request.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
 
         Response response = smartHttpClient.get(request);
-        Assert.assertEquals(BODY , response.asString());
+        Assert.assertEquals(BODY , response.getBodyAsString());
         Assert.assertEquals(301 , response.getStatusCode());
-        Assert.assertEquals("v1" , response.getOneHeader("k1"));
+        Assert.assertEquals("v1" , response.getFirstHeader("k1"));
     }
     private void test301Redirect(SmartHttpClient smartHttpClient) throws IOException {
         MockServerClient mockClient = new MockServerClient("127.0.0.1", 50000);

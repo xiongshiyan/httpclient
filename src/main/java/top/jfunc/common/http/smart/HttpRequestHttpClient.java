@@ -4,6 +4,7 @@ import top.jfunc.common.http.Method;
 import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.*;
+import top.jfunc.common.http.util.ResponseUtil;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -36,7 +37,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @throws IOException 超时等IO异常
      */
     default Response get(HttpRequest httpRequest) throws IOException{
-        return get(httpRequest, Response::with);
+        return get(httpRequest, ResponseUtil::with);
     }
 
     /**
@@ -47,7 +48,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default byte[] getAsBytes(HttpRequest httpRequest) throws IOException{
-        return get(httpRequest, Response::extractBytes);
+        return get(httpRequest, ResponseUtil::extractBytes);
     }
 
     /**
@@ -66,7 +67,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @throws IOException 超时等IO异常
      */
     default Response post(StringBodyRequest stringBodyRequest) throws IOException{
-        return post(stringBodyRequest , Response::with);
+        return post(stringBodyRequest , ResponseUtil::with);
     }
 
     /**
@@ -85,7 +86,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @throws IOException 超时等IO异常
      */
     default Response form(FormRequest formRequest) throws IOException{
-        return form(formRequest , Response::with);
+        return form(formRequest , ResponseUtil::with);
     }
 
     /**
@@ -136,7 +137,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default Response upload(UploadRequest uploadRequest) throws IOException{
-        return upload(uploadRequest , Response::with);
+        return upload(uploadRequest , ResponseUtil::with);
     }
 
     /**
@@ -158,7 +159,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default Response http(HttpRequest httpRequest, Method method) throws IOException{
-        return http(httpRequest, method, Response::with);
+        return http(httpRequest, method, ResponseUtil::with);
     }
 
     /**
@@ -173,7 +174,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     default MultiValueMap<String , String> head(HttpRequest httpRequest) throws IOException{
-        return head(httpRequest, Response::extractHeaders);
+        return head(httpRequest, ResponseUtil::extractHeaders);
     }
 
     /**
@@ -198,7 +199,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     default MultiValueMap<String , String> options(HttpRequest httpRequest) throws IOException{
-        return options(httpRequest, Response::extractHeaders);
+        return options(httpRequest, ResponseUtil::extractHeaders);
     }
 
     /**
@@ -214,7 +215,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     <R> R put(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException;
 
     default Response put(StringBodyRequest httpRequest) throws IOException{
-        return put(httpRequest , Response::with);
+        return put(httpRequest , ResponseUtil::with);
     }
 
     /**
@@ -230,7 +231,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     <R> R patch(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException;
 
     default Response patch(StringBodyRequest stringBodyRequest) throws IOException{
-        return patch(stringBodyRequest , Response::with);
+        return patch(stringBodyRequest , ResponseUtil::with);
     }
 
     /**
@@ -245,7 +246,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     <R> R delete(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     default Response delete(HttpRequest httpRequest) throws IOException{
-        return delete(httpRequest, Response::with);
+        return delete(httpRequest, ResponseUtil::with);
     }
 
     /**
@@ -260,6 +261,6 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     <R> R trace(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
 
     default Response trace(HttpRequest httpRequest) throws IOException{
-        return trace(httpRequest, Response::with);
+        return trace(httpRequest, ResponseUtil::with);
     }
 }

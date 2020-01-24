@@ -1,14 +1,12 @@
 package top.jfunc.common.http.smart;
 
 
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.HttpStatus;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.string.FromStringHandler;
 import top.jfunc.common.utils.ArrayUtil;
-import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -18,86 +16,52 @@ import java.util.Objects;
 
 /**
  * 代表请求的响应，封装statusCode、body、headers
+ * 不提供对InputStream的直接支持，因为其需要手动处理资源释放
  * @author xiongshiyan at 2017/12/9
  */
-public class Response implements Closeable{
-    /**
-     * 返回码
-     */
-    private int statusCode = HttpStatus.HTTP_OK;
-    /**
-     * 返回体的字节数组
-     */
-    private byte[] bodyBytes;
-    /**
-     * 返回体编码
-     */
-    private String resultCharset = HttpConstants.DEFAULT_CHARSET;
-    /**
-     * 返回的header
-     */
-    private MultiValueMap<String, String> headers = null;
-
-    private Response(int statusCode, byte[] bodyBytes, String resultCharset, MultiValueMap<String, String> headers) {
-        this.statusCode = statusCode;
-        this.bodyBytes = bodyBytes;
-        if(null != resultCharset){
-            this.resultCharset = resultCharset;
-        }
-        this.headers = headers;
-    }
-
-    public static Response with(int statusCode, byte[] bodyBytes, String resultCharset, MultiValueMap<String, String> headers) {
-        return new Response(statusCode, bodyBytes, resultCharset, headers);
-    }
-
-    public static Response with(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
-        byte[] bodyBytes = null != inputStream ? IoUtil.stream2Bytes(inputStream) : new byte[]{};
-        return with(statusCode, bodyBytes, resultCharset, headers);
-    }
-
+public interface Response extends Closeable{
     /**
      * 获取响应码
+     * @see HttpStatus
+     * @return 响应码
      */
-    public static int extractStatusCode(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
-        return statusCode;
-    }
+    int getStatusCode();
 
     /**
-     * 获取响应体，String
+     * 响应体作为字节数组
+     * @return byte[]
      */
-    public static String extractString(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
-        return null != inputStream ? IoUtil.read(inputStream , resultCharset) : "";
-    }
+    byte[] getBodyAsBytes();
 
     /**
-     * 获取响应体，byte[]
+     * 响应体编码，可以由{@link top.jfunc.common.http.request.HttpRequest}指定，
+     * 也可以由响应头获取，由实现决定
+     * @return 响应体编码
      */
-    public static byte[] extractBytes(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
-        return null != inputStream ? IoUtil.stream2Bytes(inputStream) : new byte[0];
-    }
+    String getResultCharset();
 
     /**
-     * 获取响应header
+     * 响应体
+     * @return 以字符串返回响应体
      */
-    public static MultiValueMap<String, String> extractHeaders(int statusCode , InputStream inputStream , String resultCharset , MultiValueMap<String , String> headers) throws IOException{
-        return headers;
-    }
-
-    public byte[] asBytes() {
-        return this.bodyBytes;
-    }
-
-    public String asString(){
+    default String getBodyAsString(){
         try {
-            return new String(bodyBytes , resultCharset);
+            byte[] bytes = getBodyAsBytes();
+            if(ArrayUtil.isEmpty(bytes)){
+                return "";
+            }
+            return new String(bytes, getResultCharset());
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String getBody() {
-        return asString();
+    /**
+     * 此方法主要为了兼容性考虑
+     * @return 响应体
+     */
+    default String getBody(){
+        return getBodyAsString();
     }
 
     /**
@@ -106,18 +70,15 @@ public class Response implements Closeable{
      * @param handler 将String转换为Java对象的策略接口
      * @return T
      */
-    public <T> T as(Class<T> toClass , FromStringHandler<T> handler){
+    default <T> T as(Class<T> toClass , FromStringHandler<T> handler){
         FromStringHandler<T> stringHandler = Objects.requireNonNull(handler , "handler不能为空");
-        return stringHandler.as(asString() , toClass);
+        return stringHandler.as(getBodyAsString() , toClass);
     }
-    public <T> T asT(Class<T> toClass , FromString handler){
+    default <T> T asT(Class<T> toClass , FromString handler){
         FromString stringHandler = Objects.requireNonNull(handler , "handler不能为空");
-        return stringHandler.as(asString() , toClass);
+        return stringHandler.as(getBodyAsString() , toClass);
     }
 
-    public File asFile(String fileName) throws IOException{
-        return asFile(new File(fileName));
-    }
     /**
      * 建议不要使用此方法，会有效率上的折扣[InputStream->byte[]->InputStream->File]，
      * <strong>
@@ -129,87 +90,72 @@ public class Response implements Closeable{
      * 如果只需要保存为文件，那么请调用 {@link SmartHttpClient#getAsFile(DownloadRequest)}
      *
      */
-    public File asFile(File fileToSave) throws IOException{
+    default File asFile(File fileToSave) throws IOException{
+        byte[] bodyBytes = getBodyAsBytes();
         if(ArrayUtil.isEmpty(bodyBytes)){
             return fileToSave;
         }
         try (FileOutputStream fileOutputStream = new FileOutputStream(fileToSave)){
-            fileOutputStream.write(this.bodyBytes , 0 , bodyBytes.length);
+            fileOutputStream.write(bodyBytes , 0 , bodyBytes.length);
             fileOutputStream.flush();
             return fileToSave;
         }
     }
+    default File asFile(String fileName) throws IOException{
+        return asFile(new File(fileName));
+    }
 
 
     /**
-     * 可能为空
+     * 响应头，可能为空
+     * @return MultiValueMap
      */
-    public MultiValueMap<String, String> getHeaders() {
-        return headers;
-    }
+    MultiValueMap<String, String> getHeaders();
 
-    public List<String> getHeader(String key) {
+    default List<String> getHeader(String key){
+        MultiValueMap<String, String> headers = getHeaders();
         if(MapUtil.isEmpty(headers)){
             return null;
         }
         return headers.get(key);
     }
-    public String getOneHeader(String key) {
-        return getFirstHeader(key);
-    }
-    public String getFirstHeader(String key) {
+    default String getFirstHeader(String key){
+        MultiValueMap<String, String> headers = getHeaders();
         if(MapUtil.isEmpty(headers)){
             return null;
         }
         return headers.getFirst(key);
     }
 
-    public String getResultCharset() {
-        return resultCharset;
-    }
-
-    public int getStatusCode() {
-        return statusCode;
-    }
-
     /**
      * 请求是否OK
      */
-    public boolean isOk(){
-        return HttpStatus.isOk(statusCode);
+    default boolean isOk(){
+        return HttpStatus.isOk(getStatusCode());
     }
 
     /**
      * 请求是否成功
      */
-    public boolean isSuccess(){
-        return HttpStatus.isSuccess(statusCode);
+    default boolean isSuccess(){
+        return HttpStatus.isSuccess(getStatusCode());
     }
 
     /**
      * 是否需要重定向
      */
-    public boolean needRedirect(){
-        return HttpStatus.needRedirect(statusCode);
+    default boolean needRedirect(){
+        return HttpStatus.needRedirect(getStatusCode());
     }
 
     /**
      * 获取重定向地址
      * @return 重定向地址
      */
-    public String getRedirectUrl(){
-        return this.headers.get(HttpHeaders.LOCATION).get(0);
+    default String getRedirectUrl(){
+        return this.getHeaders().get(HttpHeaders.LOCATION).get(0);
     }
 
     @Override
-    public String toString() {
-        return asString();
-    }
-
-    @Override
-    public void close() throws IOException {
-        //release
-        this.bodyBytes = null;
-        this.headers = null;
-    }
+    String toString();
 }

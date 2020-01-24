@@ -2,6 +2,7 @@ package top.jfunc.common.http;
 
 import org.junit.Assert;
 import top.jfunc.common.http.holderrequest.impl.HolderCommonBodyRequest;
+import top.jfunc.common.http.util.ResponseUtil;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holderrequest.impl.HolderPostBodyRequest;
@@ -13,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import static org.hamcrest.core.Is.is;
 import static top.jfunc.common.http.HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET;
 import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
 
@@ -134,7 +134,7 @@ public class HttpSmartTest {
                     .setContentType(MediaType.APPLICATIPON_JSON.withCharset(charset));
             request.bodyHolder().setBody("熊诗言");
             Response post = http.post(request);
-            System.out.println(post.getBody());
+            System.out.println(post.getBodyAsString());
         }catch (IOException e){
             System.out.println("超时异常");
         }
@@ -147,7 +147,7 @@ public class HttpSmartTest {
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
             Response post = http.post(request);
-            System.out.println(post.getBody());
+            System.out.println(post.getBodyAsString());
             System.out.println(post.getHeaders());
 
             String s = http.postJson(url, "{\"name\":\"熊诗言\"}");
@@ -157,7 +157,7 @@ public class HttpSmartTest {
             request = Request.of(url).setContentType(FORM_URLENCODED_WITH_DEFAULT_CHARSET);
             request.formParamHolder().addParam("xx" , "xx").addParam("yy" , "yy");
             Response response = http.post(request);
-            System.out.println(response.getBody());
+            System.out.println(response.getBodyAsString());
         }catch (IOException e){
             System.out.println("超时异常");
         }
@@ -192,7 +192,7 @@ public class HttpSmartTest {
             request.headerHolder().addHeader("empCode" , "ahg0023")
                     .addHeader("phone" , "15208384257");
             Response response = httpClient.upload(request);
-            System.out.println(response.getBody());
+            System.out.println(response.getBodyAsString());
             System.out.println(response.getHeaders());
         } catch (IOException e){
             e.printStackTrace();
@@ -233,7 +233,7 @@ public class HttpSmartTest {
                     .addHeader("phone" , "15208384257");
             request.formParamHolder().addParam("k1", "v1").addParam("k2" , "v2");
             Response response = httpClient.upload(request);
-            System.out.println(response.getBody());
+            System.out.println(response.getBodyAsString());
             System.out.println(response.getHeaders());
         } catch (IOException e){
             e.printStackTrace();
@@ -270,7 +270,7 @@ public class HttpSmartTest {
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
             Response response = http.http(request , Method.PUT);
             System.out.println(response.getStatusCode());
-            System.out.println(response.getBody());
+            System.out.println(response.getBodyAsString());
             System.out.println(response.getHeaders());
         }catch (IOException e){
             System.out.println("超时异常");
@@ -302,7 +302,7 @@ public class HttpSmartTest {
         request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         request.queryParamHolder().addParam("sa" , "sa").addParam("ds" , "ds");
         Response response = smartHttpClient.post(request);
-        Assert.assertEquals("success" , response.asString());
+        Assert.assertEquals("success" , response.getBodyAsString());
         System.out.println(response.getHeaders());
     }
 
@@ -322,7 +322,7 @@ public class HttpSmartTest {
 
     @Test
     public void testResponse() throws IOException{
-        Response response = Response.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
+        Response response = ResponseUtil.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
         SomeBean someBean = response.as(SomeBean.class, (s , c)->{
                     Assert.assertEquals("ss", s);
                     Assert.assertEquals(c , SomeBean.class);
@@ -333,7 +333,7 @@ public class HttpSmartTest {
     }
     @Test
     public void testResponse2() throws IOException{
-        Response response = Response.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
+        Response response = ResponseUtil.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
         SomeBean someBean = response.asT(SomeBean.class, new FromString() {
                     @Override
                     public <T> T as(String src, Class<T> toClass) {

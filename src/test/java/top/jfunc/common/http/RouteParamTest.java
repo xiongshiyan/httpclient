@@ -16,6 +16,6 @@ public class RouteParamTest {
         Request request = Request.of("http://localhost:8080/http-server-test/get/{do}");
         request.routeParamHolder().put("do", "query");
         Response response = HttpDelegate.delegate().get(request);
-        Assert.assertEquals("success" , response.asString());
+        Assert.assertEquals("success" , response.getBodyAsString());
     }
 }

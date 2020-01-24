@@ -13,6 +13,7 @@ import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.util.ResponseUtil;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
 import top.jfunc.common.utils.MapUtil;
@@ -201,19 +202,19 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
             h = ArrayListMultiValueMap.fromMap(headers);
         }
         HttpRequest httpRequest = getHttpRequestFactory().create(url, p, h, connectTimeout, readTimeout, resultCharset);
-        return get(httpRequest , Response::extractString);
+        return get(httpRequest , ResponseUtil::extractString);
     }
 
     @Override
     public String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
         StringBodyRequest stringBodyRequest = getStringBodyHttpRequestFactory().create(url, body, contentType, headers, connectTimeout, readTimeout, bodyCharset, resultCharset);
-        return post(stringBodyRequest , Response::extractString);
+        return post(stringBodyRequest , ResponseUtil::extractString);
     }
 
     @Override
     public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
         HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
-        return get(httpRequest , Response::extractBytes);
+        return get(httpRequest , ResponseUtil::extractBytes);
     }
 
     @Override
@@ -226,13 +227,13 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
     @Override
     public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException{
         UploadRequest uploadRequest = getUploadRequestFactory().create(url, null, headers, connectTimeout, readTimeout, resultCharset, files);
-        return upload(uploadRequest , Response::extractString);
+        return upload(uploadRequest , ResponseUtil::extractString);
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException {
         UploadRequest uploadRequest = getUploadRequestFactory().create(url, params, headers, connectTimeout, readTimeout, resultCharset, files);
-        return upload(uploadRequest , Response::extractString);
+        return upload(uploadRequest , ResponseUtil::extractString);
     }
 
 

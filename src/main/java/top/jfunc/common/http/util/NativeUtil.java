@@ -4,6 +4,7 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.List;
+import java.util.Map;
 
 import static top.jfunc.common.http.HttpConstants.CRLF;
 import static top.jfunc.common.http.HttpConstants.TWO_HYPHENS;
@@ -223,7 +226,11 @@ public class NativeUtil {
     }
 
     public static MultiValueMap<String , String> parseHeaders(HttpURLConnection connection) {
-        return new ArrayListMultiValueMap<>(connection.getHeaderFields());
+        Map<String, List<String>> headerFields = connection.getHeaderFields();
+        if(MapUtil.isEmpty(headerFields)){
+            return null;
+        }
+        return new ArrayListMultiValueMap<>(headerFields);
     }
 
 

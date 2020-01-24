@@ -69,7 +69,7 @@ public class MultiRequestTest {
         HttpRequest request = HolderGetRequest.of("http://localhost:50000/hello/{name}");
         request.addRouteParam("name" , "John");
         Response response = smartHttpClient.get(request);
-        Assert.assertEquals(BODY , response.asString());
+        Assert.assertEquals(BODY , response.getBodyAsString());
     }
     private void testGetQueryParam(SmartHttpClient smartHttpClient) throws Exception{
         MockServerClient mockClient = new MockServerClient("127.0.0.1", 50000);
@@ -89,7 +89,7 @@ public class MultiRequestTest {
         request.addRouteParam("name" , "John");
         request.addQueryParam("key1" , "value1").addQueryParam("key2" , "value2");
         Response response = smartHttpClient.get(request);
-        Assert.assertEquals(BODY , response.asString());
+        Assert.assertEquals(BODY , response.getBodyAsString());
     }
     private void testPost(SmartHttpClient smartHttpClient) throws Exception{
         MockServerClient mockClient = new MockServerClient("127.0.0.1", 50000);
@@ -106,7 +106,7 @@ public class MultiRequestTest {
         StringBodyRequest request = HolderPostBodyRequest.of("http://localhost:50000/hello/{name}").setBody(BODY);
         request.addRouteParam("name" , "John");
         Response response = smartHttpClient.post(request);
-        Assert.assertEquals(BODY , response.asString());
+        Assert.assertEquals(BODY , response.getBodyAsString());
     }
     private void testPostForm(SmartHttpClient smartHttpClient) throws Exception{
         MockServerClient mockClient = new MockServerClient("127.0.0.1", 50000);
@@ -126,7 +126,7 @@ public class MultiRequestTest {
         request.routeParamHolder().addRouteParam("name" , "John");
         request.formParamHolder().addParam("key1" , "value1").addParam("key2" , "value2");
         Response response = smartHttpClient.post(request);
-        Assert.assertEquals(BODY , response.asString());
+        Assert.assertEquals(BODY , response.getBodyAsString());
     }
     private void testHeader(SmartHttpClient smartHttpClient) throws Exception{
         MockServerClient mockClient = new MockServerClient("127.0.0.1", 50000);
@@ -145,6 +145,6 @@ public class MultiRequestTest {
         request.addRouteParam("name" , "John");
         request.addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         Response response = smartHttpClient.get(request);
-        Assert.assertEquals("xx" , response.getOneHeader("xx"));
+        Assert.assertEquals("xx" , response.getFirstHeader("xx"));
     }
 }
