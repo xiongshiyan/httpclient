@@ -2,7 +2,7 @@ package top.jfunc.common.http.component.apache;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
 import top.jfunc.common.http.request.HttpRequest;

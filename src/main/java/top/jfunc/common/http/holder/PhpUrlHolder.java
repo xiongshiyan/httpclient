@@ -1,6 +1,6 @@
 package top.jfunc.common.http.holder;
 
-import top.jfunc.common.http.Protocol;
+import top.jfunc.common.http.base.Protocol;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.net.URL;

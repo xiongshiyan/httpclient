@@ -1,8 +1,8 @@
 package top.jfunc.common.http.holder;
 
 import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.ParamUtil;
-import top.jfunc.common.http.Protocol;
+import top.jfunc.common.http.util.ParamUtil;
+import top.jfunc.common.http.base.Protocol;
 
 import static top.jfunc.common.http.HttpConstants.*;
 

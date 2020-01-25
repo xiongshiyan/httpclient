@@ -1,4 +1,4 @@
-package top.jfunc.common.http;
+package top.jfunc.common.http.base;
 
 /**
  * http相关协议

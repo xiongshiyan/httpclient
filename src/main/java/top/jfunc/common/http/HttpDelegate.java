@@ -5,7 +5,7 @@ import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.ClassUtil;
 
 /**
- * 动态获取SmartHttpClient的实现类，基于jar包检测 <pre>HttpUtil.delegate()....</pre>
+ * 动态获取SmartHttpClient的实现类，基于jar包检测 <pre>HttpStatic.delegate()....</pre>
  * @author xiongshiyan at 2017/12/11
  */
 public class HttpDelegate {

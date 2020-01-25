@@ -1,7 +1,7 @@
 package top.jfunc.common.http.component.okhttp3;
 
 import okhttp3.OkHttpClient;
-import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.component.AbstractRequesterFactory;

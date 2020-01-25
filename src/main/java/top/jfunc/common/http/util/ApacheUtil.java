@@ -22,7 +22,6 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.base.ProxyInfo;

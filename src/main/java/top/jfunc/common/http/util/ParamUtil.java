@@ -1,4 +1,4 @@
-package top.jfunc.common.http;
+package top.jfunc.common.http.util;
 
 import top.jfunc.common.Editor;
 import top.jfunc.common.utils.*;

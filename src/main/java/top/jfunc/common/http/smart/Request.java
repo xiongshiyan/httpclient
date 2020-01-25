@@ -2,7 +2,7 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.MediaType;
 import top.jfunc.common.http.Method;
-import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.holderrequest.*;

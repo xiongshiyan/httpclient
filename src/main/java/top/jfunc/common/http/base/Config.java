@@ -2,7 +2,7 @@ package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.ParamUtil;
+import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
