@@ -1,6 +1,6 @@
 package top.jfunc.common.http.holderrequest;
 
-import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.base.MediaType;
 import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.holder.ParamHolder;
 import top.jfunc.common.http.request.FormRequest;

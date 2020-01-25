@@ -1,7 +1,7 @@
 package top.jfunc.common.http.smart;
 
 
-import top.jfunc.common.http.HttpStatus;
+import top.jfunc.common.http.base.HttpStatus;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.string.FromString;

@@ -1,6 +1,6 @@
 package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.smart.SimpleHttpClient;
 

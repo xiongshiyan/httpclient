@@ -4,7 +4,7 @@ import okhttp3.*;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.utils.ArrayListMultiValueMap;

@@ -1,4 +1,4 @@
-package top.jfunc.common.http;
+package top.jfunc.common.http.base;
 
 /**
  * HTTP状态码

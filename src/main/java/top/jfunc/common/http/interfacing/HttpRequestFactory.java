@@ -1,7 +1,7 @@
 package top.jfunc.common.http.interfacing;
 
-import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.MediaType;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
 import top.jfunc.common.http.base.HttpHeaders;

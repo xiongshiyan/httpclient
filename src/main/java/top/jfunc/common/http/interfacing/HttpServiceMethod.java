@@ -1,6 +1,6 @@
 package top.jfunc.common.http.interfacing;
 
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;

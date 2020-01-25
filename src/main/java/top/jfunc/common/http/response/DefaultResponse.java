@@ -1,7 +1,7 @@
 package top.jfunc.common.http.response;
 
 import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.HttpStatus;
+import top.jfunc.common.http.base.HttpStatus;
 import top.jfunc.common.http.smart.Response;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;

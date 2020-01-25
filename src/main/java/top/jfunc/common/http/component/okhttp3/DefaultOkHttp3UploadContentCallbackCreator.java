@@ -2,7 +2,7 @@ package top.jfunc.common.http.component.okhttp3;
 
 import okhttp3.MultipartBody;
 import okhttp3.Request;
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.component.AbstractUploadContentCallbackCreator;

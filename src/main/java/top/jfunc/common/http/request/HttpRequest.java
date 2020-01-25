@@ -1,7 +1,7 @@
 package top.jfunc.common.http.request;
 
-import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.MediaType;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ConfigAccessor;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;

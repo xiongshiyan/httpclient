@@ -1,6 +1,6 @@
 package top.jfunc.common.http.holderrequest.impl;
 
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.holder.BodyHolder;
 import top.jfunc.common.http.holder.DefaultBodyHolder;
 import top.jfunc.common.http.holderrequest.HolderMutableStringBodyRequest;

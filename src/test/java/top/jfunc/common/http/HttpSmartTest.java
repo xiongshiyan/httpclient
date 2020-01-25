@@ -1,6 +1,8 @@
 package top.jfunc.common.http;
 
 import org.junit.Assert;
+import top.jfunc.common.http.base.MediaType;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.holderrequest.impl.HolderCommonBodyRequest;
 import top.jfunc.common.http.util.ResponseUtil;
 import top.jfunc.common.string.FromString;

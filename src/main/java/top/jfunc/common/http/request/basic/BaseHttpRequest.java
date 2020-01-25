@@ -2,8 +2,8 @@ package top.jfunc.common.http.request.basic;
 
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.MediaType;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.component.CompletedUrlCreator;

@@ -1,6 +1,6 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.*;

@@ -1,7 +1,5 @@
 package top.jfunc.common.http.base;
 
-import top.jfunc.common.http.MediaType;
-
 import java.io.*;
 
 /**

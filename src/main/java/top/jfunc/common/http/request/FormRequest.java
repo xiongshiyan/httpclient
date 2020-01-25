@@ -1,6 +1,6 @@
 package top.jfunc.common.http.request;
 
-import top.jfunc.common.http.MediaType;
+import top.jfunc.common.http.base.MediaType;
 import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.utils.MultiValueMap;
 

@@ -1,8 +1,8 @@
 package top.jfunc.common.http.component.jodd;
 
 import jodd.http.HttpRequest;
-import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.MediaType;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.AbstractBodyContentCallbackCreator;
 

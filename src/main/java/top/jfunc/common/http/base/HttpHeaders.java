@@ -25,8 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.MediaType;
-import top.jfunc.common.http.Method;
 import top.jfunc.common.utils.Joiner;
 import top.jfunc.common.utils.LinkedMultiValueMap;
 import top.jfunc.common.utils.StrUtil;

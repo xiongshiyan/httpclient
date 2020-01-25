@@ -1,5 +1,6 @@
 package top.jfunc.common.http;
 
+import top.jfunc.common.http.base.MediaType;
 import top.jfunc.common.utils.CharsetUtil;
 
 /**

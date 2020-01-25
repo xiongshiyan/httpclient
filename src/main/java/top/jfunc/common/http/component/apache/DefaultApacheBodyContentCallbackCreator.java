@@ -1,7 +1,7 @@
 package top.jfunc.common.http.component.apache;
 
 import org.apache.http.HttpEntityEnclosingRequest;
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.AbstractBodyContentCallbackCreator;
 import top.jfunc.common.http.util.ApacheUtil;

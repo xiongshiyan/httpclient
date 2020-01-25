@@ -15,7 +15,7 @@
  */
 package top.jfunc.common.http.annotation.method;
 
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.annotation.parameter.Url;
 
 import java.lang.annotation.Documented;

@@ -1,6 +1,6 @@
 package top.jfunc.common.http.component.jdk;
 
-import top.jfunc.common.http.Method;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.AbstractBodyContentCallbackCreator;
 import top.jfunc.common.http.util.NativeUtil;
