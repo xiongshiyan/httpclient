@@ -1,12 +1,13 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.jdk.*;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.request.basic.CommonRequest;
 import top.jfunc.common.http.request.basic.GetRequest;
 import top.jfunc.common.http.util.NativeUtil;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
@@ -70,7 +71,19 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             //7.处理Cookie
             getCookieAccessor().saveCookieIfNecessary(httpRequest , responseHeaders);
 
-            return resultCallback.convert(connection.getResponseCode(), inputStream,
+
+            int statusCode = connection.getResponseCode();
+            if(needRedirect(httpRequest, statusCode, responseHeaders)){
+                String redirectUrl = responseHeaders.getFirst(HttpHeaders.LOCATION);
+                CommonRequest getRequest = CommonRequest.of(redirectUrl);
+                init(getRequest , Method.GET);
+                //处理多次重定向的情况
+                getRequest.followRedirects(HttpRequest.FOLLOW_REDIRECTS);
+                return doInternalTemplate(getRequest, null, resultCallback);
+            }
+
+
+            return resultCallback.convert(statusCode, inputStream,
                     getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
                     responseHeaders);
         } finally {
@@ -82,7 +95,17 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         }
     }
 
-    private void handleHeaders(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
+    /**
+     * 判断是否重定向
+     */
+    protected boolean needRedirect(HttpRequest httpRequest, int statusCode, MultiValueMap<String, String> responseHeaders) {
+        return httpRequest.followRedirects()
+                && HttpStatus.needRedirect(statusCode)
+                && MapUtil.notEmpty(responseHeaders)
+                && responseHeaders.containsKey(HttpHeaders.LOCATION);
+    }
+
+    protected void handleHeaders(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
         getCookieAccessor().addCookieIfNecessary(httpRequest);
         getHttpURLConnectionHeaderHandler().configHeaders(connection , httpRequest);
     }
@@ -98,24 +121,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     protected void closeConnection(HttpURLConnection connection) throws IOException {
         getConnectionCloser().close(new HttpURLConnectionCloser(connection));
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <R> R afterTemplate(HttpRequest httpRequest, R response) throws IOException {
-        //1.设置支持重定向
-        //2.返回值是Response
-        if(httpRequest.followRedirects() && response instanceof Response){
-            Response resp = (Response) response;
-            if (resp.needRedirect()) {
-                return (R)get(GetRequest.of(resp.getRedirectUrl()));
-            }else {
-                return response;
-            }
-        }
-
-        return response;
-    }
-
 
     public RequesterFactory<HttpURLConnection> getHttpURLConnectionFactory() {
         return httpURLConnectionFactory;
@@ -172,7 +177,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
 
 
-    protected static class HttpURLConnectionCloser extends AbstractCloseAdapter<HttpURLConnection>{
+    protected static class HttpURLConnectionCloser extends AbstractCloseAdapter<HttpURLConnection> {
         protected HttpURLConnectionCloser(HttpURLConnection connection){
             super(connection);
         }

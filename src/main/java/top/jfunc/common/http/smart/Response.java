@@ -1,8 +1,8 @@
 package top.jfunc.common.http.smart;
 
 
-import top.jfunc.common.http.base.HttpStatus;
 import top.jfunc.common.http.base.HttpHeaders;
+import top.jfunc.common.http.base.HttpStatus;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.string.FromString;
 import top.jfunc.common.string.FromStringHandler;
@@ -70,11 +70,11 @@ public interface Response extends Closeable{
      * @param handler 将String转换为Java对象的策略接口
      * @return T
      */
-    default <T> T as(Class<T> toClass , FromStringHandler<T> handler){
+    default <T> T as(Class<T> toClass, FromStringHandler<T> handler){
         FromStringHandler<T> stringHandler = Objects.requireNonNull(handler , "handler不能为空");
         return stringHandler.as(getBodyAsString() , toClass);
     }
-    default <T> T asT(Class<T> toClass , FromString handler){
+    default <T> T asT(Class<T> toClass, FromString handler){
         FromString stringHandler = Objects.requireNonNull(handler , "handler不能为空");
         return stringHandler.as(getBodyAsString() , toClass);
     }
@@ -153,7 +153,7 @@ public interface Response extends Closeable{
      * @return 重定向地址
      */
     default String getRedirectUrl(){
-        return this.getHeaders().get(HttpHeaders.LOCATION).get(0);
+        return this.getHeaders().getFirst(HttpHeaders.LOCATION);
     }
 
     @Override
