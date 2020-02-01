@@ -35,7 +35,7 @@ public class UrlStatisticsInterceptor extends InterceptorAdapter {
 
     @Override
     public HttpRequest onBefore(HttpRequest httpRequest) {
-        if(starting){
+        if(isStarting()){
             String url = getSaveUrl(httpRequest);
             saveUrl(url);
         }
@@ -51,10 +51,9 @@ public class UrlStatisticsInterceptor extends InterceptorAdapter {
     }
 
     protected String getSaveUrl(HttpRequest httpRequest){
-        String originUrl = httpRequest.getUrl();
         //不包含参数的情况下，就统计原始URL
-        if(!containsParams){
-            return originUrl;
+        if(!isContainsParams()){
+            return httpRequest.getUrl();
         }
 
         return httpRequest.getCompletedUrl();
