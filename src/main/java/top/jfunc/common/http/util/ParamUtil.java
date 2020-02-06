@@ -54,22 +54,8 @@ public class ParamUtil {
         return Joiner.on(AND).withKeyValueSeparator(EQUALS,editor).useForNull(BLANK).join(value);
     }
     
-    public static String contactMap(ArrayListMultimap<String, String> value){
-        return contactMap(value , DEFAULT_CHARSET);
-    }
     public static String contactMap(MultiValueMap<String, String> value){
         return contactMap(value , DEFAULT_CHARSET);
-    }
-    /**
-     * key1=value1&key2=value2&key2=value3,如果value=null 或者 size=0 返回 ""
-     * @param multimap 键值对
-     */
-    public static String contactMap(ArrayListMultimap<String, String> multimap , final String valueCharset){
-        if(null == multimap || multimap.keySet().isEmpty()){return BLANK;}
-
-        Set<Map.Entry<String, List<String>>> entries = multimap.getMap().entrySet();
-
-        return contactIterable(entries, valueCharset);
     }
 
     /**
@@ -170,21 +156,9 @@ public class ParamUtil {
         }
         return url;
     }
-    public static String contactUrlParams(String actionName, ArrayListMultimap<String , String> params) {
-        Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , DEFAULT_CHARSET));
-    }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params) {
         Objects.requireNonNull(actionName);
         return contactUrlParams(actionName , contactMap(params , DEFAULT_CHARSET));
-    }
-    /**
-     * @see ParamUtil#contactMap(ArrayListMultimap,String)
-     * @see ParamUtil#contactUrlParams(String, String)
-     */
-    public static String contactUrlParams(String actionName, ArrayListMultimap<String , String> params , String valueCharset) {
-        Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , valueCharset));
     }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params , String valueCharset) {
         Objects.requireNonNull(actionName);

@@ -3,7 +3,6 @@ package top.jfunc.common.http.holder;
 import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayListMultimap;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -49,13 +48,6 @@ public class DefaultParamHolder implements ParamHolder {
         return this;
     }
 
-    @Override
-    public ParamHolder setParams(ArrayListMultimap<String, String> params) {
-        if(null != params){
-            this.params = ArrayListMultiValueMap.fromMap(params);
-        }
-        return this;
-    }
     @Override
     public ParamHolder setParams(Map<String, String> params) {
         if(MapUtil.notEmpty(params)){
