@@ -4,7 +4,6 @@ import top.jfunc.common.http.request.HttpRequest;
 
 /**
  * 执行拦截器，begin、returnValue、exception、finally这几个节点
- * @see top.jfunc.common.http.smart.SmartHttpTemplate
  * 典型的就是记录日志
  * @author xiongshiyan
  */

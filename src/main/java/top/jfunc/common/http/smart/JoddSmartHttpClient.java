@@ -2,7 +2,6 @@ package top.jfunc.common.http.smart;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;

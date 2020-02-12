@@ -16,7 +16,7 @@ public interface SmartHttpTemplate<CC> {
      * @param contentCallback 内容处理器，处理文本或者文件上传
      * @param resultCallback 结果处理器
      * @throws IOException IOException
-     * @return <R> R
+     * @return <R> 转换过后的结果
      */
-    <R> R  template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException;
+    <R> R template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException;
 }
