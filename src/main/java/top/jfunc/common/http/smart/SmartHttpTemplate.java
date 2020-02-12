@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * @author xiongshiyan at 2019/4/2 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface SmartHttpTemplate<C> {
+public interface SmartHttpTemplate<CC> {
     /**
      * 使用Request来放请求数据
      * @param httpRequest 请求参数
@@ -18,5 +18,5 @@ public interface SmartHttpTemplate<C> {
      * @throws IOException IOException
      * @return <R> R
      */
-    <R> R  template(HttpRequest httpRequest, ContentCallback<C> contentCallback, ResultCallback<R> resultCallback) throws IOException;
+    <R> R  template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException;
 }
