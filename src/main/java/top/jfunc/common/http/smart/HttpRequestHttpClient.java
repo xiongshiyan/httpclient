@@ -112,16 +112,6 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     }
 
     /**
-     * 下载文件
-     * @param downloadRequest 请求参数
-     * @return File 下载的文件
-     * @throws IOException IOException
-     */
-    default File getAsFile(DownloadRequest downloadRequest) throws IOException{
-        return download(downloadRequest);
-    }
-
-    /**
      * 文件上传
      * @param uploadRequest 请求参数
      * @param resultCallback 处理返回值

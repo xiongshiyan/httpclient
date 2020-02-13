@@ -51,8 +51,8 @@ public class HttpStatic {
     public static byte[] getAsBytes(HttpRequest request) throws IOException{
         return getSmartHttpClient().getAsBytes(request);
     }
-    public static File getAsFile(DownloadRequest request) throws IOException{
-        return getSmartHttpClient().getAsFile(request);
+    public static File download(DownloadRequest request) throws IOException{
+        return getSmartHttpClient().download(request);
     }
     public static Response upload(UploadRequest request) throws IOException{
         return getSmartHttpClient().upload(request);

@@ -87,7 +87,7 @@ public interface Response extends Closeable{
      *
      * 提供此方法的主要目的是在既想要将内容保存为文件，
      * 又需要header等信息的时候，返回Response代表响应的所有信息。
-     * 如果只需要保存为文件，那么请调用 {@link SmartHttpClient#getAsFile(DownloadRequest)}
+     * 如果只需要保存为文件，那么请调用 {@link SmartHttpClient#download(DownloadRequest)}
      *
      */
     default File asFile(File fileToSave) throws IOException{

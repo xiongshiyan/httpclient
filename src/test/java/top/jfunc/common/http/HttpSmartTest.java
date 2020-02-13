@@ -81,7 +81,7 @@ public class HttpSmartTest {
 
             request = Request.of(url);
             request.fileHolder().setFile(new File("C:\\Users\\xiongshiyan\\Desktop\\yyyy.txt"));
-            File asFile = http.getAsFile(request);
+            File asFile = http.download(request);
             System.out.println(asFile.getAbsolutePath());
         }catch (IOException e){
             e.printStackTrace();
