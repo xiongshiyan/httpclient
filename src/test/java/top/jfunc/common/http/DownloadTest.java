@@ -1,0 +1,81 @@
+package top.jfunc.common.http;
+
+import org.junit.Test;
+import top.jfunc.common.http.download.MultiThreadDownloader;
+import top.jfunc.common.http.request.RequestCreator;
+import top.jfunc.common.http.request.basic.DownLoadRequest;
+import top.jfunc.common.http.smart.*;
+
+import java.io.File;
+import java.io.IOException;
+
+/**
+ * @author xiongshiyan at 2020/2/15 , contact me with email yanshixiong@126.com or phone 15208384257
+ */
+public class DownloadTest {
+    DownLoadRequest downLoadRequest = RequestCreator.download("http://dzgtest.palmte.cn/upload/camera-xueliang.war"
+        , new File("C:\\Users\\xiongshiyan\\Desktop\\xxxx.war"));
+    @Test
+    public void testCommonJDK() throws IOException{
+        //124187
+        NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
+        download(smartHttpClient);
+    }
+    @Test
+    public void testCommonApache() throws IOException{
+        //124885
+        ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
+        download(smartHttpClient);
+    }
+    @Test
+    public void testCommonOkhttp3() throws IOException{
+        //124076
+        OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
+        download(smartHttpClient);
+    }
+    @Test
+    public void testCommonJodd() throws IOException{
+        //128865
+        JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
+        download(smartHttpClient);
+    }
+    private void download(SmartHttpClient smartHttpClient) throws IOException{
+        long l = System.currentTimeMillis();
+        File download = smartHttpClient.download(downLoadRequest);
+        System.out.println(System.currentTimeMillis() - l);
+    }
+
+
+
+    @Test
+    public void testMultiThreadJDK() throws IOException{
+        //125475
+        NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
+        multiThreadDownload(smartHttpClient);
+    }
+    @Test
+    public void testMultiThreadApache() throws IOException{
+        //131794
+        ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
+        multiThreadDownload(smartHttpClient);
+    }
+    @Test
+    public void testMultiThreadOkhttp3() throws IOException{
+        //125838
+        OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
+        multiThreadDownload(smartHttpClient);
+    }
+    @Test
+    public void testMultiThreadJodd() throws IOException{
+        //125698
+        JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
+        multiThreadDownload(smartHttpClient);
+    }
+
+    private void multiThreadDownload(SmartHttpClient smartHttpClient) throws IOException{
+        long l = System.currentTimeMillis();
+        MultiThreadDownloader downloader = new MultiThreadDownloader(smartHttpClient , 10 , 102400);
+        File download = downloader.download(downLoadRequest);
+        System.out.println(System.currentTimeMillis() - l);
+    }
+}

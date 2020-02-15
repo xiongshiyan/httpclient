@@ -2,6 +2,7 @@ package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.request.basic.*;
+import top.jfunc.common.utils.MapUtil;
 
 import java.io.File;
 
@@ -38,6 +39,42 @@ public class RequestCreator {
     }
     public static UpLoadRequest upload(String url){
         return UpLoadRequest.of(url);
+    }
+
+    /**
+     * 以后换成clone接口实现
+     */
+    public static DownloadRequest clone(DownloadRequest downloadRequest){
+        DownLoadRequest download = RequestCreator.download(downloadRequest.getUrl(), downloadRequest.getFile());
+        download.setConfig(downloadRequest.getConfig());
+        download.setMethod(downloadRequest.getMethod());
+        download.setConnectionTimeout(downloadRequest.getConnectionTimeout());
+        download.setReadTimeout(downloadRequest.getReadTimeout());
+        download.setContentType(downloadRequest.getContentType());
+        if(MapUtil.notEmpty(downloadRequest.getRouteParams())){
+            downloadRequest.getRouteParams().forEach(download::addRouteParam);
+        }
+        if(MapUtil.notEmpty(downloadRequest.getQueryParams())){
+            downloadRequest.getQueryParams().forEachKeyValue(download::addQueryParam);
+        }
+        download.setQueryParamCharset(downloadRequest.getQueryParamCharset());
+        if(MapUtil.notEmpty(downloadRequest.getHeaders())){
+            downloadRequest.getHeaders().forEachKeyValue(download::addHeader);
+        }
+
+        download.setResultCharset(downloadRequest.getResultCharset());
+        download.setIncludeHeaders(downloadRequest.isIncludeHeaders());
+        download.setIgnoreResponseBody(downloadRequest.isIgnoreResponseBody());
+        download.followRedirects(downloadRequest.followRedirects());
+        download.setProxy(downloadRequest.getProxyInfo());
+        download.setHostnameVerifier(downloadRequest.getHostnameVerifier());
+        download.setSslContext(downloadRequest.getSslContext());
+        download.setX509TrustManager(downloadRequest.getX509TrustManager());
+        if(MapUtil.notEmpty(downloadRequest.getAttributes())){
+            downloadRequest.getAttributes().forEach(download::addAttribute);
+        }
+
+        return download;
     }
 
 }
