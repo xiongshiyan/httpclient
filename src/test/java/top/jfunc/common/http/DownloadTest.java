@@ -1,5 +1,6 @@
 package top.jfunc.common.http;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.download.Downloader;
 import top.jfunc.common.http.download.InterruptDownloader;
@@ -15,6 +16,7 @@ import java.io.IOException;
 /**
  * @author xiongshiyan at 2020/2/15 , contact me with email yanshixiong@126.com or phone 15208384257
  */
+@Ignore
 public class DownloadTest {
     DownLoadRequest downLoadRequest = RequestCreator.download("http://dzgtest.palmte.cn/upload/Git-2.14.1-64-bit.exe"
         , new File("C:\\Users\\xiongshiyan\\Desktop\\Git-2.14.1-64-bit.exe"));
