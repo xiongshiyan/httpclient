@@ -29,7 +29,7 @@ public class InterruptBaseDownloadFileDownloader extends AbstractDownloader impl
 
     @Override
     public File download(DownloadRequest downloadRequest) throws IOException {
-        long totalLength = DownloadUtil.getNetFileLength(getSmartHttpClient() , downloadRequest);
+        long totalLength = getNetFileLength(downloadRequest);
         logger.info("totalLength    : " + totalLength);
         //从文件获取已下载量
         final long downloadLength = DownloadUtil.getDownloadedLength(downloadRequest.getFile());

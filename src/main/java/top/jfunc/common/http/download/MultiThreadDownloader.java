@@ -33,7 +33,7 @@ public class MultiThreadDownloader extends AbstractDownloader implements Downloa
     @Override
     public File download(DownloadRequest downloadRequest) throws IOException {
         //获取网络文件的大小：字节数
-        long contentLength = DownloadUtil.getNetFileLength(getSmartHttpClient() , downloadRequest);
+        long contentLength = getNetFileLength(downloadRequest);
 
         //生成本地文件并设置其大小为网络文件的大小
         try (RandomAccessFile accessFile = new RandomAccessFile(downloadRequest.getFile(), "rwd")){

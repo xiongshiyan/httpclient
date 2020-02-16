@@ -152,4 +152,34 @@ public class DownloadTest {
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
+
+
+    @Test
+    public void testGetNetFileLengthJDK() throws IOException{
+        NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
+        getNetFileLength(smartHttpClient);
+    }
+    @Test
+    public void testGetNetFileLengthApache() throws IOException{
+        ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
+        getNetFileLength(smartHttpClient);
+    }
+    @Test
+    public void testGetNetFileLengthOkHttp3() throws IOException{
+        OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
+        getNetFileLength(smartHttpClient);
+    }
+    @Test
+    public void testGetNetFileLengthJodd() throws IOException{
+        JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
+        getNetFileLength(smartHttpClient);
+    }
+
+    private void getNetFileLength(SmartHttpClient smartHttpClient) throws IOException{
+        Downloader downloader = new InterruptBaseDownloadFileDownloader(smartHttpClient , 1024);
+        DownLoadRequest downLoadRequest = RequestCreator.download("http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz"
+                , new File("C:\\Users\\xiongshiyan\\Desktop\\tomcat.tar.gz"));
+        long netFileLength = downloader.getNetFileLength(downLoadRequest);
+        System.out.println(netFileLength);
+    }
 }

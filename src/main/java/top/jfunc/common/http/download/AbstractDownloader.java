@@ -1,6 +1,9 @@
 package top.jfunc.common.http.download;
 
+import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.smart.SmartHttpClient;
+
+import java.io.IOException;
 
 /**
  * @author xiongshiyan at 2020/2/16 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -16,6 +19,12 @@ public abstract class AbstractDownloader implements Downloader{
 
     public AbstractDownloader(SmartHttpClient smartHttpClient) {
         this.smartHttpClient = smartHttpClient;
+    }
+
+
+    @Override
+    public long getNetFileLength(DownloadRequest downloadRequest) throws IOException {
+        return DownloadUtil.getNetFileLength(getSmartHttpClient() , downloadRequest);
     }
 
     public SmartHttpClient getSmartHttpClient() {

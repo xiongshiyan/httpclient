@@ -21,4 +21,12 @@ public interface Downloader {
      * @throws IOException IOException
      */
     File download(DownloadRequest downloadRequest) throws IOException;
+
+    /**
+     * 获取网络文件大小
+     * @param downloadRequest 下载请求
+     * @return 文件大小
+     * @throws IOException IOException
+     */
+    long getNetFileLength(DownloadRequest downloadRequest) throws IOException;
 }
