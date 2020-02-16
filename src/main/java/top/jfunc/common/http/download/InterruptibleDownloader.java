@@ -42,7 +42,7 @@ public class InterruptibleDownloader implements Downloader{
         long downloadLength = fileService.readDownloadedLength(downloadRequest.getFile());
 
         //文件记录的下载量和实际文件的大小不相等，那么以文件的为准，可以解决数据写入文件和长度写入文件的不一致的情况
-        long fileLength = downloadRequest.getFile().length();
+        long fileLength = fileService.getDownloadedLength(downloadRequest.getFile());
         logger.info("校验文件长度[记录大小-文件实际大小] : " + downloadLength + "-" + fileLength + ",以后者大小为准");
         if(fileLength != downloadLength){
             downloadLength = fileLength;
