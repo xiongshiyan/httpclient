@@ -16,37 +16,36 @@ import java.io.RandomAccessFile;
  * @see InterruptDownloader
  * @author xiongshiyan at 2020/2/16 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class InterruptibleDownloader implements Downloader{
-    private static final Logger logger = LoggerFactory.getLogger(InterruptibleDownloader.class);
+public class InterruptBaseConfFileDownloader implements Downloader {
+    private static final Logger logger = LoggerFactory.getLogger(InterruptBaseConfFileDownloader.class);
 
     private SmartHttpClient smartHttpClient;
-    private FileService fileService = new FileService();
     private int bufferSize = 1024;
 
-    public InterruptibleDownloader(SmartHttpClient smartHttpClient) {
+    public InterruptBaseConfFileDownloader(SmartHttpClient smartHttpClient) {
         this.smartHttpClient = smartHttpClient;
     }
 
-    public InterruptibleDownloader(SmartHttpClient smartHttpClient, int bufferSize) {
+    public InterruptBaseConfFileDownloader(SmartHttpClient smartHttpClient, int bufferSize) {
         this.smartHttpClient = smartHttpClient;
         this.bufferSize = bufferSize;
     }
 
     @Override
     public File download(DownloadRequest downloadRequest) throws IOException {
-        long totalLength = fileService.getNetFileLength(smartHttpClient , downloadRequest);
+        long totalLength = DownloadUtil.getNetFileLength(smartHttpClient , downloadRequest);
         logger.info("totalLength : " + totalLength);
         //保存总文件大小
-        fileService.saveFileLength(downloadRequest.getFile() , totalLength , null);
+        DownloadUtil.saveFileLength(downloadRequest.getFile() , totalLength , null);
         //从文件获取已下载量
-        long downloadLength = fileService.readDownloadedLength(downloadRequest.getFile());
+        long downloadLength = DownloadUtil.readDownloadedLength(downloadRequest.getFile());
 
         //文件记录的下载量和实际文件的大小不相等，那么以文件的为准，可以解决数据写入文件和长度写入文件的不一致的情况
-        long fileLength = fileService.getDownloadedLength(downloadRequest.getFile());
+        long fileLength = DownloadUtil.getDownloadedLength(downloadRequest.getFile());
         logger.info("校验文件长度[记录大小-文件实际大小] : " + downloadLength + "-" + fileLength + ",以后者大小为准");
         if(fileLength != downloadLength){
             downloadLength = fileLength;
-            fileService.saveFileLength(downloadRequest.getFile() , totalLength , downloadLength);
+            DownloadUtil.saveFileLength(downloadRequest.getFile() , totalLength , downloadLength);
         }
 
         downloadFileFromDownloaded(downloadRequest, totalLength, downloadLength);
@@ -66,11 +65,11 @@ public class InterruptibleDownloader implements Downloader{
                 while( (len = inputStream.read(buffer)) != -1 ){
                     accessFile.write(buffer, 0, len);
                     downloaded += len;
-                    fileService.saveFileLength(downloadRequest.getFile() , totalLength , downloaded);
+                    DownloadUtil.saveFileLength(downloadRequest.getFile() , totalLength , downloaded);
                 }
 
                 if(downloaded == totalLength){
-                    fileService.deleteConfFile(downloadRequest.getFile());
+                    DownloadUtil.deleteConfFile(downloadRequest.getFile());
                 }
 
                 return downloadRequest.getFile();

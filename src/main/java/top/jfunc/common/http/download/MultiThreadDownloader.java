@@ -18,7 +18,6 @@ import java.util.concurrent.CountDownLatch;
 public class MultiThreadDownloader implements Downloader {
 
     private SmartHttpClient smartHttpClient;
-    private FileService fileService = new FileService();
     private int threadSize;
     private int bufferSize = 1024;
 
@@ -38,7 +37,7 @@ public class MultiThreadDownloader implements Downloader {
     @Override
     public File download(DownloadRequest downloadRequest) throws IOException {
         //获取网络文件的大小：字节数
-        long contentLength = fileService.getNetFileLength(smartHttpClient , downloadRequest);
+        long contentLength = DownloadUtil.getNetFileLength(smartHttpClient , downloadRequest);
 
         //生成本地文件并设置其大小为网络文件的大小
         try (RandomAccessFile accessFile = new RandomAccessFile(downloadRequest.getFile(), "rwd")){

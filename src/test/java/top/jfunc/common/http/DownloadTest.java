@@ -4,7 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.download.Downloader;
 import top.jfunc.common.http.download.InterruptDownloader;
-import top.jfunc.common.http.download.InterruptibleDownloader;
+import top.jfunc.common.http.download.InterruptBaseConfFileDownloader;
 import top.jfunc.common.http.download.MultiThreadDownloader;
 import top.jfunc.common.http.request.RequestCreator;
 import top.jfunc.common.http.request.basic.DownLoadRequest;
@@ -108,7 +108,7 @@ public class DownloadTest {
 
     private void interruptibleDownload(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
-        Downloader downloader = new InterruptibleDownloader(smartHttpClient);
+        Downloader downloader = new InterruptBaseConfFileDownloader(smartHttpClient);
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }

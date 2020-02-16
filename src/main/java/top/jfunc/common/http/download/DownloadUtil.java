@@ -6,16 +6,19 @@ import top.jfunc.common.http.request.RequestCreator;
 import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * @author xiongshiyan at 2020/2/16 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class FileService {
+public class DownloadUtil {
     /**
      * 获取网络文件大小
      */
-    public long getNetFileLength(SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) throws IOException {
+    public static long getNetFileLength(SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) throws IOException {
         DownloadRequest cloneRequest = RequestCreator.clone(downloadRequest);
         MultiValueMap<String, String> multiValueMap = smartHttpClient.head(cloneRequest);
         if(multiValueMap.containsKey(HttpHeaders.CONTENT_LENGTH)){
@@ -34,19 +37,14 @@ public class FileService {
      * @param downloadLength 下载量，没有就null
      * @throws IOException IOException
      */
-    void saveFileLength(File file , long totalLength , Long downloadLength) throws IOException{
+    public static void saveFileLength(File file , long totalLength , Long downloadLength) throws IOException{
         File tempFile = getConfFile(file);
         //保存总量但是文件已经存在，说明已经下载一部分了
         if(null == downloadLength && tempFile.exists()){
             return;
         }
         try (FileOutputStream outputStream = new FileOutputStream(tempFile)){
-            String toWrite = totalLength+"";
-            if(null == downloadLength){
-                toWrite += ":0";
-            }else {
-                toWrite += ":" + downloadLength;
-            }
+            String toWrite = totalLength + ":" + (null == downloadLength ? 0 : downloadLength);
             outputStream.write(toWrite.getBytes());
             outputStream.flush();
         }
@@ -58,7 +56,7 @@ public class FileService {
      * @return 下载量
      * @throws IOException IOException
      */
-    long readDownloadedLength(File file) throws IOException{
+    public static long readDownloadedLength(File file) throws IOException{
         File confFile = getConfFile(file);
         if(!confFile.exists()){
             return 0;
@@ -76,14 +74,14 @@ public class FileService {
      * @param file 下载的文件
      * @return 文件大小
      */
-    long getDownloadedLength(File file){
+    public static long getDownloadedLength(File file){
         if(!file.exists()){
             return 0;
         }
         return file.length();
     }
 
-    boolean deleteConfFile(File file){
+    public static boolean deleteConfFile(File file){
         File confFile = getConfFile(file);
         if(confFile.exists()){
             return confFile.delete();
@@ -91,7 +89,7 @@ public class FileService {
         return true;
     }
 
-    private File getConfFile(File file) {
+    private static File getConfFile(File file) {
         return new File(file.getAbsolutePath() + ".conf");
     }
 }
