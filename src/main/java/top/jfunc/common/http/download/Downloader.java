@@ -10,7 +10,7 @@ import java.io.IOException;
  * 大文件上传最好不通过http，而是自定义协议的socket实现
  * @see MultiThreadDownloader
  * @see InterruptBaseConfFileDownloader
- * @see InterruptDownloader
+ * @see InterruptBaseDownloadFileDownloader
  * @author xiongshiyan at 2020/2/15 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public interface Downloader {

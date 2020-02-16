@@ -16,24 +16,20 @@ import java.io.IOException;
  * @see InterruptBaseConfFileDownloader
  * @author xiongshiyan at 2020/2/16 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class InterruptDownloader implements Downloader {
-    private static final Logger logger = LoggerFactory.getLogger(InterruptDownloader.class);
+public class InterruptBaseDownloadFileDownloader extends AbstractDownloader implements Downloader {
+    private static final Logger logger = LoggerFactory.getLogger(InterruptBaseDownloadFileDownloader.class);
 
-    private SmartHttpClient smartHttpClient;
-    private int bufferSize = 1024;
-
-    public InterruptDownloader(SmartHttpClient smartHttpClient) {
-        this.smartHttpClient = smartHttpClient;
+    public InterruptBaseDownloadFileDownloader(SmartHttpClient smartHttpClient, int bufferSize) {
+        super(smartHttpClient , bufferSize);
     }
 
-    public InterruptDownloader(SmartHttpClient smartHttpClient, int bufferSize) {
-        this.smartHttpClient = smartHttpClient;
-        this.bufferSize = bufferSize;
+    public InterruptBaseDownloadFileDownloader(SmartHttpClient smartHttpClient) {
+        super(smartHttpClient);
     }
 
     @Override
     public File download(DownloadRequest downloadRequest) throws IOException {
-        long totalLength = DownloadUtil.getNetFileLength(smartHttpClient , downloadRequest);
+        long totalLength = DownloadUtil.getNetFileLength(getSmartHttpClient() , downloadRequest);
         logger.info("totalLength    : " + totalLength);
         //从文件获取已下载量
         final long downloadLength = DownloadUtil.getDownloadedLength(downloadRequest.getFile());
@@ -53,7 +49,7 @@ public class InterruptDownloader implements Downloader {
         try (FileOutputStream outputStream = new FileOutputStream(downloadRequest.getFile() , true)){
             //添加Range头
             downloadRequest.addHeader(HttpHeaders.RANGE , "bytes=" + downloadLength + "-");
-            smartHttpClient.download(downloadRequest , (statusCode, inputStream, rc, hd) ->{
+            getSmartHttpClient().download(downloadRequest , (statusCode, inputStream, rc, hd) ->{
                 byte[] buffer = new byte[getBufferSize()];
                 int len = 0;
                 while( (len = inputStream.read(buffer)) != -1 ){
@@ -64,13 +60,5 @@ public class InterruptDownloader implements Downloader {
                 return downloadRequest.getFile();
             });
         }
-    }
-
-    public int getBufferSize() {
-        return bufferSize;
-    }
-
-    public void setBufferSize(int bufferSize) {
-        this.bufferSize = bufferSize;
     }
 }

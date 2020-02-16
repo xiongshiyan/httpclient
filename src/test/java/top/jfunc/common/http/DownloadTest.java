@@ -3,7 +3,7 @@ package top.jfunc.common.http;
 import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.download.Downloader;
-import top.jfunc.common.http.download.InterruptDownloader;
+import top.jfunc.common.http.download.InterruptBaseDownloadFileDownloader;
 import top.jfunc.common.http.download.InterruptBaseConfFileDownloader;
 import top.jfunc.common.http.download.MultiThreadDownloader;
 import top.jfunc.common.http.request.RequestCreator;
@@ -79,7 +79,7 @@ public class DownloadTest {
 
     private void multiThreadDownload(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
-        MultiThreadDownloader downloader = new MultiThreadDownloader(smartHttpClient , 10 , 102400);
+        MultiThreadDownloader downloader = new MultiThreadDownloader(smartHttpClient , 102400 , 10);
         File download = downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
@@ -108,7 +108,7 @@ public class DownloadTest {
 
     private void interruptibleDownload(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
-        Downloader downloader = new InterruptBaseConfFileDownloader(smartHttpClient);
+        Downloader downloader = new InterruptBaseConfFileDownloader(smartHttpClient , 1024);
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
@@ -138,7 +138,7 @@ public class DownloadTest {
 
     private void interruptDownload(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
-        Downloader downloader = new InterruptDownloader(smartHttpClient);
+        Downloader downloader = new InterruptBaseDownloadFileDownloader(smartHttpClient , 1024);
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }

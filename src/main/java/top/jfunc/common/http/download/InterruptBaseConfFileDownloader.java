@@ -13,27 +13,22 @@ import java.io.RandomAccessFile;
 /**
  * 断点下载器
  * 在下载地址创建一个临时文件记录总大小和已下载大小【为多线程断点下载器打下基础】
- * @see InterruptDownloader
+ * @see InterruptBaseDownloadFileDownloader
  * @author xiongshiyan at 2020/2/16 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class InterruptBaseConfFileDownloader implements Downloader {
+public class InterruptBaseConfFileDownloader extends AbstractDownloader implements Downloader {
     private static final Logger logger = LoggerFactory.getLogger(InterruptBaseConfFileDownloader.class);
 
-    private SmartHttpClient smartHttpClient;
-    private int bufferSize = 1024;
-
-    public InterruptBaseConfFileDownloader(SmartHttpClient smartHttpClient) {
-        this.smartHttpClient = smartHttpClient;
-    }
-
     public InterruptBaseConfFileDownloader(SmartHttpClient smartHttpClient, int bufferSize) {
-        this.smartHttpClient = smartHttpClient;
-        this.bufferSize = bufferSize;
+        super(smartHttpClient, bufferSize);
+    }
+    public InterruptBaseConfFileDownloader(SmartHttpClient smartHttpClient) {
+        super(smartHttpClient);
     }
 
     @Override
     public File download(DownloadRequest downloadRequest) throws IOException {
-        long totalLength = DownloadUtil.getNetFileLength(smartHttpClient , downloadRequest);
+        long totalLength = DownloadUtil.getNetFileLength(getSmartHttpClient() , downloadRequest);
         logger.info("totalLength : " + totalLength);
         //保存总文件大小
         DownloadUtil.saveFileLength(downloadRequest.getFile() , totalLength , null);
@@ -58,7 +53,7 @@ public class InterruptBaseConfFileDownloader implements Downloader {
             accessFile.seek(downloadLength);
             //添加Range头
             downloadRequest.addHeader(HttpHeaders.RANGE , "bytes=" + downloadLength + "-");
-            smartHttpClient.download(downloadRequest , (statusCode, inputStream, rc, hd) ->{
+            getSmartHttpClient().download(downloadRequest , (statusCode, inputStream, rc, hd) ->{
                 byte[] buffer = new byte[getBufferSize()];
                 int len = 0;
                 long downloaded = downloadLength;
@@ -76,13 +71,5 @@ public class InterruptBaseConfFileDownloader implements Downloader {
             });
 
         }
-    }
-
-    public int getBufferSize() {
-        return bufferSize;
-    }
-
-    public void setBufferSize(int bufferSize) {
-        this.bufferSize = bufferSize;
     }
 }

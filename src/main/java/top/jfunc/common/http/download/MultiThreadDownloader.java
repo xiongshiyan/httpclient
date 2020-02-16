@@ -15,29 +15,25 @@ import java.util.concurrent.CountDownLatch;
  *
  * @author xiongshiyan at 2020/2/15 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class MultiThreadDownloader implements Downloader {
+public class MultiThreadDownloader extends AbstractDownloader implements Downloader {
 
-    private SmartHttpClient smartHttpClient;
-    private int threadSize;
-    private int bufferSize = 1024;
+    private int threadSize = 3;
 
-    public MultiThreadDownloader(SmartHttpClient smartHttpClient, int threadSize , int bufferSize) {
-        this.smartHttpClient = smartHttpClient;
-        this.threadSize = threadSize;
-        this.bufferSize = bufferSize;
-    }
-    public MultiThreadDownloader(SmartHttpClient smartHttpClient, int threadSize) {
-        this.smartHttpClient = smartHttpClient;
+    public MultiThreadDownloader(SmartHttpClient smartHttpClient , int bufferSize, int threadSize) {
+        super(smartHttpClient, bufferSize);
         this.threadSize = threadSize;
     }
-
-    public MultiThreadDownloader() {
+    public MultiThreadDownloader(SmartHttpClient smartHttpClient, int bufferSize) {
+        super(smartHttpClient, bufferSize);
+    }
+    public MultiThreadDownloader(SmartHttpClient smartHttpClient) {
+        super(smartHttpClient);
     }
 
     @Override
     public File download(DownloadRequest downloadRequest) throws IOException {
         //获取网络文件的大小：字节数
-        long contentLength = DownloadUtil.getNetFileLength(smartHttpClient , downloadRequest);
+        long contentLength = DownloadUtil.getNetFileLength(getSmartHttpClient() , downloadRequest);
 
         //生成本地文件并设置其大小为网络文件的大小
         try (RandomAccessFile accessFile = new RandomAccessFile(downloadRequest.getFile(), "rwd")){
@@ -45,7 +41,7 @@ public class MultiThreadDownloader implements Downloader {
         }
 
         //过个线程下载结束才返回
-        CountDownLatch countDownLatch = new CountDownLatch(threadSize);
+        CountDownLatch countDownLatch = new CountDownLatch(getThreadSize());
         startDownloadThread(downloadRequest, contentLength, countDownLatch);
 
         //等待所有线程结束
@@ -63,19 +59,10 @@ public class MultiThreadDownloader implements Downloader {
         int threadSize = getThreadSize();
         long block = contentLength % threadSize == 0 ? contentLength / threadSize : contentLength / threadSize + 1;
         for(int threadId = 0; threadId < threadSize; threadId++){
-            new DownloadThread(countDownLatch ,bufferSize,
+            new DownloadThread(countDownLatch ,getBufferSize(),
                     threadId , block , downloadRequest.getFile() ,
                     getSmartHttpClient(), downloadRequest).start();
         }
-    }
-
-
-    public SmartHttpClient getSmartHttpClient() {
-        return smartHttpClient;
-    }
-
-    public void setSmartHttpClient(SmartHttpClient smartHttpClient) {
-        this.smartHttpClient = smartHttpClient;
     }
 
     public int getThreadSize() {
@@ -85,13 +72,4 @@ public class MultiThreadDownloader implements Downloader {
     public void setThreadSize(int threadSize) {
         this.threadSize = threadSize;
     }
-
-    public int getBufferSize() {
-        return bufferSize;
-    }
-
-    public void setBufferSize(int bufferSize) {
-        this.bufferSize = bufferSize;
-    }
-
 }
