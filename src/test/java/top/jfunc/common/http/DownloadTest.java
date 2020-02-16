@@ -2,6 +2,7 @@ package top.jfunc.common.http;
 
 import org.junit.Test;
 import top.jfunc.common.http.download.Downloader;
+import top.jfunc.common.http.download.InterruptDownloader;
 import top.jfunc.common.http.download.InterruptibleDownloader;
 import top.jfunc.common.http.download.MultiThreadDownloader;
 import top.jfunc.common.http.request.RequestCreator;
@@ -84,25 +85,21 @@ public class DownloadTest {
 
     @Test
     public void testInterruptibleJDK() throws IOException{
-        //70,289,183:
         NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
         interruptibleDownload(smartHttpClient);
     }
     @Test
     public void testInterruptibleApache() throws IOException{
-        //131794
         ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
         interruptibleDownload(smartHttpClient);
     }
     @Test
     public void testInterruptibleOkhttp3() throws IOException{
-        //125838
         OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
         interruptibleDownload(smartHttpClient);
     }
     @Test
     public void testInterruptibleThreadJodd() throws IOException{
-        //125698
         JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
         interruptibleDownload(smartHttpClient);
     }
@@ -110,6 +107,36 @@ public class DownloadTest {
     private void interruptibleDownload(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
         Downloader downloader = new InterruptibleDownloader(smartHttpClient);
+        downloader.download(downLoadRequest);
+        System.out.println(System.currentTimeMillis() - l);
+    }
+
+
+
+    @Test
+    public void testInterruptJDK() throws IOException{
+        NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
+        interruptDownload(smartHttpClient);
+    }
+    @Test
+    public void testInterruptApache() throws IOException{
+        ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
+        interruptDownload(smartHttpClient);
+    }
+    @Test
+    public void testInterruptOkhttp3() throws IOException{
+        OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
+        interruptDownload(smartHttpClient);
+    }
+    @Test
+    public void testInterruptThreadJodd() throws IOException{
+        JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
+        interruptDownload(smartHttpClient);
+    }
+
+    private void interruptDownload(SmartHttpClient smartHttpClient) throws IOException{
+        long l = System.currentTimeMillis();
+        Downloader downloader = new InterruptDownloader(smartHttpClient);
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }

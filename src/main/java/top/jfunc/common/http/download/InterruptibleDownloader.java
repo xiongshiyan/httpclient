@@ -12,8 +12,8 @@ import java.io.RandomAccessFile;
 
 /**
  * 断点下载器
- * 先在下载地址创建一个临时文件，写入数据，待下载完成重命名即可
- * 还需要一个临时文件记录已下载大小和总大小
+ * 在下载地址创建一个临时文件记录总大小和已下载大小【为多线程断点下载器打下基础】
+ * @see InterruptDownloader
  * @author xiongshiyan at 2020/2/16 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class InterruptibleDownloader implements Downloader{
@@ -21,9 +21,15 @@ public class InterruptibleDownloader implements Downloader{
 
     private SmartHttpClient smartHttpClient;
     private FileService fileService = new FileService();
+    private int bufferSize = 1024;
 
     public InterruptibleDownloader(SmartHttpClient smartHttpClient) {
         this.smartHttpClient = smartHttpClient;
+    }
+
+    public InterruptibleDownloader(SmartHttpClient smartHttpClient, int bufferSize) {
+        this.smartHttpClient = smartHttpClient;
+        this.bufferSize = bufferSize;
     }
 
     @Override
@@ -33,25 +39,28 @@ public class InterruptibleDownloader implements Downloader{
         //保存总文件大小
         fileService.saveFileLength(downloadRequest.getFile() , totalLength , null);
         //从文件获取已下载量
-        long recordedLength = fileService.getDownloadedLength(downloadRequest.getFile());
-        logger.info("recordedLength : " + recordedLength);
+        long downloadLength = fileService.readDownloadedLength(downloadRequest.getFile());
 
         //文件记录的下载量和实际文件的大小不相等，那么以文件的为准，可以解决数据写入文件和长度写入文件的不一致的情况
         long fileLength = downloadRequest.getFile().length();
-        logger.info("校验文件长度 : " + recordedLength + "[r]-" + fileLength + "[f],以后者为准");
-        if(fileLength != recordedLength){
-            recordedLength = fileLength;
-            fileService.saveFileLength(downloadRequest.getFile() , totalLength , recordedLength);
+        logger.info("校验文件长度[记录大小-文件实际大小] : " + downloadLength + "-" + fileLength + ",以后者大小为准");
+        if(fileLength != downloadLength){
+            downloadLength = fileLength;
+            fileService.saveFileLength(downloadRequest.getFile() , totalLength , downloadLength);
         }
 
-        final long downloadLength = recordedLength;
+        downloadFileFromDownloaded(downloadRequest, totalLength, downloadLength);
 
+        return downloadRequest.getFile();
+    }
+
+    private void downloadFileFromDownloaded(DownloadRequest downloadRequest, final long totalLength, final long downloadLength) throws IOException {
         try (RandomAccessFile accessFile = new RandomAccessFile(downloadRequest.getFile(), "rwd")){
-            accessFile.seek(recordedLength);
+            accessFile.seek(downloadLength);
             //添加Range头
-            downloadRequest.addHeader(HttpHeaders.RANGE , "bytes=" + recordedLength + "-");
+            downloadRequest.addHeader(HttpHeaders.RANGE , "bytes=" + downloadLength + "-");
             smartHttpClient.download(downloadRequest , (statusCode, inputStream, rc, hd) ->{
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[getBufferSize()];
                 int len = 0;
                 long downloaded = downloadLength;
                 while( (len = inputStream.read(buffer)) != -1 ){
@@ -68,8 +77,13 @@ public class InterruptibleDownloader implements Downloader{
             });
 
         }
+    }
 
+    public int getBufferSize() {
+        return bufferSize;
+    }
 
-        return downloadRequest.getFile();
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
     }
 }

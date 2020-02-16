@@ -53,12 +53,12 @@ public class FileService {
     }
 
     /**
-     * 获取文件已经下载的数量
+     * 根据临时文件获取文件已经下载的数量
      * @param file 下载的文件
      * @return 下载量
      * @throws IOException IOException
      */
-    long getDownloadedLength(File file) throws IOException{
+    long readDownloadedLength(File file) throws IOException{
         File confFile = getConfFile(file);
         if(!confFile.exists()){
             return 0;
@@ -69,6 +69,18 @@ public class FileService {
             String temp = new String(buffer , 0 , len);
             return Long.parseLong(temp.split(":")[1]);
         }
+    }
+
+    /**
+     * 获取文件已经下载量
+     * @param file 下载的文件
+     * @return 文件大小
+     */
+    long getDownloadedLength(File file){
+        if(!file.exists()){
+            return 0;
+        }
+        return file.length();
     }
 
     boolean deleteConfFile(File file){
