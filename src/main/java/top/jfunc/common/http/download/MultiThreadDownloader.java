@@ -1,10 +1,7 @@
 package top.jfunc.common.http.download;
 
-import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.RequestCreator;
 import top.jfunc.common.http.smart.SmartHttpClient;
-import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +18,7 @@ import java.util.concurrent.CountDownLatch;
 public class MultiThreadDownloader implements Downloader {
 
     private SmartHttpClient smartHttpClient;
+    private FileService fileService = new FileService();
     private int threadSize;
     private int bufferSize = 1024;
 
@@ -40,7 +38,7 @@ public class MultiThreadDownloader implements Downloader {
     @Override
     public File download(DownloadRequest downloadRequest) throws IOException {
         //获取网络文件的大小：字节数
-        int contentLength = getNetFileLength(downloadRequest);
+        long contentLength = fileService.getNetFileLength(smartHttpClient , downloadRequest);
 
         //生成本地文件并设置其大小为网络文件的大小
         try (RandomAccessFile accessFile = new RandomAccessFile(downloadRequest.getFile(), "rwd")){
@@ -61,10 +59,10 @@ public class MultiThreadDownloader implements Downloader {
         return downloadRequest.getFile();
     }
 
-    private void startDownloadThread(DownloadRequest downloadRequest, int contentLength, CountDownLatch countDownLatch) {
+    private void startDownloadThread(DownloadRequest downloadRequest, long contentLength, CountDownLatch countDownLatch) {
         //计算每条线程负责下载的数据量
         int threadSize = getThreadSize();
-        int block = contentLength % threadSize == 0 ? contentLength / threadSize : contentLength / threadSize + 1;
+        long block = contentLength % threadSize == 0 ? contentLength / threadSize : contentLength / threadSize + 1;
         for(int threadId = 0; threadId < threadSize; threadId++){
             new DownloadThread(countDownLatch ,bufferSize,
                     threadId , block , downloadRequest.getFile() ,
@@ -72,15 +70,6 @@ public class MultiThreadDownloader implements Downloader {
         }
     }
 
-    private int getNetFileLength(DownloadRequest downloadRequest) throws IOException {
-        DownloadRequest cloneRequest = RequestCreator.clone(downloadRequest);
-        MultiValueMap<String, String> multiValueMap = getSmartHttpClient().head(cloneRequest);
-        if(multiValueMap.containsKey(HttpHeaders.CONTENT_LENGTH)){
-            return Integer.parseInt(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH));
-        }else {
-            return Integer.parseInt(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
-        }
-    }
 
     public SmartHttpClient getSmartHttpClient() {
         return smartHttpClient;

@@ -42,7 +42,7 @@ class DownloadThread extends Thread{
     /**
      * 每个线程下载的数据量
      */
-    private int block;
+    private long block;
     /**
      * 保存的文件
      */
@@ -56,7 +56,7 @@ class DownloadThread extends Thread{
      */
     private DownloadRequest downloadRequest;
 
-    DownloadThread(CountDownLatch countDownLatch , int bufferSize , int threadId, int block, File file , SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) {
+    DownloadThread(CountDownLatch countDownLatch , int bufferSize , int threadId, long block, File file , SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) {
         this.countDownLatch = countDownLatch;
         this.bufferSize = bufferSize;
         this.threadId = threadId;
@@ -68,8 +68,8 @@ class DownloadThread extends Thread{
 
     @Override
     public void run() {
-        int startPosition = threadId * block;
-        int endPosition = (threadId+1) * block - 1;
+        long startPosition = threadId * block;
+        long endPosition = (threadId+1) * block - 1;
         logger.info("第"+ (threadId+1)+ "线程下载 " + startPosition + "-" + endPosition);
         //指示该线程要从网络文件的startposition位置开始下载，下载到endposition位置结束
         //Range:bytes=startposition-endposition
