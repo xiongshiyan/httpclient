@@ -9,6 +9,7 @@ import top.jfunc.common.http.download.MultiThreadDownloader;
 import top.jfunc.common.http.request.RequestCreator;
 import top.jfunc.common.http.request.basic.DownLoadRequest;
 import top.jfunc.common.http.smart.*;
+import top.jfunc.common.utils.CommonUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,61 +19,63 @@ import java.io.IOException;
  */
 @Ignore
 public class DownloadTest {
-    DownLoadRequest downLoadRequest = RequestCreator.download("http://dzgtest.palmte.cn/upload/Git-2.14.1-64-bit.exe"
-        , new File("C:\\Users\\xiongshiyan\\Desktop\\Git-2.14.1-64-bit.exe"));
+    DownLoadRequest downLoadRequest = RequestCreator.download("http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz"
+        , new File("C:\\Users\\xiongshiyan\\Desktop\\tomcat-" + CommonUtil.randomString(16) + ".tar.gz"));
     @Test
-    public void testCommonJDK() throws IOException{
-        //124187
+    public void testCommonDownloadJDK() throws IOException{
+        //1373
         NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
-        download(smartHttpClient);
+        commonDownload(smartHttpClient);
     }
     @Test
-    public void testCommonApache() throws IOException{
-        //124885
+    public void testCommonDownloadApache() throws IOException{
+        //5195
         ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
-        download(smartHttpClient);
+        commonDownload(smartHttpClient);
     }
     @Test
-    public void testCommonOkhttp3() throws IOException{
-        //124076
+    public void testCommonDownloadOkHttp3() throws IOException{
+        //1705
         OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
-        download(smartHttpClient);
+        commonDownload(smartHttpClient);
     }
     @Test
-    public void testCommonJodd() throws IOException{
-        //128865
+    public void testCommonDownloadJodd() throws IOException{
+        //1655
         JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
-        download(smartHttpClient);
+        commonDownload(smartHttpClient);
     }
-    private void download(SmartHttpClient smartHttpClient) throws IOException{
+    private void commonDownload(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
-        File download = smartHttpClient.download(downLoadRequest);
+        smartHttpClient.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
 
 
 
+
+
     @Test
     public void testMultiThreadJDK() throws IOException{
-        //125475
+        //2007
         NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
         multiThreadDownload(smartHttpClient);
     }
     @Test
     public void testMultiThreadApache() throws IOException{
-        //131794
+        //3654
         ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
         multiThreadDownload(smartHttpClient);
     }
     @Test
-    public void testMultiThreadOkhttp3() throws IOException{
-        //125838
+    public void testMultiThreadOkHttp3() throws IOException{
+        //7027
         OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
         multiThreadDownload(smartHttpClient);
     }
     @Test
     public void testMultiThreadJodd() throws IOException{
-        //125698
+        //2020
         JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
         multiThreadDownload(smartHttpClient);
     }
@@ -80,35 +83,40 @@ public class DownloadTest {
     private void multiThreadDownload(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
         MultiThreadDownloader downloader = new MultiThreadDownloader(smartHttpClient , 102400 , 10);
-        File download = downloader.download(downLoadRequest);
+        downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
 
 
+
+
+
     @Test
-    public void testInterruptibleJDK() throws IOException{
+    public void testInterruptBaseConfFileDownloaderJDK() throws IOException{
         NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
-        interruptibleDownload(smartHttpClient);
+        interruptBaseConfFileDownloader(smartHttpClient);
     }
     @Test
-    public void testInterruptibleApache() throws IOException{
+    public void testInterruptBaseConfFileDownloaderApache() throws IOException{
         ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
-        interruptibleDownload(smartHttpClient);
+        interruptBaseConfFileDownloader(smartHttpClient);
     }
     @Test
-    public void testInterruptibleOkhttp3() throws IOException{
+    public void testInterruptBaseConfFileDownloaderOkHttp3() throws IOException{
         OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
-        interruptibleDownload(smartHttpClient);
+        interruptBaseConfFileDownloader(smartHttpClient);
     }
     @Test
-    public void testInterruptibleThreadJodd() throws IOException{
+    public void testInterruptBaseConfFileDownloaderJodd() throws IOException{
         JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
-        interruptibleDownload(smartHttpClient);
+        interruptBaseConfFileDownloader(smartHttpClient);
     }
 
-    private void interruptibleDownload(SmartHttpClient smartHttpClient) throws IOException{
+    private void interruptBaseConfFileDownloader(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
         Downloader downloader = new InterruptBaseConfFileDownloader(smartHttpClient , 1024);
+        DownLoadRequest downLoadRequest = RequestCreator.download("http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz"
+                , new File("C:\\Users\\xiongshiyan\\Desktop\\tomcat.tar.gz"));
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
@@ -116,29 +124,31 @@ public class DownloadTest {
 
 
     @Test
-    public void testInterruptJDK() throws IOException{
+    public void testInterruptBaseDownloadFileDownloaderJDK() throws IOException{
         NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
-        interruptDownload(smartHttpClient);
+        interruptBaseDownloadFileDownloader(smartHttpClient);
     }
     @Test
-    public void testInterruptApache() throws IOException{
+    public void testInterruptBaseDownloadFileDownloaderApache() throws IOException{
         ApacheSmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
-        interruptDownload(smartHttpClient);
+        interruptBaseDownloadFileDownloader(smartHttpClient);
     }
     @Test
-    public void testInterruptOkhttp3() throws IOException{
+    public void testInterruptBaseDownloadFileDownloaderOkHttp3() throws IOException{
         OkHttp3SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
-        interruptDownload(smartHttpClient);
+        interruptBaseDownloadFileDownloader(smartHttpClient);
     }
     @Test
-    public void testInterruptThreadJodd() throws IOException{
+    public void testInterruptBaseDownloadFileDownloaderJodd() throws IOException{
         JoddSmartHttpClient smartHttpClient = new JoddSmartHttpClient();
-        interruptDownload(smartHttpClient);
+        interruptBaseDownloadFileDownloader(smartHttpClient);
     }
 
-    private void interruptDownload(SmartHttpClient smartHttpClient) throws IOException{
+    private void interruptBaseDownloadFileDownloader(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
         Downloader downloader = new InterruptBaseDownloadFileDownloader(smartHttpClient , 1024);
+        DownLoadRequest downLoadRequest = RequestCreator.download("http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz"
+                , new File("C:\\Users\\xiongshiyan\\Desktop\\tomcat.tar.gz"));
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
