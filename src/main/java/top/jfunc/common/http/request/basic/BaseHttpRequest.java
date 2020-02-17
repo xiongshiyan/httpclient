@@ -2,12 +2,7 @@ package top.jfunc.common.http.request.basic;
 
 import top.jfunc.common.ChainCall;
 import top.jfunc.common.http.HttpConstants;
-import top.jfunc.common.http.base.MediaType;
-import top.jfunc.common.http.base.Method;
-import top.jfunc.common.http.base.Config;
-import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.component.CompletedUrlCreator;
-import top.jfunc.common.http.component.DefaultCompletedUrlCreator;
+import top.jfunc.common.http.request.AbstractHttpRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.MapUtil;
@@ -23,24 +18,19 @@ import java.util.Map;
 /**
  * @author xiongshiyan at 2019/7/5 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements HttpRequest , ChainCall<THIS>{
+public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> extends AbstractHttpRequest<THIS> implements HttpRequest , ChainCall<THIS> {
     /**
      * 设置的URL
      */
     private String url;
-    private String cacheCompletedUrl;
-    /**
-     * 完整URL处理器
-     */
-    private CompletedUrlCreator completedUrlCreator = new DefaultCompletedUrlCreator();
     /**
      * 路径参数
      */
-    private Map<String , String> routeParams;
+    private Map<String, String> routeParams;
     /**
      * Query参数
      */
-    private MultiValueMap<String , String> queryParams;
+    private MultiValueMap<String, String> queryParams;
     /**
      * Query参数字符编码
      */
@@ -48,43 +38,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     /**
      * header，可能多值
      */
-    private MultiValueMap<String , String> headers;
-    /**
-     * 资源类型
-     */
-    private String contentType = null;
-    /**
-     * 连接超时时间，不设置就使用系统默认的
-     * @see top.jfunc.common.http.base.Config#defaultConnectionTimeout
-     */
-    private int connectionTimeout = HttpConstants.TIMEOUT_UNSIGNED;
-    /**
-     * 读数据超时时间，不设置就使用系统默认的
-     * @see top.jfunc.common.http.base.Config#defaultReadTimeout
-     */
-    private int readTimeout = HttpConstants.TIMEOUT_UNSIGNED;
-    /**
-     * 返回体编码，不设置就使用系统默认的
-     * @see top.jfunc.common.http.base.Config#defaultResultCharset
-     */
-    private String resultCharset = HttpConstants.DEFAULT_CHARSET;
-    /**
-     * 返回结果中是否包含headers,默认不包含
-     */
-    private boolean includeHeaders = !INCLUDE_HEADERS;
-    /**
-     * 返回结果中是否忽略body,  true那么就不去读取body，提高效率, 默认不忽略
-     */
-    private boolean ignoreResponseBody = !IGNORE_RESPONSE_BODY;
-    /**
-     * 是否支持重定向
-     */
-    private boolean followRedirects = !FOLLOW_REDIRECTS;
-    /**
-     * 代理设置,如果有就设置
-     * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
-     */
-    private ProxyInfo proxyInfo = null;
+    private MultiValueMap<String, String> headers;
 
     /**
      * HostnameVerifier
@@ -101,31 +55,22 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     /**
      * 属性设置
      */
-    private Map<String , Object> attributes;
+    private Map<String, Object> attributes;
 
-    /**用于接收系统的默认设置*/
-    private Config config;
+    public BaseHttpRequest(String url) {
+        this.url = url;
+    }
 
-    /**
-     * method
-     */
-    private Method method;
+    public BaseHttpRequest(URL url) {
+        this.url = url.toString();
+    }
 
-    public BaseHttpRequest(String url){this.url = url;}
-    public BaseHttpRequest(URL url){this.url = url.toString();}
-    public BaseHttpRequest(){}
+    public BaseHttpRequest() {
+    }
 
     @Override
     public String getUrl() {
         return url;
-    }
-
-    @Override
-    public String getCompletedUrl() {
-        if(null == this.cacheCompletedUrl){
-            this.cacheCompletedUrl = getCompletedUrlCreator().complete(this);
-        }
-        return this.cacheCompletedUrl;
     }
 
     @Override
@@ -140,14 +85,6 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
         return myself();
     }
 
-    public CompletedUrlCreator getCompletedUrlCreator() {
-        return completedUrlCreator;
-    }
-
-    public void setCompletedUrlCreator(CompletedUrlCreator completedUrlCreator) {
-        this.completedUrlCreator = completedUrlCreator;
-    }
-
     @Override
     public Map<String, String> getRouteParams() {
         return routeParams;
@@ -155,7 +92,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
 
     @Override
     public THIS addRouteParam(String key, String value) {
-        if(null == routeParams){
+        if (null == routeParams) {
             routeParams = new HashMap<>(2);
         }
         routeParams.put(key, value);
@@ -186,7 +123,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
 
     @Override
     public THIS addQueryParam(String key, String value, String... values) {
-        if(null == queryParams){
+        if (null == queryParams) {
             queryParams = new ArrayListMultiValueMap<>(2);
         }
         queryParams.add(key, value, values);
@@ -201,7 +138,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
 
     @Override
     public THIS setQueryParams(Map<String, String> params) {
-        if(MapUtil.notEmpty(params)){
+        if (MapUtil.notEmpty(params)) {
             this.queryParams = ArrayListMultiValueMap.fromMap(params);
         }
         return myself();
@@ -234,110 +171,16 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
 
     @Override
     public THIS setHeaders(Map<String, String> headers) {
-        if(MapUtil.notEmpty(headers)){
+        if (MapUtil.notEmpty(headers)) {
             this.headers = ArrayListMultiValueMap.fromMap(headers);
         }
         return myself();
     }
 
     private void initHeaders() {
-        if(null == headers){
+        if (null == headers) {
             headers = new ArrayListMultiValueMap<>(2);
         }
-    }
-
-    @Override
-    public String getContentType() {
-        return contentType;
-    }
-
-    @Override
-    public THIS setContentType(String contentType) {
-        this.contentType = contentType;
-        return myself();
-    }
-
-    @Override
-    public THIS setContentType(MediaType mediaType) {
-        this.contentType = mediaType.toString();
-        return myself();
-    }
-
-    @Override
-    public int getConnectionTimeout() {
-        return connectionTimeout;
-    }
-
-    @Override
-    public THIS setConnectionTimeout(int connectionTimeout) {
-        this.connectionTimeout = connectionTimeout;
-        return myself();
-    }
-
-    @Override
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    @Override
-    public THIS setReadTimeout(int readTimeout) {
-        this.readTimeout = readTimeout;
-        return myself();
-    }
-
-    @Override
-    public String getResultCharset() {
-        return resultCharset;
-    }
-
-    @Override
-    public THIS setResultCharset(String resultCharset) {
-        this.resultCharset = resultCharset;
-        return myself();
-    }
-
-    @Override
-    public boolean isIncludeHeaders() {
-        return includeHeaders;
-    }
-
-    @Override
-    public THIS setIncludeHeaders(boolean includeHeaders) {
-        this.includeHeaders = includeHeaders;
-        return myself();
-    }
-
-    @Override
-    public boolean isIgnoreResponseBody() {
-        return ignoreResponseBody;
-    }
-
-    @Override
-    public THIS setIgnoreResponseBody(boolean ignoreResponseBody) {
-        this.ignoreResponseBody = ignoreResponseBody;
-        return myself();
-    }
-
-    @Override
-    public boolean followRedirects() {
-        return followRedirects;
-    }
-
-    @Override
-    public THIS followRedirects(boolean followRedirects) {
-        this.followRedirects = followRedirects;
-        return myself();
-    }
-
-    @Override
-    public ProxyInfo getProxyInfo() {
-        return proxyInfo;
-    }
-
-    @Override
-    public THIS setProxy(ProxyInfo proxyInfo) {
-        this.proxyInfo = proxyInfo;
-        return myself();
     }
 
     @Override
@@ -375,7 +218,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
 
     @Override
     public THIS addAttribute(String key, Object value) {
-        if(null == attributes){
+        if (null == attributes) {
             attributes = new HashMap<>(2);
         }
         attributes.put(key, value);
@@ -385,40 +228,5 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     @Override
     public Map<String, Object> getAttributes() {
         return attributes;
-    }
-
-
-    @Override
-    public Config getConfig() {
-        return config;
-    }
-
-    /**
-     * HttpRequest中的config都来自于实现类的初始化，调用此方法将系统的设置传递给HttpRequest
-     * @param config config
-     */
-    @Override
-    public void setConfig(Config config) {
-        this.config = config;
-    }
-
-    @Override
-    public Method getMethod() {
-        return method;
-    }
-
-    @Override
-    public THIS setMethod(Method method) {
-        this.method = method;
-        return myself();
-    }
-
-
-    /**
-     * 默认只支持浅拷贝，请勿要对应用类型的field进行add、remove等操作，会互相影响，比如map.add、collection.remove
-     */
-    @Override
-    public THIS clone() throws CloneNotSupportedException {
-        return (THIS)super.clone();
     }
 }

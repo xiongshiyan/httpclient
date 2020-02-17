@@ -17,7 +17,7 @@ import java.io.File;
 public class CloneTest {
     @Test
     public void testClone() throws Exception{
-        /*UpLoadRequest upLoadRequest = UpLoadRequest.of("sss");
+        UpLoadRequest upLoadRequest = UpLoadRequest.of("sss");
         upLoadRequest.addFormParam("k1" , "v1");
         upLoadRequest.setParamCharset("dsd");
         upLoadRequest.addFormFile(new FormFile(new File("C:\\Users\\xiongshiyan\\Desktop\\加班.txt") , "dsad" ,"sda"));
@@ -31,11 +31,11 @@ public class CloneTest {
         clone.setIgnoreResponseBody(true);
         clone.addFormParam("k2" , "v2");
         clone.addQueryParam("dd" , "sdsad");
-        System.out.println(clone);*/
+        System.out.println(clone);
     }
     @Test
     public void testClone2() throws Exception{
-        /*HolderUpLoadRequest upLoadRequest = HolderUpLoadRequest.of("sss");
+        HolderUpLoadRequest upLoadRequest = HolderUpLoadRequest.of("sss");
         upLoadRequest.addFormParam("k1" , "v1");
         upLoadRequest.setParamCharset("dsd");
         upLoadRequest.addFormFile(new FormFile(new File("C:\\Users\\xiongshiyan\\Desktop\\加班.txt") , "dsad" ,"sda"));
@@ -49,7 +49,7 @@ public class CloneTest {
         clone.setIgnoreResponseBody(true);
         clone.addFormParam("k2" , "v2");
         clone.addQueryParam("dd" , "sdsad");
-        System.out.println(clone);*/
+        System.out.println(clone);
     }
 
     @Test
