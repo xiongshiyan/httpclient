@@ -416,39 +416,6 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
 
     @Override
     public THIS clone() throws CloneNotSupportedException {
-        THIS clone = (THIS)super.clone();
-        clone.setConfig(getConfig());
-        clone.setMethod(getMethod());
-
-        clone.setUrl(getUrl());
-        clone.setConnectionTimeout(getConnectionTimeout());
-        clone.setReadTimeout(getReadTimeout());
-        clone.setContentType(getContentType());
-
-        if(MapUtil.notEmpty(getRouteParams())){
-            getRouteParams().forEach(clone::addRouteParam);
-        }
-        if(MapUtil.notEmpty(getQueryParams())){
-            getQueryParams().forEachKeyValue(clone::addQueryParam);
-        }
-        clone.setQueryParamCharset(getQueryParamCharset());
-        if(MapUtil.notEmpty(getHeaders())){
-            getHeaders().forEachKeyValue(clone::addHeader);
-        }
-
-        clone.setResultCharset(getResultCharset());
-        clone.setIncludeHeaders(isIncludeHeaders());
-        clone.setIgnoreResponseBody(isIgnoreResponseBody());
-        clone.followRedirects(followRedirects());
-        clone.setProxy(getProxyInfo());
-        clone.setHostnameVerifier(getHostnameVerifier());
-        clone.setSslContext(getSslContext());
-        clone.setX509TrustManager(getX509TrustManager());
-
-        if(MapUtil.notEmpty(getAttributes())){
-            getAttributes().forEach(clone::addAttribute);
-        }
-
-        return clone;
+        return (THIS)super.clone();
     }
 }
