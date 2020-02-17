@@ -3,9 +3,7 @@ package top.jfunc.common.http.download;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.RequestCreator;
-import top.jfunc.common.http.request.basic.DownLoadRequest;
 import top.jfunc.common.http.smart.SmartHttpClient;
-import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
@@ -21,7 +19,7 @@ class DownloadUtil {
      * 获取网络文件大小
      */
     static long getNetFileLength(SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) throws IOException {
-        DownloadRequest cloneRequest = from(downloadRequest);
+        DownloadRequest cloneRequest = RequestCreator.clone(downloadRequest);
         MultiValueMap<String, String> multiValueMap = smartHttpClient.head(cloneRequest);
         if(multiValueMap.containsKey(HttpHeaders.CONTENT_LENGTH)){
             return Long.parseLong(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH));
@@ -29,43 +27,6 @@ class DownloadUtil {
             return Long.parseLong(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
         }
     }
-
-    /**
-     * 以后换成clone接口实现
-     */
-    static DownloadRequest from(DownloadRequest downloadRequest){
-        DownLoadRequest download = RequestCreator.download(downloadRequest.getUrl(), downloadRequest.getFile());
-        download.setConfig(downloadRequest.getConfig());
-        download.setMethod(downloadRequest.getMethod());
-        download.setConnectionTimeout(downloadRequest.getConnectionTimeout());
-        download.setReadTimeout(downloadRequest.getReadTimeout());
-        download.setContentType(downloadRequest.getContentType());
-        if(MapUtil.notEmpty(downloadRequest.getRouteParams())){
-            downloadRequest.getRouteParams().forEach(download::addRouteParam);
-        }
-        if(MapUtil.notEmpty(downloadRequest.getQueryParams())){
-            downloadRequest.getQueryParams().forEachKeyValue(download::addQueryParam);
-        }
-        download.setQueryParamCharset(downloadRequest.getQueryParamCharset());
-        if(MapUtil.notEmpty(downloadRequest.getHeaders())){
-            downloadRequest.getHeaders().forEachKeyValue(download::addHeader);
-        }
-
-        download.setResultCharset(downloadRequest.getResultCharset());
-        download.setIncludeHeaders(downloadRequest.isIncludeHeaders());
-        download.setIgnoreResponseBody(downloadRequest.isIgnoreResponseBody());
-        download.followRedirects(downloadRequest.followRedirects());
-        download.setProxy(downloadRequest.getProxyInfo());
-        download.setHostnameVerifier(downloadRequest.getHostnameVerifier());
-        download.setSslContext(downloadRequest.getSslContext());
-        download.setX509TrustManager(downloadRequest.getX509TrustManager());
-        if(MapUtil.notEmpty(downloadRequest.getAttributes())){
-            downloadRequest.getAttributes().forEach(download::addAttribute);
-        }
-
-        return download;
-    }
-
 
     /**
      *

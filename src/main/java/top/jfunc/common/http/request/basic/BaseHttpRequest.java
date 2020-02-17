@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * @author xiongshiyan at 2019/7/5 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements HttpRequest, Cloneable , ChainCall<THIS>{
+public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements HttpRequest , ChainCall<THIS>{
     /**
      * 设置的URL
      */
@@ -414,6 +414,9 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> implements H
     }
 
 
+    /**
+     * 默认只支持浅拷贝，请勿要对应用类型的field进行add、remove等操作，会互相影响，比如map.add、collection.remove
+     */
     @Override
     public THIS clone() throws CloneNotSupportedException {
         return (THIS)super.clone();

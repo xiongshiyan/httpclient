@@ -39,4 +39,22 @@ public class RequestCreator {
     public static UpLoadRequest upload(String url){
         return UpLoadRequest.of(url);
     }
+
+
+    /**
+     * 从一个请求复制一个
+     * 保证实现类重写了{@link Object#clone()}方法
+     * @see BaseHttpRequest#clone()
+     * @see BaseHttpRequest#clone()
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends HttpRequest> T clone(T t){
+        try {
+            java.lang.reflect.Method method = t.getClass().getMethod("clone");
+            method.setAccessible(true);
+            return (T)method.invoke(t);
+        } catch (Exception e) {
+            throw new RuntimeException("不支持clone,请检查是否重写clone并且实现Cloneable接口" , e);
+        }
+    }
 }

@@ -20,7 +20,7 @@ import java.util.Map;
  * T泛型为了变种的setter返回this便于链式调用
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> implements HolderHttpRequest, Cloneable, ChainCall<THIS> {
+public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> implements HolderHttpRequest, ChainCall<THIS> {
     /**
      * 请求的URL
      */
@@ -335,6 +335,9 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     }
 
 
+    /**
+     * 默认只支持浅拷贝，请勿要对应用类型的field进行add、remove等操作，会互相影响，比如map.add、collection.remove
+     */
     @Override
     public THIS clone() throws CloneNotSupportedException {
         return (THIS)super.clone();

@@ -17,10 +17,11 @@ import java.util.Map;
 
 /**
  * Http请求的基本定义
+ * 子类都要重写clone方法，使此类的子类具备clone能力
  * @since 1.1.6
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface HttpRequest extends ConfigAccessor {
+public interface HttpRequest extends ConfigAccessor , Cloneable{
     /**
      * 结果包含headers
      */
