@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.RequestCreator;
 import top.jfunc.common.http.smart.SmartHttpClient;
 
 import java.io.File;
@@ -63,7 +62,7 @@ class DownloadThread extends Thread{
         this.block = block;
         this.file = file;
         this.smartHttpClient = smartHttpClient;
-        this.downloadRequest = RequestCreator.clone(downloadRequest);
+        this.downloadRequest = DownloadUtil.from(downloadRequest);
     }
 
     @Override

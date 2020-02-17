@@ -10,6 +10,7 @@ import top.jfunc.common.http.component.CompletedUrlCreator;
 import top.jfunc.common.http.component.DefaultCompletedUrlCreator;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.holderrequest.HolderHttpRequest;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.net.URL;
@@ -20,7 +21,7 @@ import java.util.Map;
  * T泛型为了变种的setter返回this便于链式调用
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> implements HolderHttpRequest, ChainCall<THIS> {
+public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> implements HolderHttpRequest, Cloneable, ChainCall<THIS> {
     /**
      * 请求的URL
      */
@@ -332,5 +333,44 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
     public THIS setMethod(Method method) {
         this.method = method;
         return myself();
+    }
+
+
+    @Override
+    public THIS clone() throws CloneNotSupportedException {
+        THIS clone = (THIS)super.clone();
+        clone.setConfig(getConfig());
+        clone.setMethod(getMethod());
+
+        clone.setUrl(getUrl());
+        clone.setConnectionTimeout(getConnectionTimeout());
+        clone.setReadTimeout(getReadTimeout());
+        clone.setContentType(getContentType());
+
+        if(MapUtil.notEmpty(getRouteParams())){
+            getRouteParams().forEach(clone::addRouteParam);
+        }
+        if(MapUtil.notEmpty(getQueryParams())){
+            getQueryParams().forEachKeyValue(clone::addQueryParam);
+        }
+        clone.setQueryParamCharset(getQueryParamCharset());
+        if(MapUtil.notEmpty(getHeaders())){
+            getHeaders().forEachKeyValue(clone::addHeader);
+        }
+
+        clone.setResultCharset(getResultCharset());
+        clone.setIncludeHeaders(isIncludeHeaders());
+        clone.setIgnoreResponseBody(isIgnoreResponseBody());
+        clone.followRedirects(followRedirects());
+        clone.setProxy(getProxyInfo());
+        clone.setHostnameVerifier(getHostnameVerifier());
+        clone.setSslContext(getSslContext());
+        clone.setX509TrustManager(getX509TrustManager());
+
+        if(MapUtil.notEmpty(getAttributes())){
+            getAttributes().forEach(clone::addAttribute);
+        }
+
+        return clone;
     }
 }

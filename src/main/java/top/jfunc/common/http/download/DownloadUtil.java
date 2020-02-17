@@ -3,7 +3,9 @@ package top.jfunc.common.http.download;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.RequestCreator;
+import top.jfunc.common.http.request.basic.DownLoadRequest;
 import top.jfunc.common.http.smart.SmartHttpClient;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
@@ -14,12 +16,12 @@ import java.io.IOException;
 /**
  * @author xiongshiyan at 2020/2/16 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DownloadUtil {
+class DownloadUtil {
     /**
      * 获取网络文件大小
      */
-    public static long getNetFileLength(SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) throws IOException {
-        DownloadRequest cloneRequest = RequestCreator.clone(downloadRequest);
+    static long getNetFileLength(SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) throws IOException {
+        DownloadRequest cloneRequest = from(downloadRequest);
         MultiValueMap<String, String> multiValueMap = smartHttpClient.head(cloneRequest);
         if(multiValueMap.containsKey(HttpHeaders.CONTENT_LENGTH)){
             return Long.parseLong(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH));
@@ -27,6 +29,43 @@ public class DownloadUtil {
             return Long.parseLong(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
         }
     }
+
+    /**
+     * 以后换成clone接口实现
+     */
+    static DownloadRequest from(DownloadRequest downloadRequest){
+        DownLoadRequest download = RequestCreator.download(downloadRequest.getUrl(), downloadRequest.getFile());
+        download.setConfig(downloadRequest.getConfig());
+        download.setMethod(downloadRequest.getMethod());
+        download.setConnectionTimeout(downloadRequest.getConnectionTimeout());
+        download.setReadTimeout(downloadRequest.getReadTimeout());
+        download.setContentType(downloadRequest.getContentType());
+        if(MapUtil.notEmpty(downloadRequest.getRouteParams())){
+            downloadRequest.getRouteParams().forEach(download::addRouteParam);
+        }
+        if(MapUtil.notEmpty(downloadRequest.getQueryParams())){
+            downloadRequest.getQueryParams().forEachKeyValue(download::addQueryParam);
+        }
+        download.setQueryParamCharset(downloadRequest.getQueryParamCharset());
+        if(MapUtil.notEmpty(downloadRequest.getHeaders())){
+            downloadRequest.getHeaders().forEachKeyValue(download::addHeader);
+        }
+
+        download.setResultCharset(downloadRequest.getResultCharset());
+        download.setIncludeHeaders(downloadRequest.isIncludeHeaders());
+        download.setIgnoreResponseBody(downloadRequest.isIgnoreResponseBody());
+        download.followRedirects(downloadRequest.followRedirects());
+        download.setProxy(downloadRequest.getProxyInfo());
+        download.setHostnameVerifier(downloadRequest.getHostnameVerifier());
+        download.setSslContext(downloadRequest.getSslContext());
+        download.setX509TrustManager(downloadRequest.getX509TrustManager());
+        if(MapUtil.notEmpty(downloadRequest.getAttributes())){
+            downloadRequest.getAttributes().forEach(download::addAttribute);
+        }
+
+        return download;
+    }
+
 
     /**
      *
@@ -37,7 +76,7 @@ public class DownloadUtil {
      * @param downloadLength 下载量，没有就null
      * @throws IOException IOException
      */
-    public static void saveFileLength(File file , long totalLength , Long downloadLength) throws IOException{
+    static void saveFileLength(File file , long totalLength , Long downloadLength) throws IOException{
         File tempFile = getConfFile(file);
         //保存总量但是文件已经存在，说明已经下载一部分了
         if(null == downloadLength && tempFile.exists()){
@@ -56,7 +95,7 @@ public class DownloadUtil {
      * @return 下载量
      * @throws IOException IOException
      */
-    public static long readDownloadedLength(File file) throws IOException{
+    static long readDownloadedLength(File file) throws IOException{
         File confFile = getConfFile(file);
         if(!confFile.exists()){
             return 0;
@@ -74,14 +113,14 @@ public class DownloadUtil {
      * @param file 下载的文件
      * @return 文件大小
      */
-    public static long getDownloadedLength(File file){
+    static long getDownloadedLength(File file){
         if(!file.exists()){
             return 0;
         }
         return file.length();
     }
 
-    public static boolean deleteConfFile(File file){
+    static boolean deleteConfFile(File file){
         File confFile = getConfFile(file);
         if(confFile.exists()){
             return confFile.delete();
