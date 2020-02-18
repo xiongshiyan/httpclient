@@ -30,7 +30,7 @@ public class DefaultApacheClientFactory extends AbstractRequesterFactory<HttpCli
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
-        HttpClientBuilder clientBuilder = ApacheUtil.getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext, httpRequest.followRedirects());
+        HttpClientBuilder clientBuilder = ApacheUtil.getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext, config.followRedirectsWithDefault(httpRequest.followRedirects()));
         return clientBuilder.build();
     }
 }

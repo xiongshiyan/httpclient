@@ -25,7 +25,7 @@ public class DefaultJoddHttpRequestFactory extends AbstractRequesterFactory<jodd
         request.timeout(config.getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
 
         //是否重定向
-        request.followRedirects(httpRequest.followRedirects());
+        request.followRedirects(config.followRedirectsWithDefault(httpRequest.followRedirects()));
 
         //3.SSL设置
         initSSL(request , httpRequest);

@@ -103,8 +103,9 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
      * 判断是否重定向
      */
     protected boolean needRedirect(HttpRequest httpRequest, int statusCode, MultiValueMap<String, String> responseHeaders) {
-        return httpRequest.followRedirects()
-                && HttpStatus.needRedirect(statusCode)
+        Config config = httpRequest.getConfig();
+        boolean followRedirects = config.followRedirectsWithDefault(httpRequest.followRedirects());
+        return followRedirects && HttpStatus.needRedirect(statusCode)
                 && MapUtil.notEmpty(responseHeaders)
                 && responseHeaders.containsKey(HttpHeaders.LOCATION);
     }

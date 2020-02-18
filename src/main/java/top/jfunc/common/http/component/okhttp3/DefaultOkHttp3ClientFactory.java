@@ -36,7 +36,7 @@ public class DefaultOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttp
         }
 
         //是否重定向
-        clientBuilder.followRedirects(httpRequest.followRedirects());
+        clientBuilder.followRedirects(config.followRedirectsWithDefault(httpRequest.followRedirects()));
 
         ////////////////////////////////////ssl处理///////////////////////////////////
         if(ParamUtil.isHttps(httpRequest.getCompletedUrl())){

@@ -23,53 +23,38 @@ import java.util.Map;
  * @author xiongshiyan at 2018/8/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class Config {
-    private ConfigFrozen configFrozen = new ConfigFrozen();
-    /**
-     * BaseUrl,如果设置了就在正常传送的URL之前添加上
-     */
-    private String baseUrl                                  = null;
-    /**
-     * 连接超时时间
-     */
-    private int defaultConnectionTimeout                    = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
-    /**
-     * 读数据超时时间
-     */
-    private int defaultReadTimeout                          = HttpConstants.DEFAULT_READ_TIMEOUT;
-    /**
-     * 请求体编码
-     */
-    private String defaultBodyCharset                       = HttpConstants.DEFAULT_CHARSET;
-    /**
-     * 返回体编码
-     */
-    private String defaultResultCharset                     = HttpConstants.DEFAULT_CHARSET;
-    /**
-     * 代理设置,如果有就设置
-     * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
-     */
-    private ProxyInfo proxyInfo = null;
-    /**
-     * SSL相关设置处理器
-     */
-    private SSLHolder sslHolder = new DefaultSSLHolder2();
-    /**
-     * 默认的请求头,每个请求都会加上//private MultiValueMap<String,String> defaultHeaders = null;
-     */
-    private HeaderHolder headerHolder = new DefaultHeaderHolder();
-    /**
-     * 默认的请求Query参数,每个请求都会加上//private MultiValueMap<String,String> defaultQueryParams = null;
-     */
-    private ParamHolder queryParamHolder = new DefaultParamHolder();
-    /**
-     * CookieJar，处理Cookie
-     */
-    private CookieJar cookieJar = null;
+    public static final int ENABLE    = 1;
+    public static final int UN_ENABLE = 0;
 
-    /**
-     * 拦截器链
-     */
-    private CompositeInterceptor compositeInterceptor;
+    private ConfigFrozen configFrozen = new ConfigFrozen();
+    /**BaseUrl,如果设置了就在正常传送的URL之前添加上*/
+    private String baseUrl                                  = null;
+    /**连接超时时间*/
+    private int defaultConnectionTimeout                    = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+    /**读数据超时时间*/
+    private int defaultReadTimeout                          = HttpConstants.DEFAULT_READ_TIMEOUT;
+    /**请求体编码*/
+    private String defaultBodyCharset                       = HttpConstants.DEFAULT_CHARSET;
+    /**返回体编码*/
+    private String defaultResultCharset                     = HttpConstants.DEFAULT_CHARSET;
+    /**返回结果中是否保留headers,默认不保留*/
+    private boolean retainResponseHeaders                   = !HttpRequest.RETAIN_RESPONSE_HEADERS;
+    /**返回结果中是否忽略body,默认不忽略*/
+    private boolean ignoreResponseBody                      = !HttpRequest.IGNORE_RESPONSE_BODY;
+    /**是否支持重定向,默认不支持*/
+    private boolean followRedirects                         = !HttpRequest.FOLLOW_REDIRECTS;
+    /**代理设置,如果有就设置*/
+    private ProxyInfo proxyInfo                             = null;
+    /**SSL相关设置处理器*/
+    private SSLHolder sslHolder                             = new DefaultSSLHolder2();
+    /**默认的请求头,每个请求都会加上*/
+    private HeaderHolder headerHolder                       = new DefaultHeaderHolder();
+    /**默认的请求Query参数,每个请求都会加上*/
+    private ParamHolder queryParamHolder                    = new DefaultParamHolder();
+    /**CookieJar,处理Cookie*/
+    private CookieJar cookieJar                             = null;
+    /**拦截器链*/
+    private CompositeInterceptor compositeInterceptor       = null;
 
     public static Config defaultConfig(){
         return new Config();
@@ -151,6 +136,32 @@ public class Config {
     public Config setDefaultResultCharset(String defaultResultCharset) {
         configFrozen.ensureConfigNotFreeze();
         this.defaultResultCharset = defaultResultCharset;
+        return this;
+    }
+    public boolean retainResponseHeadersWithDefault(int retainResponseHeaders) {
+        return HttpConstants.UNSIGNED == retainResponseHeaders ? this.retainResponseHeaders : (ENABLE == retainResponseHeaders);
+    }
+
+    public boolean ignoreResponseBodyWithDefault(int ignoreResponseBody) {
+        return HttpConstants.UNSIGNED == ignoreResponseBody ? this.ignoreResponseBody : (ENABLE == ignoreResponseBody);
+    }
+
+    public boolean followRedirectsWithDefault(int followRedirects) {
+        return HttpConstants.UNSIGNED == followRedirects ? this.followRedirects : (ENABLE == followRedirects);
+    }
+
+    public Config retainResponseHeaders(boolean retainResponseHeaders) {
+        this.retainResponseHeaders = retainResponseHeaders;
+        return this;
+    }
+
+    public Config ignoreResponseBody(boolean ignoreResponseBody) {
+        this.ignoreResponseBody = ignoreResponseBody;
+        return this;
+    }
+
+    public Config followRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
         return this;
     }
     public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){

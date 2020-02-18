@@ -7,6 +7,9 @@ import java.net.Proxy;
  * @author xiongshiyan at 2019/5/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class ProxyInfo {
+    /**
+     * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
+     */
     private Proxy proxy;
     private String proxyUserName;
     private String proxyPassword;

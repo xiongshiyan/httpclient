@@ -43,17 +43,17 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
      */
     private String resultCharset = null;
     /**
-     * 返回结果中是否包含headers,默认不包含
+     * 返回结果中是否包含headers,不设置就使用系统默认的
      */
-    private boolean retainResponseHeaders = !RETAIN_RESPONSE_HEADERS;
+    private int retainResponseHeaders = HttpConstants.UNSIGNED;
     /**
-     * 返回结果中是否忽略body,  true那么就不去读取body，提高效率, 默认不忽略
+     * 返回结果中是否忽略body,  true那么就不去读取body，提高效率, 不设置就使用系统默认的
      */
-    private boolean ignoreResponseBody = !IGNORE_RESPONSE_BODY;
+    private int ignoreResponseBody = HttpConstants.UNSIGNED;
     /**
-     * 是否支持重定向
+     * 是否支持重定向，不设置就使用系统默认的
      */
-    private boolean followRedirects = !FOLLOW_REDIRECTS;
+    private int followRedirects = HttpConstants.UNSIGNED;
     /**
      * 代理设置,如果有就设置
      * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
@@ -142,35 +142,35 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
     }
 
     @Override
-    public boolean retainResponseHeaders() {
+    public int retainResponseHeaders() {
         return retainResponseHeaders;
     }
 
     @Override
     public THIS retainResponseHeaders(boolean retainResponseHeaders) {
-        this.retainResponseHeaders = retainResponseHeaders;
+        this.retainResponseHeaders = retainResponseHeaders ? Config.ENABLE : Config.UN_ENABLE;
         return myself();
     }
 
     @Override
-    public boolean ignoreResponseBody() {
+    public int ignoreResponseBody() {
         return ignoreResponseBody;
     }
 
     @Override
     public THIS ignoreResponseBody(boolean ignoreResponseBody) {
-        this.ignoreResponseBody = ignoreResponseBody;
+        this.ignoreResponseBody = ignoreResponseBody ? Config.ENABLE : Config.UN_ENABLE;
         return myself();
     }
 
     @Override
-    public boolean followRedirects() {
+    public int followRedirects() {
         return followRedirects;
     }
 
     @Override
     public THIS followRedirects(boolean followRedirects) {
-        this.followRedirects = followRedirects;
+        this.followRedirects = followRedirects ? Config.ENABLE : Config.UN_ENABLE;
         return myself();
     }
 
