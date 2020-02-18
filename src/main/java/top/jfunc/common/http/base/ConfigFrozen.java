@@ -21,7 +21,7 @@ public class ConfigFrozen {
     /**
      * 在修改的地方调用此方法
      */
-    protected void ensureConfigNotFreeze(){
+    public void ensureConfigNotFreeze(){
         if(frozen){
             throw new IllegalStateException("全局配置已经被冻结,不允许再修改");
         }

@@ -1,10 +1,6 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.base.Method;
-import top.jfunc.common.http.base.AbstractConfigurableHttp;
-import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.base.ResultCallback;
+import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.httprequest.*;
 import top.jfunc.common.http.cookie.CookieAccessor;
@@ -30,7 +26,7 @@ import java.util.Objects;
  * @see HttpRequestHttpClient
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHttp implements SmartHttpClient, SmartHttpTemplate<CC> {
+public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC> {
 
     /**处理一般包含body的*/
     private BodyContentCallbackCreator<CC> bodyContentCallbackCreator;
@@ -47,6 +43,11 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
 
     /**处理Cookie*/
     private CookieAccessor cookieAccessor;
+
+    /**配置冻结器*/
+    private ConfigFrozen configFrozen = new ConfigFrozen();
+    /**保存系统默认配置*/
+    private Config config = Config.defaultConfig();
 
     public AbstractSmartHttpClient(){
         setContentCallbackHandler(new DefaultContentCallbackHandler<>());
@@ -303,6 +304,26 @@ public abstract class AbstractSmartHttpClient<CC> extends AbstractConfigurableHt
 
     public void setCookieAccessor(CookieAccessor cookieAccessor) {
         this.cookieAccessor = Objects.requireNonNull(cookieAccessor);
+    }
+
+
+    @Override
+    public Config getConfig() {
+        return config;
+    }
+
+    @Override
+    public void setConfig(Config config) {
+        configFrozen.ensureConfigNotFreeze();
+        this.config = Objects.requireNonNull(config);
+    }
+
+    @Override
+    public void freezeConfig() {
+        //本身冻结
+        configFrozen.freezeConfig();
+        //Config冻结
+        config.freezeConfig();
     }
 }
 
