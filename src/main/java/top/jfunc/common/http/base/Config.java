@@ -94,7 +94,7 @@ public class Config {
         return defaultConnectionTimeout;
     }
     public int getConnectionTimeoutWithDefault(int connectionTimeout){
-        return HttpConstants.TIMEOUT_UNSIGNED == connectionTimeout ? getDefaultConnectionTimeout() : connectionTimeout;
+        return HttpConstants.UNSIGNED == connectionTimeout ? getDefaultConnectionTimeout() : connectionTimeout;
     }
     public Config setDefaultConnectionTimeout(int defaultConnectionTimeout) {
         configFrozen.ensureConfigNotFreeze();
@@ -106,7 +106,7 @@ public class Config {
         return defaultReadTimeout;
     }
     public int getReadTimeoutWithDefault(int readTimeout){
-        return HttpConstants.TIMEOUT_UNSIGNED == readTimeout ? getDefaultReadTimeout() : readTimeout;
+        return HttpConstants.UNSIGNED == readTimeout ? getDefaultReadTimeout() : readTimeout;
     }
     public Config setDefaultReadTimeout(int defaultReadTimeout) {
         configFrozen.ensureConfigNotFreeze();

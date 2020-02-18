@@ -68,7 +68,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, Map<String, String> params, Map<String, String> headers, String resultCharset) throws IOException{
-        return get(url,params,headers, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,resultCharset);
+        return get(url,params,headers, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED,resultCharset);
     }
 
     /**
@@ -81,7 +81,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
-        return get(url,params,headers, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return get(url,params,headers, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -123,7 +123,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, Map<String, String> params, String resultCharset) throws IOException{
-        return get(url,params,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,resultCharset);
+        return get(url,params,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED,resultCharset);
     }
 
     /**
@@ -135,7 +135,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, Map<String, String> params) throws IOException{
-        return get(url,params,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return get(url,params,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -147,7 +147,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url, String resultCharset) throws IOException{
-        return get(url,null,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED, resultCharset);
+        return get(url,null,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED, resultCharset);
     }
 
     /**
@@ -158,7 +158,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String get(String url) throws IOException{
-        return get(url,null,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return get(url,null,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -205,7 +205,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, Map<String, String> headers, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,contentType,headers, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
+        return post(url,body,contentType,headers, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED,bodyCharset,resultCharset);
     }
 
     /**
@@ -219,7 +219,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, Map<String, String> headers) throws IOException{
-        return post(url,body,contentType,headers, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return post(url,body,contentType,headers, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -266,7 +266,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,contentType,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
+        return post(url,body,contentType,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED,bodyCharset,resultCharset);
     }
 
     /**
@@ -279,7 +279,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType) throws IOException{
-        return post(url,body,contentType,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return post(url,body,contentType,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -293,7 +293,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String postJson(String url, String body, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED,bodyCharset,resultCharset);
+        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED,bodyCharset,resultCharset);
     }
 
     /**
@@ -305,7 +305,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String postJson(String url, String body) throws IOException{
-        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return post(url,body,JSON_WITH_DEFAULT_CHARSET,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -396,7 +396,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default byte[] getAsBytes(String url, MultiValueMap<String, String> headers) throws IOException{
-        return getAsBytes(url , headers , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return getAsBytes(url , headers , HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -407,7 +407,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default byte[] getAsBytes(String url) throws IOException{
-        return getAsBytes(url , null , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return getAsBytes(url , null , HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -445,7 +445,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default File getAsFile(String url, MultiValueMap<String, String> headers, File file) throws IOException{
-        return getAsFile(url , headers  , file , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return getAsFile(url , headers  , file , HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
     /**
      * 下载为文件
@@ -456,7 +456,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default File getAsFile(String url, File file) throws IOException{
-        return getAsFile(url , null  , file , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED);
+        return getAsFile(url , null  , file , HttpConstants.UNSIGNED, HttpConstants.UNSIGNED);
     }
 
     /**
@@ -497,7 +497,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String upload(String url, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
-        return upload(url, headers ,null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED , files);
+        return upload(url, headers ,null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED, files);
     }
 
     /**
@@ -523,7 +523,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String upload(String url, FormFile... files) throws IOException{
-        return upload(url, null , null, HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED , files);
+        return upload(url, null , null, HttpConstants.UNSIGNED, HttpConstants.UNSIGNED, files);
     }
 
     /**
@@ -567,7 +567,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
-        return upload(url, params ,headers , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED, null , files);
+        return upload(url, params ,headers , HttpConstants.UNSIGNED, HttpConstants.UNSIGNED, null , files);
     }
 
     /**
@@ -599,6 +599,6 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
         if(MapUtil.notEmpty(params)){
             p = ArrayListMultiValueMap.fromMap(params);
         }
-        return upload(url, p ,null , HttpConstants.TIMEOUT_UNSIGNED, HttpConstants.TIMEOUT_UNSIGNED, null , files);
+        return upload(url, p ,null , HttpConstants.UNSIGNED, HttpConstants.UNSIGNED, null , files);
     }
 }

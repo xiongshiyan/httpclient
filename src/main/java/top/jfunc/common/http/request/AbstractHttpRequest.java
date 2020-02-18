@@ -31,12 +31,12 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
      * 连接超时时间，不设置就使用系统默认的
      * @see Config#defaultConnectionTimeout
      */
-    private int connectionTimeout = HttpConstants.TIMEOUT_UNSIGNED;
+    private int connectionTimeout = HttpConstants.UNSIGNED;
     /**
      * 读数据超时时间，不设置就使用系统默认的
      * @see Config#defaultReadTimeout
      */
-    private int readTimeout = HttpConstants.TIMEOUT_UNSIGNED;
+    private int readTimeout = HttpConstants.UNSIGNED;
     /**
      * 返回体编码，不设置就使用系统默认的
      * @see Config#defaultResultCharset
