@@ -42,7 +42,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
 
     /**
      * 下载为字节数组
-     * 也可以使用{@link SmartHttpClient#get(HttpRequest)}得到，再根据{@link Response#asBytes()}达到相同的效果
+     * 也可以使用{@link SmartHttpClient#get(HttpRequest)}得到，再根据{@link Response#getBodyAsBytes()} 达到相同的效果
      * @param httpRequest 请求参数
      * @return byte[]
      * @throws IOException IOException
