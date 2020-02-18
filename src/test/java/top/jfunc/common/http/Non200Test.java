@@ -83,7 +83,7 @@ public class Non200Test {
 
         HttpRequest request = HolderGetRequest.of("http://localhost:50000/hello/301");
 
-        request.setIncludeHeaders(HttpRequest.INCLUDE_HEADERS);
+        request.retainResponseHeaders(HttpRequest.RETAIN_RESPONSE_HEADERS);
 
         Response response = smartHttpClient.get(request);
         Assert.assertEquals(BODY , response.getBodyAsString());

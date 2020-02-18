@@ -64,7 +64,7 @@ public class HttpSmartTest {
     private void testGet(SmartHttpClient http){
         String url = "get/query";
         try {
-            Request request1 = Request.of(url).setIgnoreResponseBody(false).setIncludeHeaders(true).setResultCharset("UTF-8");
+            Request request1 = Request.of(url).ignoreResponseBody(false).retainResponseHeaders(true).setResultCharset("UTF-8");
             request1.headerHolder().addHeader("saleType" , "2");
             Response response = http.get(request1);
             System.out.println(response);
@@ -145,7 +145,7 @@ public class HttpSmartTest {
     public void testPost(SmartHttpClient http){
         try {
             String url = "http://localhost:8080/http-server-test/post/body";
-            Request request = Request.of(url).setIncludeHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
+            Request request = Request.of(url).retainResponseHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
             Response post = http.post(request);
@@ -189,7 +189,7 @@ public class HttpSmartTest {
         String url = "http://localhost:8080/http-server-test/upload/only";
         try {
             FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "file",null);
-            Request request = Request.of(url).setIncludeHeaders(true);
+            Request request = Request.of(url).retainResponseHeaders(true);
             request.formFileHolder().addFormFile(formFile);
             request.headerHolder().addHeader("empCode" , "ahg0023")
                     .addHeader("phone" , "15208384257");
@@ -229,7 +229,7 @@ public class HttpSmartTest {
         try {
             FormFile formFile = new FormFile(new File("E:\\BugReport.3png") , "file",null);
             FormFile formFile2 = new FormFile(new File("E:\\BugReport.png") , "file2",null);
-            Request request = Request.of(url).setIncludeHeaders(true);
+            Request request = Request.of(url).retainResponseHeaders(true);
             request.formFileHolder().addFormFile(formFile2).addFormFile(formFile);
             request.headerHolder().addHeader("empCode" , "ahg0023")
                     .addHeader("phone" , "15208384257");
@@ -267,7 +267,7 @@ public class HttpSmartTest {
 //        String url = "https://dzg.palmte.cn/dzdsds";
         String url = "http://localhost:8080/http-server-test/put/body";
         try {
-            Request request = Request.of(url).setIncludeHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
+            Request request = Request.of(url).retainResponseHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
             Response response = http.http(request , Method.PUT);
@@ -300,7 +300,7 @@ public class HttpSmartTest {
     private void testAll(SmartHttpClient smartHttpClient) throws Exception{
 
         HolderCommonBodyRequest request = HolderPostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
-                .setIncludeHeaders(true).setBody("xxxxx", HttpConstants.JSON_WITH_DEFAULT_CHARSET);
+                .retainResponseHeaders(true).setBody("xxxxx", HttpConstants.JSON_WITH_DEFAULT_CHARSET);
         request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         request.queryParamHolder().addParam("sa" , "sa").addParam("ds" , "ds");
         Response response = smartHttpClient.post(request);

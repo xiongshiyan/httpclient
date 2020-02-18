@@ -25,7 +25,7 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
     /**
      * 结果包含headers
      */
-    boolean INCLUDE_HEADERS = true;
+    boolean RETAIN_RESPONSE_HEADERS = true;
     /**
      * 结果忽略body
      */
@@ -236,27 +236,27 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
      * 响应中是否包含header
      * @return 响应中是否包含header
      */
-    boolean isIncludeHeaders();
+    boolean retainResponseHeaders();
 
     /**
      * 设置includeHeaders
-     * @param includeHeaders includeHeaders
+     * @param includeHeaders retainResponseHeaders
      * @return this
      */
-    HttpRequest setIncludeHeaders(boolean includeHeaders);
+    HttpRequest retainResponseHeaders(boolean includeHeaders);
 
     /**
      * 是否忽略响应体，在不需要响应体的场景下提高效率
      * @return 是否忽略响应体
      */
-    boolean isIgnoreResponseBody();
+    boolean ignoreResponseBody();
 
     /**
      * 设置ignoreResponseBody
      * @param ignoreResponseBody ignoreResponseBody
      * @return this
      */
-    HttpRequest setIgnoreResponseBody(boolean ignoreResponseBody);
+    HttpRequest ignoreResponseBody(boolean ignoreResponseBody);
 
     /**
      * 是否重定向

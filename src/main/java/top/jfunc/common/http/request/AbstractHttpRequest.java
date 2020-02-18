@@ -45,7 +45,7 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
     /**
      * 返回结果中是否包含headers,默认不包含
      */
-    private boolean includeHeaders = !INCLUDE_HEADERS;
+    private boolean retainResponseHeaders = !RETAIN_RESPONSE_HEADERS;
     /**
      * 返回结果中是否忽略body,  true那么就不去读取body，提高效率, 默认不忽略
      */
@@ -142,23 +142,23 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
     }
 
     @Override
-    public boolean isIncludeHeaders() {
-        return includeHeaders;
+    public boolean retainResponseHeaders() {
+        return retainResponseHeaders;
     }
 
     @Override
-    public THIS setIncludeHeaders(boolean includeHeaders) {
-        this.includeHeaders = includeHeaders;
+    public THIS retainResponseHeaders(boolean retainResponseHeaders) {
+        this.retainResponseHeaders = retainResponseHeaders;
         return myself();
     }
 
     @Override
-    public boolean isIgnoreResponseBody() {
+    public boolean ignoreResponseBody() {
         return ignoreResponseBody;
     }
 
     @Override
-    public THIS setIgnoreResponseBody(boolean ignoreResponseBody) {
+    public THIS ignoreResponseBody(boolean ignoreResponseBody) {
         this.ignoreResponseBody = ignoreResponseBody;
         return myself();
     }

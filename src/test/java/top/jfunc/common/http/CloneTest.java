@@ -27,8 +27,8 @@ public class CloneTest {
         UpLoadRequest clone = upLoadRequest.clone();
 
         clone.followRedirects(false);
-        clone.setIncludeHeaders(true);
-        clone.setIgnoreResponseBody(true);
+        clone.retainResponseHeaders(true);
+        clone.ignoreResponseBody(true);
         clone.addFormParam("k2" , "v2");
         clone.addQueryParam("dd" , "sdsad");
         System.out.println(clone);
@@ -45,8 +45,8 @@ public class CloneTest {
         HolderUpLoadRequest clone = upLoadRequest.clone();
 
         clone.followRedirects(false);
-        clone.setIncludeHeaders(true);
-        clone.setIgnoreResponseBody(true);
+        clone.retainResponseHeaders(true);
+        clone.ignoreResponseBody(true);
         clone.addFormParam("k2" , "v2");
         clone.addQueryParam("dd" , "sdsad");
         System.out.println(clone);

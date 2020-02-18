@@ -21,11 +21,11 @@ public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
     public MultiValueMap<String, String> extract(S s, HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
 
-        boolean includeHeaders = httpRequest.isIncludeHeaders();
+        boolean includeHeaders = httpRequest.retainResponseHeaders();
 
         ///1.如果要支持cookie，必须读取header
         if(null != config.getCookieJar() || httpRequest.followRedirects()){
-            includeHeaders = HttpRequest.INCLUDE_HEADERS;
+            includeHeaders = HttpRequest.RETAIN_RESPONSE_HEADERS;
         }
 
         //要求不需要解析header

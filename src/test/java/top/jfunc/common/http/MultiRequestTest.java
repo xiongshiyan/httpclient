@@ -141,7 +141,7 @@ public class MultiRequestTest {
                         .withHeader(Header.header("xx" , "xx"))
         );
 
-        HttpRequest request = HolderGetRequest.of("http://localhost:50000/hello/{name}").setIncludeHeaders(true);
+        HttpRequest request = HolderGetRequest.of("http://localhost:50000/hello/{name}").retainResponseHeaders(true);
         request.addRouteParam("name" , "John");
         request.addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         Response response = smartHttpClient.get(request);

@@ -181,7 +181,7 @@ public class MockServerTest {
                         .withHeader(Header.header("xx" , "xx"))
         );
 
-        Request request = Request.of("http://localhost:50000/hello/{name}").setIncludeHeaders(true);
+        Request request = Request.of("http://localhost:50000/hello/{name}").retainResponseHeaders(true);
         request.routeParamHolder().addRouteParam("name" , "John");
         request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         Response response = smartHttpClient.get(request);

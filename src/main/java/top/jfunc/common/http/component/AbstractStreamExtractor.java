@@ -20,7 +20,7 @@ public abstract class AbstractStreamExtractor<S> implements StreamExtractor<S> {
      */
     @Override
     public InputStream extract(S s, HttpRequest httpRequest) throws IOException {
-        if(httpRequest.isIgnoreResponseBody()){
+        if(httpRequest.ignoreResponseBody()){
             return IoUtil.emptyStream();
         }
         return doExtract(s , httpRequest);
