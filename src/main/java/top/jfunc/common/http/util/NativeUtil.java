@@ -174,8 +174,8 @@ public class NativeUtil {
 
 
     /**
-     * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build()
-     * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build(String, String)
+     * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build()
+     * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build(String, String)
      */
     public static void initSSL(HttpsURLConnection con , HostnameVerifier hostnameVerifier , SSLSocketFactory sslSocketFactory) {
         // 验证域

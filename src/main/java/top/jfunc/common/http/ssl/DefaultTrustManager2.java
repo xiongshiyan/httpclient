@@ -1,4 +1,4 @@
-package top.jfunc.common.http.base.ssl;
+package top.jfunc.common.http.ssl;
 
 import java.security.cert.X509Certificate;
 
@@ -10,7 +10,6 @@ public class DefaultTrustManager2 extends DefaultTrustManager {
 
 	@Override
 	public X509Certificate[] getAcceptedIssuers() {
-		X509Certificate[] certificates = {};
-		return certificates;
+		return new X509Certificate[0];
 	}
 }

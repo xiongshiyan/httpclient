@@ -1,4 +1,4 @@
-package top.jfunc.common.http.base.ssl;
+package top.jfunc.common.http.ssl;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;

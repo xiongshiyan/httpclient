@@ -1,4 +1,4 @@
-package top.jfunc.common.http.base.ssl;
+package top.jfunc.common.http.ssl;
 
 import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.StrUtil;

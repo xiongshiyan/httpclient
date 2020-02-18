@@ -61,8 +61,8 @@ public class JoddUtil {
     }
 
     /**
-     * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build()
-     * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build(String, String)
+     * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build()
+     * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build(String, String)
      */
     public static void initSSL(HttpRequest httpRequest, HostnameVerifier hostnameVerifier , SSLSocketFactory sslSocketFactory , X509TrustManager trustManager , top.jfunc.common.http.base.ProxyInfo proxyInfo) {
         SocketHttpConnectionProvider httpConnectionProvider = null;

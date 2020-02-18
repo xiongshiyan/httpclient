@@ -1,6 +1,6 @@
 package top.jfunc.common.http.holder;
 
-import top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder;
+import top.jfunc.common.http.ssl.SSLSocketFactoryBuilder;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;

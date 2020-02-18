@@ -31,8 +31,8 @@ public class OkHttp3Util {
     }
 
     /**
-     * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build()
-     * @see top.jfunc.common.http.base.ssl.SSLSocketFactoryBuilder#build(String, String)
+     * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build()
+     * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build(String, String)
      */
     public static void initSSL(OkHttpClient.Builder builder , HostnameVerifier hostnameVerifier , SSLSocketFactory sslSocketFactory , X509TrustManager trustManager) {
         // 验证域
