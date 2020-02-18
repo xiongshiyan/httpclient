@@ -23,9 +23,7 @@ import java.util.Map;
  * @author xiongshiyan at 2018/8/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class Config {
-    public static final int ENABLE    = 1;
-    public static final int UN_ENABLE = 0;
-
+    /**配置冻结器*/
     private ConfigFrozen configFrozen = new ConfigFrozen();
     /**BaseUrl,如果设置了就在正常传送的URL之前添加上*/
     private String baseUrl                                  = null;
@@ -139,15 +137,15 @@ public class Config {
         return this;
     }
     public boolean retainResponseHeadersWithDefault(int retainResponseHeaders) {
-        return HttpConstants.UNSIGNED == retainResponseHeaders ? this.retainResponseHeaders : (ENABLE == retainResponseHeaders);
+        return HttpConstants.UNSIGNED == retainResponseHeaders ? this.retainResponseHeaders : (HttpConstants.ENABLE == retainResponseHeaders);
     }
 
     public boolean ignoreResponseBodyWithDefault(int ignoreResponseBody) {
-        return HttpConstants.UNSIGNED == ignoreResponseBody ? this.ignoreResponseBody : (ENABLE == ignoreResponseBody);
+        return HttpConstants.UNSIGNED == ignoreResponseBody ? this.ignoreResponseBody : (HttpConstants.ENABLE == ignoreResponseBody);
     }
 
     public boolean followRedirectsWithDefault(int followRedirects) {
-        return HttpConstants.UNSIGNED == followRedirects ? this.followRedirects : (ENABLE == followRedirects);
+        return HttpConstants.UNSIGNED == followRedirects ? this.followRedirects : (HttpConstants.ENABLE == followRedirects);
     }
 
     public Config retainResponseHeaders(boolean retainResponseHeaders) {

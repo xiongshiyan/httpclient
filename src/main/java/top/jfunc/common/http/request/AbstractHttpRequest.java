@@ -148,7 +148,7 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
 
     @Override
     public THIS retainResponseHeaders(boolean retainResponseHeaders) {
-        this.retainResponseHeaders = retainResponseHeaders ? Config.ENABLE : Config.UN_ENABLE;
+        this.retainResponseHeaders = retainResponseHeaders ? HttpConstants.ENABLE : HttpConstants.UN_ENABLE;
         return myself();
     }
 
@@ -159,7 +159,7 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
 
     @Override
     public THIS ignoreResponseBody(boolean ignoreResponseBody) {
-        this.ignoreResponseBody = ignoreResponseBody ? Config.ENABLE : Config.UN_ENABLE;
+        this.ignoreResponseBody = ignoreResponseBody ? HttpConstants.ENABLE : HttpConstants.UN_ENABLE;
         return myself();
     }
 
@@ -170,7 +170,7 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
 
     @Override
     public THIS followRedirects(boolean followRedirects) {
-        this.followRedirects = followRedirects ? Config.ENABLE : Config.UN_ENABLE;
+        this.followRedirects = followRedirects ? HttpConstants.ENABLE : HttpConstants.UN_ENABLE;
         return myself();
     }
 

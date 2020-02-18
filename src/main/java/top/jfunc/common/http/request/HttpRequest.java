@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * Http请求的基本定义
- * 子类都要重写clone方法，使此类的子类具备clone能力
+ * 子类都要重写clone方法，使其实现类具备clone能力
  * @since 1.1.6
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
@@ -235,8 +235,8 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
     /**
      * 响应中是否包含header
      * 为什么返回值不是boolean而要int？ 为了表示未指定的情况
-     * @see top.jfunc.common.http.base.Config#ENABLE
-     * @see top.jfunc.common.http.base.Config#UN_ENABLE
+     * @see top.jfunc.common.http.HttpConstants#ENABLE
+     * @see top.jfunc.common.http.HttpConstants#UN_ENABLE
      * @see top.jfunc.common.http.HttpConstants#UNSIGNED
      * @return 响应中是否包含header
      */
@@ -252,8 +252,8 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
 
     /**
      * 是否忽略响应体，在不需要响应体的场景下提高效率
-     * @see top.jfunc.common.http.base.Config#ENABLE
-     * @see top.jfunc.common.http.base.Config#UN_ENABLE
+     * @see top.jfunc.common.http.HttpConstants#ENABLE
+     * @see top.jfunc.common.http.HttpConstants#UN_ENABLE
      * @see top.jfunc.common.http.HttpConstants#UNSIGNED
      * @return 是否忽略响应体
      */
@@ -269,8 +269,8 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
 
     /**
      * 是否重定向
-     * @see top.jfunc.common.http.base.Config#ENABLE
-     * @see top.jfunc.common.http.base.Config#UN_ENABLE
+     * @see top.jfunc.common.http.HttpConstants#ENABLE
+     * @see top.jfunc.common.http.HttpConstants#UN_ENABLE
      * @see top.jfunc.common.http.HttpConstants#UNSIGNED
      * @return 是否重定向
      */
