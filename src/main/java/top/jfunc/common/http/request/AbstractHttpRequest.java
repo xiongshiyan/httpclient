@@ -41,7 +41,7 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
      * 返回体编码，不设置就使用系统默认的
      * @see Config#defaultResultCharset
      */
-    private String resultCharset = HttpConstants.DEFAULT_CHARSET;
+    private String resultCharset = null;
     /**
      * 返回结果中是否包含headers,默认不包含
      */
@@ -214,6 +214,7 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
     /**
      * 默认只支持浅拷贝，请勿要对应用类型的field进行add、remove等操作，会互相影响，比如map.add、collection.remove
      */
+    @SuppressWarnings("unchecked")
     @Override
     public THIS clone() throws CloneNotSupportedException {
         return (THIS)super.clone();
