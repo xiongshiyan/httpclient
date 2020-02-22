@@ -136,29 +136,29 @@ public class Config {
         this.defaultResultCharset = defaultResultCharset;
         return this;
     }
-    public boolean retainResponseHeadersWithDefault(int retainResponseHeaders) {
-        return HttpConstants.UNSIGNED == retainResponseHeaders ? this.retainResponseHeaders : (HttpConstants.ENABLE == retainResponseHeaders);
+    public boolean retainResponseHeadersWithDefault(Boolean retainResponseHeaders) {
+        return null != retainResponseHeaders ? retainResponseHeaders : this.retainResponseHeaders;
     }
 
-    public boolean ignoreResponseBodyWithDefault(int ignoreResponseBody) {
-        return HttpConstants.UNSIGNED == ignoreResponseBody ? this.ignoreResponseBody : (HttpConstants.ENABLE == ignoreResponseBody);
+    public boolean ignoreResponseBodyWithDefault(Boolean ignoreResponseBody) {
+        return null != ignoreResponseBody ? ignoreResponseBody : this.ignoreResponseBody;
     }
 
-    public boolean followRedirectsWithDefault(int followRedirects) {
-        return HttpConstants.UNSIGNED == followRedirects ? this.followRedirects : (HttpConstants.ENABLE == followRedirects);
+    public boolean followRedirectsWithDefault(Boolean followRedirects) {
+        return null != followRedirects ? followRedirects : this.followRedirects;
     }
 
-    public Config retainResponseHeaders(boolean retainResponseHeaders) {
+    public Config retainResponseHeaders(Boolean retainResponseHeaders) {
         this.retainResponseHeaders = retainResponseHeaders;
         return this;
     }
 
-    public Config ignoreResponseBody(boolean ignoreResponseBody) {
+    public Config ignoreResponseBody(Boolean ignoreResponseBody) {
         this.ignoreResponseBody = ignoreResponseBody;
         return this;
     }
 
-    public Config followRedirects(boolean followRedirects) {
+    public Config followRedirects(Boolean followRedirects) {
         this.followRedirects = followRedirects;
         return this;
     }

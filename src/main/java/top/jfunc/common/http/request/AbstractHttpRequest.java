@@ -45,15 +45,15 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
     /**
      * 返回结果中是否包含headers,不设置就使用系统默认的
      */
-    private int retainResponseHeaders = HttpConstants.UNSIGNED;
+    private Boolean retainResponseHeaders = null;
     /**
      * 返回结果中是否忽略body,  true那么就不去读取body，提高效率, 不设置就使用系统默认的
      */
-    private int ignoreResponseBody = HttpConstants.UNSIGNED;
+    private Boolean ignoreResponseBody = null;
     /**
      * 是否支持重定向，不设置就使用系统默认的
      */
-    private int followRedirects = HttpConstants.UNSIGNED;
+    private Boolean followRedirects = null;
     /**
      * 代理设置,如果有就设置
      * Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostName, port));
@@ -142,35 +142,35 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
     }
 
     @Override
-    public int retainResponseHeaders() {
+    public Boolean retainResponseHeaders() {
         return retainResponseHeaders;
     }
 
     @Override
-    public THIS retainResponseHeaders(boolean retainResponseHeaders) {
-        this.retainResponseHeaders = retainResponseHeaders ? HttpConstants.ENABLE : HttpConstants.UN_ENABLE;
+    public THIS retainResponseHeaders(Boolean retainResponseHeaders) {
+        this.retainResponseHeaders = retainResponseHeaders;
         return myself();
     }
 
     @Override
-    public int ignoreResponseBody() {
+    public Boolean ignoreResponseBody() {
         return ignoreResponseBody;
     }
 
     @Override
-    public THIS ignoreResponseBody(boolean ignoreResponseBody) {
-        this.ignoreResponseBody = ignoreResponseBody ? HttpConstants.ENABLE : HttpConstants.UN_ENABLE;
+    public THIS ignoreResponseBody(Boolean ignoreResponseBody) {
+        this.ignoreResponseBody = ignoreResponseBody;
         return myself();
     }
 
     @Override
-    public int followRedirects() {
+    public Boolean followRedirects() {
         return followRedirects;
     }
 
     @Override
-    public THIS followRedirects(boolean followRedirects) {
-        this.followRedirects = followRedirects ? HttpConstants.ENABLE : HttpConstants.UN_ENABLE;
+    public THIS followRedirects(Boolean followRedirects) {
+        this.followRedirects = followRedirects;
         return myself();
     }
 

@@ -25,15 +25,15 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
     /**
      * 结果包含headers
      */
-    boolean RETAIN_RESPONSE_HEADERS = true;
+    Boolean RETAIN_RESPONSE_HEADERS = Boolean.TRUE;
     /**
      * 结果忽略body
      */
-    boolean IGNORE_RESPONSE_BODY = true;
+    Boolean IGNORE_RESPONSE_BODY = Boolean.TRUE;
     /**
      * 支持重定向
      */
-    boolean FOLLOW_REDIRECTS = true;
+    Boolean FOLLOW_REDIRECTS = Boolean.TRUE;
 
     /**
      * 请求的URL
@@ -234,47 +234,38 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
 
     /**
      * 响应中是否包含header
-     * 为什么返回值不是boolean而要int？ 为了表示未指定的情况
-     * @see top.jfunc.common.http.HttpConstants#ENABLE
-     * @see top.jfunc.common.http.HttpConstants#UN_ENABLE
-     * @see top.jfunc.common.http.HttpConstants#UNSIGNED
+     * 返回值返回Boolean，是为了表示未指定的情况
      * @return 响应中是否包含header
      */
-    int retainResponseHeaders();
+    Boolean retainResponseHeaders();
 
     /**
      * 设置retainResponseHeaders
      * @see HttpRequest#RETAIN_RESPONSE_HEADERS
-     * @param retainResponseHeaders 设置的时候为boolean方便使用者
+     * @param retainResponseHeaders 是|否
      * @return this
      */
-    HttpRequest retainResponseHeaders(boolean retainResponseHeaders);
+    HttpRequest retainResponseHeaders(Boolean retainResponseHeaders);
 
     /**
      * 是否忽略响应体，在不需要响应体的场景下提高效率
-     * @see top.jfunc.common.http.HttpConstants#ENABLE
-     * @see top.jfunc.common.http.HttpConstants#UN_ENABLE
-     * @see top.jfunc.common.http.HttpConstants#UNSIGNED
      * @return 是否忽略响应体
      */
-    int ignoreResponseBody();
+    Boolean ignoreResponseBody();
 
     /**
      * 设置ignoreResponseBody
      * @see HttpRequest#IGNORE_RESPONSE_BODY
-     * @param ignoreResponseBody ignoreResponseBody
+     * @param ignoreResponseBody 是|否
      * @return this
      */
-    HttpRequest ignoreResponseBody(boolean ignoreResponseBody);
+    HttpRequest ignoreResponseBody(Boolean ignoreResponseBody);
 
     /**
      * 是否重定向
-     * @see top.jfunc.common.http.HttpConstants#ENABLE
-     * @see top.jfunc.common.http.HttpConstants#UN_ENABLE
-     * @see top.jfunc.common.http.HttpConstants#UNSIGNED
      * @return 是否重定向
      */
-    int followRedirects();
+    Boolean followRedirects();
 
     /**
      * 设置是否支持重定向
@@ -282,7 +273,7 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
      * @param followRedirects 是否支持重定向
      * @return this
      */
-    HttpRequest followRedirects(boolean followRedirects);
+    HttpRequest followRedirects(Boolean followRedirects);
 
     /**
      * 代理信息
