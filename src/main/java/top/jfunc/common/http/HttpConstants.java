@@ -32,8 +32,6 @@ public class HttpConstants {
      * 未指定的时候，相关设置就是{@link top.jfunc.common.http.base.Config}默认的
      */
     public static final int UNSIGNED                      = -1;
-    public static final int ENABLE                        = 1;
-    public static final int UN_ENABLE                     = 0;
     public static final int DEFAULT_CONNECT_TIMEOUT       = 15000;
     public static final int DEFAULT_READ_TIMEOUT          = 15000;
     public static final String  DEFAULT_CHARSET           = CharsetUtil.UTF_8;

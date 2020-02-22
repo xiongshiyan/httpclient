@@ -5,7 +5,6 @@ import org.junit.Test;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.basic.CommonRequest;
-import top.jfunc.common.http.smart.SmartHttpClient;
 
 public class BooleanTest {
     @Test
