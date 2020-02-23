@@ -1,7 +1,7 @@
 package top.jfunc.common.http.request.basic;
 
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.MutableStringBodyRequest;
-import top.jfunc.common.utils.CharsetUtil;
 
 /**
  * 通用的StringBody请求
@@ -25,7 +25,7 @@ public class CommonBodyRequest extends BaseHttpRequest<CommonBodyRequest> implem
         return commonBodyRequest;
     }
     private String body;
-    private String bodyCharset = CharsetUtil.UTF_8;
+    private String bodyCharset = Config.DEFAULT_CHARSET;
 
     @Override
     public CommonBodyRequest setBody(String body) {

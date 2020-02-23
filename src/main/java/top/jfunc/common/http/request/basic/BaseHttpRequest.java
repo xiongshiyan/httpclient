@@ -1,10 +1,10 @@
 package top.jfunc.common.http.request.basic;
 
 import top.jfunc.common.ChainCall;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.AbstractHttpRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.CharsetUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -34,7 +34,7 @@ public abstract class BaseHttpRequest<THIS extends BaseHttpRequest> extends Abst
     /**
      * Query参数字符编码
      */
-    private String queryParamCharset = CharsetUtil.UTF_8;
+    private String queryParamCharset = Config.DEFAULT_CHARSET;
     /**
      * header，可能多值
      */

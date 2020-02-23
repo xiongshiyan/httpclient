@@ -1,8 +1,8 @@
 package top.jfunc.common.http.response;
 
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.HttpStatus;
 import top.jfunc.common.http.smart.Response;
-import top.jfunc.common.utils.CharsetUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -24,7 +24,7 @@ public class DefaultResponse implements Response{
     /**
      * 返回体编码
      */
-    private String resultCharset = CharsetUtil.UTF_8;
+    private String resultCharset = Config.DEFAULT_CHARSET;
     /**
      * 返回的header
      */

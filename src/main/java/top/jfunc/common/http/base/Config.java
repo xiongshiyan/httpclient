@@ -39,6 +39,10 @@ public class Config {
      * 默认的超时控制
      */
     public static final int DEFAULT_TIMEOUT                 = 15000;
+    /**
+     * 系统默认编码UTF-8
+     */
+    public static String DEFAULT_CHARSET                    = CharsetUtil.UTF_8;
 
     /**BaseUrl,如果设置了就在正常传送的URL之前添加上*/
     private String baseUrl                                  = null;
@@ -47,9 +51,9 @@ public class Config {
     /**读数据超时时间*/
     private int defaultReadTimeout                          = DEFAULT_TIMEOUT;
     /**请求体编码*/
-    private String defaultBodyCharset                       = CharsetUtil.UTF_8;
+    private String defaultBodyCharset                       = DEFAULT_CHARSET;
     /**返回体编码*/
-    private String defaultResultCharset                     = CharsetUtil.UTF_8;
+    private String defaultResultCharset                     = DEFAULT_CHARSET;
     /**返回结果中是否保留headers,默认不保留*/
     private boolean retainResponseHeaders                   = !RETAIN_RESPONSE_HEADERS;
     /**返回结果中是否忽略body,默认不忽略*/

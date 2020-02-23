@@ -1,6 +1,7 @@
 package top.jfunc.common.http.util;
 
 import top.jfunc.common.Editor;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.utils.*;
 
 import java.io.UnsupportedEncodingException;
@@ -41,7 +42,7 @@ public class ParamUtil {
      * 默认UTF-8编码
      */
     public static String contactMap(Map<String, String> value){
-        return contactMap(value , CharsetUtil.UTF_8);
+        return contactMap(value , Config.DEFAULT_CHARSET);
     }
     /**
      * key1=value1&key2=value2,如果value=null 或者 size=0 返回 ""
@@ -55,7 +56,7 @@ public class ParamUtil {
     }
     
     public static String contactMap(MultiValueMap<String, String> value){
-        return contactMap(value , CharsetUtil.UTF_8);
+        return contactMap(value , Config.DEFAULT_CHARSET);
     }
 
     /**
@@ -158,7 +159,7 @@ public class ParamUtil {
     }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , CharsetUtil.UTF_8));
+        return contactUrlParams(actionName , contactMap(params , Config.DEFAULT_CHARSET));
     }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params , String valueCharset) {
         Objects.requireNonNull(actionName);
@@ -174,7 +175,7 @@ public class ParamUtil {
     }
     public static String contactUrlParams(String actionName, Map<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , CharsetUtil.UTF_8));
+        return contactUrlParams(actionName , contactMap(params , Config.DEFAULT_CHARSET));
     }
 
     /**
