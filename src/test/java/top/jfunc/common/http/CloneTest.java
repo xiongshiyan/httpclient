@@ -4,9 +4,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holderrequest.impl.HolderUpLoadRequest;
-import top.jfunc.common.http.request.RequestCreator;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.request.basic.UpLoadRequest;
+import top.jfunc.common.utils.ObjectUtil;
 
 import java.io.File;
 
@@ -61,7 +61,7 @@ public class CloneTest {
         upLoadRequest.followRedirects(true);
 
 
-        UploadRequest clone = RequestCreator.clone(upLoadRequest);
+        UploadRequest clone = ObjectUtil.clone(upLoadRequest);
 
         upLoadRequest.setResultCharset("sss");
         clone.addAttribute("a" , "a");

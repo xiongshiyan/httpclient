@@ -2,9 +2,9 @@ package top.jfunc.common.http.download;
 
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
-import top.jfunc.common.http.request.RequestCreator;
 import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.ObjectUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +19,7 @@ class DownloadUtil {
      * 获取网络文件大小
      */
     static long getNetFileLength(SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) throws IOException {
-        DownloadRequest cloneRequest = RequestCreator.clone(downloadRequest);
+        DownloadRequest cloneRequest = ObjectUtil.clone(downloadRequest);
         MultiValueMap<String, String> multiValueMap = smartHttpClient.head(cloneRequest);
         if(multiValueMap.containsKey(HttpHeaders.CONTENT_LENGTH)){
             return Long.parseLong(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH));

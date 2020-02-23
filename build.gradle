@@ -18,7 +18,7 @@ buildscript {
     }
 
     ext{
-        CommonUtilVersion           = '1.8.3.2'
+        CommonUtilVersion           = '1.8.3.3'
         OkHttp3Version              = '3.14.4'
         JoddVersion                 = '5.1.0-20190624'
         ApacheHttpComponentsVersion = '4.5.10'
