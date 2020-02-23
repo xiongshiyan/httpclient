@@ -112,9 +112,9 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     public <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
         init(httpRequest , Method.HEAD);
         //必须要响应头
-        httpRequest.retainResponseHeaders(HttpRequest.RETAIN_RESPONSE_HEADERS);
+        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
         //设置忽略响应体
-        httpRequest.ignoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
+        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
         return template(httpRequest , null , resultCallback);
     }
 
@@ -126,9 +126,9 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     public <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
         init(httpRequest , Method.OPTIONS);
         //必须要响应头
-        httpRequest.retainResponseHeaders(HttpRequest.RETAIN_RESPONSE_HEADERS);
+        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
         //设置忽略响应体
-        httpRequest.ignoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
+        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
         return template(httpRequest , null , resultCallback);
     }
 
@@ -172,9 +172,9 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     public <R> R trace(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
         init(httpRequest , Method.TRACE);
         //必须要响应头
-        httpRequest.retainResponseHeaders(HttpRequest.RETAIN_RESPONSE_HEADERS);
+        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
         //设置忽略响应体
-        httpRequest.ignoreResponseBody(HttpRequest.IGNORE_RESPONSE_BODY);
+        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
 
         return template(httpRequest , null, resultCallback);
     }

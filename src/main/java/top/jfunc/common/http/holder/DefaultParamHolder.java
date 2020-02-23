@@ -1,8 +1,8 @@
 package top.jfunc.common.http.holder;
 
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.kv.Parameter;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.CharsetUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -24,7 +24,7 @@ public class DefaultParamHolder implements ParamHolder {
      * 参数编码
      * @since 1.1.4
      */
-    private String paramCharset = HttpConstants.DEFAULT_CHARSET;
+    private String paramCharset = CharsetUtil.UTF_8;
 
     @Override
     public MultiValueMap<String, String> getParams() {

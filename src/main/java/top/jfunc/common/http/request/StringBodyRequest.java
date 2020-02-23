@@ -21,7 +21,7 @@ public interface StringBodyRequest extends HttpRequest {
 
     /**
      * 设置BodyCharset
-     * 默认都是{@link top.jfunc.common.http.HttpConstants#DEFAULT_CHARSET}，如果不是
+     * 默认都是{@link top.jfunc.common.utils.CharsetUtil#UTF_8}，如果不是
      * 需要显式地设置为null才能利用{@link top.jfunc.common.http.base.Config#defaultBodyCharset}
      * @see top.jfunc.common.http.base.Config#calculateBodyCharset(String, String)
      * @param bodyCharset bodyCharset

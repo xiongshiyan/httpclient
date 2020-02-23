@@ -26,7 +26,7 @@ public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
 
         ///1.如果要支持cookie，必须读取header
         if(null != config.getCookieJar() || followRedirects){
-            retainResponseHeaders = HttpRequest.RETAIN_RESPONSE_HEADERS;
+            retainResponseHeaders = Config.RETAIN_RESPONSE_HEADERS;
         }
 
         //要求不需要解析header

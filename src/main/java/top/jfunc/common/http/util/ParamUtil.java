@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static top.jfunc.common.http.HttpConstants.*;
+import static top.jfunc.common.utils.StrUtil.*;
 
 /**
  * @author xiongshiyan at 2017/12/11
@@ -41,7 +41,7 @@ public class ParamUtil {
      * 默认UTF-8编码
      */
     public static String contactMap(Map<String, String> value){
-        return contactMap(value , DEFAULT_CHARSET);
+        return contactMap(value , CharsetUtil.UTF_8);
     }
     /**
      * key1=value1&key2=value2,如果value=null 或者 size=0 返回 ""
@@ -51,11 +51,11 @@ public class ParamUtil {
         if(MapUtil.isEmpty(value)){return BLANK;}
 
         Editor<String> editor = (v)-> urlEncode(v , valueCharset);
-        return Joiner.on(AND).withKeyValueSeparator(EQUALS,editor).useForNull(BLANK).join(value);
+        return Joiner.on(AND).withKeyValueSeparator(EQUALS,editor).useForNull(StrUtil.BLANK).join(value);
     }
     
     public static String contactMap(MultiValueMap<String, String> value){
-        return contactMap(value , DEFAULT_CHARSET);
+        return contactMap(value , CharsetUtil.UTF_8);
     }
 
     /**
@@ -95,7 +95,7 @@ public class ParamUtil {
      */
     public static String contactIterable(Iterable<Map.Entry<String, List<String>>> entries , Editor<String> valueEditor){
         if(null == entries){
-            return BLANK;
+            return StrUtil.BLANK;
         }
 
         StringBuilder params = new StringBuilder();
@@ -150,7 +150,7 @@ public class ParamUtil {
      */
     public static String contactUrlParams(String actionName, String paramString) {
         String url = actionName;
-        if(!BLANK.equals(paramString)) {
+        if(!StrUtil.BLANK.equals(paramString)) {
             //如果包含?，則直接追加//不包含?，則用?追加
             url = actionName.contains(QUESTION_MARK) ? actionName + AND + paramString : actionName + QUESTION_MARK + paramString;
         }
@@ -158,7 +158,7 @@ public class ParamUtil {
     }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , DEFAULT_CHARSET));
+        return contactUrlParams(actionName , contactMap(params , CharsetUtil.UTF_8));
     }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params , String valueCharset) {
         Objects.requireNonNull(actionName);
@@ -174,7 +174,7 @@ public class ParamUtil {
     }
     public static String contactUrlParams(String actionName, Map<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , DEFAULT_CHARSET));
+        return contactUrlParams(actionName , contactMap(params , CharsetUtil.UTF_8));
     }
 
     /**
@@ -200,11 +200,11 @@ public class ParamUtil {
         if(StrUtil.isEmpty(firstFragment) || ParamUtil.isCompletedUrl(secondFragment)){
             return secondFragment;
         }
-        if(firstFragment.endsWith(SPLASH) && secondFragment.startsWith(SPLASH)){
+        if(firstFragment.endsWith(StrUtil.SLASH) && secondFragment.startsWith(StrUtil.SLASH)){
             return firstFragment + secondFragment.substring(1);
         }
-        if(!firstFragment.endsWith(SPLASH) && !secondFragment.startsWith(SPLASH)){
-            return firstFragment + SPLASH + secondFragment;
+        if(!firstFragment.endsWith(StrUtil.SLASH) && !secondFragment.startsWith(StrUtil.SLASH)){
+            return firstFragment + StrUtil.SLASH + secondFragment;
         }
         return firstFragment + secondFragment;
     }

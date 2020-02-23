@@ -18,8 +18,8 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 
-import static top.jfunc.common.http.HttpConstants.CRLF;
-import static top.jfunc.common.http.HttpConstants.TWO_HYPHENS;
+import static top.jfunc.common.utils.StrUtil.CRLF;
+import static top.jfunc.common.utils.StrUtil.TWO_HYPHENS;
 import static top.jfunc.common.http.base.HttpStatus.HTTP_BAD_REQUEST;
 import static top.jfunc.common.http.base.HttpStatus.HTTP_OK;
 

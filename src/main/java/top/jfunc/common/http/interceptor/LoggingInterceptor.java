@@ -9,7 +9,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
-import static top.jfunc.common.http.HttpConstants.CRLF;
+import static top.jfunc.common.utils.StrUtil.CRLF;
 
 /**
  * 打印日志的拦截器

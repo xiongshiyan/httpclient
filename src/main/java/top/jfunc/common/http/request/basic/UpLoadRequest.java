@@ -1,11 +1,8 @@
 package top.jfunc.common.http.request.basic;
 
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.MapUtil;
-import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +27,7 @@ public class UpLoadRequest extends BaseHttpRequest<UpLoadRequest> implements Upl
     }
 
     private MultiValueMap<String , String> formParams = new ArrayListMultiValueMap<>(2);
-    private String formParamCharset = HttpConstants.DEFAULT_CHARSET;
+    private String formParamCharset = CharsetUtil.UTF_8;
     private List<FormFile> formFiles = new ArrayList<>(2);
 
     @Override

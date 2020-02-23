@@ -1,8 +1,8 @@
 package top.jfunc.common.http.request.basic;
 
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
+import top.jfunc.common.utils.CharsetUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -27,7 +27,7 @@ public class FormBodyRequest extends BaseHttpRequest<FormBodyRequest> implements
     }
 
     private MultiValueMap<String , String> formParams = new ArrayListMultiValueMap<>(2);
-    private String formParamCharset = HttpConstants.DEFAULT_CHARSET;
+    private String formParamCharset = CharsetUtil.UTF_8;
 
     @Override
     public FormBodyRequest setFormParams(Map<String, String> params) {

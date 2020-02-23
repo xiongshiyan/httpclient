@@ -11,13 +11,11 @@ import top.jfunc.common.http.holderrequest.impl.HolderPostBodyRequest;
 import top.jfunc.common.http.smart.*;
 import org.junit.Ignore;
 import org.junit.Test;
+import top.jfunc.common.utils.CharsetUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-
-import static top.jfunc.common.http.HttpConstants.FORM_URLENCODED_WITH_DEFAULT_CHARSET;
-import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
 
 /**
  * @author 熊诗言 2017/11/24
@@ -25,18 +23,6 @@ import static top.jfunc.common.http.HttpConstants.JSON_WITH_DEFAULT_CHARSET;
  */
 @Ignore
 public class HttpSmartTest {
-    @Test
-    public void testCalculateBodyCharset(){
-        /*NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
-        //bodyCharset指定了就是他
-        Assert.assertThat(smartHttpClient.calculateBodyCharset("GB2312" , null) , is("GB2312"));
-        //contentType指定了就是他
-        Assert.assertThat(smartHttpClient.calculateBodyCharset(null , "application/json;charset=GBK") , is("GBK"));
-        //都未指定就是全局默认
-        Assert.assertThat(smartHttpClient.calculateBodyCharset(null , "application/json") , is(HttpConstants.DEFAULT_CHARSET));
-        Assert.assertThat(smartHttpClient.calculateBodyCharset(null , null) , is(HttpConstants.DEFAULT_CHARSET));*/
-    }
-
     @Test
     public void testGetOkHttp3(){
         OkHttp3SmartHttpClient http = new OkHttp3SmartHttpClient();
@@ -145,7 +131,8 @@ public class HttpSmartTest {
     public void testPost(SmartHttpClient http){
         try {
             String url = "http://localhost:8080/http-server-test/post/body";
-            Request request = Request.of(url).retainResponseHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
+            MediaType contentType = MediaType.APPLICATIPON_JSON.withCharset(CharsetUtil.UTF_8);
+            Request request = Request.of(url).retainResponseHeaders(true).setContentType(contentType).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
             Response post = http.post(request);
@@ -156,7 +143,8 @@ public class HttpSmartTest {
             System.out.println(s);
 
             url = "http://localhost:8080/http-server-test/post/form";
-            request = Request.of(url).setContentType(FORM_URLENCODED_WITH_DEFAULT_CHARSET);
+            MediaType mediaType = MediaType.APPLICATIPON_FORM_DATA.withCharset(CharsetUtil.UTF_8);
+            request = Request.of(url).setContentType(mediaType);
             request.formParamHolder().addParam("xx" , "xx").addParam("yy" , "yy");
             Response response = http.post(request);
             System.out.println(response.getBodyAsString());
@@ -267,7 +255,8 @@ public class HttpSmartTest {
 //        String url = "https://dzg.palmte.cn/dzdsds";
         String url = "http://localhost:8080/http-server-test/put/body";
         try {
-            Request request = Request.of(url).retainResponseHeaders(true).setContentType(JSON_WITH_DEFAULT_CHARSET).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
+            MediaType mediaType = MediaType.APPLICATIPON_JSON.withCharset(CharsetUtil.UTF_8);
+            Request request = Request.of(url).retainResponseHeaders(true).setContentType(mediaType).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
             Response response = http.http(request , Method.PUT);
@@ -299,8 +288,9 @@ public class HttpSmartTest {
     }
     private void testAll(SmartHttpClient smartHttpClient) throws Exception{
 
+        MediaType mediaType = MediaType.APPLICATIPON_JSON.withCharset(CharsetUtil.UTF_8);
         HolderCommonBodyRequest request = HolderPostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
-                .retainResponseHeaders(true).setBody("xxxxx", HttpConstants.JSON_WITH_DEFAULT_CHARSET);
+                .retainResponseHeaders(true).setBody("xxxxx", mediaType.toString());
         request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
         request.queryParamHolder().addParam("sa" , "sa").addParam("ds" , "ds");
         Response response = smartHttpClient.post(request);

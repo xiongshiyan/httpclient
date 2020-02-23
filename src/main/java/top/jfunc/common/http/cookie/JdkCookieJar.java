@@ -1,11 +1,7 @@
 package top.jfunc.common.http.cookie;
 
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.base.HttpHeaders;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.Joiner;
-import top.jfunc.common.utils.MapUtil;
-import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.*;
 
 import java.io.IOException;
 import java.net.CookieHandler;
@@ -61,7 +57,7 @@ public class JdkCookieJar implements CookieJar{
         Map<String, List<String>> cookies = getCookieHandler().get(URI.create(completedUrl), nonNull);
         if(MapUtil.notEmpty(cookies)){
             List<String> list = cookies.get(HttpHeaders.COOKIE);
-            nonNull.add(HttpHeaders.COOKIE, Joiner.on(HttpConstants.SEMICOLON).join(list));
+            nonNull.add(HttpHeaders.COOKIE, Joiner.on(StrUtil.SEMICOLON).join(list));
         }
         return nonNull;
     }

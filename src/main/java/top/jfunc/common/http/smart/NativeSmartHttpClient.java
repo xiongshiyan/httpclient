@@ -95,7 +95,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         HttpRequest hr = getHttpRequestFactory().create(redirectUrl , null , null , httpRequest.getConnectionTimeout() , httpRequest.getReadTimeout() , httpRequest.getResultCharset());
         init(hr , Method.GET);
         //处理多次重定向的情况
-        hr.followRedirects(HttpRequest.FOLLOW_REDIRECTS);
+        hr.followRedirects(Config.FOLLOW_REDIRECTS);
         return hr;
     }
 

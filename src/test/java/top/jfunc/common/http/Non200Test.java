@@ -5,6 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.junit.MockServerRule;
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.holderrequest.impl.HolderGetRequest;
 import top.jfunc.common.http.request.HttpRequest;
@@ -83,7 +84,7 @@ public class Non200Test {
 
         HttpRequest request = HolderGetRequest.of("http://localhost:50000/hello/301");
 
-        request.retainResponseHeaders(HttpRequest.RETAIN_RESPONSE_HEADERS);
+        request.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
 
         Response response = smartHttpClient.get(request);
         Assert.assertEquals(BODY , response.getBodyAsString());
@@ -105,7 +106,7 @@ public class Non200Test {
 
         HttpRequest request = HolderGetRequest.of("http://localhost:50000/hello301/redirect");
 
-        request.followRedirects(HttpRequest.FOLLOW_REDIRECTS);
+        request.followRedirects(Config.FOLLOW_REDIRECTS);
 
         Response response = smartHttpClient.get(request);
         Assert.assertEquals(200 , response.getStatusCode());

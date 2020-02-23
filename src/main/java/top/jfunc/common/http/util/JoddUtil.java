@@ -6,12 +6,8 @@ import jodd.http.ProxyInfo;
 import jodd.http.net.SSLSocketHttpConnectionProvider;
 import jodd.http.net.SocketHttpConnectionProvider;
 import jodd.http.up.Uploadable;
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.ArrayUtil;
-import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -66,7 +62,7 @@ public class JoddUtil {
      */
     public static void initSSL(HttpRequest httpRequest, HostnameVerifier hostnameVerifier , SSLSocketFactory sslSocketFactory , X509TrustManager trustManager , top.jfunc.common.http.base.ProxyInfo proxyInfo) {
         SocketHttpConnectionProvider httpConnectionProvider = null;
-        if(HttpConstants.HTTPS.equalsIgnoreCase(httpRequest.protocol())){
+        if(StrUtil.HTTPS.equalsIgnoreCase(httpRequest.protocol())){
             httpConnectionProvider = new SSLSocketHttpConnectionProvider(sslSocketFactory);
         }else {
             httpConnectionProvider = new SocketHttpConnectionProvider();

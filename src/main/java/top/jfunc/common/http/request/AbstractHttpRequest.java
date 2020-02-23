@@ -1,13 +1,13 @@
 package top.jfunc.common.http.request;
 
 import top.jfunc.common.ChainCall;
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.MediaType;
 import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.component.CompletedUrlCreator;
 import top.jfunc.common.http.component.DefaultCompletedUrlCreator;
+import top.jfunc.common.utils.CharsetUtil;
 
 /**
  * @author xiongshiyan at 2019/7/5 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -31,12 +31,12 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
      * 连接超时时间，不设置就使用系统默认的
      * @see Config#defaultConnectionTimeout
      */
-    private int connectionTimeout = HttpConstants.UNSIGNED;
+    private int connectionTimeout = Config.UNSIGNED;
     /**
      * 读数据超时时间，不设置就使用系统默认的
      * @see Config#defaultReadTimeout
      */
-    private int readTimeout = HttpConstants.UNSIGNED;
+    private int readTimeout = Config.UNSIGNED;
     /**
      * 返回体编码，不设置就使用系统默认的
      * @see Config#defaultResultCharset
@@ -99,13 +99,13 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
         return myself();
     }
     public THIS addFormHeader(){
-        return setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(HttpConstants.DEFAULT_CHARSET));
+        return setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(CharsetUtil.UTF_8));
     }
     public THIS addJsonHeader(){
-        return setContentType(MediaType.APPLICATIPON_JSON.withCharset(HttpConstants.DEFAULT_CHARSET));
+        return setContentType(MediaType.APPLICATIPON_JSON.withCharset(CharsetUtil.UTF_8));
     }
     public THIS addXmlHeader(){
-        return setContentType(MediaType.TXT_XML.withCharset(HttpConstants.DEFAULT_CHARSET));
+        return setContentType(MediaType.TXT_XML.withCharset(CharsetUtil.UTF_8));
     }
 
     @Override

@@ -130,26 +130,32 @@ setConfig可以设置SmartHttpClient实例的全局默认设置。目前定义�
 
 ```
 
-/**
- * BaseUrl,如果设置了就在正常传送的URL之前添加上
- */
-private String baseUrl;
-/**
- * 连接超时时间
- */
-private int defaultConnectionTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
-/**
- * 读数据超时时间
- */
-private int defaultReadTimeout       = HttpConstants.DEFAULT_READ_TIMEOUT;
-/**
- * 请求体编码
- */
-private String defaultBodyCharset    = HttpConstants.DEFAULT_CHARSET;
-/**
- * 返回体编码
- */
-private String defaultResultCharset  = HttpConstants.DEFAULT_CHARSET;
+/**BaseUrl,如果设置了就在正常传送的URL之前添加上*/
+private String baseUrl                                  = null;
+/**连接超时时间*/
+private int defaultConnectionTimeout                    = DEFAULT_TIMEOUT;
+/**读数据超时时间*/
+private int defaultReadTimeout                          = DEFAULT_TIMEOUT;
+/**请求体编码*/
+private String defaultBodyCharset                       = CharsetUtil.UTF_8;
+/**返回体编码*/
+private String defaultResultCharset                     = CharsetUtil.UTF_8;
+/**返回结果中是否保留headers,默认不保留*/
+private boolean retainResponseHeaders                   = !RETAIN_RESPONSE_HEADERS;
+/**返回结果中是否忽略body,默认不忽略*/
+private boolean ignoreResponseBody                      = !IGNORE_RESPONSE_BODY;
+/**是否支持重定向,默认不支持*/
+private boolean followRedirects                         = !FOLLOW_REDIRECTS;
+/**代理设置,如果有就设置*/
+private ProxyInfo proxyInfo                             = null;
+/**SSL相关设置处理器*/
+private SSLHolder sslHolder                             = new DefaultSSLHolder2();
+/**默认的请求头,每个请求都会加上*/
+private HeaderHolder headerHolder                       = new DefaultHeaderHolder();
+/**默认的请求Query参数,每个请求都会加上*/
+private ParamHolder queryParamHolder                    = new DefaultParamHolder();
+/**CookieJar,处理Cookie*/
+private CookieJar cookieJar                             = null;
 
 ....
 

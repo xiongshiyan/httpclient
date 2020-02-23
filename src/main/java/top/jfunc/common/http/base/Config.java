@@ -1,16 +1,12 @@
 package top.jfunc.common.http.base;
 
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
 import top.jfunc.common.http.interceptor.Interceptor;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.MapUtil;
-import top.jfunc.common.utils.MultiValueMap;
-import top.jfunc.common.utils.StrUtil;
+import top.jfunc.common.utils.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -23,24 +19,43 @@ import java.util.Map;
  * @author xiongshiyan at 2018/8/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class Config {
-    /**配置冻结器*/
-    private ConfigFrozen configFrozen = new ConfigFrozen();
+    /**
+     * 未指定的时候，相关设置就是{@link top.jfunc.common.http.base.Config}默认的
+     */
+    public static final int UNSIGNED                        = -1;
+    /**
+     * 结果包含headers
+     */
+    public static final Boolean RETAIN_RESPONSE_HEADERS     = Boolean.TRUE;
+    /**
+     * 结果忽略body
+     */
+    public static final Boolean IGNORE_RESPONSE_BODY        = Boolean.TRUE;
+    /**
+     * 支持重定向
+     */
+    public static final Boolean FOLLOW_REDIRECTS            = Boolean.TRUE;
+    /**
+     * 默认的超时控制
+     */
+    public static final int DEFAULT_TIMEOUT                 = 15000;
+
     /**BaseUrl,如果设置了就在正常传送的URL之前添加上*/
     private String baseUrl                                  = null;
     /**连接超时时间*/
-    private int defaultConnectionTimeout                    = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+    private int defaultConnectionTimeout                    = DEFAULT_TIMEOUT;
     /**读数据超时时间*/
-    private int defaultReadTimeout                          = HttpConstants.DEFAULT_READ_TIMEOUT;
+    private int defaultReadTimeout                          = DEFAULT_TIMEOUT;
     /**请求体编码*/
-    private String defaultBodyCharset                       = HttpConstants.DEFAULT_CHARSET;
+    private String defaultBodyCharset                       = CharsetUtil.UTF_8;
     /**返回体编码*/
-    private String defaultResultCharset                     = HttpConstants.DEFAULT_CHARSET;
+    private String defaultResultCharset                     = CharsetUtil.UTF_8;
     /**返回结果中是否保留headers,默认不保留*/
-    private boolean retainResponseHeaders                   = !HttpRequest.RETAIN_RESPONSE_HEADERS;
+    private boolean retainResponseHeaders                   = !RETAIN_RESPONSE_HEADERS;
     /**返回结果中是否忽略body,默认不忽略*/
-    private boolean ignoreResponseBody                      = !HttpRequest.IGNORE_RESPONSE_BODY;
+    private boolean ignoreResponseBody                      = !IGNORE_RESPONSE_BODY;
     /**是否支持重定向,默认不支持*/
-    private boolean followRedirects                         = !HttpRequest.FOLLOW_REDIRECTS;
+    private boolean followRedirects                         = !FOLLOW_REDIRECTS;
     /**代理设置,如果有就设置*/
     private ProxyInfo proxyInfo                             = null;
     /**SSL相关设置处理器*/
@@ -53,6 +68,10 @@ public class Config {
     private CookieJar cookieJar                             = null;
     /**拦截器链*/
     private CompositeInterceptor compositeInterceptor       = null;
+
+
+    /**配置冻结器*/
+    private ConfigFrozen configFrozen = new ConfigFrozen();
 
     public static Config defaultConfig(){
         return new Config();
@@ -77,7 +96,7 @@ public class Config {
         return defaultConnectionTimeout;
     }
     public int getConnectionTimeoutWithDefault(int connectionTimeout){
-        return HttpConstants.UNSIGNED == connectionTimeout ? getDefaultConnectionTimeout() : connectionTimeout;
+        return UNSIGNED == connectionTimeout ? getDefaultConnectionTimeout() : connectionTimeout;
     }
     public Config setDefaultConnectionTimeout(int defaultConnectionTimeout) {
         configFrozen.ensureConfigNotFreeze();
@@ -89,7 +108,7 @@ public class Config {
         return defaultReadTimeout;
     }
     public int getReadTimeoutWithDefault(int readTimeout){
-        return HttpConstants.UNSIGNED == readTimeout ? getDefaultReadTimeout() : readTimeout;
+        return UNSIGNED == readTimeout ? getDefaultReadTimeout() : readTimeout;
     }
     public Config setDefaultReadTimeout(int defaultReadTimeout) {
         configFrozen.ensureConfigNotFreeze();

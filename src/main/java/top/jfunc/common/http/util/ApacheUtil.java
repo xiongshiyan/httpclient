@@ -20,16 +20,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.base.ProxyInfo;
-import top.jfunc.common.http.ssl.SSLSocketFactoryBuilder;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.CharsetUtil;
-import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -44,8 +39,8 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.UnknownHostException;
 
-import static top.jfunc.common.http.HttpConstants.COLON;
-import static top.jfunc.common.http.HttpConstants.SPLASH;
+import static top.jfunc.common.utils.StrUtil.COLON;
+import static top.jfunc.common.utils.StrUtil.SLASH;
 
 /**
  * @author xiongshiyan at 2019/7/9 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -81,7 +76,7 @@ public class ApacheUtil {
     }
 
     public static HttpClientBuilder createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws IOException{
-        String hostname = url.split(SPLASH)[2];
+        String hostname = url.split(SLASH)[2];
         boolean isHttps = ParamUtil.isHttps(url);
         int port = isHttps ? 443 : 80;
         if (hostname.contains(COLON)) {
@@ -95,8 +90,8 @@ public class ApacheUtil {
         LayeredConnectionSocketFactory sslsf = SSLConnectionSocketFactory
                 .getSocketFactory();
         Registry<ConnectionSocketFactory> registry = RegistryBuilder
-                .<ConnectionSocketFactory> create().register(HttpConstants.HTTP, csf)
-                .register(HttpConstants.HTTPS, sslsf).build();
+                .<ConnectionSocketFactory> create().register(StrUtil.HTTP, csf)
+                .register(StrUtil.HTTPS, sslsf).build();
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
         // 将最大连接数增加
         cm.setMaxTotal(maxTotal);

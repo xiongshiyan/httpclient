@@ -1,6 +1,6 @@
 package top.jfunc.common.http.holder;
 
-import top.jfunc.common.http.HttpConstants;
+import top.jfunc.common.utils.CharsetUtil;
 
 /**
  * 默认的基于String的实现，如果字节场景较多，可以基于字节实现
@@ -8,7 +8,7 @@ import top.jfunc.common.http.HttpConstants;
  */
 public class DefaultBodyHolder implements BodyHolder {
     private String body;
-    private String bodyCharset = HttpConstants.DEFAULT_CHARSET;
+    private String bodyCharset = CharsetUtil.UTF_8;
 
     @Override
     public String getBody() {

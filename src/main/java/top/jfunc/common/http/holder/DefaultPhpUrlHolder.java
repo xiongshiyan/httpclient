@@ -1,10 +1,9 @@
 package top.jfunc.common.http.holder;
 
-import top.jfunc.common.http.HttpConstants;
 import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.base.Protocol;
 
-import static top.jfunc.common.http.HttpConstants.*;
+import static top.jfunc.common.utils.StrUtil.*;
 
 /**
  * 适合不知道全路径，知道各个部分的情况下，或者需要知道一个URL中的各个部分，可以不需要考虑诸如一下的一些细节：路径参数处理、查询参数处理、要不要加一个/等繁琐的细节
@@ -23,7 +22,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
     /**
      * 路径，不包括query参数的
      */
-    private String path = SPLASH;
+    private String path = SLASH;
 
     /**
      * @return 计算后的url
@@ -48,7 +47,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
         //拼装url
         String url = protocol.name().toLowerCase() + COLON_SPLASH
                 + host + COLON + port;
-        String p = (path.startsWith(SPLASH) ? path : (SPLASH + path));
+        String p = (path.startsWith(SLASH) ? path : (SLASH + path));
         return url + p;
     }
 
@@ -62,7 +61,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
             destination = destination.substring(ndx + 3);
         }
         // host
-        ndx = destination.indexOf(SPLASH);
+        ndx = destination.indexOf(SLASH);
 
         if (ndx == -1) {
             ndx = destination.length();
@@ -75,7 +74,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
 
             // port
 
-            ndx = hostToSet.indexOf(HttpConstants.COLON);
+            ndx = hostToSet.indexOf(COLON);
 
             if (ndx != -1) {
                 port = Integer.parseInt(hostToSet.substring(ndx + 1));

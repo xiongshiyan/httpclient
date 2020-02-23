@@ -1,9 +1,6 @@
 package top.jfunc.common.http.request;
 
-import top.jfunc.common.http.base.MediaType;
-import top.jfunc.common.http.base.Method;
-import top.jfunc.common.http.base.ConfigAccessor;
-import top.jfunc.common.http.base.ProxyInfo;
+import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.ssl.SSLSocketFactoryBuilder;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -22,19 +19,6 @@ import java.util.Map;
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public interface HttpRequest extends ConfigAccessor , Cloneable{
-    /**
-     * 结果包含headers
-     */
-    Boolean RETAIN_RESPONSE_HEADERS = Boolean.TRUE;
-    /**
-     * 结果忽略body
-     */
-    Boolean IGNORE_RESPONSE_BODY = Boolean.TRUE;
-    /**
-     * 支持重定向
-     */
-    Boolean FOLLOW_REDIRECTS = Boolean.TRUE;
-
     /**
      * 请求的URL
      * @return 请求的URL
@@ -241,7 +225,7 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
 
     /**
      * 设置retainResponseHeaders
-     * @see HttpRequest#RETAIN_RESPONSE_HEADERS
+     * @see Config#RETAIN_RESPONSE_HEADERS
      * @param retainResponseHeaders 是|否
      * @return this
      */
@@ -255,7 +239,7 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
 
     /**
      * 设置ignoreResponseBody
-     * @see HttpRequest#IGNORE_RESPONSE_BODY
+     * @see Config#IGNORE_RESPONSE_BODY
      * @param ignoreResponseBody 是|否
      * @return this
      */
@@ -269,7 +253,7 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
 
     /**
      * 设置是否支持重定向
-     * @see HttpRequest#FOLLOW_REDIRECTS
+     * @see Config#FOLLOW_REDIRECTS
      * @param followRedirects 是否支持重定向
      * @return this
      */
