@@ -3,6 +3,7 @@ package top.jfunc.common.http.component;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.ObjectUtil;
 
 import java.io.IOException;
 
@@ -21,8 +22,8 @@ public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
     public MultiValueMap<String, String> extract(S s, HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
 
-        boolean retainResponseHeaders = config.retainResponseHeadersWithDefault(httpRequest.retainResponseHeaders());
-        boolean followRedirects = config.followRedirectsWithDefault(httpRequest.followRedirects());
+        boolean retainResponseHeaders = ObjectUtil.defaultIfNull(httpRequest.retainResponseHeaders() , config.retainResponseHeaders());
+        boolean followRedirects = ObjectUtil.defaultIfNull(httpRequest.followRedirects() , config.followRedirects());
 
         ///1.如果要支持cookie，必须读取header
         if(null != config.getCookieJar() || followRedirects){

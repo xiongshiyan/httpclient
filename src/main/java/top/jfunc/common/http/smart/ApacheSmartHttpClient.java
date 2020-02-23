@@ -84,8 +84,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             getCookieAccessor().saveCookieIfNecessary(httpRequest, responseHeaders);
 
             return resultCallback.convert(response.getStatusLine().getStatusCode() , inputStream,
-                    getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
-                    responseHeaders);
+                    calculateResultCharset(httpRequest), responseHeaders);
         }finally {
             closeInputStream(inputStream);
             closeResponse(response);

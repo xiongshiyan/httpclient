@@ -3,6 +3,7 @@ package top.jfunc.common.http.component;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.ObjectUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,7 @@ public abstract class AbstractStreamExtractor<S> implements StreamExtractor<S> {
     @Override
     public InputStream extract(S s, HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
-        boolean ignoreResponseBody = config.ignoreResponseBodyWithDefault(httpRequest.ignoreResponseBody());
+        boolean ignoreResponseBody = ObjectUtil.defaultIfNull(httpRequest.ignoreResponseBody(), config.ignoreResponseBody());
         return ignoreResponseBody ? IoUtil.emptyStream() : doExtract(s , httpRequest);
     }
 

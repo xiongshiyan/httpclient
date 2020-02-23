@@ -10,10 +10,7 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.util.ResponseUtil;
-import top.jfunc.common.utils.ArrayListMultiValueMap;
-import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.MapUtil;
-import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -238,7 +235,10 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     }
 
 
-
+    protected String calculateResultCharset(HttpRequest httpRequest) {
+        Config config = getConfig();
+        return ObjectUtil.defaultIfNull(httpRequest.getResultCharset(), config.getDefaultResultCharset());
+    }
 
 
 

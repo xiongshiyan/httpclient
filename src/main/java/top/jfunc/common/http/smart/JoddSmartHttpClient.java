@@ -66,8 +66,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             getCookieAccessor().saveCookieIfNecessary(httpRequest , responseHeaders);
 
             return resultCallback.convert(response.statusCode(), inputStream,
-                    getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
-                    responseHeaders);
+                    calculateResultCharset(httpRequest), responseHeaders);
         } finally {
             closeInputSteam(inputStream);
             closeResponse(response);

@@ -37,6 +37,6 @@ public class DemoImpl extends AbstractImplementSmartHttpClient<Socket> {
         //8.获取响应header
         MultiValueMap<String , String> responseHeaders = null;
 
-        return resultCallback.convert(200 , inputStream , getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()) , responseHeaders);
+        return resultCallback.convert(200 , inputStream , calculateResultCharset(httpRequest) , responseHeaders);
     }
 }

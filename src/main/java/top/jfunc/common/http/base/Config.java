@@ -8,10 +8,6 @@ import top.jfunc.common.http.interceptor.Interceptor;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.*;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 import java.util.Map;
 
 /**
@@ -124,10 +120,6 @@ public class Config {
         return queryParamHolder.getParamCharset();
     }
 
-    public String getQueryCharsetWithDefault(String queryCharset){
-        return StrUtil.isNotEmpty(queryCharset) ? queryCharset : getDefaultQueryCharset();
-    }
-
     public Config setDefaultQueryCharset(String defaultQueryCharset) {
         configFrozen.ensureConfigNotFreeze();
         this.queryParamHolder.setParamCharset(defaultQueryCharset);
@@ -138,9 +130,6 @@ public class Config {
         return defaultBodyCharset;
     }
 
-    public String getBodyCharsetWithDefault(String bodyCharset){
-        return StrUtil.isNotEmpty(bodyCharset) ? bodyCharset : getDefaultBodyCharset();
-    }
     public Config setDefaultBodyCharset(String defaultBodyCharset) {
         configFrozen.ensureConfigNotFreeze();
         this.defaultBodyCharset = defaultBodyCharset;
@@ -150,25 +139,10 @@ public class Config {
     public String getDefaultResultCharset() {
         return defaultResultCharset;
     }
-    public String getResultCharsetWithDefault(String resultCharset){
-        return StrUtil.isNotEmpty(resultCharset) ? resultCharset : getDefaultResultCharset();
-    }
-
     public Config setDefaultResultCharset(String defaultResultCharset) {
         configFrozen.ensureConfigNotFreeze();
         this.defaultResultCharset = defaultResultCharset;
         return this;
-    }
-    public boolean retainResponseHeadersWithDefault(Boolean retainResponseHeaders) {
-        return null != retainResponseHeaders ? retainResponseHeaders : this.retainResponseHeaders;
-    }
-
-    public boolean ignoreResponseBodyWithDefault(Boolean ignoreResponseBody) {
-        return null != ignoreResponseBody ? ignoreResponseBody : this.ignoreResponseBody;
-    }
-
-    public boolean followRedirectsWithDefault(Boolean followRedirects) {
-        return null != followRedirects ? followRedirects : this.followRedirects;
     }
 
     public Config retainResponseHeaders(Boolean retainResponseHeaders) {
@@ -176,17 +150,26 @@ public class Config {
         return this;
     }
 
+    public boolean retainResponseHeaders() {
+        return retainResponseHeaders;
+    }
+
     public Config ignoreResponseBody(Boolean ignoreResponseBody) {
         this.ignoreResponseBody = ignoreResponseBody;
         return this;
+    }
+
+    public boolean ignoreResponseBody() {
+        return ignoreResponseBody;
     }
 
     public Config followRedirects(Boolean followRedirects) {
         this.followRedirects = followRedirects;
         return this;
     }
-    public ProxyInfo getProxyInfoWithDefault(ProxyInfo proxyInfo){
-        return null != proxyInfo ? proxyInfo : getDefaultProxyInfo();
+
+    public boolean followRedirects() {
+        return followRedirects;
     }
 
     public ProxyInfo getDefaultProxyInfo() {
@@ -198,21 +181,7 @@ public class Config {
         this.proxyInfo = proxyInfo;
         return this;
     }
-    public HostnameVerifier getHostnameVerifierWithDefault(HostnameVerifier hostnameVerifier){
-        return null != hostnameVerifier ? hostnameVerifier : sslHolder.getHostnameVerifier();
-    }
 
-    public SSLContext getSSLContextWithDefault(SSLContext sslContext) {
-        return null != sslContext ? sslContext : sslHolder.getSslContext();
-    }
-
-    public SSLSocketFactory getSSLSocketFactoryWithDefault(SSLSocketFactory sslSocketFactory) {
-        return null != sslSocketFactory ? sslSocketFactory : sslHolder.getSslSocketFactory();
-    }
-
-    public X509TrustManager getX509TrustManagerWithDefault(X509TrustManager x509TrustManager){
-        return null != x509TrustManager ? x509TrustManager : sslHolder.getX509TrustManager();
-    }
     public SSLHolder sslHolder(){
         return sslHolder;
     }
@@ -328,7 +297,7 @@ public class Config {
         String urlWithBase = ParamUtil.concatUrlIfNecessary(getBaseUrl() , routeUrl);
         //3.处理Query参数
         MultiValueMap<String, String> params = MapUtil.mergeMap(queryParams, getDefaultQueryParams());
-        String queryCharsetWithDefault = getQueryCharsetWithDefault(queryParamCharset);
+        String queryCharsetWithDefault = ObjectUtil.defaultIfNull(queryParamCharset , getDefaultQueryCharset());
         return ParamUtil.contactUrlParams(urlWithBase, params, queryCharsetWithDefault);
     }
     /**

@@ -7,6 +7,7 @@ import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.ApacheUtil;
+import top.jfunc.common.utils.ObjectUtil;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -25,12 +26,13 @@ public class DefaultApacheClientFactory extends AbstractRequesterFactory<HttpCli
         String completedUrl = httpRequest.getCompletedUrl();
         //https默认设置这些
         if(ParamUtil.isHttps(completedUrl)){
-            hostnameVerifier = config.getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier());
-            sslContext = config.getSSLContextWithDefault(httpRequest.getSslContext());
+            hostnameVerifier = ObjectUtil.defaultIfNull(httpRequest.getHostnameVerifier(), config.sslHolder().getHostnameVerifier());
+            sslContext = ObjectUtil.defaultIfNull(httpRequest.getSslContext(), config.sslHolder().getSslContext());
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
-        HttpClientBuilder clientBuilder = ApacheUtil.getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext, config.followRedirectsWithDefault(httpRequest.followRedirects()));
+        boolean followRedirects = ObjectUtil.defaultIfNull(httpRequest.followRedirects() , config.followRedirects());
+        HttpClientBuilder clientBuilder = ApacheUtil.getCloseableHttpClientBuilder(completedUrl, hostnameVerifier, sslContext, followRedirects);
         return clientBuilder.build();
     }
 }

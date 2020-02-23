@@ -7,7 +7,11 @@ import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.OkHttp3Util;
+import top.jfunc.common.utils.ObjectUtil;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -38,12 +42,13 @@ public class SingleOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttpC
                 .readTimeout(config.getReadTimeoutWithDefault(httpRequest.getReadTimeout()) , TimeUnit.MILLISECONDS);
 
         //1.1如果存在就设置代理
-        ProxyInfo proxyInfo = config.getProxyInfoWithDefault(httpRequest.getProxyInfo());
+        ProxyInfo proxyInfo = ObjectUtil.defaultIfNull(httpRequest.getProxyInfo(), config.getDefaultProxyInfo());
         if(null != proxyInfo){
             clientBuilder.proxy(proxyInfo.getProxy());
         }
         //是否重定向
-        clientBuilder.followRedirects(config.followRedirectsWithDefault(httpRequest.followRedirects()));
+        boolean followRedirects = ObjectUtil.defaultIfNull(httpRequest.followRedirects() , config.followRedirects());
+        clientBuilder.followRedirects(followRedirects);
 
         ////////////////////////////////////ssl处理///////////////////////////////////
         if(ParamUtil.isHttps(httpRequest.getCompletedUrl())){
@@ -60,9 +65,10 @@ public class SingleOkHttp3ClientFactory extends AbstractRequesterFactory<OkHttpC
 
     protected void initSSL(OkHttpClient.Builder clientBuilder , HttpRequest httpRequest){
         Config config = httpRequest.getConfig();
-        OkHttp3Util.initSSL(clientBuilder , config.getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                config.getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()) ,
-                config.getX509TrustManagerWithDefault(httpRequest.getX509TrustManager()));
+        HostnameVerifier hostnameVerifier = ObjectUtil.defaultIfNull(httpRequest.getHostnameVerifier(), config.sslHolder().getHostnameVerifier());
+        SSLSocketFactory sslSocketFactory = ObjectUtil.defaultIfNull(httpRequest.getSslSocketFactory(), config.sslHolder().getSslSocketFactory());
+        X509TrustManager x509TrustManager = ObjectUtil.defaultIfNull(httpRequest.getX509TrustManager(), config.sslHolder().getX509TrustManager());
+        OkHttp3Util.initSSL(clientBuilder , hostnameVerifier , sslSocketFactory , x509TrustManager);
     }
 
 

@@ -3,9 +3,11 @@ package top.jfunc.common.http.component.apache;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import top.jfunc.common.http.base.Config;
+import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.ApacheUtil;
+import top.jfunc.common.utils.ObjectUtil;
 
 import java.io.IOException;
 
@@ -19,11 +21,13 @@ public class DefaultApacheRequestFactory extends AbstractRequesterFactory<HttpUr
         Config config = httpRequest.getConfig();
         HttpUriRequest httpUriRequest = ApacheUtil.createHttpUriRequest(httpRequest.getCompletedUrl(), httpRequest.getMethod());
 
+        ProxyInfo proxyInfo = ObjectUtil.defaultIfNull(httpRequest.getProxyInfo(), config.getDefaultProxyInfo());
+
         //2.设置请求参数
         ApacheUtil.setRequestProperty((HttpRequestBase) httpUriRequest,
                 config.getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()),
                 config.getReadTimeoutWithDefault(httpRequest.getReadTimeout()),
-                config.getProxyInfoWithDefault(httpRequest.getProxyInfo()));
+                proxyInfo);
         return httpUriRequest;
     }
 }

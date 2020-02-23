@@ -7,6 +7,7 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.NativeUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.ObjectUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,8 +80,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
 
             return resultCallback.convert(statusCode, inputStream,
-                    getConfig().getResultCharsetWithDefault(httpRequest.getResultCharset()),
-                    responseHeaders);
+                    calculateResultCharset(httpRequest), responseHeaders);
 
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接
@@ -104,7 +104,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
      */
     protected boolean needRedirect(HttpRequest httpRequest, int statusCode, MultiValueMap<String, String> responseHeaders) {
         Config config = httpRequest.getConfig();
-        boolean followRedirects = config.followRedirectsWithDefault(httpRequest.followRedirects());
+        boolean followRedirects = ObjectUtil.defaultIfNull(httpRequest.followRedirects() , config.followRedirects());
         return followRedirects && HttpStatus.needRedirect(statusCode)
                 && MapUtil.notEmpty(responseHeaders)
                 && responseHeaders.containsKey(HttpHeaders.LOCATION);

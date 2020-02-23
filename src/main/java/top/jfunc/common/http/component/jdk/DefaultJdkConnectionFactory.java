@@ -5,8 +5,11 @@ import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.NativeUtil;
+import top.jfunc.common.utils.ObjectUtil;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -20,7 +23,7 @@ public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpUR
         URL url = new URL(httpRequest.getCompletedUrl());
         //1.1如果需要则设置代理
         Config config = httpRequest.getConfig();
-        ProxyInfo proxyInfo = config.getProxyInfoWithDefault(httpRequest.getProxyInfo());
+        ProxyInfo proxyInfo = ObjectUtil.defaultIfNull(httpRequest.getProxyInfo(), config.getDefaultProxyInfo());
         HttpURLConnection connection = (null != proxyInfo) ?
                 (HttpURLConnection)url.openConnection(proxyInfo.getProxy()) :
                 (HttpURLConnection) url.openConnection();
@@ -52,7 +55,8 @@ public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpUR
 
     protected void initSSL(HttpsURLConnection connection , HttpRequest httpRequest){
         Config config = httpRequest.getConfig();
-        NativeUtil.initSSL(connection, config.getHostnameVerifierWithDefault(httpRequest.getHostnameVerifier()) ,
-                config.getSSLSocketFactoryWithDefault(httpRequest.getSslSocketFactory()));
+        HostnameVerifier hostnameVerifier = ObjectUtil.defaultIfNull(httpRequest.getHostnameVerifier(), config.sslHolder().getHostnameVerifier());
+        SSLSocketFactory sslSocketFactory = ObjectUtil.defaultIfNull(httpRequest.getSslSocketFactory(), config.sslHolder().getSslSocketFactory());
+        NativeUtil.initSSL(connection, hostnameVerifier , sslSocketFactory);
     }
 }
