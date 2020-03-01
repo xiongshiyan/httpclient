@@ -3,11 +3,11 @@ package top.jfunc.common.http.response;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.HttpStatus;
 import top.jfunc.common.http.smart.Response;
-import top.jfunc.common.utils.MapUtil;
+import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author xiongshiyan at 2020/1/24 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -21,6 +21,12 @@ public class DefaultResponse implements Response{
      * 返回体的字节数组
      */
     private byte[] bodyBytes;
+    /**
+     * 缓存响应字符串
+     * @see DefaultResponse#getBodyAsString()
+     * @see DefaultResponse#bodyBytes
+     */
+    private String cacheString;
     /**
      * 返回体编码
      */
@@ -45,16 +51,24 @@ public class DefaultResponse implements Response{
     }
 
     @Override
-    public MultiValueMap<String, String> getHeaders() {
-        return headers;
+    public String getBodyAsString() {
+        if(null != cacheString){
+            return cacheString;
+        }
+        try {
+            byte[] bytes = getBodyAsBytes();
+            if(ArrayUtil.isEmpty(bytes)){
+                return cacheString = "";
+            }
+            return cacheString = new String(bytes, getResultCharset());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public List<String> getHeader(String key) {
-        if(MapUtil.isEmpty(headers)){
-            return null;
-        }
-        return headers.get(key);
+    public MultiValueMap<String, String> getHeaders() {
+        return headers;
     }
 
     @Override
