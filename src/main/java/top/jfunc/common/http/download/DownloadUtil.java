@@ -1,5 +1,6 @@
 package top.jfunc.common.http.download;
 
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.smart.SmartHttpClient;
@@ -45,7 +46,7 @@ class DownloadUtil {
         }
         try (FileOutputStream outputStream = new FileOutputStream(tempFile)){
             String toWrite = totalLength + ":" + (null == downloadLength ? 0 : downloadLength);
-            outputStream.write(toWrite.getBytes());
+            outputStream.write(toWrite.getBytes(Config.DEFAULT_CHARSET));
             outputStream.flush();
         }
     }
@@ -64,7 +65,7 @@ class DownloadUtil {
         try (FileInputStream inputStream = new FileInputStream(confFile)){
             byte[] buffer = new byte[128];
             int len = inputStream.read(buffer);
-            String temp = new String(buffer , 0 , len);
+            String temp = new String(buffer , 0 , len , Config.DEFAULT_CHARSET);
             return Long.parseLong(temp.split(":")[1]);
         }
     }

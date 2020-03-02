@@ -38,7 +38,7 @@ public class Config {
     /**
      * 系统默认编码UTF-8
      */
-    public static String DEFAULT_CHARSET                    = CharsetUtil.UTF_8;
+    public static final String DEFAULT_CHARSET              = CharsetUtil.UTF_8;
 
     /**BaseUrl,如果设置了就在正常传送的URL之前添加上*/
     private String baseUrl                                  = null;

@@ -342,7 +342,7 @@ class HttpRequestFactory implements RequestFactory {
             if (String.class != keyType) {
                 throw parameterError(method, p, "@PathMap keys must be of type String: " + keyType);
             }
-            new AbstractParameterHandler.RouteMap();
+            return new AbstractParameterHandler.RouteMap();
         } else if (annotation instanceof Query) {
             validateResolvableType(p, type);
             Query query = (Query) annotation;
