@@ -89,7 +89,8 @@ public class DefaultResponse implements Response{
     @Override
     public void close() throws IOException {
         //release
-        this.bodyBytes = null;
-        this.headers = null;
+        this.bodyBytes   = null;
+        this.cacheString = null;
+        this.headers     = null;
     }
 }
