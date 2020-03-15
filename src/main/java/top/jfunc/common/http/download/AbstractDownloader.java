@@ -2,6 +2,7 @@ package top.jfunc.common.http.download;
 
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.smart.SmartHttpClient;
+import top.jfunc.common.utils.ObjectUtil;
 
 import java.io.IOException;
 
@@ -24,7 +25,9 @@ public abstract class AbstractDownloader implements Downloader{
 
     @Override
     public long getNetFileLength(DownloadRequest downloadRequest) throws IOException {
-        return DownloadUtil.getNetFileLength(getSmartHttpClient() , downloadRequest);
+        //clone一个不影响本身的
+        DownloadRequest cloneRequest = ObjectUtil.clone(downloadRequest);
+        return DownloadUtil.getNetFileLength(getSmartHttpClient() , cloneRequest);
     }
 
     public SmartHttpClient getSmartHttpClient() {
