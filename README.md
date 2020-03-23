@@ -248,6 +248,92 @@ http.setConfig(Config.defaultConfig()
     //.....
    );
 ```
+
+类似MyBatis接口使用方式
+
+1.配置HttpService接口扫描 
+2.定义如下一样的接口
+
+```java
+    @Configuration
+    public class SomeConfiguration{
+        @Bean
+        public SmartHttpClient smartHttpClient(){
+            Config config = Config.defaultConfig().setBaseUrl("xxxxx);
+            NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
+            smartHttpClient.setConfig(config);
+            return smartHttpClient;
+        }
+        //以下配置可以扫描 top.jfunc.network.controller.client 包下的标注 @HttpService 注解的接口
+        @Bean
+        public HttpServiceCreator httpServiceCreator(SmartHttpClient smartHttpClient){
+            return new HttpServiceCreator().setSmartHttpClient(smartHttpClient);
+        }
+        @Bean
+        public HttpServiceScanConfigure httpServiceScanConfigure(){
+            HttpServiceScanConfigure httpServiceScanConfigure = new HttpServiceScanConfigure(httpServiceCreator(smartHttpClient()));
+            httpServiceScanConfigure.setAnnotationClassScan(HttpService.class);
+            httpServiceScanConfigure.setScanPackages("top.jfunc.network.controller.client");
+            return httpServiceScanConfigure;
+        }
+    }
+    
+
+
+
+    @HttpService
+    public interface InterfaceForTestHttpService {
+    
+        @GET
+        Response request(HttpRequest httpRequest);
+    
+        @GET("/get/{q}")
+        Response list(@Path("q") String q, @Query("xx") int xx);
+        @GET("/get/query")
+        Response queryMap(@QueryMap Map<String, String> map);
+        @GET
+        Response url(@Url String url);
+    
+        @GET("get/query")
+        Response header(@Header("naked") String naked);
+    
+        @Headers({"xx:xiongshiyan","yy:xsy"})
+        @GET("get/query")
+        Response headers(@Header("naked") String naked);
+    
+        @GET("get/query")
+        Response headerMap(@HeaderMap Map<String, String> map);
+    
+    
+    
+        @GET("/get/query")
+        Response download();
+    
+        @POST("/post/{id}")
+        Response post(@Path("id") String id, @Body String xx);
+    
+        @Multipart
+        @POST("/upload/only")
+        Response upload(@Part FormFile... formFiles);
+        @Multipart
+        @POST("/upload/withParam")
+        Response uploadWithParam(@Part("name") String name, @Part("age") int age, @Part FormFile... formFiles);
+    
+        @FormUrlEncoded
+        @POST("/post/form")
+        Response form(@Field("name") String name, @Field("age") int age);
+        @FormUrlEncoded
+        @POST("/post/form")
+        Response formMap(@FieldMap Map<String, String> params);
+    }
+
+
+```
+
+
+
+
+
 建议的最佳实践为：
 1. 设置body的同时应该设置Content-Type
 2. 针对同一组请求可以使用一个SmartHttpClient，可以对他进行一些参数设置
