@@ -16,7 +16,11 @@ public class HttpDelegate {
     private HttpDelegate(){}
 
     /**根据类路径的jar加载默认顺序是 OKHttp3、ApacheHttpClient、Jodd、URLConnection*/
-    private static final String[] SMART_HTTP_CLIENT_CLASSES = {"top.jfunc.common.http.smart.OkHttp3SmartHttpClient","top.jfunc.common.http.smart.ApacheSmartHttpClient","top.jfunc.common.http.smart.JoddSmartHttpClient","top.jfunc.common.http.smart.NativeSmartHttpClient"};
+    private static final String[] SMART_HTTP_CLIENT_CLASSES = {
+            "top.jfunc.common.http.smart.OkHttp3SmartHttpClient",
+            "top.jfunc.common.http.smart.ApacheSmartHttpClient",
+            "top.jfunc.common.http.smart.JoddSmartHttpClient",
+            "top.jfunc.common.http.smart.NativeSmartHttpClient"};
     /**
      * http请求工具代理对象
      */
