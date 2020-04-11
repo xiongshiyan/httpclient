@@ -30,6 +30,9 @@ public class HttpDelegate {
     }
 
     public static SmartHttpClient delegate() {
+        if(null == DELEGATE){
+            throw new RuntimeException("SmartHttpClient初始化失败，请使用HttpStatic或者直接实例化");
+        }
         return DELEGATE;
     }
 
