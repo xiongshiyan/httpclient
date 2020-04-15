@@ -76,7 +76,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         }
     }
 
-    private void handleHeaders(HttpRequest request , top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException {
+    protected void handleHeaders(HttpRequest request , top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException {
         getCookieAccessor().addCookieIfNecessary(httpRequest);
         getHttpRequestHeaderHandler().configHeaders(request , httpRequest);
     }

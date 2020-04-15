@@ -95,7 +95,7 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         }
     }
 
-    private void handleHeaders(HttpUriRequest httpUriRequest, HttpRequest httpRequest) throws IOException {
+    protected void handleHeaders(HttpUriRequest httpUriRequest, HttpRequest httpRequest) throws IOException {
         getCookieAccessor().addCookieIfNecessary(httpRequest);
         getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);
     }

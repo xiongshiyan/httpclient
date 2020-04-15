@@ -83,7 +83,7 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         }
     }
 
-    private void handleHeaders(Request.Builder builder , HttpRequest httpRequest) throws IOException {
+    protected void handleHeaders(Request.Builder builder , HttpRequest httpRequest) throws IOException {
         getCookieAccessor().addCookieIfNecessary(httpRequest);
         getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest);
     }
