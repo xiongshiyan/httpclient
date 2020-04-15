@@ -47,6 +47,13 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     private Config config = Config.defaultConfig();
 
     public AbstractSmartHttpClient(){
+        init();
+    }
+
+    /**
+     * 初始化方法，子类可以复写，但要先调用父类的
+     */
+    protected void init() {
         setContentCallbackHandler(new DefaultContentCallbackHandler<>());
         setInputStreamCloser(new DefaultCloser());
 

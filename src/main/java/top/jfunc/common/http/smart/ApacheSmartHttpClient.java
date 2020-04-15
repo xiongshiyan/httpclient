@@ -35,7 +35,10 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     private Closer httpResponseCloser;
     private Closer httpClientCloser;
 
-    public ApacheSmartHttpClient(){
+    @Override
+    protected void init() {
+        super.init();
+
         setBodyContentCallbackCreator(new DefaultApacheBodyContentCallbackCreator());
         setUploadContentCallbackCreator(new DefaultApacheUploadContentCallbackCreator());
 

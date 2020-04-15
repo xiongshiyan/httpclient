@@ -26,7 +26,10 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
 
     private Closer responseCloser;
 
-    public JoddSmartHttpClient(){
+    @Override
+    protected void init() {
+        super.init();
+
         setBodyContentCallbackCreator(new DefaultJoddBodyContentCallbackCreator());
         setUploadContentCallbackCreator(new DefaultJoddUploadContentCallbackCreator());
 

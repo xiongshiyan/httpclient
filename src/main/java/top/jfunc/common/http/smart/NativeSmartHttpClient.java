@@ -28,7 +28,10 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     private Closer connectionCloser;
 
-    public NativeSmartHttpClient(){
+    @Override
+    protected void init() {
+        super.init();
+
         setBodyContentCallbackCreator(new DefaultJdkBodyContentCallbackCreator());
         setUploadContentCallbackCreator(new DefaultJdkUploadContentCallbackCreator());
 
@@ -37,7 +40,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         setConnectionSender(new DefaultJdkConnectionSender());
         setHttpURLConnectionStreamExtractor(new DefaultJdkStreamExtractor());
         setHttpURLConnectionHeaderExtractor(new DefaultJdkHeaderExtractor());
-
 
         setConnectionCloser(new DefaultCloser());
 

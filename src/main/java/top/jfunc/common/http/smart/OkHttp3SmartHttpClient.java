@@ -20,7 +20,6 @@ import java.util.Objects;
  */
 public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Request.Builder> {
 
-
     private RequesterFactory<OkHttpClient> okHttpClientFactory;
     private RequesterFactory<Request.Builder> requestBuilderFactory;
     private HeaderHandler<Request.Builder> requestBuilderHeaderHandler;
@@ -30,7 +29,10 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
 
     private Closer responseCloser;
 
-    public OkHttp3SmartHttpClient(){
+    @Override
+    protected void init() {
+        super.init();
+
         setBodyContentCallbackCreator(new DefaultOkHttp3BodyContentCallbackCreator());
         setUploadContentCallbackCreator(new DefaultOkHttp3UploadContentCallbackCreator());
 
@@ -43,7 +45,6 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
 
         setResponseCloser(new DefaultCloser());
     }
-
 
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest , ContentCallback<Request.Builder> contentCallback , ResultCallback<R> resultCallback) throws Exception {
