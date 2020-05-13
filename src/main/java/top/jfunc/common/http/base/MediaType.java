@@ -28,8 +28,7 @@ public final class MediaType {
     private static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
     private static final String QUOTED = "\"([^\"]*)\"";
     private static final Pattern TYPE_SUBTYPE = Pattern.compile(TOKEN + "/" + TOKEN);
-    private static final Pattern PARAMETER = Pattern.compile(
-    ";\\s*(?:" + TOKEN + "=(?:" + TOKEN + "|" + QUOTED + "))?");
+    private static final Pattern PARAMETER = Pattern.compile(";\\s*(?:" + TOKEN + "=(?:" + TOKEN + "|" + QUOTED + "))?");
 
     private final String type;
     private final String subtype;
@@ -68,7 +67,7 @@ public final class MediaType {
     public static final String VIDEO_OGG_STRING                     = "video/ogg";
     public static final String VIDEO_QUICKTIME_STRING               = "video/quicktime";
     public static final String VIDEO_WEBM_STRING                    = "video/webm";
-    public static final String VIDEO_WMA_STRING                     = "video/x-ms-wmv";
+    public static final String VIDEO_WMV_STRING                     = "video/x-ms-wmv";
     public static final String VIDEO_FLV_STRING                     = "video/x-flv";
     public static final String VIDEO_3GPP_STRING                    = "video/3gpp";
     /**常见的MediaType-APPLICATION*/
@@ -121,7 +120,7 @@ public final class MediaType {
     public static final MediaType VIDEO_OGG                     = parse(VIDEO_OGG_STRING);
     public static final MediaType VIDEO_QUICKTIME               = parse(VIDEO_QUICKTIME_STRING);
     public static final MediaType VIDEO_WEBM                    = parse(VIDEO_WEBM_STRING);
-    public static final MediaType VIDEO_WMA                     = parse(VIDEO_WMA_STRING);
+    public static final MediaType VIDEO_WMV                     = parse(VIDEO_WMV_STRING);
     public static final MediaType VIDEO_FLV                     = parse(VIDEO_FLV_STRING);
     public static final MediaType VIDEO_3GPP                    = parse(VIDEO_3GPP_STRING);
     /**常见的MediaType-APPLICATION*/

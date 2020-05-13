@@ -1,7 +1,5 @@
 package top.jfunc.common.http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.request.HttpRequest;
@@ -21,8 +19,6 @@ import java.util.Map;
  * @author xiongshiyan at 2017/12/11
  */
 public class HttpStatic {
-    private static final Logger logger = LoggerFactory.getLogger(HttpStatic.class);
-
     private HttpStatic(){}
 
     private static SmartHttpClient SMART_HTTP_CLIENT = new NativeSmartHttpClient();
