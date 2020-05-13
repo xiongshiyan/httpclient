@@ -119,7 +119,7 @@ public class HttpSmartTest {
             String charset = "GBK";
             Request request = Request.of(url).setResultCharset("UTF-8").setBodyCharset(charset)
                     //设置ContentType非常重要，尤其是对于HTTPURLConnection来说，他写入的时候根据这个编码来写的
-                    .setContentType(MediaType.APPLICATIPON_JSON.withCharset(charset));
+                    .setContentType(MediaType.APPLICATION_JSON.withCharset(charset));
             request.bodyHolder().setBody("熊诗言");
             Response post = http.post(request);
             System.out.println(post.getBodyAsString());
@@ -131,7 +131,7 @@ public class HttpSmartTest {
     public void testPost(SmartHttpClient http){
         try {
             String url = "http://localhost:8080/http-server-test/post/body";
-            MediaType contentType = MediaType.APPLICATIPON_JSON.withCharset(Config.DEFAULT_CHARSET);
+            MediaType contentType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
             Request request = Request.of(url).retainResponseHeaders(true).setContentType(contentType).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
@@ -143,7 +143,7 @@ public class HttpSmartTest {
             System.out.println(s);
 
             url = "http://localhost:8080/http-server-test/post/form";
-            MediaType mediaType = MediaType.APPLICATIPON_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
+            MediaType mediaType = MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
             request = Request.of(url).setContentType(mediaType);
             request.formParamHolder().addParam("xx" , "xx").addParam("yy" , "yy");
             Response response = http.post(request);
@@ -255,7 +255,7 @@ public class HttpSmartTest {
 //        String url = "https://dzg.palmte.cn/dzdsds";
         String url = "http://localhost:8080/http-server-test/put/body";
         try {
-            MediaType mediaType = MediaType.APPLICATIPON_JSON.withCharset(Config.DEFAULT_CHARSET);
+            MediaType mediaType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
             Request request = Request.of(url).retainResponseHeaders(true).setContentType(mediaType).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
             request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
@@ -288,7 +288,7 @@ public class HttpSmartTest {
     }
     private void testAll(SmartHttpClient smartHttpClient) throws Exception{
 
-        MediaType mediaType = MediaType.APPLICATIPON_JSON.withCharset(Config.DEFAULT_CHARSET);
+        MediaType mediaType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
         HolderCommonBodyRequest request = HolderPostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
                 .retainResponseHeaders(true).setBody("xxxxx", mediaType.toString());
         request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");

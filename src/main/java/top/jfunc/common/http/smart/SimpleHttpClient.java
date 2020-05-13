@@ -290,7 +290,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String postJson(String url, String body, String bodyCharset, String resultCharset) throws IOException{
-        MediaType jsonType = MediaType.APPLICATIPON_JSON.withCharset(Config.DEFAULT_CHARSET);
+        MediaType jsonType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
         return post(url,body, jsonType.toString(),null, Config.UNSIGNED, Config.UNSIGNED,bodyCharset,resultCharset);
     }
 
@@ -303,7 +303,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String postJson(String url, String body) throws IOException{
-        MediaType jsonType = MediaType.APPLICATIPON_JSON.withCharset(Config.DEFAULT_CHARSET);
+        MediaType jsonType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
         return post(url,body, jsonType.toString(),null, Config.UNSIGNED, Config.UNSIGNED);
     }
 
@@ -320,7 +320,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, Map<String, String> params, Map<String, String> headers, String bodyCharset, String resultCharset) throws IOException{
-        return post(url, ParamUtil.contactMap(params , bodyCharset), MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset).toString(),headers,bodyCharset,resultCharset);
+        return post(url, ParamUtil.contactMap(params , bodyCharset), MediaType.APPLICATION_FORM_DATA.withCharset(bodyCharset).toString(),headers,bodyCharset,resultCharset);
     }
 
     /**
@@ -333,7 +333,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
-        MediaType mediaType = MediaType.APPLICATIPON_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
+        MediaType mediaType = MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
         return post(url, ParamUtil.contactMap(params , Config.DEFAULT_CHARSET), mediaType.toString(),headers);
     }
 
@@ -348,7 +348,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, Map<String, String> params, String bodyCharset, String resultCharset) throws IOException{
-        MediaType mediaType = MediaType.APPLICATIPON_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
+        MediaType mediaType = MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
         return post(url, ParamUtil.contactMap(params , bodyCharset), mediaType.toString(),null,bodyCharset,resultCharset);
     }
 
@@ -361,7 +361,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, Map<String, String> params) throws IOException{
-        MediaType mediaType = MediaType.APPLICATIPON_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
+        MediaType mediaType = MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
         return post(url, ParamUtil.contactMap(params , Config.DEFAULT_CHARSET), mediaType.toString(),null);
     }
 

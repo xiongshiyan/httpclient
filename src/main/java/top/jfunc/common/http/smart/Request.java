@@ -94,7 +94,7 @@ public class Request extends BaseHolderHttpRequest<Request> implements
         //没有设置body一般认为就是form表单传递
         String bodyCharset = getConfig().calculateBodyCharset(formParamHolder.getParamCharset(), getContentType());
         if(null == getContentType()){
-            setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(bodyCharset));
+            setContentType(MediaType.APPLICATION_FORM_DATA.withCharset(bodyCharset));
         }
         return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
     }

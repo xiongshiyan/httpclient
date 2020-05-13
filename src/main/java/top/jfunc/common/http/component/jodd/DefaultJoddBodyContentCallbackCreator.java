@@ -15,7 +15,7 @@ public class DefaultJoddBodyContentCallbackCreator extends AbstractBodyContentCa
     @Override
     public ContentCallback<HttpRequest> create(Method method, String body, String bodyCharset, String contentType) throws IOException {
         String type = null == contentType ?
-                MediaType.APPLICATIPON_JSON.withCharset(bodyCharset).toString() : contentType;
+                MediaType.APPLICATION_JSON.withCharset(bodyCharset).toString() : contentType;
         return httpRequest -> httpRequest.bodyText(body , type, bodyCharset);
     }
 }

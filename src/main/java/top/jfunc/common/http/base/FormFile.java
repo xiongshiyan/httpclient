@@ -16,7 +16,7 @@ public class FormFile {
     /**请求参数名称 */
     private String      parameterName;
     /**内容类型 */
-    private String      contentType = MediaType.APPLICATIPON_OCTET_STREAM.toString();
+    private String      contentType = MediaType.APPLICATION_OCTET_STREAM.toString();
 
     public static FormFile of(String filName, byte[] data, String parameterName, String contentType){
         return new FormFile(filName , data , parameterName , contentType);

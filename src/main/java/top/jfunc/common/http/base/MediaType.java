@@ -72,23 +72,23 @@ public final class MediaType {
     public static final String VIDEO_FLV_STRING                     = "video/x-flv";
     public static final String VIDEO_3GPP_STRING                    = "video/3gpp";
     /**常见的MediaType-APPLICATION*/
-    public static final String APPLICATIPON_XML_STRING              = "application/xml";
-    public static final String APPLICATIPON_ATOM_STRING             = "application/atom+xml";
-    public static final String APPLICATIPON_FORM_DATA_STRING        = "application/x-www-form-urlencoded";
-    public static final String APPLICATIPON_JSON_STRING             = "application/json";
-    public static final String APPLICATIPON_JAVASCRIPT_STRING       = "application/javascript";
-    public static final String APPLICATIPON_MICROSOFT_WORD_STRING   = "application/msword";
-    public static final String APPLICATIPON_MICROSOFT_EXCEL_STRING  = "application/vnd.ms-excel";
-    public static final String APPLICATIPON_OCTET_STREAM_STRING     = "application/octet-stream";
-    public static final String APPLICATIPON_PDF_STRING              = "application/pdf";
-    public static final String APPLICATIPON_RTF_STRING              = "application/rtf";
-    public static final String APPLICATIPON_RDF_STRING              = "application/rdf+xml";
-    public static final String APPLICATIPON_SOAP_XML_STRING         = "application/soap+xml";
-    public static final String APPLICATIPON_TAR_STRING              = "application/x-tar";
-    public static final String APPLICATIPON_WOFF_STRING             = "application/font-woff";
-    public static final String APPLICATIPON_WOFF2_STRING            = "application/font-woff2";
-    public static final String APPLICATIPON_XHTML_STRING            = "application/xhtml+xml";
-    public static final String APPLICATIPON_ZIP_STRING              = "application/zip";
+    public static final String APPLICATION_XML_STRING               = "application/xml";
+    public static final String APPLICATION_ATOM_STRING              = "application/atom+xml";
+    public static final String APPLICATION_FORM_DATA_STRING         = "application/x-www-form-urlencoded";
+    public static final String APPLICATION_JSON_STRING              = "application/json";
+    public static final String APPLICATION_JAVASCRIPT_STRING        = "application/javascript";
+    public static final String APPLICATION_MICROSOFT_WORD_STRING    = "application/msword";
+    public static final String APPLICATION_MICROSOFT_EXCEL_STRING   = "application/vnd.ms-excel";
+    public static final String APPLICATION_OCTET_STREAM_STRING      = "application/octet-stream";
+    public static final String APPLICATION_PDF_STRING               = "application/pdf";
+    public static final String APPLICATION_RTF_STRING               = "application/rtf";
+    public static final String APPLICATION_RDF_STRING               = "application/rdf+xml";
+    public static final String APPLICATION_SOAP_XML_STRING          = "application/soap+xml";
+    public static final String APPLICATION_TAR_STRING               = "application/x-tar";
+    public static final String APPLICATION_WOFF_STRING              = "application/font-woff";
+    public static final String APPLICATION_WOFF2_STRING             = "application/font-woff2";
+    public static final String APPLICATION_XHTML_STRING             = "application/xhtml+xml";
+    public static final String APPLICATION_ZIP_STRING               = "application/zip";
     /**常见的MediaType-MULTIPART*/
     public static final String MULTIPART_FORM_DATA_STRING           = "multipart/form-data";
 
@@ -125,23 +125,23 @@ public final class MediaType {
     public static final MediaType VIDEO_FLV                     = parse(VIDEO_FLV_STRING);
     public static final MediaType VIDEO_3GPP                    = parse(VIDEO_3GPP_STRING);
     /**常见的MediaType-APPLICATION*/
-    public static final MediaType APPLICATIPON_XML_             = parse(APPLICATIPON_XML_STRING);
-    public static final MediaType APPLICATIPON_ATOM             = parse(APPLICATIPON_ATOM_STRING);
-    public static final MediaType APPLICATIPON_FORM_DATA        = parse(APPLICATIPON_FORM_DATA_STRING);
-    public static final MediaType APPLICATIPON_JSON             = parse(APPLICATIPON_JSON_STRING);
-    public static final MediaType APPLICATIPON_JAVASCRIPT       = parse(APPLICATIPON_JAVASCRIPT_STRING);
-    public static final MediaType APPLICATIPON_MICROSOFT_WORD   = parse(APPLICATIPON_MICROSOFT_WORD_STRING);
-    public static final MediaType APPLICATIPON_MICROSOFT_EXCEL  = parse(APPLICATIPON_MICROSOFT_EXCEL_STRING);
-    public static final MediaType APPLICATIPON_OCTET_STREAM     = parse(APPLICATIPON_OCTET_STREAM_STRING);
-    public static final MediaType APPLICATIPON_PDF              = parse(APPLICATIPON_PDF_STRING);
-    public static final MediaType APPLICATIPON_RTF              = parse(APPLICATIPON_RTF_STRING);
-    public static final MediaType APPLICATIPON_RDF              = parse(APPLICATIPON_RDF_STRING);
-    public static final MediaType APPLICATIPON_SOAP_XML         = parse(APPLICATIPON_SOAP_XML_STRING);
-    public static final MediaType APPLICATIPON_TAR              = parse(APPLICATIPON_TAR_STRING);
-    public static final MediaType APPLICATIPON_WOFF             = parse(APPLICATIPON_WOFF_STRING);
-    public static final MediaType APPLICATIPON_WOFF2            = parse(APPLICATIPON_WOFF2_STRING);
-    public static final MediaType APPLICATIPON_XHTML            = parse(APPLICATIPON_XHTML_STRING);
-    public static final MediaType APPLICATIPON_ZIP              = parse(APPLICATIPON_ZIP_STRING);
+    public static final MediaType APPLICATION_XML               = parse(APPLICATION_XML_STRING);
+    public static final MediaType APPLICATION_ATOM              = parse(APPLICATION_ATOM_STRING);
+    public static final MediaType APPLICATION_FORM_DATA         = parse(APPLICATION_FORM_DATA_STRING);
+    public static final MediaType APPLICATION_JSON              = parse(APPLICATION_JSON_STRING);
+    public static final MediaType APPLICATION_JAVASCRIPT        = parse(APPLICATION_JAVASCRIPT_STRING);
+    public static final MediaType APPLICATION_MICROSOFT_WORD    = parse(APPLICATION_MICROSOFT_WORD_STRING);
+    public static final MediaType APPLICATION_MICROSOFT_EXCEL   = parse(APPLICATION_MICROSOFT_EXCEL_STRING);
+    public static final MediaType APPLICATION_OCTET_STREAM      = parse(APPLICATION_OCTET_STREAM_STRING);
+    public static final MediaType APPLICATION_PDF               = parse(APPLICATION_PDF_STRING);
+    public static final MediaType APPLICATION_RTF               = parse(APPLICATION_RTF_STRING);
+    public static final MediaType APPLICATION_RDF               = parse(APPLICATION_RDF_STRING);
+    public static final MediaType APPLICATION_SOAP_XML          = parse(APPLICATION_SOAP_XML_STRING);
+    public static final MediaType APPLICATION_TAR               = parse(APPLICATION_TAR_STRING);
+    public static final MediaType APPLICATION_WOFF              = parse(APPLICATION_WOFF_STRING);
+    public static final MediaType APPLICATION_WOFF2             = parse(APPLICATION_WOFF2_STRING);
+    public static final MediaType APPLICATION_XHTML             = parse(APPLICATION_XHTML_STRING);
+    public static final MediaType APPLICATION_ZIP               = parse(APPLICATION_ZIP_STRING);
     /**常见的MediaType-MULTIPART*/
     public static final MediaType MULTIPART_FORM_DATA           = parse(MULTIPART_FORM_DATA_STRING);
 

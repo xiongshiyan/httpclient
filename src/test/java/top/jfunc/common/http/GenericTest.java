@@ -20,9 +20,9 @@ public class GenericTest {
     }
     @Test
     public void testMediaType(){
-        Assert.assertEquals("application/json" , MediaType.APPLICATIPON_JSON.toString());
-        Assert.assertEquals("application/json;charset=utf-8" , MediaType.APPLICATIPON_JSON.withCharset(Config.DEFAULT_CHARSET).toString());
-        Assert.assertEquals("application/x-www-form-urlencoded" , MediaType.APPLICATIPON_FORM_DATA.toString());
-        Assert.assertEquals("application/x-www-form-urlencoded;charset=utf-8" , MediaType.APPLICATIPON_FORM_DATA.withCharset(Config.DEFAULT_CHARSET).toString());
+        Assert.assertEquals("application/json" , MediaType.APPLICATION_JSON.toString());
+        Assert.assertEquals("application/json;charset=utf-8" , MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET).toString());
+        Assert.assertEquals("application/x-www-form-urlencoded" , MediaType.APPLICATION_FORM_DATA.toString());
+        Assert.assertEquals("application/x-www-form-urlencoded;charset=utf-8" , MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET).toString());
     }
 }

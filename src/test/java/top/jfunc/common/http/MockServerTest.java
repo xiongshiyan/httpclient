@@ -115,7 +115,7 @@ public class MockServerTest {
                         .withPath("/hello/John")
                         .withMethod("POST")
                         .withBody("key1=value1&key2=value2")
-                        .withHeader(Header.header("Content-Type" , MediaType.APPLICATIPON_FORM_DATA.withCharset(Config.DEFAULT_CHARSET).toString())))
+                        .withHeader(Header.header("Content-Type" , MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET).toString())))
         .respond(
                 response()
                         .withStatusCode(200)
@@ -135,7 +135,7 @@ public class MockServerTest {
                         .withPath("/hello/John")
                         .withMethod("POST")
                         .withBody("key1=%E7%86%8A%E8%AF%97%E8%A8%80&key2=value2")
-                        .withHeader(Header.header("Content-Type" , MediaType.APPLICATIPON_FORM_DATA.withCharset(Config.DEFAULT_CHARSET).toString())))
+                        .withHeader(Header.header("Content-Type" , MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET).toString())))
         .respond(
                 response()
                         .withStatusCode(200)

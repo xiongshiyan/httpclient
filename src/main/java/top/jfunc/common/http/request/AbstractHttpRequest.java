@@ -98,10 +98,10 @@ public abstract class AbstractHttpRequest<THIS extends AbstractHttpRequest> impl
         return myself();
     }
     public THIS addFormHeader(){
-        return setContentType(MediaType.APPLICATIPON_FORM_DATA.withCharset(Config.DEFAULT_CHARSET));
+        return setContentType(MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET));
     }
     public THIS addJsonHeader(){
-        return setContentType(MediaType.APPLICATIPON_JSON.withCharset(Config.DEFAULT_CHARSET));
+        return setContentType(MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET));
     }
     public THIS addXmlHeader(){
         return setContentType(MediaType.TXT_XML.withCharset(Config.DEFAULT_CHARSET));
