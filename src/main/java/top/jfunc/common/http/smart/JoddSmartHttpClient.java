@@ -6,6 +6,7 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.jodd.*;
+import top.jfunc.common.http.util.JoddUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
@@ -24,8 +25,6 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     private StreamExtractor<HttpResponse> httpResponseStreamExtractor;
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
 
-    private Closer responseCloser;
-
     @Override
     protected void init() {
         super.init();
@@ -38,8 +37,6 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         setRequestSender(new DefaultJoddSender());
         setHttpResponseStreamExtractor(new DefaultJoddStreamExtractor());
         setHttpResponseHeaderExtractor(new DefaultJoddHeaderExtractor());
-
-        setResponseCloser(new DefaultCloser());
     }
 
     @Override
@@ -85,8 +82,10 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         return getRequestSender().send(request , httpRequest);
     }
 
-    protected void closeResponse(HttpResponse response) throws IOException {
-        getResponseCloser().close(new HttpResponseCloser(response));
+    protected void closeResponse(HttpResponse httpResponse) throws IOException {
+        ///过度设计的嫌疑
+        ///getResponseCloser().close(new HttpResponseCloser(httpResponse));
+        JoddUtil.closeQuietly(httpResponse);
     }
 
 
@@ -130,14 +129,6 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         this.httpResponseHeaderExtractor = Objects.requireNonNull(httpResponseHeaderExtractor);
     }
 
-    public Closer getResponseCloser() {
-        return responseCloser;
-    }
-
-    public void setResponseCloser(Closer responseCloser) {
-        this.responseCloser = Objects.requireNonNull(responseCloser);
-    }
-
     @Override
     public String toString() {
         return "SmartHttpClient implemented by Jodd-Http";
@@ -145,7 +136,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
 
 
 
-    protected static class HttpResponseCloser extends AbstractCloseAdapter<HttpResponse>{
+    /*protected static class HttpResponseCloser extends AbstractCloseAdapter<HttpResponse>{
         protected HttpResponseCloser(HttpResponse httpResponse){
             super(httpResponse);
         }
@@ -153,5 +144,5 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         protected void doClose(HttpResponse httpResponse) throws IOException {
             httpResponse.close();
         }
-    }
+    }*/
 }

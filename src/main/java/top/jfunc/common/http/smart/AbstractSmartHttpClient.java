@@ -34,6 +34,8 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     private ContentCallbackHandler<CC> contentCallbackHandler;
     /**InputStream关闭器*/
     private Closer inputStreamCloser;
+    /**Response关闭器*/
+    ///private Closer responseCloser;
 
     private HttpRequestFactory httpRequestFactory;
     private StringBodyHttpRequestFactory stringBodyHttpRequestFactory;
@@ -57,6 +59,7 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     protected void init() {
         setContentCallbackHandler(new DefaultContentCallbackHandler<>());
         setInputStreamCloser(new DefaultCloser());
+        ///setResponseCloser(new DefaultCloser());
 
         setHttpRequestFactory(new DefaultHttpRequestFactory());
         setStringBodyHttpRequestFactory(new DefaultStringBodyHttpRequestFactory());
@@ -283,6 +286,15 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     public void setInputStreamCloser(Closer inputStreamCloser) {
         this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
     }
+
+    ///
+    /*public Closer getResponseCloser() {
+        return responseCloser;
+    }
+
+    public void setResponseCloser(Closer responseCloser) {
+        this.responseCloser = Objects.requireNonNull(responseCloser);
+    }*/
 
     public HttpRequestFactory getHttpRequestFactory() {
         return httpRequestFactory;

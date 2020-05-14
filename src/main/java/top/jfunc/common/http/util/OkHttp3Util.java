@@ -30,6 +30,15 @@ public class OkHttp3Util {
         return (body != null) ? body.byteStream() : IoUtil.emptyStream();
     }
 
+    public static void closeQuietly(Response response) {
+        if(null != response){
+            try {
+                response.close();
+            } catch (Exception e) {
+            }
+        }
+    }
+
     /**
      * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build()
      * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build(String, String)

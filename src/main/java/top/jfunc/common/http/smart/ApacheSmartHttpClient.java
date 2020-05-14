@@ -3,7 +3,6 @@ package top.jfunc.common.http.smart;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import top.jfunc.common.http.base.ContentCallback;
@@ -11,6 +10,7 @@ import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.apache.*;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.util.ApacheUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
@@ -31,7 +31,6 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     private StreamExtractor<HttpResponse> responseStreamExtractor;
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
 
-    private Closer httpResponseCloser;
     private Closer httpClientCloser;
 
     @Override
@@ -45,12 +44,10 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         setHttpUriRequestHeaderHandler(new DefaultApacheHeaderHandler());
         setHttpClientRequesterFactory(new DefaultApacheClientFactory());
         setRequestExecutor(new DefaultApacheRequestExecutor());
-        ///setHttpEntityStreamExtractor(new DefaultApacheEntityStreamExtractor());
         setResponseStreamExtractor(new DefaultApacheResponseStreamExtractor());
         setHttpResponseHeaderExtractor(new DefaultApacheHeaderExtractor());
 
 
-        setHttpResponseCloser(new DefaultCloser());
         setHttpClientCloser(new DefaultCloser());
     }
 
@@ -103,8 +100,10 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         return getRequestExecutor().execute(httpClient , httpUriRequest , httpRequest);
     }
 
-    protected void closeResponse(HttpResponse response) throws IOException {
-        getHttpResponseCloser().close(new HttpResponseCloser(response));
+    protected void closeResponse(HttpResponse httpResponse) throws IOException {
+        ///过度设计的嫌疑
+        ///getResponseCloser().close(new HttpResponseCloser(httpResponse));
+        ApacheUtil.closeQuietly(httpResponse);
     }
     protected void closeHttpClient(HttpClient httpClient) throws IOException {
         getHttpClientCloser().close(new HttpClientCloser(httpClient));
@@ -159,14 +158,6 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         this.httpResponseHeaderExtractor = Objects.requireNonNull(httpResponseHeaderExtractor);
     }
 
-    public Closer getHttpResponseCloser() {
-        return httpResponseCloser;
-    }
-
-    public void setHttpResponseCloser(Closer httpResponseCloser) {
-        this.httpResponseCloser = Objects.requireNonNull(httpResponseCloser);
-    }
-
     public Closer getHttpClientCloser() {
         return httpClientCloser;
     }
@@ -193,15 +184,13 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             }
         }
     }
-    protected static class HttpResponseCloser extends AbstractCloseAdapter<HttpResponse>{
+    /*protected static class HttpResponseCloser extends AbstractCloseAdapter<HttpResponse>{
         protected HttpResponseCloser(HttpResponse httpResponse){
             super(httpResponse);
         }
         @Override
         protected void doClose(HttpResponse httpResponse) throws IOException {
-            if(httpResponse instanceof CloseableHttpResponse){
-                ((CloseableHttpResponse) httpResponse).close();
-            }
+            ApacheUtil.closeQuietly(httpResponse);
         }
-    }
+    }*/
 }

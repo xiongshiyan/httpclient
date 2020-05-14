@@ -26,8 +26,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     private StreamExtractor<HttpURLConnection> httpURLConnectionStreamExtractor;
     private HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor;
 
-    private Closer connectionCloser;
-
     @Override
     protected void init() {
         super.init();
@@ -40,8 +38,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         setConnectionSender(new DefaultJdkConnectionSender());
         setHttpURLConnectionStreamExtractor(new DefaultJdkStreamExtractor());
         setHttpURLConnectionHeaderExtractor(new DefaultJdkHeaderExtractor());
-
-        setConnectionCloser(new DefaultCloser());
 
         setCookieAccessor(new JdkCookieAccessor());
     }
@@ -122,7 +118,9 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     }
 
     protected void closeConnection(HttpURLConnection connection) throws IOException {
-        getConnectionCloser().close(new HttpURLConnectionCloser(connection));
+        ///过度设计的嫌疑
+        ///getResponseCloser().close(new HttpURLConnectionCloser(connection));
+        NativeUtil.closeQuietly(connection);
     }
 
     public RequesterFactory<HttpURLConnection> getHttpURLConnectionFactory() {
@@ -165,14 +163,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         this.httpURLConnectionHeaderExtractor = Objects.requireNonNull(httpURLConnectionHeaderExtractor);
     }
 
-    public Closer getConnectionCloser() {
-        return connectionCloser;
-    }
-
-    public void setConnectionCloser(Closer connectionCloser) {
-        this.connectionCloser = Objects.requireNonNull(connectionCloser);
-    }
-
     @Override
     public String toString() {
         return "SmartHttpClient implemented by JDK's HttpURLConnection";
@@ -180,13 +170,13 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
 
 
-    protected static class HttpURLConnectionCloser extends AbstractCloseAdapter<HttpURLConnection> {
+    /*protected static class HttpURLConnectionCloser extends AbstractCloseAdapter<HttpURLConnection> {
         protected HttpURLConnectionCloser(HttpURLConnection connection){
             super(connection);
         }
         @Override
         protected void doClose(HttpURLConnection connection) throws IOException {
-            NativeUtil.disconnectQuietly(connection);
+            NativeUtil.closeQuietly(connection);
         }
-    }
+    }*/
 }

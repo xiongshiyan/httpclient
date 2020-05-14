@@ -234,7 +234,7 @@ public class NativeUtil {
     }
 
 
-    public static void disconnectQuietly(HttpURLConnection connect) {
+    public static void closeQuietly(HttpURLConnection connect) {
         if(null != connect){
             try {
                 connect.disconnect();

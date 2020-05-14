@@ -34,10 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.UnknownHostException;
+import java.net.*;
 
 import static top.jfunc.common.utils.StrUtil.COLON;
 import static top.jfunc.common.utils.StrUtil.SLASH;
@@ -262,10 +259,19 @@ public class ApacheUtil {
 
     public static MultiValueMap<String , String> parseHeaders(HttpResponse response) {
         Header[] allHeaders = response.getAllHeaders();
-        MultiValueMap<String,String> arrayListMultimap = new ArrayListMultiValueMap<>(allHeaders.length);
+        MultiValueMap<String,String> multiValueMap = new ArrayListMultiValueMap<>(allHeaders.length);
         for (Header header : allHeaders) {
-            arrayListMultimap.add(header.getName() , header.getValue());
+            multiValueMap.add(header.getName() , header.getValue());
         }
-        return arrayListMultimap;
+        return multiValueMap;
+    }
+
+
+    public static void closeQuietly(HttpResponse httpResponse) {
+        if(null != httpResponse && httpResponse instanceof CloseableHttpResponse){
+            try{
+                ((CloseableHttpResponse) httpResponse).close();
+            }catch (Exception e){}
+        }
     }
 }

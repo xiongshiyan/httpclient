@@ -8,6 +8,7 @@ import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.okhttp3.*;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.util.OkHttp3Util;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
@@ -27,8 +28,6 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
     private StreamExtractor<Response> responseStreamExtractor;
     private HeaderExtractor<Response> responseHeaderExtractor;
 
-    private Closer responseCloser;
-
     @Override
     protected void init() {
         super.init();
@@ -42,8 +41,6 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         setRequestExecutor(new DefaultOkHttp3RequestExecutor());
         setResponseStreamExtractor(new DefaultOkHttp3StreamExtractor());
         setResponseHeaderExtractor(new DefaultOkHttp3HeaderExtractor());
-
-        setResponseCloser(new DefaultCloser());
     }
 
     @Override
@@ -93,7 +90,9 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
     }
 
     protected void closeResponse(Response response) throws IOException {
-        getResponseCloser().close(response);
+        ///过度设计的嫌疑
+        ///getResponseCloser().close(response);
+        OkHttp3Util.closeQuietly(response);
     }
 
     public RequesterFactory<OkHttpClient> getOkHttpClientFactory() {
@@ -142,14 +141,6 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
 
     public void setResponseHeaderExtractor(HeaderExtractor<Response> responseHeaderExtractor) {
         this.responseHeaderExtractor = Objects.requireNonNull(responseHeaderExtractor);
-    }
-
-    public Closer getResponseCloser() {
-        return responseCloser;
-    }
-
-    public void setResponseCloser(Closer responseCloser) {
-        this.responseCloser = Objects.requireNonNull(responseCloser);
     }
 
     @Override

@@ -90,6 +90,15 @@ public class JoddUtil {
         return new ByteArrayInputStream(bodyBytes);
     }
 
+    public static void closeQuietly(HttpResponse httpResponse) {
+        if(null != httpResponse){
+            try {
+                httpResponse.close();
+            } catch (Exception e) {
+            }
+        }
+    }
+
     /**
      * 文件上传
      * @param httpRequest HttpRequest
