@@ -71,7 +71,7 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
             return resultCallback.convert(response.statusCode(), inputStream,
                     calculateResultCharset(httpRequest), responseHeaders);
         } finally {
-            closeInputSteam(inputStream);
+            closeInputStream(inputStream);
             closeResponse(response);
         }
     }
@@ -79,10 +79,6 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     protected void handleHeaders(HttpRequest request , top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException {
         getCookieAccessor().addCookieIfNecessary(httpRequest);
         getHttpRequestHeaderHandler().configHeaders(request , httpRequest);
-    }
-
-    protected void closeInputSteam(InputStream inputStream) throws IOException {
-        getInputStreamCloser().close(inputStream);
     }
 
     protected HttpResponse send(HttpRequest request, top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException {

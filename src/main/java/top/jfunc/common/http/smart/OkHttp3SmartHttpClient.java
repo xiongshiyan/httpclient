@@ -96,11 +96,6 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         getResponseCloser().close(response);
     }
 
-    protected void closeInputStream(InputStream inputStream) throws IOException {
-        getInputStreamCloser().close(inputStream);
-    }
-
-
     public RequesterFactory<OkHttpClient> getOkHttpClientFactory() {
         return okHttpClientFactory;
     }

@@ -14,6 +14,7 @@ import top.jfunc.common.utils.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 
@@ -247,7 +248,9 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         return ObjectUtil.defaultIfNull(httpRequest.getResultCharset(), config.getDefaultResultCharset());
     }
 
-
+    protected void closeInputStream(InputStream inputStream) throws IOException {
+        getInputStreamCloser().close(inputStream);
+    }
 
     public BodyContentCallbackCreator<CC> getBodyContentCallbackCreator() {
         return bodyContentCallbackCreator;

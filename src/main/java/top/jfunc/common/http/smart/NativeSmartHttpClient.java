@@ -121,10 +121,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         return getConnectionSender().send(connection , httpRequest);
     }
 
-    protected void closeInputStream(InputStream inputStream) throws IOException {
-        getInputStreamCloser().close(inputStream);
-    }
-
     protected void closeConnection(HttpURLConnection connection) throws IOException {
         getConnectionCloser().close(new HttpURLConnectionCloser(connection));
     }

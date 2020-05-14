@@ -27,7 +27,6 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler;
     private RequesterFactory<HttpClient> httpClientRequesterFactory;
     private RequestExecutor<HttpClient , HttpUriRequest , HttpResponse> requestExecutor;
-    ///private StreamExtractor<HttpEntity> httpEntityStreamExtractor;
 
     private StreamExtractor<HttpResponse> responseStreamExtractor;
     private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
@@ -102,10 +101,6 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
 
     protected HttpResponse execute(HttpClient httpClient, HttpUriRequest httpUriRequest , HttpRequest httpRequest) throws IOException {
         return getRequestExecutor().execute(httpClient , httpUriRequest , httpRequest);
-    }
-
-    protected void closeInputStream(InputStream inputStream) throws IOException {
-        getInputStreamCloser().close(inputStream);
     }
 
     protected void closeResponse(HttpResponse response) throws IOException {
