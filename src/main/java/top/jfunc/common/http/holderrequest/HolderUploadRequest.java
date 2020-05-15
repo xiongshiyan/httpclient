@@ -23,7 +23,7 @@ public interface HolderUploadRequest extends HolderHttpRequest, UploadRequest {
      */
     @Override
     default MultiValueMap<String, String> getFormParams(){
-        return formParamHolder().getParams();
+        return formParamHolder().get();
     }
 
     /**
@@ -35,7 +35,7 @@ public interface HolderUploadRequest extends HolderHttpRequest, UploadRequest {
      */
     @Override
     default HolderUploadRequest addFormParam(String key, String value, String... values){
-        formParamHolder().addParam(key, value, values);
+        formParamHolder().add(key, value, values);
         return this;
     }
 

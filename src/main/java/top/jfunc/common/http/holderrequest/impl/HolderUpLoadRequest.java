@@ -61,19 +61,19 @@ public class HolderUpLoadRequest extends BaseHolderHttpRequest<HolderUpLoadReque
 
     @Override
     public HolderUpLoadRequest addFormParam(String key, String value, String... values) {
-        formParamHolder().addParam(key, value, values);
+        formParamHolder().add(key, value, values);
         return myself();
     }
 
     @Override
     public UploadRequest setFormParams(Map<String, String> formParams) {
-        formParamHolder().setParams(formParams);
+        formParamHolder().set(formParams);
         return myself();
     }
 
     @Override
     public UploadRequest setFormParams(MultiValueMap<String, String> formParams) {
-        formParamHolder().setParams(formParams);
+        formParamHolder().set(formParams);
         return myself();
     }
 

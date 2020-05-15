@@ -97,7 +97,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
             ParamHolder queryParamHolder = queryParamHolder();
             for (String kv : kvs) {
                 String[] split = kv.split(EQUALS);
-                queryParamHolder.addParam(split[0] , split[1]);
+                queryParamHolder.add(split[0] , split[1]);
             }
         }
         return this;

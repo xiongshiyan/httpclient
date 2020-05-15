@@ -51,7 +51,7 @@ public class HttpSmartTest {
         String url = "get/query";
         try {
             Request request1 = Request.of(url).ignoreResponseBody(false).retainResponseHeaders(true).setResultCharset("UTF-8");
-            request1.headerHolder().addHeader("saleType" , "2");
+            request1.headerHolder().add("saleType" , "2");
             Response response = http.get(request1);
             System.out.println(response);
             System.out.println("headerHolder:" + response.getHeaders());
@@ -60,7 +60,7 @@ public class HttpSmartTest {
             System.out.println(s);
 
             Request request = Request.of(url).setResultCharset("UTF-8");
-            request.headerHolder().addHeader("saleType" , "2");
+            request.headerHolder().add("saleType" , "2");
             byte[] bytes = http.getAsBytes(request);
             System.out.println(bytes.length);
             System.out.println(new String(bytes));
@@ -134,7 +134,7 @@ public class HttpSmartTest {
             MediaType contentType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
             Request request = Request.of(url).retainResponseHeaders(true).setContentType(contentType).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
-            request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
+            request.headerHolder().add("ss" , "ss").add("ss" , "dd");
             Response post = http.post(request);
             System.out.println(post.getBodyAsString());
             System.out.println(post.getHeaders());
@@ -145,7 +145,7 @@ public class HttpSmartTest {
             url = "http://localhost:8080/http-server-test/post/form";
             MediaType mediaType = MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
             request = Request.of(url).setContentType(mediaType);
-            request.formParamHolder().addParam("xx" , "xx").addParam("yy" , "yy");
+            request.formParamHolder().add("xx" , "xx").add("yy" , "yy");
             Response response = http.post(request);
             System.out.println(response.getBodyAsString());
         }catch (IOException e){
@@ -179,8 +179,8 @@ public class HttpSmartTest {
             FormFile formFile = new FormFile(new File("E:\\BugReport.png") , "file",null);
             Request request = Request.of(url).retainResponseHeaders(true);
             request.formFileHolder().addFormFile(formFile);
-            request.headerHolder().addHeader("empCode" , "ahg0023")
-                    .addHeader("phone" , "15208384257");
+            request.headerHolder().add("empCode" , "ahg0023")
+                    .add("phone" , "15208384257");
             Response response = httpClient.upload(request);
             System.out.println(response.getBodyAsString());
             System.out.println(response.getHeaders());
@@ -219,9 +219,9 @@ public class HttpSmartTest {
             FormFile formFile2 = new FormFile(new File("E:\\BugReport.png") , "file2",null);
             Request request = Request.of(url).retainResponseHeaders(true);
             request.formFileHolder().addFormFile(formFile2).addFormFile(formFile);
-            request.headerHolder().addHeader("empCode" , "ahg0023")
-                    .addHeader("phone" , "15208384257");
-            request.formParamHolder().addParam("k1", "v1").addParam("k2" , "v2");
+            request.headerHolder().add("empCode" , "ahg0023")
+                    .add("phone" , "15208384257");
+            request.formParamHolder().add("k1", "v1").add("k2" , "v2");
             Response response = httpClient.upload(request);
             System.out.println(response.getBodyAsString());
             System.out.println(response.getHeaders());
@@ -258,7 +258,7 @@ public class HttpSmartTest {
             MediaType mediaType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
             Request request = Request.of(url).retainResponseHeaders(true).setContentType(mediaType).setConnectionTimeout(10000).setReadTimeout(10000).setResultCharset("UTF-8");
             request.bodyHolder().setBody("{\"name\":\"熊诗言\"}");
-            request.headerHolder().addHeader("ss" , "ss").addHeader("ss" , "dd");
+            request.headerHolder().add("ss" , "ss").add("ss" , "dd");
             Response response = http.http(request , Method.PUT);
             System.out.println(response.getStatusCode());
             System.out.println(response.getBodyAsString());
@@ -291,8 +291,8 @@ public class HttpSmartTest {
         MediaType mediaType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
         HolderCommonBodyRequest request = HolderPostBodyRequest.of("http://localhost:8080/http-server-test/post/all")
                 .retainResponseHeaders(true).setBody("xxxxx", mediaType.toString());
-        request.headerHolder().addHeader("sale" , "2").addHeader("ca-xx" , "ca-xx");
-        request.queryParamHolder().addParam("sa" , "sa").addParam("ds" , "ds");
+        request.headerHolder().add("sale" , "2").add("ca-xx" , "ca-xx");
+        request.queryParamHolder().add("sa" , "sa").add("ds" , "ds");
         Response response = smartHttpClient.post(request);
         Assert.assertEquals("success" , response.getBodyAsString());
         System.out.println(response.getHeaders());

@@ -60,19 +60,19 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
 
     @Override
     public THIS addQueryParam(String key, String value , String... values){
-        queryParamHolder().addParam(key, value, values);
+        queryParamHolder().add(key, value, values);
         return myself();
     }
 
     @Override
     public THIS setQueryParams(MultiValueMap<String, String> queryParams) {
-        queryParamHolder().setParams(queryParams);
+        queryParamHolder().set(queryParams);
         return myself();
     }
 
     @Override
     public THIS setQueryParams(Map<String, String> queryParams) {
-        queryParamHolder().setParams(queryParams);
+        queryParamHolder().set(queryParams);
         return myself();
     }
 
@@ -83,25 +83,25 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
 
     @Override
     public THIS setHeader(String key, String value) {
-        headerHolder.setHeader(key, value);
+        headerHolder.set(key, value);
         return myself();
     }
 
     @Override
     public THIS addHeader(String key, String value , String... values){
-        headerHolder().addHeader(key, value, values);
+        headerHolder().add(key, value, values);
         return myself();
     }
 
     @Override
     public THIS setHeaders(Map<String, String> headers) {
-        headerHolder().setHeaders(headers);
+        headerHolder().set(headers);
         return myself();
     }
 
     @Override
     public THIS setHeaders(MultiValueMap<String, String> headers) {
-        headerHolder().setHeaders(headers);
+        headerHolder().set(headers);
         return myself();
     }
 

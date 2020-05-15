@@ -96,7 +96,7 @@ public class Request extends BaseHolderHttpRequest<Request> implements
         if(null == getContentType()){
             setContentType(MediaType.APPLICATION_FORM_DATA.withCharset(bodyCharset));
         }
-        return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
+        return ParamUtil.contactMap(formParamHolder.get(), bodyCharset);
     }
 
 
@@ -139,24 +139,24 @@ public class Request extends BaseHolderHttpRequest<Request> implements
 
     @Override
     public Request setFormParams(Map<String, String> params) {
-        formParamHolder.setParams(params);
+        formParamHolder.set(params);
         return this;
     }
     @Override
     public Request setFormParams(MultiValueMap<String, String> params) {
-        formParamHolder.setParams(params);
+        formParamHolder.set(params);
         return this;
     }
 
     @Override
     public Request addFormParam(String key, String value, String... values) {
-        formParamHolder.addParam(key, value, values);
+        formParamHolder.add(key, value, values);
         return this;
     }
 
     @Override
     public MultiValueMap<String, String> getFormParams() {
-        return formParamHolder.getParams();
+        return formParamHolder.get();
     }
 
     /**

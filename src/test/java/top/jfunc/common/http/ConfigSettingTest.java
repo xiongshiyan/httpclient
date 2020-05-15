@@ -38,13 +38,13 @@ public class ConfigSettingTest {
                 .setDefaultResultCharset("UTF-8")
                 .setDefaultConnectionTimeout(15000)
                 .setDefaultReadTimeout(15000);
-        config.headerHolder().addHeader("xx" , "xx");
+        config.headerHolder().add("xx" , "xx");
         http.setConfig(config);
 
         String url = "?aldtype=85#zh/en/%E5%AE%8C%E6%95%B4%E7%9A%84%E6%88%91";
         try {
             Request request = Request.of(url).setResultCharset("UTF-8");
-            request.headerHolder().addHeader("saleType" , "2");
+            request.headerHolder().add("saleType" , "2");
             Response response = http.get(request);
             System.out.println(response);
             System.out.println(response.getHeaders());

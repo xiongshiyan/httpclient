@@ -253,7 +253,7 @@ public class Config {
      * clone一份，防止全局设置被无意修改
      */
     public MultiValueMap<String , String> getDefaultQueryParams(){
-        MultiValueMap<String, String> params = queryParamHolder().getParams();
+        MultiValueMap<String, String> params = queryParamHolder().get();
         if(null == params){
             return null;
         }
@@ -266,7 +266,7 @@ public class Config {
      * clone一份，防止全局设置被无意修改
      */
     public MultiValueMap<String , String> getDefaultHeaders(){
-        MultiValueMap<String, String> headers = headerHolder().getHeaders();
+        MultiValueMap<String, String> headers = headerHolder().get();
         if(null == headers){
             return null;
         }

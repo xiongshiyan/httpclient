@@ -25,7 +25,7 @@ public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest 
      */
     @Override
     default MultiValueMap<String, String> getFormParams(){
-        return formParamHolder().getParams();
+        return formParamHolder().get();
     }
 
     /**
@@ -35,7 +35,7 @@ public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest 
      */
     @Override
     default HolderFormRequest setFormParams(Map<String, String> params){
-        formParamHolder().setParams(params);
+        formParamHolder().set(params);
         return this;
     }
     /**
@@ -45,7 +45,7 @@ public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest 
      */
     @Override
     default HolderFormRequest setFormParams(MultiValueMap<String, String> params){
-        formParamHolder().setParams(params);
+        formParamHolder().set(params);
         return this;
     }
 
@@ -58,7 +58,7 @@ public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest 
      */
     @Override
     default HolderFormRequest addFormParam(String key, String value, String... values){
-        formParamHolder().addParam(key, value, values);
+        formParamHolder().add(key, value, values);
         return this;
     }
 
@@ -95,7 +95,7 @@ public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest 
         if(null == getContentType()){
             setContentType(MediaType.APPLICATION_FORM_DATA.withCharset(bodyCharset));
         }
-        return ParamUtil.contactMap(formParamHolder.getParams(), bodyCharset);
+        return ParamUtil.contactMap(formParamHolder.get(), bodyCharset);
     }
     /**
      * 获取请求体编码

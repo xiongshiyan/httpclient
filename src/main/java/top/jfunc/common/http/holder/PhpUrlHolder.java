@@ -173,7 +173,7 @@ public interface PhpUrlHolder extends UrlHolder {
      */
     @Override
     default PhpUrlHolder addQueryParam(String key, String value, String... values){
-        queryParamHolder().addParam(key, value, values);
+        queryParamHolder().add(key, value, values);
         return this;
     }
 
@@ -184,7 +184,7 @@ public interface PhpUrlHolder extends UrlHolder {
      */
     @Override
     default PhpUrlHolder setQueryParams(MultiValueMap<String, String> queryParams){
-        queryParamHolder().setParams(queryParams);
+        queryParamHolder().set(queryParams);
         return this;
     }
 
@@ -195,7 +195,7 @@ public interface PhpUrlHolder extends UrlHolder {
      */
     @Override
     default PhpUrlHolder setQueryParams(Map<String, String> queryParams){
-        queryParamHolder().setParams(queryParams);
+        queryParamHolder().set(queryParams);
         return this;
     }
 }

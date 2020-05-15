@@ -102,7 +102,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default MultiValueMap<String, String> getQueryParams(){
-        return queryParamHolder().getParams();
+        return queryParamHolder().get();
     }
 
     /**
@@ -114,7 +114,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default HolderHttpRequest addQueryParam(String key, String value, String... values){
-        queryParamHolder().addParam(key, value, values);
+        queryParamHolder().add(key, value, values);
         return this;
     }
 
@@ -125,7 +125,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default HolderHttpRequest setQueryParams(MultiValueMap<String, String> queryParams){
-        queryParamHolder().setParams(queryParams);
+        queryParamHolder().set(queryParams);
         return this;
     }
 
@@ -136,7 +136,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default HolderHttpRequest setQueryParams(Map<String, String> queryParams){
-        queryParamHolder().setParams(queryParams);
+        queryParamHolder().set(queryParams);
         return this;
     }
 
@@ -175,7 +175,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default HolderHttpRequest setHeader(String key, String value){
-        headerHolder().setHeader(key, value);
+        headerHolder().set(key, value);
         return this;
     }
 
@@ -188,7 +188,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default HolderHttpRequest addHeader(String key, String value, String... values){
-        headerHolder().addHeader(key, value, values);
+        headerHolder().add(key, value, values);
         return this;
     }
 
@@ -199,7 +199,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default HolderHttpRequest setHeaders(MultiValueMap<String, String> headers){
-        headerHolder().setHeaders(headers);
+        headerHolder().set(headers);
         return this;
     }
 
@@ -210,7 +210,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default HolderHttpRequest setHeaders(Map<String, String> headers){
-        headerHolder().setHeaders(headers);
+        headerHolder().set(headers);
         return this;
     }
 
@@ -226,7 +226,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default MultiValueMap<String, String> getHeaders() {
-        return headerHolder().getHeaders();
+        return headerHolder().get();
     }
 
     /**
