@@ -1,5 +1,7 @@
 package top.jfunc.common.http.holder;
 
+import top.jfunc.common.utils.MapUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,18 +12,17 @@ public class DefaultAttributeHolder implements AttributeHolder {
     private Map<String , Object> attributes;
 
     @Override
-    public Map<String, Object> getAttributes() {
+    public Map<String, Object> getMap() {
         return attributes;
     }
 
     @Override
-    public AttributeHolder setAttributes(Map<String, Object> attributes) {
+    public void setMap(Map<String, Object> attributes) {
         this.attributes = attributes;
-        return this;
     }
 
     @Override
-    public AttributeHolder addAttribute(String key, Object value) {
+    public AttributeHolder put(String key, Object value) {
         if(null == this.attributes){
             this.attributes = new HashMap<>(2);
         }
@@ -30,8 +31,8 @@ public class DefaultAttributeHolder implements AttributeHolder {
     }
 
     @Override
-    public Object removeAttribute(String key) {
-        if(null == this.attributes){
+    public Object remove(String key) {
+        if(MapUtil.isEmpty(attributes)){
             return null;
         }
         return this.attributes.remove(key);

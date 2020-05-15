@@ -306,7 +306,7 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default HolderHttpRequest addAttribute(String key, Object value){
-        attributeHolder().addAttribute(key , value);
+        attributeHolder().put(key , value);
         return this;
     }
 
@@ -316,6 +316,6 @@ public interface HolderHttpRequest extends HttpRequest {
      */
     @Override
     default Map<String , Object> getAttributes(){
-        return attributeHolder().getAttributes();
+        return attributeHolder().getMap();
     }
 }

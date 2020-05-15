@@ -1,27 +1,10 @@
 package top.jfunc.common.http.holder;
 
-import java.util.Map;
-
 /**
  * 路径参数处理器
  * @author xiongshiyan at 2019/6/3 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public interface RouteParamHolder extends MapHolder {
-    /**
-     * 路径参数
-     * @return 路径参数
-     */
-    @Override
-    Map<String, String> getMap();
-
-    /**
-     * 设置路径参数
-     * @param map 路径参数映射
-     * @return this
-     */
-    @Override
-    RouteParamHolder setMap(Map<String, String> map);
-
+public interface RouteParamHolder extends MapHolder<String , String> {
     /**
      * 添加路径参数
      * @param key key

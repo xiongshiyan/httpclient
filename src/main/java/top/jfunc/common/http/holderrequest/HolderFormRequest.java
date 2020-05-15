@@ -9,7 +9,7 @@ import top.jfunc.common.utils.MultiValueMap;
 import java.util.Map;
 
 /**
- * 文件上传请求
+ * form-urlencoded请求
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public interface HolderFormRequest extends HolderStringBodyRequest, FormRequest {

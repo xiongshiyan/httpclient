@@ -128,7 +128,7 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
 
     @Override
     public THIS addAttribute(String key, Object value) {
-        this.attributeHolder.addAttribute(key, value);
+        this.attributeHolder.put(key, value);
         return myself();
     }
 }

@@ -1,5 +1,7 @@
 package top.jfunc.common.http.holder;
 
+import top.jfunc.common.utils.MapUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +32,8 @@ public class DefaultRouteParamHolder implements RouteParamHolder {
     }
 
     @Override
-    public RouteParamHolder setMap(Map<String, String> routeParams) {
+    public void setMap(Map<String, String> routeParams) {
         this.routeParams = routeParams;
-        return this;
     }
 
     @Override
@@ -54,6 +55,14 @@ public class DefaultRouteParamHolder implements RouteParamHolder {
             this.routeParams.put(split[0] , split[1]);
         }
         return null;
+    }
+
+    @Override
+    public String remove(String key) {
+        if(MapUtil.isEmpty(routeParams)){
+            return null;
+        }
+        return routeParams.remove(key);
     }
 
     public String getSeperator() {
