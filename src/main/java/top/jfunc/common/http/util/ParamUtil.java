@@ -2,15 +2,15 @@ package top.jfunc.common.http.util;
 
 import top.jfunc.common.Editor;
 import top.jfunc.common.http.base.Config;
-import top.jfunc.common.utils.*;
+import top.jfunc.common.utils.Joiner;
+import top.jfunc.common.utils.MapUtil;
+import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.StrUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static top.jfunc.common.utils.StrUtil.*;
 
@@ -37,6 +37,49 @@ public class ParamUtil {
     public static boolean isHttp(String url) {
         return url.trim().toLowerCase().startsWith(HTTP_PREFIX);
     }
+
+
+    /**
+     * 对于key1=value1&key2=value2解析为map
+     * @param kvParams key1=value1&key2=value2
+     */
+    public static Map<String , String> parseParam(String kvParams){
+        return parseParam(kvParams , true);
+    }
+    /**
+     * 对于key1=value1&key2=value2解析为map
+     * @param kvParams key1=value1&key2=value2
+     * @param decoded 是否进行URL解码
+     */
+    public static Map<String , String> parseParam(String kvParams , boolean decoded){
+        if(StrUtil.isEmpty(kvParams)){
+            return Collections.emptyMap();
+        }
+
+        String[] kvs = kvParams.split(StrUtil.AND);
+        Map<String , String> params = new HashMap<>(kvs.length);
+        for (String kv : kvs) {
+            //不包含=
+            if(!kv.contains(StrUtil.EQUALS)){
+                params.put(kv , StrUtil.BLANK);
+                continue;
+            }
+            String[] split = kv.split(StrUtil.EQUALS);
+            //k1=的情况，value为空
+            if(split.length == 1){
+                params.put(split[0] , StrUtil.BLANK);
+                continue;
+            }
+            String value = split[1];
+            if(decoded && StrUtil.isNotEmpty(value)){
+                value = urlDecode(value , Config.DEFAULT_CHARSET);
+            }
+            params.put(split[0] , value);
+        }
+
+        return params;
+    }
+
 
     /**
      * 默认UTF-8编码

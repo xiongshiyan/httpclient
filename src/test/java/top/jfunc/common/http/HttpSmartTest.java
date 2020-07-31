@@ -1,19 +1,16 @@
 package top.jfunc.common.http;
 
 import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 import top.jfunc.common.http.base.Config;
+import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.MediaType;
 import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.holderrequest.impl.HolderCommonBodyRequest;
-import top.jfunc.common.http.util.ResponseUtil;
-import top.jfunc.common.string.FromString;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.holderrequest.impl.HolderPostBodyRequest;
 import top.jfunc.common.http.smart.*;
-import org.junit.Ignore;
-import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -312,35 +309,6 @@ public class HttpSmartTest {
         Assert.assertEquals("sssss" , request.getBody());
     }
 
-    @Test
-    public void testResponse() throws IOException{
-        Response response = ResponseUtil.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
-        SomeBean someBean = response.as(SomeBean.class, (s , c)->{
-                    Assert.assertEquals("ss", s);
-                    Assert.assertEquals(c , SomeBean.class);
-                    return new SomeBean(s);
-                }
-        );
-        Assert.assertEquals("ss" , someBean.getSs());
-    }
-    @Test
-    public void testResponse2() throws IOException{
-        Response response = ResponseUtil.with(200 , new ByteArrayInputStream("ss".getBytes()) , "UTF-8" , null);
-        SomeBean someBean = response.asT(SomeBean.class, new FromString() {
-                    @Override
-                    public <T> T as(String src, Class<T> toClass) {
-                        T t = null;
-                        try {
-                            t = toClass.newInstance();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return t;
-                    }
-                }
-        );
-        Assert.assertEquals(SomeBean.class , someBean.getClass());
-    }
     private static class SomeBean{
         private String ss;
 
