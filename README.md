@@ -1,4 +1,4 @@
-# Http's Client:Define Abstract Interface,Provide Multiple Implementations
+# Http's Client:define abstract interface and provide multi-impls
 
 ### introduction
 
