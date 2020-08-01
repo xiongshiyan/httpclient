@@ -1,5 +1,5 @@
 # Http's Gorgeous Client
-## define abstract interface,provide multiple implementations
+## Define Abstract Interface And Provide Multiple Implementations
 
 ### introduction
 
