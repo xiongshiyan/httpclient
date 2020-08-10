@@ -5,6 +5,10 @@ package top.jfunc.common.http.paramsign;
  */
 public class DefaultSignParam implements SignParam{
     /**
+     * 请求方法
+     */
+    private final String method;
+    /**
      * 路径
      */
     private final String path;
@@ -21,11 +25,17 @@ public class DefaultSignParam implements SignParam{
      */
     private final String sign;
 
-    public DefaultSignParam(String path, String ts, String nonceStr, String sign) {
-        this.path = path;
-        this.ts = ts;
+    public DefaultSignParam(String method, String path, String ts, String nonceStr, String sign) {
+        this.method   = method;
+        this.path     = path;
+        this.ts       = ts;
         this.nonceStr = nonceStr;
-        this.sign = sign;
+        this.sign     = sign;
+    }
+
+    @Override
+    public String getMethod() {
+        return method;
     }
 
     @Override

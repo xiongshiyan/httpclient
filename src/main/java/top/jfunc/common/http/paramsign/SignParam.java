@@ -4,6 +4,10 @@ package top.jfunc.common.http.paramsign;
  * @author xiongshiyan at 2020/8/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public interface SignParam{
+    /**
+     * 获取请求方法
+     */
+    String getMethod();
 
     /**
      * 获取请求路径

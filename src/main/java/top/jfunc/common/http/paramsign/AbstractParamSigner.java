@@ -36,17 +36,15 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
         if (!isParamSignEnable()) {
             return;
         }
-        String path = getPath(r);
-        if (ArrayUtil.contains(getParamSignSkipUri(), path)) {
+        SignParam signParam = getSignParam(r);
+        if (ArrayUtil.contains(getParamSignSkipUri(), signParam.getPath())) {
             return;
         }
 
-        valid(r , path);
+        valid(r , signParam);
     }
 
-    protected void valid(R r , String path) throws IOException {
-        SignParam signParam = getSignParam(r);
-
+    protected void valid(R r , SignParam signParam) throws IOException {
         if (StrUtil.isEmpty(signParam.getTimeStamp())
                 || StrUtil.isEmpty(signParam.getNonceStr())
                 || StrUtil.isEmpty(signParam.getSign())) {
@@ -55,7 +53,7 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
 
 
         //校验时间戳，目前要求以服务器时间前后60秒
-        validTimeStamp(path , signParam);
+        validTimeStamp(r , signParam);
 
         //校验GET请求，Query参数参与签名
         validGet(r, signParam);
@@ -64,7 +62,7 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
         validPost(r, signParam);
     }
 
-    protected void validTimeStamp(String path , SignParam signParam) {
+    protected void validTimeStamp(R r , SignParam signParam) {
         String ts = signParam.getTimeStamp();
         long timestamp = Long.parseLong(ts);
         long now = System.currentTimeMillis();
@@ -73,20 +71,20 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
         long diff = now - timestamp;
         long abs = Math.abs(diff);
         if (abs > getParamSignInterval()) {
-            logger.info(path + ":" + now + "-" + ts + "=" + diff);
+            logger.info(signParam.getPath() + ":" + now + "-" + ts + "=" + diff);
             throw new ParamSignException("时间校验失败：您的手机时间大约"+(diff>0?"慢":"快")+"了"  + abs/1000 + "秒，请调整后重试；如果手机时间准确，可能是网络延迟太大，请稍后重试。" , signParam);
         }
     }
 
     protected void validPost(R r, SignParam signParam) throws IOException {
-        if (Method.POST.name().equalsIgnoreCase(getMethod(r))) {
+        if (Method.POST.name().equalsIgnoreCase(signParam.getMethod())) {
             Map<String, String> paramMap = mappedParamForPost(r);
             validParam(signParam, paramMap);
         }
     }
 
     protected void validGet(R r, SignParam signParam) throws IOException{
-        if (Method.GET.name().equalsIgnoreCase(getMethod(r))) {
+        if (Method.GET.name().equalsIgnoreCase(signParam.getMethod())) {
             Map<String, String> paramMap = mappedParamForGet(r);
             validParam(signParam, paramMap);
         }
@@ -103,6 +101,15 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
             logger.info(signParam.getPath() + ":" + signToPrint + " -> " + signToJudge + " ?= " + signParam.getSign());
             throw new ParamSignException("参数签名异常" , signParam);
         }
+    }
+
+    /**
+     * 可以进一步对map进行处理，比如把secret放进去一起排序
+     */
+    protected void handleMap(Map<String, String> paramMap, SignParam signParam){
+        paramMap.entrySet().removeIf(this::removeAble);
+        paramMap.put(TS, signParam.getTimeStamp());
+        paramMap.put(NONCE_STR, signParam.getNonceStr());
     }
 
     protected boolean removeAble(Map.Entry<String, String> entry) {
@@ -130,7 +137,6 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
         String sign = doSign(signParam , withoutSecretKey);
         return new String[]{withoutSecretKey, sign};
     }
-
     /**
      * 是否开启签名
      */
@@ -144,14 +150,6 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
      */
     protected long getParamSignInterval(){return 60000;}
     /**
-     * 获取请求路径
-     */
-    protected abstract String getPath(R r);
-    /**
-     * 获取请求方法
-     */
-    protected abstract String getMethod(R r);
-    /**
      * 获取请求用于签名的参数，可以放在header中，可以拼成一个字段放在header中，同样可以放在Query中
      */
     protected abstract SignParam getSignParam(R r);
@@ -163,14 +161,6 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
      * 将get请求的query组装成一个map
      */
     protected abstract Map<String, String> mappedParamForGet(R r) throws IOException;
-    /**
-     * 可以进一步对map进行处理，比如把secret放进去一起排序
-     */
-    protected void handleMap(Map<String, String> paramMap, SignParam signParam){
-        paramMap.entrySet().removeIf(this::removeAble);
-        paramMap.put(TS, signParam.getTimeStamp());
-        paramMap.put(NONCE_STR, signParam.getNonceStr());
-    }
     /**
      * 签名方法
      */
