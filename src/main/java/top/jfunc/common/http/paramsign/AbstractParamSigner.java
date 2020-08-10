@@ -3,11 +3,11 @@ package top.jfunc.common.http.paramsign;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.base.Method;
-import top.jfunc.common.utils.ArrayUtil;
-import top.jfunc.common.utils.StrUtil;
+import top.jfunc.common.utils.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,27 +78,28 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
 
     protected void validPost(R r, SignParam signParam) throws IOException {
         if (Method.POST.name().equalsIgnoreCase(signParam.getMethod())) {
-            Map<String, String> paramMap = mappedParamForPost(r);
+            MultiValueMap<String, String> paramMap = mappedParamForPost(r);
             validParam(signParam, paramMap);
         }
     }
 
     protected void validGet(R r, SignParam signParam) throws IOException{
         if (Method.GET.name().equalsIgnoreCase(signParam.getMethod())) {
-            Map<String, String> paramMap = mappedParamForGet(r);
+            MultiValueMap<String, String> paramMap = mappedParamForGet(r);
             validParam(signParam, paramMap);
         }
     }
 
 
-    protected void validParam(SignParam signParam, Map<String, String> paramMap) {
-        handleMap(paramMap , signParam);
-        String[] signStr = getSign(paramMap, signParam);
-        String signToPrint = signStr[0];
-        String signToJudge = signStr[1];
+    protected void validParam(SignParam signParam, MultiValueMap<String, String> paramMap) {
+        MultiValueMap<String, String> handleMap = handleMap(paramMap, signParam);
+
+        String signStr = getSignStr(handleMap, signParam);
+
+        String signToJudge = doSign(signParam , signStr);
 
         if (!signToJudge.equals(signParam.getSign())) {
-            logger.info(signParam.getPath() + ":" + signToPrint + " -> " + signToJudge + " ?= " + signParam.getSign());
+            logger.info(signParam.getPath() + ":" + signStr + " -> " + signToJudge + " ?= " + signParam.getSign());
             throw new ParamSignException("参数签名异常" , signParam);
         }
     }
@@ -106,36 +107,42 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
     /**
      * 可以进一步对map进行处理，比如把secret放进去一起排序
      */
-    protected void handleMap(Map<String, String> paramMap, SignParam signParam){
+    protected MultiValueMap<String, String> handleMap(MultiValueMap<String, String> paramMap, SignParam signParam){
+        //去掉空值
+        paramMap.forEach((k,l) -> l.removeIf(this::removeAble));
+        //去掉空值之后如果value没有值，那么去掉这个key
         paramMap.entrySet().removeIf(this::removeAble);
-        paramMap.put(TS, signParam.getTimeStamp());
-        paramMap.put(NONCE_STR, signParam.getNonceStr());
+
+        paramMap.add(TS, signParam.getTimeStamp());
+        paramMap.add(NONCE_STR, signParam.getNonceStr());
+
+        return paramMap;
     }
 
-    protected boolean removeAble(Map.Entry<String, String> entry) {
-        String value = entry.getValue();
+    protected boolean removeAble(String value) {
         return StrUtil.isEmpty(value)
                 || NULL.equalsIgnoreCase(value)
                 || UNDEFINED.equalsIgnoreCase(value);
     }
+    protected boolean removeAble(Map.Entry<String , List<String>> entry) {
+        return CollectionUtil.isEmpty(entry.getValue());
+    }
 
     /**
-     * 字典序排序加上keysecret
+     * 字典序排序
      */
-    protected String[] getSign(Map<String, String> paramMap, SignParam signParam) {
-        Object[] keys = paramMap.keySet().toArray();
+    protected String getSignStr(MultiValueMap<String, String> paramMap, SignParam signParam) {
+        String[] keys = paramMap.keySet().toArray(new String[paramMap.size()]);
         Arrays.sort(keys);
         StringBuilder sb = new StringBuilder();
-        for (Object key : keys) {
-            sb.append(key).append(StrUtil.EQUALS).append(paramMap.get(String.valueOf(key))).append(StrUtil.AND);
+        for (String key : keys) {
+            for (String value : paramMap.get(key)) {
+                sb.append(key).append(StrUtil.EQUALS).append(value).append(StrUtil.AND);
+            }
         }
         //去掉最后的&
         sb.deleteCharAt(sb.length()-1);
-        //打印日志不打印出来key
-        String withoutSecretKey = sb.toString();
-
-        String sign = doSign(signParam , withoutSecretKey);
-        return new String[]{withoutSecretKey, sign};
+        return sb.toString();
     }
     /**
      * 是否开启签名
@@ -156,11 +163,11 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
     /**
      * 将post请求的body组装成一个map，一般分为POST|x-www-form-urlencoded、POST|json
      */
-    protected abstract Map<String, String> mappedParamForPost(R r) throws IOException;
+    protected abstract MultiValueMap<String, String> mappedParamForPost(R r) throws IOException;
     /**
      * 将get请求的query组装成一个map
      */
-    protected abstract Map<String, String> mappedParamForGet(R r) throws IOException;
+    protected abstract MultiValueMap<String, String> mappedParamForGet(R r) throws IOException;
     /**
      * 签名方法
      */

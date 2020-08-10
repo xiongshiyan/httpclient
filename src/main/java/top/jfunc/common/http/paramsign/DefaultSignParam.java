@@ -21,16 +21,21 @@ public class DefaultSignParam implements SignParam{
      */
     private final String nonceStr;
     /**
+     * 签名方法
+     */
+    private final String signMethod;
+    /**
      * 传递过来的签名
      */
     private final String sign;
 
-    public DefaultSignParam(String method, String path, String ts, String nonceStr, String sign) {
-        this.method   = method;
-        this.path     = path;
-        this.ts       = ts;
-        this.nonceStr = nonceStr;
-        this.sign     = sign;
+    public DefaultSignParam(String method, String path, String ts, String nonceStr, String signMethod, String sign) {
+        this.method     = method;
+        this.path       = path;
+        this.ts         = ts;
+        this.nonceStr   = nonceStr;
+        this.signMethod = signMethod;
+        this.sign       = sign;
     }
 
     @Override
@@ -51,6 +56,11 @@ public class DefaultSignParam implements SignParam{
     @Override
     public String getNonceStr() {
         return nonceStr;
+    }
+
+    @Override
+    public String getSignMethod() {
+        return signMethod;
     }
 
     @Override

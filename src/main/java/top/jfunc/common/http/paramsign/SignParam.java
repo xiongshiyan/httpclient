@@ -25,6 +25,11 @@ public interface SignParam{
     String getNonceStr();
 
     /**
+     * 获取签名方法
+     */
+    String getSignMethod();
+
+    /**
      * 获取签名串
      */
     String getSign();
