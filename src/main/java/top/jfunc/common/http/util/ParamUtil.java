@@ -2,15 +2,13 @@ package top.jfunc.common.http.util;
 
 import top.jfunc.common.Editor;
 import top.jfunc.common.http.base.Config;
-import top.jfunc.common.utils.Joiner;
-import top.jfunc.common.utils.MapUtil;
-import top.jfunc.common.utils.MultiValueMap;
-import top.jfunc.common.utils.StrUtil;
+import top.jfunc.common.utils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import static top.jfunc.common.utils.StrUtil.*;
 
@@ -58,26 +56,44 @@ public class ParamUtil {
 
         String[] kvs = kvParams.split(StrUtil.AND);
         Map<String , String> params = new HashMap<>(kvs.length);
+        parse(kvs , decoded , params::put);
+        return params;
+    }
+
+    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams){
+        return parseMultiValueParam(kvParams , true);
+    }
+    /**
+     * 是对{@link ParamUtil#parseParam(String, boolean)}的升级，因为有些情况下value可能有多个
+     */
+    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , boolean decoded){
+        if(StrUtil.isEmpty(kvParams)){
+            return new ArrayListMultiValueMap<>();
+        }
+        String[] kvs = kvParams.split(StrUtil.AND);
+        MultiValueMap<String , String> params = new ArrayListMultiValueMap<>(kvs.length);
+        parse(kvs , decoded , params::add);
+        return params;
+    }
+    private static void parse(String[] kvs , boolean decoded , BiConsumer<String , String> putFunction){
         for (String kv : kvs) {
             //不包含=
             if(!kv.contains(StrUtil.EQUALS)){
-                params.put(kv , StrUtil.BLANK);
+                putFunction.accept(kv , StrUtil.BLANK);
                 continue;
             }
             String[] split = kv.split(StrUtil.EQUALS);
             //k1=的情况，value为空
             if(split.length == 1){
-                params.put(split[0] , StrUtil.BLANK);
+                putFunction.accept(split[0] , StrUtil.BLANK);
                 continue;
             }
             String value = split[1];
             if(decoded && StrUtil.isNotEmpty(value)){
                 value = urlDecode(value , Config.DEFAULT_CHARSET);
             }
-            params.put(split[0] , value);
+            putFunction.accept(split[0] , value);
         }
-
-        return params;
     }
 
 
