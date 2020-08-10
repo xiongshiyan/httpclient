@@ -92,12 +92,14 @@ public class ParamUtil {
      * @param value 键值对
      */
     public static String contactMap(Map<String, String> value , final String valueCharset){
-        if(MapUtil.isEmpty(value)){return BLANK;}
-
         Editor<String> editor = (v)-> urlEncode(v , valueCharset);
+        return contactMap(value, editor);
+    }
+    public static String contactMap(Map<String, String> value , final Editor<String> editor){
+        if(MapUtil.isEmpty(value)){return BLANK;}
         return Joiner.on(AND).withKeyValueSeparator(EQUALS,editor).useForNull(StrUtil.BLANK).join(value);
     }
-    
+
     public static String contactMap(MultiValueMap<String, String> value){
         return contactMap(value , Config.DEFAULT_CHARSET);
     }
