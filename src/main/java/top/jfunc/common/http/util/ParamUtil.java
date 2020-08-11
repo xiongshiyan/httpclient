@@ -37,40 +37,46 @@ public class ParamUtil {
     }
 
 
-    /**
-     * 对于key1=value1&key2=value2解析为map
-     * @param kvParams key1=value1&key2=value2
-     */
     public static Map<String , String> parseParam(String kvParams){
-        return parseParam(kvParams , true);
+        return parseParam(kvParams , true, StrUtil.AND);
+    }
+    public static Map<String , String> parseParam(String kvParams , boolean decoded){
+        return parseParam(kvParams, decoded, StrUtil.AND);
     }
     /**
      * 对于key1=value1&key2=value2解析为map
      * @param kvParams key1=value1&key2=value2
      * @param decoded 是否进行URL解码
+     * @param breakRegex kv之间的分割，支持&、|等
      */
-    public static Map<String , String> parseParam(String kvParams , boolean decoded){
+    public static Map<String , String> parseParam(String kvParams , boolean decoded , String breakRegex){
         if(StrUtil.isEmpty(kvParams)){
             return Collections.emptyMap();
         }
 
-        String[] kvs = kvParams.split(StrUtil.AND);
+        String[] kvs = kvParams.split(breakRegex);
         Map<String , String> params = new HashMap<>(kvs.length);
         parse(kvs , decoded , params::put);
         return params;
     }
 
     public static MultiValueMap<String , String> parseMultiValueParam(String kvParams){
-        return parseMultiValueParam(kvParams , true);
+        return parseMultiValueParam(kvParams, true, StrUtil.AND);
+    }
+    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , boolean decoded){
+        return parseMultiValueParam(kvParams, decoded, StrUtil.AND);
     }
     /**
-     * 是对{@link ParamUtil#parseParam(String, boolean)}的升级，因为有些情况下value可能有多个
+     * 是对{@link ParamUtil#parseParam(String, boolean, String)} 的升级，因为有些情况下value可能有多个
+     * @param kvParams key1=value1&key2=value2
+     * @param decoded 是否进行URL解码
+     * @param breakRegex kv之间的分割，支持&和|
      */
-    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , boolean decoded){
+    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , boolean decoded , String breakRegex){
         if(StrUtil.isEmpty(kvParams)){
             return new ArrayListMultiValueMap<>();
         }
-        String[] kvs = kvParams.split(StrUtil.AND);
+        String[] kvs = kvParams.split(breakRegex);
         MultiValueMap<String , String> params = new ArrayListMultiValueMap<>(kvs.length);
         parse(kvs , decoded , params::add);
         return params;
