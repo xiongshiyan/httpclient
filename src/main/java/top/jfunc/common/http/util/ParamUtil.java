@@ -1,7 +1,6 @@
 package top.jfunc.common.http.util;
 
 import top.jfunc.common.Editor;
-import top.jfunc.common.http.base.Config;
 import top.jfunc.common.utils.*;
 
 import java.io.UnsupportedEncodingException;
@@ -19,6 +18,7 @@ import static top.jfunc.common.utils.StrUtil.*;
 public class ParamUtil {
     private ParamUtil(){}
 
+    /////////////////////////////////////////////////URL判断////////////////////////////////////////////////////////
     /**
      * 检测是否https
      * @param url 完整的URL
@@ -35,53 +35,104 @@ public class ParamUtil {
     public static boolean isHttp(String url) {
         return url.trim().toLowerCase().startsWith(HTTP_PREFIX);
     }
+    /**
+     * 判断给定的字符串是否是完整的URL
+     * https://localhost:8080/... true
+     * http://localhost:8080/... true
+     * /xxx/xxx false
+     * yyy/yyy false
+     *
+     */
+    public static boolean isCompletedUrl(String url){
+        return isHttp(url) || isHttps(url);
+    }
 
+
+
+    /////////////////////////////////////////////////URL编解码////////////////////////////////////////////////////////
+
+    /**
+     * 对字符串进行URL编码
+     * @param valueCharset 字符编码,字符编码不对原样返回
+     * @param src 原字符串
+     * @return 编码后的字符串
+     */
+    public static String urlEncode(String src, String valueCharset) {
+        try {
+            return URLEncoder.encode(src, valueCharset);
+        }catch (UnsupportedEncodingException e){
+            return src;
+        }
+    }
+
+    /**
+     * 对字符串进行URL解码
+     * @param valueCharset 字符编码,字符编码不对原样返回
+     * @param src 原字符串
+     * @return 解码后的字符串
+     */
+    public static String urlDecode(String src, String valueCharset) {
+        try {
+            return URLDecoder.decode(src, valueCharset);
+        }catch (UnsupportedEncodingException e){
+            return src;
+        }
+    }
+
+
+    /////////////////////////////////////////////////parse参数////////////////////////////////////////////////////////
 
     public static Map<String , String> parseParam(String kvParams){
-        return parseParam(kvParams , true, StrUtil.AND);
+        return parseParam(kvParams, (v)->urlDecode(v , CharsetUtil.UTF_8), StrUtil.AND);
     }
-    public static Map<String , String> parseParam(String kvParams , boolean decoded){
-        return parseParam(kvParams, decoded, StrUtil.AND);
+    public static Map<String , String> parseParam(String kvParams , Editor<String> valueEditor){
+        return parseParam(kvParams, valueEditor, StrUtil.AND);
+    }
+    public static Map<String , String> parseParam(String kvParams , String breakRegex){
+        return parseParam(kvParams, (v)->urlDecode(v , CharsetUtil.UTF_8), breakRegex);
     }
     /**
      * 对于key1=value1&key2=value2解析为map
      * @param kvParams key1=value1&key2=value2
-     * @param decoded 是否进行URL解码
+     * @param valueEditor 对value进一步处理
      * @param breakRegex kv之间的分割，支持&、|等
      */
-    public static Map<String , String> parseParam(String kvParams , boolean decoded , String breakRegex){
+    public static Map<String , String> parseParam(String kvParams , Editor<String> valueEditor , String breakRegex){
         if(StrUtil.isEmpty(kvParams)){
             return Collections.emptyMap();
         }
 
         String[] kvs = kvParams.split(breakRegex);
         Map<String , String> params = new HashMap<>(kvs.length);
-        parse(kvs , decoded , params::put);
+        parse(kvs , valueEditor , params::put);
         return params;
     }
 
     public static MultiValueMap<String , String> parseMultiValueParam(String kvParams){
-        return parseMultiValueParam(kvParams, true, StrUtil.AND);
+        return parseMultiValueParam(kvParams, (v)->urlDecode(v , CharsetUtil.UTF_8), StrUtil.AND);
     }
-    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , boolean decoded){
-        return parseMultiValueParam(kvParams, decoded, StrUtil.AND);
+    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , Editor<String> valueEditor){
+        return parseMultiValueParam(kvParams, valueEditor, StrUtil.AND);
+    }
+    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , String breakRegex){
+        return parseMultiValueParam(kvParams, (v)->urlDecode(v , CharsetUtil.UTF_8), breakRegex);
     }
     /**
-     * 是对{@link ParamUtil#parseParam(String, boolean, String)} 的升级，因为有些情况下value可能有多个
+     * 是对{@link ParamUtil#parseParam(String, Editor, String)} 的升级，因为有些情况下value可能有多个
      * @param kvParams key1=value1&key2=value2
-     * @param decoded 是否进行URL解码
+     * @param valueEditor 对value进一步处理
      * @param breakRegex kv之间的分割，支持&和|
      */
-    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , boolean decoded , String breakRegex){
+    public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , Editor<String> valueEditor , String breakRegex){
         if(StrUtil.isEmpty(kvParams)){
             return new ArrayListMultiValueMap<>();
         }
         String[] kvs = kvParams.split(breakRegex);
         MultiValueMap<String , String> params = new ArrayListMultiValueMap<>(kvs.length);
-        parse(kvs , decoded , params::add);
+        parse(kvs , valueEditor , params::add);
         return params;
     }
-    private static void parse(String[] kvs , boolean decoded , BiConsumer<String , String> putFunction){
+    private static void parse(String[] kvs , Editor<String> valueEditor , BiConsumer<String , String> putFunction){
         for (String kv : kvs) {
             //不包含=
             if(!kv.contains(StrUtil.EQUALS)){
@@ -95,19 +146,25 @@ public class ParamUtil {
                 continue;
             }
             String value = split[1];
-            if(decoded && StrUtil.isNotEmpty(value)){
-                value = urlDecode(value , Config.DEFAULT_CHARSET);
+            if(null != valueEditor && StrUtil.isNotEmpty(value)){
+                value = valueEditor.edit(value);
             }
             putFunction.accept(split[0] , value);
         }
     }
 
 
+
+
+
+
+    /////////////////////////////////////////////////contact参数////////////////////////////////////////////////////////
+
     /**
      * 默认UTF-8编码
      */
     public static String contactMap(Map<String, String> value){
-        return contactMap(value , Config.DEFAULT_CHARSET);
+        return contactMap(value , CharsetUtil.UTF_8);
     }
     /**
      * key1=value1&key2=value2,如果value=null 或者 size=0 返回 ""
@@ -123,7 +180,7 @@ public class ParamUtil {
     }
 
     public static String contactMap(MultiValueMap<String, String> value){
-        return contactMap(value , Config.DEFAULT_CHARSET);
+        return contactMap(value , CharsetUtil.UTF_8);
     }
 
     /**
@@ -184,33 +241,6 @@ public class ParamUtil {
     }
 
     /**
-     * 对字符串进行URL编码
-     * @param valueCharset 字符编码,字符编码不对原样返回
-     * @param src 原字符串
-     * @return 编码后的字符串
-     */
-    public static String urlEncode(String src, String valueCharset) {
-        try {
-            return URLEncoder.encode(src, valueCharset);
-        }catch (UnsupportedEncodingException e){
-            return src;
-        }
-    }
-    /**
-     * 对字符串进行URL解码
-     * @param valueCharset 字符编码,字符编码不对原样返回
-     * @param src 原字符串
-     * @return 解码后的字符串
-     */
-    public static String urlDecode(String src, String valueCharset) {
-        try {
-            return URLDecoder.decode(src, valueCharset);
-        }catch (UnsupportedEncodingException e){
-            return src;
-        }
-    }
-
-    /**
      * URL和参数
      * @param actionName URL，可以包含?
      * @param paramString 参数字符串，可以为""，null，k1=v1&k2=v2
@@ -226,7 +256,7 @@ public class ParamUtil {
     }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , Config.DEFAULT_CHARSET));
+        return contactUrlParams(actionName , contactMap(params , CharsetUtil.UTF_8));
     }
     public static String contactUrlParams(String actionName, MultiValueMap<String , String> params , String valueCharset) {
         Objects.requireNonNull(actionName);
@@ -242,19 +272,7 @@ public class ParamUtil {
     }
     public static String contactUrlParams(String actionName, Map<String , String> params) {
         Objects.requireNonNull(actionName);
-        return contactUrlParams(actionName , contactMap(params , Config.DEFAULT_CHARSET));
-    }
-
-    /**
-     * 判断给定的字符串是否是完整的URL
-     * https://localhost:8080/... true
-     * http://localhost:8080/... true
-     * /xxx/xxx false
-     * yyy/yyy false
-     *
-     */
-    public static boolean isCompletedUrl(String url){
-        return isHttp(url) || isHttps(url);
+        return contactUrlParams(actionName , contactMap(params , CharsetUtil.UTF_8));
     }
 
     /**
@@ -276,6 +294,11 @@ public class ParamUtil {
         }
         return firstFragment + secondFragment;
     }
+
+
+
+
+    /////////////////////////////////////////////////处理路径参数////////////////////////////////////////////////////////
 
     /**
      * 处理路径参数
