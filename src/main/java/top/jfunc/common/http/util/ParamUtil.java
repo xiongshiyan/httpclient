@@ -64,6 +64,13 @@ public class ParamUtil {
             return src;
         }
     }
+    public static String urlEncode(String src) {
+        try {
+            return URLEncoder.encode(src, CharsetUtil.UTF_8);
+        }catch (UnsupportedEncodingException e){
+            return src;
+        }
+    }
 
     /**
      * 对字符串进行URL解码
@@ -78,18 +85,25 @@ public class ParamUtil {
             return src;
         }
     }
+    public static String urlDecode(String src) {
+        try {
+            return URLDecoder.decode(src, CharsetUtil.UTF_8);
+        }catch (UnsupportedEncodingException e){
+            return src;
+        }
+    }
 
 
     /////////////////////////////////////////////////parse参数////////////////////////////////////////////////////////
 
     public static Map<String , String> parseParam(String kvParams){
-        return parseParam(kvParams, (v)->urlDecode(v , CharsetUtil.UTF_8), StrUtil.AND);
+        return parseParam(kvParams, ParamUtil::urlDecode, StrUtil.AND);
     }
     public static Map<String , String> parseParam(String kvParams , Editor<String> valueEditor){
         return parseParam(kvParams, valueEditor, StrUtil.AND);
     }
     public static Map<String , String> parseParam(String kvParams , String breakRegex){
-        return parseParam(kvParams, (v)->urlDecode(v , CharsetUtil.UTF_8), breakRegex);
+        return parseParam(kvParams, ParamUtil::urlDecode, breakRegex);
     }
     /**
      * 对于key1=value1&key2=value2解析为map
@@ -109,13 +123,13 @@ public class ParamUtil {
     }
 
     public static MultiValueMap<String , String> parseMultiValueParam(String kvParams){
-        return parseMultiValueParam(kvParams, (v)->urlDecode(v , CharsetUtil.UTF_8), StrUtil.AND);
+        return parseMultiValueParam(kvParams, ParamUtil::urlDecode, StrUtil.AND);
     }
     public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , Editor<String> valueEditor){
         return parseMultiValueParam(kvParams, valueEditor, StrUtil.AND);
     }
     public static MultiValueMap<String , String> parseMultiValueParam(String kvParams , String breakRegex){
-        return parseMultiValueParam(kvParams, (v)->urlDecode(v , CharsetUtil.UTF_8), breakRegex);
+        return parseMultiValueParam(kvParams, ParamUtil::urlDecode, breakRegex);
     }
     /**
      * 是对{@link ParamUtil#parseParam(String, Editor, String)} 的升级，因为有些情况下value可能有多个
