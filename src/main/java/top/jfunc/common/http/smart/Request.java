@@ -28,8 +28,6 @@ import java.util.Map;
  * @see HolderUpLoadRequest
  * @see HolderDownLoadRequest
  * @author xiongshiyan at 2017/12/9
- *
- * @since 从1.1开始建议不要用此类了,而是使用以上的一些意义更明确的
  */
 public class Request extends BaseHolderHttpRequest<Request> implements
         HolderMutableStringBodyRequest,
