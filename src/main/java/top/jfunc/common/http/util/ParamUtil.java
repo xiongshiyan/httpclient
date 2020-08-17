@@ -177,24 +177,23 @@ public class ParamUtil {
     /**
      * 默认UTF-8编码
      */
-    public static String contactMap(Map<String, String> value){
-        return contactMap(value , CharsetUtil.UTF_8);
+    public static String contactMap(Map<String, String> map){
+        return contactMap(map , CharsetUtil.UTF_8);
     }
     /**
      * key1=value1&key2=value2,如果value=null 或者 size=0 返回 ""
-     * @param value 键值对
+     * @param map 键值对
      */
-    public static String contactMap(Map<String, String> value , final String valueCharset){
-        Editor<String> editor = (v)-> urlEncode(v , valueCharset);
-        return contactMap(value, editor);
+    public static String contactMap(Map<String, String> map , final String valueCharset){
+        return contactMap(map, (v)-> urlEncode(v , valueCharset));
     }
-    public static String contactMap(Map<String, String> value , final Editor<String> editor){
-        if(MapUtil.isEmpty(value)){return BLANK;}
-        return Joiner.on(AND).withKeyValueSeparator(EQUALS,editor).useForNull(StrUtil.BLANK).join(value);
+    public static String contactMap(Map<String, String> map , final Editor<String> valueEditor){
+        if(MapUtil.isEmpty(map)){return BLANK;}
+        return Joiner.on(AND).withKeyValueSeparator(EQUALS,valueEditor).useForNull(StrUtil.BLANK).join(map);
     }
 
-    public static String contactMap(MultiValueMap<String, String> value){
-        return contactMap(value , CharsetUtil.UTF_8);
+    public static String contactMap(MultiValueMap<String, String> multiValueMap){
+        return contactMap(multiValueMap , CharsetUtil.UTF_8);
     }
 
     /**
@@ -204,9 +203,7 @@ public class ParamUtil {
     public static String contactMap(MultiValueMap<String, String> multiValueMap , final String valueCharset){
         if(MapUtil.isEmpty(multiValueMap)){return BLANK;}
 
-        Set<Map.Entry<String, List<String>>> entries = multiValueMap.entrySet();
-
-        return contactIterable(entries, valueCharset);
+        return contactIterable(multiValueMap.entrySet(), valueCharset);
     }
 
     /**
@@ -240,8 +237,7 @@ public class ParamUtil {
         StringBuilder params = new StringBuilder();
         for (Map.Entry<String, List<String>> entry : entries) {
             String key = entry.getKey();
-            List<String> vList = entry.getValue();
-            for (String v : vList) {
+            for (String v : entry.getValue()) {
                 params.append(key).append(EQUALS)
                         .append(valueEditor.edit(v))
                         .append(AND);
