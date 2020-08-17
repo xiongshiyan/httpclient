@@ -20,12 +20,10 @@ import java.util.Map;
  * @see HttpRequestHttpClient
  * @see SmartHttpClient
  *
- * !!!此类作为以前的大杂烩，什么样的请求都放到一起，给设置参数的时候造成困扰，已经不适应快速发展的需要
- * 现将其一拆为多，针对不同的请求使用不同的请求即可
- *
  * @see HolderHttpRequest
  * @see BaseHolderHttpRequest
  * @see HolderCommonBodyRequest
+ * @see HolderStringBodyRequest
  * @see HolderFormBodyRequest
  * @see HolderUpLoadRequest
  * @see HolderDownLoadRequest
