@@ -121,6 +121,24 @@ public class Request extends BaseHolderHttpRequest<Request> implements
         return this.bodyHolder;
     }
 
+    ///////////////////////////////////通过设置Holder的实现改变默认行为///////////////////////////////////////
+
+    public void setFormParamHolder(ParamHolder formParamHolder) {
+        this.formParamHolder = formParamHolder;
+    }
+
+    public void setBodyHolder(BodyHolder bodyHolder) {
+        this.bodyHolder = bodyHolder;
+    }
+
+    public void setFormFileHolder(FormFileHolder formFileHolder) {
+        this.formFileHolder = formFileHolder;
+    }
+
+    public void setFileHolder(FileHolder fileHolder) {
+        this.fileHolder = fileHolder;
+    }
+
     /**
      * 如果实现的多个接口中有前面完全相同的方法，那么子类中必须复写此方法，相当于解决冲突
      * 明确子类调用此方法时的行为

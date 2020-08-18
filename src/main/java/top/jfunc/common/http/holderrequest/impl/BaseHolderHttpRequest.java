@@ -131,4 +131,23 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
         this.attributeHolder.put(key, value);
         return myself();
     }
+
+
+    ///////////////////////////////////通过设置Holder的实现改变默认行为///////////////////////////////////////
+
+    public void setUrlHolder(UrlHolder urlHolder) {
+        this.urlHolder = urlHolder;
+    }
+
+    public void setHeaderHolder(HeaderHolder headerHolder) {
+        this.headerHolder = headerHolder;
+    }
+
+    public void setSslHolder(SSLHolder sslHolder) {
+        this.sslHolder = sslHolder;
+    }
+
+    public void setAttributeHolder(AttributeHolder attributeHolder) {
+        this.attributeHolder = attributeHolder;
+    }
 }

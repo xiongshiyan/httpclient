@@ -67,4 +67,8 @@ public class HolderFormBodyRequest extends BaseHolderHttpRequest<HolderFormBodyR
         formParamHolder().setParamCharset(paramCharset);
         return myself();
     }
+
+    public void setFormParamHolder(ParamHolder formParamHolder) {
+        this.formParamHolder = formParamHolder;
+    }
 }
