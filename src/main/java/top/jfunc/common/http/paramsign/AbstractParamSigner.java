@@ -151,8 +151,9 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
      * 获取请求用于签名的参数，可以放在header中，可以拼成一个字段放在header中，同样可以放在Query中
      * @param r 代表请求
      * @return SignParam 用于参数签名的参数。如果此方法返回null，则不进行参数签名，可以在此方法中判断是否需要参数签名
+     * @throws IOException IOException
      */
-    protected abstract SignParam getSignParam(R r);
+    protected abstract SignParam getSignParam(R r) throws IOException;
     /**
      * 时间戳裕量
      */
