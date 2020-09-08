@@ -3,7 +3,9 @@ package top.jfunc.common.http.paramsign;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.base.Method;
-import top.jfunc.common.utils.*;
+import top.jfunc.common.utils.CollectionUtil;
+import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.StrUtil;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,7 +25,7 @@ import java.util.Map;
  *
  * @author xiongshiyan at 2020/7/20 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
+public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
     private static final Logger logger     = LoggerFactory.getLogger(AbstractParamSigner.class);
     private static final String NULL       = "null";
     private static final String UNDEFINED  = "undefined";
@@ -33,14 +35,10 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
 
     @Override
     public void validIfNecessary(R r) throws IOException{
-        if (!isParamSignEnable()) {
-            return;
-        }
         SignParam signParam = getSignParam(r);
-        if (ArrayUtil.contains(getParamSignSkipUri(), signParam.getPath())) {
+        if(null == signParam){
             return;
         }
-
         valid(r , signParam);
     }
 
@@ -63,7 +61,7 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
                 || StrUtil.isEmpty(signParam.getNonceStr())
                 || StrUtil.isEmpty(signParam.getSign())) {
             logger.info("参数为空:" + signParam.getPath());
-            throw new ParamSignException("参数异常" , signParam);
+            throw new ParamSignException("参数异常,请升级APP重试" , signParam);
         }
     }
 
@@ -105,7 +103,7 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
 
         if (!signToJudge.equals(signParam.getSign())) {
             logger.info(signParam.getPath() + ":" + signStr + " -> " + signToJudge + " ?= " + signParam.getSign());
-            throw new ParamSignException("参数签名异常" , signParam);
+            throw new ParamSignException("参数签名异常，请升级APP重试" , signParam);
         }
     }
 
@@ -150,31 +148,31 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R>{
         return sb.toString();
     }
     /**
-     * 是否开启签名
+     * 获取请求用于签名的参数，可以放在header中，可以拼成一个字段放在header中，同样可以放在Query中
+     * @param r 代表请求
+     * @return SignParam 用于参数签名的参数。如果此方法返回null，则不进行参数签名，可以在此方法中判断是否需要参数签名
      */
-    protected boolean isParamSignEnable(){return true;}
-    /**
-     * 跳过的uri
-     */
-    protected String[] getParamSignSkipUri(){return new String[0];}
+    protected abstract SignParam getSignParam(R r);
     /**
      * 时间戳裕量
      */
     protected long getParamSignInterval(){return 60000;}
     /**
-     * 获取请求用于签名的参数，可以放在header中，可以拼成一个字段放在header中，同样可以放在Query中
-     */
-    protected abstract SignParam getSignParam(R r);
-    /**
      * 将post请求的body组装成一个map，一般分为POST|x-www-form-urlencoded、POST|json
+     * @param r 代表请求
+     * @return MultiValueMap POST参数map
+     * @throws IOException IOException
      */
     protected abstract MultiValueMap<String, String> mappedParamForPost(R r) throws IOException;
     /**
      * 将get请求的query组装成一个map
+     * @param r 代表请求
+     * @return MultiValueMap GET参数map
+     * @throws IOException IOException
      */
     protected abstract MultiValueMap<String, String> mappedParamForGet(R r) throws IOException;
     /**
-     * 签名方法
+     * 签名方法，具体的签名方法
      */
     protected abstract String doSign(SignParam signParam , String toSign);
 }
