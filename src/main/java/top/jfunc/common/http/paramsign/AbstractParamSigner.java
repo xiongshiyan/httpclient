@@ -35,7 +35,7 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
 
     @Override
     public void validIfNecessary(R r) throws IOException{
-        SignParam signParam = getSignParam(r);
+        SignParam signParam = checkSignParam(r);
         if(null == signParam){
             return;
         }
@@ -153,7 +153,7 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
      * @return SignParam 用于参数签名的参数。如果此方法返回null，则不进行参数签名，可以在此方法中判断是否需要参数签名
      * @throws IOException IOException
      */
-    protected abstract SignParam getSignParam(R r) throws IOException;
+    protected abstract SignParam checkSignParam(R r) throws IOException;
     /**
      * 时间戳裕量
      */
