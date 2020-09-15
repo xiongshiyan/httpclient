@@ -49,11 +49,8 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
         //校验时间戳，目前要求以服务器时间前后60秒
         validTimeStamp(r , signParam);
 
-        //校验GET请求，Query参数参与签名
-        validGet(r, signParam);
-
-        //校验POST请求，分Form和其他的含有body的（主要是json），Form所有参数参与签名，body类型的使用param=md5(body)参与签名
-        validPost(r, signParam);
+        //校验请求参数
+        validRequest(r, signParam);
     }
 
     protected void validHasParam(R r , SignParam signParam) {
@@ -79,16 +76,24 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
         }
     }
 
-    protected void validPost(R r, SignParam signParam) throws IOException {
-        if (Method.POST.name().equalsIgnoreCase(signParam.getMethod())) {
-            MultiValueMap<String, String> paramMap = mappedParamForPost(r);
-            validParam(signParam, paramMap);
-        }
+    protected void validRequest(R r, SignParam signParam) throws IOException{
+        //校验GET请求，Query参数参与签名
+        validGet(r, signParam);
+
+        //校验POST请求，分Form和其他的含有body的（主要是json），Form所有参数参与签名，body类型的使用param=md5(body)参与签名
+        validPost(r, signParam);
     }
 
     protected void validGet(R r, SignParam signParam) throws IOException{
         if (Method.GET.name().equalsIgnoreCase(signParam.getMethod())) {
             MultiValueMap<String, String> paramMap = mappedParamForGet(r);
+            validParam(signParam, paramMap);
+        }
+    }
+
+    protected void validPost(R r, SignParam signParam) throws IOException {
+        if (Method.POST.name().equalsIgnoreCase(signParam.getMethod())) {
+            MultiValueMap<String, String> paramMap = mappedParamForPost(r);
             validParam(signParam, paramMap);
         }
     }
