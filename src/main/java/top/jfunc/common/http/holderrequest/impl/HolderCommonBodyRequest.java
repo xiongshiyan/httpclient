@@ -45,13 +45,18 @@ public class HolderCommonBodyRequest extends BaseHolderHttpRequest<HolderCommonB
 
     @Override
     public HolderCommonBodyRequest setBody(String body , String contentType) {
-        this.bodyHolder.setBody(body);
+        bodyHolder().setBody(body);
         setContentType(contentType);
-        return this;
+        return myself();
     }
 
     @Override
     public BodyHolder bodyHolder() {
         return bodyHolder;
+    }
+
+    public HolderCommonBodyRequest setBodyHolder(BodyHolder bodyHolder) {
+        this.bodyHolder = bodyHolder;
+        return myself();
     }
 }

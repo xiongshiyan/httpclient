@@ -88,4 +88,14 @@ public class HolderUpLoadRequest extends BaseHolderHttpRequest<HolderUpLoadReque
         formFileHolder().addFormFiles(formFiles);
         return myself();
     }
+
+    public HolderUpLoadRequest setFormParamHolder(ParamHolder formParamHolder) {
+        this.formParamHolder = formParamHolder;
+        return myself();
+    }
+
+    public HolderUpLoadRequest setFormFileHolder(FormFileHolder formFileHolder) {
+        this.formFileHolder = formFileHolder;
+        return myself();
+    }
 }

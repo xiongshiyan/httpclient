@@ -81,13 +81,14 @@ public class Request extends BaseHolderHttpRequest<Request> implements
      */
     @Override
     public String getBody() {
-        String body = bodyHolder.getBody();
+        String body = bodyHolder().getBody();
         //如果body不为空直接返回
         if(StrUtil.isNotEmpty(body)){
             return body;
         }
 
         //没有设置body一般认为就是form表单传递
+        ParamHolder formParamHolder = formParamHolder();
         String bodyCharset = getConfig().calculateBodyCharset(formParamHolder.getParamCharset(), getContentType());
         if(null == getContentType()){
             setContentType(MediaType.APPLICATION_FORM_DATA.withCharset(bodyCharset));
@@ -98,7 +99,8 @@ public class Request extends BaseHolderHttpRequest<Request> implements
 
     @Override
     public String getBodyCharset() {
-        return StrUtil.isNotEmpty(bodyHolder.getBody()) ? bodyHolder.getBodyCharset() : formParamHolder.getParamCharset();
+        BodyHolder bodyHolder = bodyHolder();
+        return StrUtil.isNotEmpty(bodyHolder.getBody()) ? bodyHolder.getBodyCharset() : formParamHolder().getParamCharset();
     }
 
     @Override
@@ -123,20 +125,24 @@ public class Request extends BaseHolderHttpRequest<Request> implements
 
     ///////////////////////////////////通过设置Holder的实现改变默认行为///////////////////////////////////////
 
-    public void setFormParamHolder(ParamHolder formParamHolder) {
+    public Request setFormParamHolder(ParamHolder formParamHolder) {
         this.formParamHolder = formParamHolder;
+        return myself();
     }
 
-    public void setBodyHolder(BodyHolder bodyHolder) {
+    public Request setBodyHolder(BodyHolder bodyHolder) {
         this.bodyHolder = bodyHolder;
+        return myself();
     }
 
-    public void setFormFileHolder(FormFileHolder formFileHolder) {
+    public Request setFormFileHolder(FormFileHolder formFileHolder) {
         this.formFileHolder = formFileHolder;
+        return myself();
     }
 
-    public void setFileHolder(FileHolder fileHolder) {
+    public Request setFileHolder(FileHolder fileHolder) {
         this.fileHolder = fileHolder;
+        return myself();
     }
 
     /**
@@ -147,30 +153,30 @@ public class Request extends BaseHolderHttpRequest<Request> implements
      */
     @Override
     public Request setParamCharset(String paramCharset) {
-        formParamHolder.setParamCharset(paramCharset);
-        return this;
+        formParamHolder().setParamCharset(paramCharset);
+        return myself();
     }
 
     @Override
     public Request setFormParams(Map<String, String> params) {
-        formParamHolder.set(params);
-        return this;
+        formParamHolder().set(params);
+        return myself();
     }
     @Override
     public Request setFormParams(MultiValueMap<String, String> params) {
-        formParamHolder.set(params);
-        return this;
+        formParamHolder().set(params);
+        return myself();
     }
 
     @Override
     public Request addFormParam(String key, String value, String... values) {
-        formParamHolder.add(key, value, values);
-        return this;
+        formParamHolder().add(key, value, values);
+        return myself();
     }
 
     @Override
     public MultiValueMap<String, String> getFormParams() {
-        return formParamHolder.get();
+        return formParamHolder().get();
     }
 
     /**
@@ -179,9 +185,9 @@ public class Request extends BaseHolderHttpRequest<Request> implements
      */
     @Override
     public Request setBody(String body , String contentType) {
-        bodyHolder.setBody(body);
+        bodyHolder().setBody(body);
         setContentType(contentType);
-        return this;
+        return myself();
     }
 
 
@@ -189,8 +195,8 @@ public class Request extends BaseHolderHttpRequest<Request> implements
 
     @Override
     public Request setBody(String body) {
-        this.bodyHolder.setBody(body);
-        return this;
+        bodyHolder().setBody(body);
+        return myself();
     }
 
     /**
@@ -201,27 +207,27 @@ public class Request extends BaseHolderHttpRequest<Request> implements
      */
     @Override
     public Request setBodyCharset(String bodyCharset) {
-        bodyHolder.setBodyCharset(bodyCharset);
-        formParamHolder.setParamCharset(bodyCharset);
-        return this;
+        bodyHolder().setBodyCharset(bodyCharset);
+        formParamHolder().setParamCharset(bodyCharset);
+        return myself();
     }
 
     @Override
     public Request addFormFile(FormFile... formFiles) {
-        formFileHolder.addFormFile(formFiles);
-        return this;
+        formFileHolder().addFormFile(formFiles);
+        return myself();
     }
 
     @Override
     public Request addFormFiles(Iterable<FormFile> formFiles) {
-        formFileHolder.addFormFiles(formFiles);
-        return this;
+        formFileHolder().addFormFiles(formFiles);
+        return myself();
     }
 
     @Override
     public Request setFile(File file) {
-        fileHolder.setFile(file);
-        return this;
+        fileHolder().setFile(file);
+        return myself();
     }
 
     /////////////////////////////////// END /////////////////////////////////////

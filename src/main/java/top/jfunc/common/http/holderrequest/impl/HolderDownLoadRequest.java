@@ -56,4 +56,9 @@ public class HolderDownLoadRequest extends BaseHolderHttpRequest<HolderDownLoadR
         fileHolder().setFile(file);
         return myself();
     }
+
+    public HolderDownLoadRequest setFileHolder(FileHolder fileHolder) {
+        this.fileHolder = fileHolder;
+        return myself();
+    }
 }

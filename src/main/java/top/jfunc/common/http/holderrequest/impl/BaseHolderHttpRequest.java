@@ -37,12 +37,12 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
 
     @Override
     public THIS setUrl(String url) {
-        this.urlHolder.setUrl(url);
+        urlHolder().setUrl(url);
         return myself();
     }
     @Override
     public THIS setUrl(URL url) {
-        this.urlHolder.setUrl(url);
+        urlHolder().setUrl(url);
         return myself();
     }
 
@@ -83,7 +83,7 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
 
     @Override
     public THIS setHeader(String key, String value) {
-        headerHolder.set(key, value);
+        headerHolder().set(key, value);
         return myself();
     }
 
@@ -128,26 +128,30 @@ public abstract class BaseHolderHttpRequest<THIS extends BaseHolderHttpRequest> 
 
     @Override
     public THIS addAttribute(String key, Object value) {
-        this.attributeHolder.put(key, value);
+        attributeHolder().put(key, value);
         return myself();
     }
 
 
     ///////////////////////////////////通过设置Holder的实现改变默认行为///////////////////////////////////////
 
-    public void setUrlHolder(UrlHolder urlHolder) {
+    public THIS setUrlHolder(UrlHolder urlHolder) {
         this.urlHolder = urlHolder;
+        return myself();
     }
 
-    public void setHeaderHolder(HeaderHolder headerHolder) {
+    public THIS setHeaderHolder(HeaderHolder headerHolder) {
         this.headerHolder = headerHolder;
+        return myself();
     }
 
-    public void setSslHolder(SSLHolder sslHolder) {
+    public THIS setSslHolder(SSLHolder sslHolder) {
         this.sslHolder = sslHolder;
+        return myself();
     }
 
-    public void setAttributeHolder(AttributeHolder attributeHolder) {
+    public THIS setAttributeHolder(AttributeHolder attributeHolder) {
         this.attributeHolder = attributeHolder;
+        return myself();
     }
 }
