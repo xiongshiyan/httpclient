@@ -5,7 +5,6 @@ import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.httprequest.*;
 import top.jfunc.common.http.cookie.CookieAccessor;
 import top.jfunc.common.http.cookie.DefaultCookieAccessor;
-import top.jfunc.common.http.request.FormRequest;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -80,17 +79,6 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         init(stringBodyRequest, Method.POST);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(stringBodyRequest);
         return template(stringBodyRequest , contentCallback , resultCallback);
-    }
-
-    /**
-     * post就支持form表单
-     * @see StringBodyRequest
-     * @see FormRequest
-     */
-    @Override
-    public <R> R form(FormRequest formRequest, ResultCallback<R> resultCallback) throws IOException{
-        init(formRequest, Method.POST);
-        return post(formRequest , resultCallback);
     }
 
     @Override

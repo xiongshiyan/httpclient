@@ -1,7 +1,7 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.FreezableConfigAccessor;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.*;
 import top.jfunc.common.utils.IoUtil;
@@ -76,7 +76,9 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    <R> R form(FormRequest formRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R form(FormRequest formRequest, ResultCallback<R> resultCallback) throws IOException{
+        return post(formRequest, resultCallback);
+    }
 
     /**
      * POST方法，对form表单的语义化支持
@@ -85,7 +87,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @throws IOException 超时等IO异常
      */
     default Response form(FormRequest formRequest) throws IOException{
-        return form(formRequest , ResponseExtractor::toResponse);
+        return post(formRequest , ResponseExtractor::toResponse);
     }
 
     /**
