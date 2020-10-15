@@ -66,8 +66,14 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         setCookieAccessor(new DefaultCookieAccessor());
     }
 
-
     @Override
+    public <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
+        init(httpRequest , method);
+        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
+        return template(httpRequest , contentCallback, resultCallback);
+    }
+
+    /*@Override
     public <R> R get(HttpRequest httpRequest , ResultCallback<R> resultCallback) throws IOException {
         init(httpRequest, Method.GET);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
@@ -79,7 +85,7 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         init(stringBodyRequest, Method.POST);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(stringBodyRequest);
         return template(stringBodyRequest , contentCallback , resultCallback);
-    }
+    }*/
 
     @Override
     public <R> R upload(UploadRequest uploadRequest , ResultCallback<R> resultCallback) throws IOException {
@@ -88,33 +94,16 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         return template(uploadRequest, contentCallback , resultCallback);
     }
 
-    /*------------------------HTTP方法通用支持---------------------------*/
-
-    @Override
-    public <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
-        init(httpRequest , method);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
-        return template(httpRequest , contentCallback, resultCallback);
-    }
-
-
-
-    /*------------------------HEAD---------------------------*/
-
-    @Override
+    /*@Override
     public <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
-        init(httpRequest , Method.HEAD);
         //必须要响应头
         httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
         //设置忽略响应体
         httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
+        init(httpRequest , Method.HEAD);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
         return template(httpRequest , contentCallback , resultCallback);
     }
-
-
-
-    /*------------------------OPTIONS---------------------------*/
 
     @Override
     public <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
@@ -127,20 +116,12 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         return template(httpRequest , contentCallback , resultCallback);
     }
 
-
-
-    /*------------------------PUT---------------------------*/
-
     @Override
     public <R> R put(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException {
         init(stringBodyRequest , Method.PUT);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(stringBodyRequest);
         return template(stringBodyRequest , contentCallback , resultCallback);
     }
-
-
-
-    /*------------------------PATCH---------------------------*/
 
     @Override
     public <R> R patch(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException {
@@ -149,20 +130,12 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         return template(stringBodyRequest ,contentCallback , resultCallback);
     }
 
-
-
-    /*------------------------DELETE---------------------------*/
-
     @Override
     public <R> R delete(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
         init(httpRequest , Method.DELETE);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
         return template(httpRequest , contentCallback , resultCallback);
     }
-
-
-
-    /*------------------------TRACE---------------------------*/
 
     @Override
     public <R> R trace(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
@@ -173,7 +146,7 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
         return template(httpRequest , contentCallback, resultCallback);
-    }
+    }*/
 
     protected void init(HttpRequest httpRequest , Method method){
         if(null == httpRequest.getConfig()){

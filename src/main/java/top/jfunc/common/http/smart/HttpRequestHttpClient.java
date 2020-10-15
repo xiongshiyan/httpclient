@@ -1,5 +1,6 @@
 package top.jfunc.common.http.smart;
 
+import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.FreezableConfigAccessor;
 import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ResultCallback;
@@ -21,13 +22,38 @@ import java.io.IOException;
  */
 public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     /**
+     * 接口对http方法的支持
+     * @param httpRequest Request
+     * @param method Method
+     * @param resultCallback resultCallback对结果的处理
+     * @return <R>R
+     * @throws IOException IOException
+     */
+    <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException;
+
+    /**
+     * 接口对其他http方法的支持
+     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
+     * @param httpRequest Request
+     * @param method Method
+     * @return Response
+     * @throws IOException IOException
+     */
+    default Response http(HttpRequest httpRequest, Method method) throws IOException{
+        return http(httpRequest, method, ResponseExtractor::toResponse);
+    }
+
+
+    /**
      * GET方法，用于获取某个资源
      * @param httpRequest 请求参数
      * @param resultCallback 处理返回值
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    <R> R get(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R get(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException{
+        return http(httpRequest, Method.GET, resultCallback);
+    }
 
     /**
      * GET方法，用于获取某个资源
@@ -57,7 +83,9 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @return 响应
      * @throws IOException 超时等IO异常
      */
-    <R> R post(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R post(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException{
+        return http(stringBodyRequest, Method.POST, resultCallback);
+    }
 
     /**
      * POST方法，用于新增
@@ -132,28 +160,6 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
     }
 
     /**
-     * 接口对其他http方法的支持
-     * @param httpRequest Request
-     * @param method Method
-     * @param resultCallback resultCallback对结果的处理
-     * @return <R>R
-     * @throws IOException IOException
-     */
-    <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException;
-
-    /**
-     * 接口对其他http方法的支持
-     * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
-     * @param httpRequest Request
-     * @param method Method
-     * @return Response
-     * @throws IOException IOException
-     */
-    default Response http(HttpRequest httpRequest, Method method) throws IOException{
-        return http(httpRequest, method, ResponseExtractor::toResponse);
-    }
-
-    /**
      * HEAD方法，一般返回某个接口的响应头，而没有响应体，用于探测Content-Length等信息
      * @see SmartHttpClient#http(HttpRequest, Method, ResultCallback)
      * @see Method#HEAD
@@ -162,7 +168,14 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
      */
-    <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException{
+        //必须要响应头
+        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
+        //设置忽略响应体
+        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
+
+        return http(httpRequest, Method.HEAD, resultCallback);
+    }
 
     default MultiValueMap<String , String> head(HttpRequest httpRequest) throws IOException{
         return head(httpRequest, ResponseExtractor::extractHeaders);
@@ -187,7 +200,14 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @return 一般只有请求头，即使有body也应该忽略
      * @throws IOException IOException
      */
-    <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException{
+        //必须要响应头
+        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
+        //设置忽略响应体
+        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
+
+        return http(httpRequest, Method.OPTIONS, resultCallback);
+    }
 
     default MultiValueMap<String , String> options(HttpRequest httpRequest) throws IOException{
         return options(httpRequest, ResponseExtractor::extractHeaders);
@@ -203,7 +223,9 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R put(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R put(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException{
+        return http(stringBodyRequest, Method.PUT, resultCallback);
+    }
 
     default Response put(StringBodyRequest httpRequest) throws IOException{
         return put(httpRequest , ResponseExtractor::toResponse);
@@ -219,7 +241,9 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R patch(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R patch(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException{
+        return http(stringBodyRequest, Method.PATCH, resultCallback);
+    }
 
     default Response patch(StringBodyRequest stringBodyRequest) throws IOException{
         return patch(stringBodyRequest , ResponseExtractor::toResponse);
@@ -234,7 +258,9 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R delete(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R delete(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException{
+        return http(httpRequest, Method.DELETE, resultCallback);
+    }
 
     default Response delete(HttpRequest httpRequest) throws IOException{
         return delete(httpRequest, ResponseExtractor::toResponse);
@@ -249,7 +275,14 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      * @return 响应
      * @throws IOException IOException
      */
-    <R> R trace(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException;
+    default <R> R trace(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException{
+        //必须要响应头
+        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
+        //设置忽略响应体
+        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
+
+        return http(httpRequest, Method.TRACE, resultCallback);
+    }
 
     default Response trace(HttpRequest httpRequest) throws IOException{
         return trace(httpRequest, ResponseExtractor::toResponse);

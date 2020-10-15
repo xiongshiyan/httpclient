@@ -10,7 +10,7 @@ import java.io.IOException;
 @FunctionalInterface
 public interface ContentCallback<CC> {
     /**
-     * 往connection中写入数据
+     * 写入数据
      * @param cc 连接
      * @throws IOException IOException
      */
