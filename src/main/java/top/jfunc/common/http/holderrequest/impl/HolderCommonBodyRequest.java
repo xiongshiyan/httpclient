@@ -1,6 +1,5 @@
 package top.jfunc.common.http.holderrequest.impl;
 
-import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.holder.BodyHolder;
 import top.jfunc.common.http.holder.DefaultBodyHolder;
 import top.jfunc.common.http.holderrequest.HolderMutableStringBodyRequest;
@@ -38,8 +37,7 @@ public class HolderCommonBodyRequest extends BaseHolderHttpRequest<HolderCommonB
         return commonBodyRequest;
     }
     /**
-     * 针对POST等存在//private String body
-     * @see Method#hasContent()
+     * 针对POST等存在String body
      */
     private BodyHolder bodyHolder = new DefaultBodyHolder();
 

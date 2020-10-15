@@ -12,7 +12,7 @@ public interface ContentCallbackHandler<CC> {
     /**
      * 处理contentCallback
      * @param cc 给谁设置body
-     * @param contentCallback ContentCallback
+     * @param contentCallback ContentCallback,可能为null
      * @param httpRequest HttpRequest
      * @throws IOException IOException
      */

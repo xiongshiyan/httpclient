@@ -12,7 +12,7 @@ public interface ContentCallbackCreator<CC> {
     /**
      * 创建body设置器(为{@link top.jfunc.common.http.smart.SmartHttpClient}体系使用)
      * @param httpRequest HttpRequest
-     * @return ContentCallback<CC>
+     * @return ContentCallback<CC> 可能为null，当不支持BODY的时候
      * @throws IOException IOException
      */
     ContentCallback<CC> create(HttpRequest httpRequest) throws IOException;

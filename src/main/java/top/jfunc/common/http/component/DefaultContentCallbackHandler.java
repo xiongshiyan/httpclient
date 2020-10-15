@@ -11,7 +11,7 @@ import java.io.IOException;
 public class DefaultContentCallbackHandler<CC> implements ContentCallbackHandler<CC> {
     @Override
     public void handle(CC cc , ContentCallback<CC> contentCallback, HttpRequest httpRequest) throws IOException {
-        if(null != contentCallback && httpRequest.getMethod().hasContent()){
+        if(null != contentCallback){
             contentCallback.doWriteWith(cc);
         }
     }

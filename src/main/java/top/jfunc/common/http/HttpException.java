@@ -13,27 +13,22 @@ import java.util.Map;
  */
 public class HttpException extends RuntimeException{
     private int responseCode = -1;
-    private String errorMessage = "error happens in client";
     private MultiValueMap<String , String> headers;
 
-    public HttpException(int responseCode,String errorMessage , MultiValueMap<String , String> headers){
+    public HttpException(int responseCode, String errorMessage , MultiValueMap<String , String> headers){
         super(errorMessage);
         this.responseCode = responseCode;
-        this.errorMessage = errorMessage;
         this.headers = headers;
     }
-    public HttpException(int responseCode,String errorMessage){
+    public HttpException(int responseCode, String errorMessage){
         super(errorMessage);
         this.responseCode = responseCode;
-        this.errorMessage = errorMessage;
     }
     public HttpException(String errorMessage){
         super(errorMessage);
-        this.errorMessage = errorMessage;
     }
     public HttpException(Exception e){
         super(e);
-        this.errorMessage = e.getMessage();
     }
     public HttpException(){
     }
@@ -41,10 +36,6 @@ public class HttpException extends RuntimeException{
 
     public int getResponseCode() {
         return responseCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
     }
 
     public Map<String, List<String>> getHeaders() {

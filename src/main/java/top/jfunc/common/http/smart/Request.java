@@ -1,12 +1,11 @@
 package top.jfunc.common.http.smart;
 
-import top.jfunc.common.http.base.MediaType;
-import top.jfunc.common.http.base.Method;
-import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.base.FormFile;
+import top.jfunc.common.http.base.MediaType;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.holderrequest.*;
 import top.jfunc.common.http.holderrequest.impl.*;
+import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
@@ -41,8 +40,7 @@ public class Request extends BaseHolderHttpRequest<Request> implements
     private ParamHolder formParamHolder = new DefaultParamHolder();
 
     /**
-     * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里 private String body
-     * @see Method#hasContent()
+     * 针对POST存在，params这种加进来的参数最终拼接之后保存到这里
      */
     private BodyHolder bodyHolder = new DefaultBodyHolder();
 

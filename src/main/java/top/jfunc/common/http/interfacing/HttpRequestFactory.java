@@ -1,15 +1,13 @@
 package top.jfunc.common.http.interfacing;
 
-import top.jfunc.common.http.base.MediaType;
-import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.annotation.method.*;
 import top.jfunc.common.http.annotation.parameter.*;
-import top.jfunc.common.http.base.HttpHeaders;
-import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.holderrequest.impl.HolderCommonBodyRequest;
 import top.jfunc.common.http.holderrequest.impl.HolderCommonRequest;
 import top.jfunc.common.http.holderrequest.impl.HolderFormBodyRequest;
 import top.jfunc.common.http.holderrequest.impl.HolderUpLoadRequest;
+import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.MultiValueMap;
@@ -52,6 +50,11 @@ class HttpRequestFactory implements RequestFactory {
      * 参数对应的处理器
      */
     private final AbstractParameterHandler<?>[] parameterHandlers;
+
+    /**
+     * 判断方法是否支持body
+     */
+    private MethodContentStrategy methodContentStrategy = new DefaultMethodContentStrategy();
 
     /**
      * 是否有Body
@@ -550,7 +553,7 @@ class HttpRequestFactory implements RequestFactory {
                     this.httpMethod, httpMethod);
         }
         this.httpMethod = httpMethod;
-        this.hasBody = httpMethod.hasContent();
+        this.hasBody = methodContentStrategy.supportContent(httpMethod);
 
         if (value.isEmpty()) {
             return;
