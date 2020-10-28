@@ -7,7 +7,7 @@ import top.jfunc.common.utils.MultiValueMap;
 import java.io.IOException;
 
 /**
- * 提供统一处理cookie的方法
+ * 提供统一处理默认header的方法
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractHeaderHandler<C> implements HeaderHandler<C> {
