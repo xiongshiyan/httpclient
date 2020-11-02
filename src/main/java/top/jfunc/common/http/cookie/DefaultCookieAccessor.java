@@ -16,7 +16,7 @@ import java.util.Map;
  * 模仿jodd-http的实现
  * @author xiongshiyan at 2020/1/17 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultCookieAccessor implements CookieAccessor{
+public class DefaultCookieAccessor implements CookieAccessor {
     /**
      * @param httpRequest HttpRequest
      * @throws IOException IOException
@@ -94,7 +94,7 @@ public class DefaultCookieAccessor implements CookieAccessor{
     }
 
     protected List<Cookie> getCookies(MultiValueMap<String, String> responseHeaders, String cookieHeader) {
-        List<String> newCookies = new ArrayList<>();
+        List<String> newCookies = new ArrayList<>(4);
         for (Map.Entry<String, List<String>> entry : responseHeaders.entrySet()) {
             if(cookieHeader.equalsIgnoreCase(entry.getKey())){
                 newCookies.addAll(entry.getValue());

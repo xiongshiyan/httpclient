@@ -28,24 +28,64 @@ package top.jfunc.common.http.cookie;
 import top.jfunc.common.utils.StrUtil;
 
 /**
+ * from jodd
  * Cookie object. Simple cookie data holder, cookie header parser and generator.
+ * @author xiongshiyan
  */
 public class Cookie {
+	public static final String MAX_AGE   = "Max-Age";
+	public static final String COMMENT   = "Comment";
+	public static final String DOMAIN    = "Domain";
+	public static final String PATH      = "Path";
+	public static final String SECURE    = "Secure";
+	public static final String VERSION   = "Version";
+	public static final String HTTP_ONLY = "HttpOnly";
+	public static final String EXPIRES   = "Expires";
 
-	// the value of the cookie itself
+    /**
+     * cookie key
+     */
 	private String name;
+    /**
+     * cookie value
+     * name=value
+     */
 	private String value;
 
-	// attributes encoded in the header's cookie fields
+	/// attributes encoded in the header's cookie fields
 
-	private String comment;				// ;Comment=VALUE ... describes cookie's use ; Discard ... implied by maxAge < 0
-	private String domain;				// ;Domain=VALUE ... domain that sees cookie
-	private Integer maxAge;				// ;Max-Age=VALUE ... cookies auto-expire
-	private String expires;				// ;Expires= ... expires values
-	private String path;				// ;Path=VALUE ... URLs that see the cookie
-	private boolean secure;				// ;Secure ... e.g. use SSL
-	private Integer version; 			// ;Version=1 ... means RFC 2109++ style
-	private boolean httpOnly;			// ;HttpOnly
+    /**
+     * ;Comment=VALUE ... describes cookie's use ; Discard ... implied by maxAge < 0
+     */
+    private String comment;
+    /**
+     * ;Domain=VALUE ... domain that sees cookie
+     */
+    private String domain;
+    /**
+     * ;Max-Age=VALUE ... cookies auto-expire
+     */
+    private Integer maxAge;
+    /**
+     * ;Path=VALUE ... URLs that see the cookie
+     */
+    private String path;
+    /**
+     * ;Expires= ... expires values
+     */
+    private String expires;
+    /**
+     * ;Secure ... e.g. use SSL
+     */
+    private boolean secure;
+    /**
+     * ;Version=1 ... means RFC 2109++ style
+     */
+    private Integer version;
+    /**
+     * ;HttpOnly
+     */
+    private boolean httpOnly;
 
 
 	/**
@@ -63,52 +103,53 @@ public class Cookie {
 	}
 
 	/**
+     * 形如：oschina_new_user=false; path=/; expires=Fri, 02 Nov 2040 09:11:02 -0000
 	 * Parses cookie data from given user-agent string.
 	 */
-	public Cookie(String cookie) {
+	public Cookie(String cookieString) {
 		int from = 0;
 		int ndx = 0;
 
-		cookie = cookie.trim();
+		cookieString = cookieString.trim();
 
-		while (ndx < cookie.length()) {
-			ndx = cookie.indexOf(';', from);
+		while (ndx < cookieString.length()) {
+			ndx = cookieString.indexOf(StrUtil.SEMICOLON, from);
 
 			if (ndx == -1) {
 				// last chunk
-				ndx = cookie.length();
+				ndx = cookieString.length();
 			}
-			int ndx2 = cookie.indexOf('=', from);
+			int ndx2 = cookieString.indexOf(StrUtil.EQUALS, from);
 
 			String name;
 			String value;
 			if (ndx2 != -1 && ndx2 < ndx) {
-				name = cookie.substring(from, ndx2).trim();
-				value = cookie.substring(ndx2 + 1, ndx).trim();
+				name = cookieString.substring(from, ndx2).trim();
+				value = cookieString.substring(ndx2 + 1, ndx).trim();
 			} else {
 				if (from == ndx) {
 					ndx++;
 					continue;
 				}
-				name = cookie.substring(from, ndx).trim();
+				name = cookieString.substring(from, ndx).trim();
 				value = null;
 			}
 
-			if (value != null && "Max-Age".equalsIgnoreCase(name)) {
+			if (value != null && MAX_AGE.equalsIgnoreCase(name)) {
 				setMaxAge(Integer.parseInt(value));
-			} else if ("Comment".equalsIgnoreCase(name)) {
+			} else if (COMMENT.equalsIgnoreCase(name)) {
 				setComment(value);
-			} else if ("Domain".equalsIgnoreCase(name)) {
+			} else if (DOMAIN.equalsIgnoreCase(name)) {
 				setDomain(value);
-			} else if ("Path".equalsIgnoreCase(name)) {
+			} else if (PATH.equalsIgnoreCase(name)) {
 				setPath(value);
-			} else if ("Secure".equalsIgnoreCase(name)) {
+			} else if (SECURE.equalsIgnoreCase(name)) {
 				setSecure(true);
-			} else if (value != null && "Version".equalsIgnoreCase(name)) {
+			} else if (value != null && VERSION.equalsIgnoreCase(name)) {
 				setVersion(Integer.parseInt(value));
-			} else if ("HttpOnly".equalsIgnoreCase(name)) {
+			} else if (HTTP_ONLY.equalsIgnoreCase(name)) {
 				setHttpOnly(true);
-			} else if ("Expires".equalsIgnoreCase(name)) {
+			} else if (EXPIRES.equalsIgnoreCase(name)) {
 				setExpires(value);
 			} else if (this.name == null && !StrUtil.isBlank(name)) {
 				setName(name);
@@ -176,7 +217,8 @@ public class Cookie {
 	 */
 
 	public Cookie setDomain(final String pattern) {
-		domain = pattern.toLowerCase();    // IE allegedly needs this
+        // IE allegedly needs this
+        domain = pattern.toLowerCase();
 		return this;
 	}
 
