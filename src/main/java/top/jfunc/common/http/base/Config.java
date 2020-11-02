@@ -1,7 +1,7 @@
 package top.jfunc.common.http.base;
 
+import top.jfunc.common.http.cookie.CookieStore;
 import top.jfunc.common.http.util.ParamUtil;
-import top.jfunc.common.http.cookie.CookieJar;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
 import top.jfunc.common.http.interceptor.Interceptor;
@@ -64,8 +64,8 @@ public class Config {
     private HeaderHolder headerHolder                       = new DefaultHeaderHolder();
     /**默认的请求Query参数,每个请求都会加上*/
     private ParamHolder queryParamHolder                    = new DefaultParamHolder();
-    /**CookieJar,处理Cookie*/
-    private CookieJar cookieJar                             = null;
+    /**CookieStore,处理Cookie*/
+    private CookieStore cookieStore                         = null;
     /**拦截器链*/
     private CompositeInterceptor compositeInterceptor       = null;
 
@@ -194,12 +194,13 @@ public class Config {
         return queryParamHolder;
     }
 
-    public CookieJar getCookieJar() {
-        return cookieJar;
+    public CookieStore getCookieStore() {
+        return cookieStore;
     }
 
-    public Config setCookieJar(CookieJar cookieJar) {
-        this.cookieJar = cookieJar;
+    public Config setCookieStore(CookieStore cookieStore) {
+        configFrozen.ensureConfigNotFreeze();
+        this.cookieStore = cookieStore;
         return this;
     }
 

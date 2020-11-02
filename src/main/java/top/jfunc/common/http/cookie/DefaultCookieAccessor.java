@@ -1,32 +1,68 @@
 package top.jfunc.common.http.cookie;
 
+import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.utils.MapUtil;
+import top.jfunc.common.utils.CollectionUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
+ * 模仿jodd-http的实现
  * @author xiongshiyan at 2020/1/17 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class DefaultCookieAccessor implements CookieAccessor{
     /**
-     * 如果支持Cookie，从CookieHandler中拿出来设置到Header Map中
+     * 如果支持{@link Cookie}，从{@link CookieStore}中拿出来设置到Header Map中
      * @param httpRequest HttpRequest
      * @throws IOException IOException
      */
     @Override
     public void addCookieIfNecessary(HttpRequest httpRequest) throws IOException {
-        CookieJar cookieJar = httpRequest.getConfig().getCookieJar();
-        if(null == cookieJar){
+        CookieStore cookieStore = httpRequest.getConfig().getCookieStore();
+        if(null == cookieStore){
             return;
         }
 
-        MultiValueMap<String, String> forRequest = cookieJar.loadForRequest(httpRequest.getCompletedUrl());
+        List<Cookie> cookies = cookieStore.loadForRequest(httpRequest);
 
-        if(MapUtil.notEmpty(forRequest)){
-            forRequest.forEachKeyValue(httpRequest::addHeader);
+        if(CollectionUtil.isEmpty(cookies)){
+            return;
         }
+
+        StringBuilder cookieString = buildCookieString(cookies);
+        httpRequest.setHeader(HttpHeaders.COOKIE, cookieString.toString());
+    }
+
+    /**
+     * 形如 Cookie: user_locale=zh-CN; oschina_new_user=false
+     * @param cookies 待用cookie
+     * @return 构建的cookie header
+     */
+    protected StringBuilder buildCookieString(List<Cookie> cookies) {
+        StringBuilder cookieString = new StringBuilder();
+
+        boolean first = true;
+
+        for (Cookie cookie : cookies) {
+            Integer maxAge = cookie.getMaxAge();
+            if (maxAge != null && maxAge == 0) {
+                continue;
+            }
+
+            if (!first) {
+                cookieString.append("; ");
+            }
+
+            first = false;
+            cookieString.append(cookie.getName());
+            cookieString.append('=');
+            cookieString.append(cookie.getValue());
+        }
+        return cookieString;
     }
 
     /**
@@ -37,10 +73,42 @@ public class DefaultCookieAccessor implements CookieAccessor{
      */
     @Override
     public void saveCookieIfNecessary(HttpRequest httpRequest, MultiValueMap<String, String> responseHeaders) throws IOException {
-        CookieJar cookieJar = httpRequest.getConfig().getCookieJar();
-        if(null == cookieJar){
+        CookieStore cookieStore = httpRequest.getConfig().getCookieStore();
+        if(null == cookieStore){
             return;
         }
-        cookieJar.saveFromResponse(httpRequest.getCompletedUrl(), responseHeaders);
+
+        List<Cookie> cookieList = getCookies(responseHeaders, HttpHeaders.SET_COOKIE);
+        List<Cookie> cookie2List = getCookies(responseHeaders, HttpHeaders.SET_COOKIE2);
+        List<Cookie> cookies = CollectionUtil.merge(cookieList, cookie2List);
+        if(CollectionUtil.isEmpty(cookies)){
+            return;
+        }
+
+        cookieStore.saveFromResponse(cookies, httpRequest);
+    }
+
+    protected List<Cookie> getCookies(MultiValueMap<String, String> responseHeaders, String cookieHeader) {
+        List<String> newCookies = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : responseHeaders.entrySet()) {
+            if(cookieHeader.equalsIgnoreCase(entry.getKey())){
+                newCookies.addAll(entry.getValue());
+            }
+        }
+
+        if (CollectionUtil.isEmpty(newCookies)) {
+            return null;
+        }
+
+        List<Cookie> cookieList = new ArrayList<>(newCookies.size());
+
+        for (String cookieValue : newCookies) {
+            try {
+                cookieList.add(new Cookie(cookieValue));
+            }catch (Exception e) {
+                // ignore
+            }
+        }
+        return cookieList;
     }
 }

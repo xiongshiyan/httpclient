@@ -26,7 +26,7 @@ public abstract class AbstractHeaderExtractor<S> implements HeaderExtractor<S> {
         boolean followRedirects = ObjectUtil.defaultIfNull(httpRequest.followRedirects() , config.followRedirects());
 
         ///1.如果要支持cookie，必须读取header
-        if(null != config.getCookieJar() || followRedirects){
+        if(null != config.getCookieStore() || followRedirects){
             retainResponseHeaders = Config.RETAIN_RESPONSE_HEADERS;
         }
 

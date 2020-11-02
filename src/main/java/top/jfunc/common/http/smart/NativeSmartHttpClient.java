@@ -38,8 +38,6 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         setConnectionSender(new DefaultJdkConnectionSender());
         setHttpURLConnectionStreamExtractor(new DefaultJdkStreamExtractor());
         setHttpURLConnectionHeaderExtractor(new DefaultJdkHeaderExtractor());
-
-        setCookieAccessor(new JdkCookieAccessor());
     }
 
     @Override
