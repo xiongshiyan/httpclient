@@ -3,6 +3,7 @@ package top.jfunc.common.http.cookie;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.CollectionUtil;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
@@ -74,18 +75,22 @@ public class DefaultCookieAccessor implements CookieAccessor{
     @Override
     public void saveCookieIfNecessary(HttpRequest httpRequest, MultiValueMap<String, String> responseHeaders) throws IOException {
         CookieStore cookieStore = httpRequest.getConfig().getCookieStore();
-        if(null == cookieStore){
+        if(null == cookieStore || MapUtil.isEmpty(responseHeaders)){
             return;
         }
 
-        List<Cookie> cookieList = getCookies(responseHeaders, HttpHeaders.SET_COOKIE);
-        List<Cookie> cookie2List = getCookies(responseHeaders, HttpHeaders.SET_COOKIE2);
-        List<Cookie> cookies = CollectionUtil.merge(cookieList, cookie2List);
+        List<Cookie> cookies = getCookies(responseHeaders);
         if(CollectionUtil.isEmpty(cookies)){
             return;
         }
 
         cookieStore.saveFromResponse(cookies, httpRequest);
+    }
+
+    protected List<Cookie> getCookies(MultiValueMap<String, String> responseHeaders) {
+        List<Cookie> cookieList = getCookies(responseHeaders, HttpHeaders.SET_COOKIE);
+        List<Cookie> cookie2List = getCookies(responseHeaders, HttpHeaders.SET_COOKIE2);
+        return CollectionUtil.merge(cookieList, cookie2List);
     }
 
     protected List<Cookie> getCookies(MultiValueMap<String, String> responseHeaders, String cookieHeader) {
