@@ -10,14 +10,14 @@ import java.io.IOException;
  */
 public interface CookieAccessor {
     /**
-     * 如果支持Cookie，从CookieHandler中拿出来设置到Header Map中
+     * 如果支持{@link Cookie}，从{@link CookieStore}中拿出来设置到Header Map中
      * @param httpRequest HttpRequest
      * @throws IOException IOException
      */
     void addCookieIfNecessary(HttpRequest httpRequest) throws IOException;
 
     /**
-     * 如果存在Cookie，将响应的Cookie保存起来
+     * 从响应的Header Map中获取{@link Cookie}，并保存
      * @param httpRequest HttpRequest
      * @param responseHeaders 响应的headers
      * @throws IOException IOException

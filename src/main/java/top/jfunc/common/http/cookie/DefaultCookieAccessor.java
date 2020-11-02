@@ -4,6 +4,7 @@ import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.CollectionUtil;
 import top.jfunc.common.utils.MultiValueMap;
+import top.jfunc.common.utils.StrUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import java.util.Map;
  */
 public class DefaultCookieAccessor implements CookieAccessor{
     /**
-     * 如果支持{@link Cookie}，从{@link CookieStore}中拿出来设置到Header Map中
      * @param httpRequest HttpRequest
      * @throws IOException IOException
      */
@@ -59,7 +59,7 @@ public class DefaultCookieAccessor implements CookieAccessor{
 
             first = false;
             cookieString.append(cookie.getName());
-            cookieString.append('=');
+            cookieString.append(StrUtil.EQUALS);
             cookieString.append(cookie.getValue());
         }
         return cookieString;

@@ -198,6 +198,10 @@ public class Config {
         return cookieStore;
     }
 
+    public boolean supportCookie(){
+        return null != cookieStore;
+    }
+
     public Config setCookieStore(CookieStore cookieStore) {
         configFrozen.ensureConfigNotFreeze();
         this.cookieStore = cookieStore;
