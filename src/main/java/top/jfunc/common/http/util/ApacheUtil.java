@@ -238,7 +238,7 @@ public class ApacheUtil {
     public static void setRequestHeaders(HttpUriRequest request, String contentType,
                                      MultiValueMap<String, String> headers) {
         //add方式处理多值header
-        if(null != headers && !headers.isEmpty()) {
+        if(MapUtil.notEmpty(headers)) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)->request.addHeader(k,v)));*/

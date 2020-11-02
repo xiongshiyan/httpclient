@@ -9,6 +9,7 @@ import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.utils.ArrayListMultiValueMap;
 import top.jfunc.common.utils.IoUtil;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -95,7 +96,7 @@ public class OkHttp3Util {
     public static void setRequestHeaders(Request.Builder builder, String contentType,
                                      MultiValueMap<String, String> headers) {
         //add方式处理多值header
-        if(null != headers && !headers.isEmpty()) {
+        if(MapUtil.notEmpty(headers)) {
             ///
             /*Set<String> keySet = headers.keySet();
             keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));*/
