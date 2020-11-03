@@ -3,14 +3,10 @@ package top.jfunc.common.http.paramsign;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.base.Method;
-import top.jfunc.common.utils.CollectionUtil;
 import top.jfunc.common.utils.MultiValueMap;
 import top.jfunc.common.utils.StrUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 参数验签：包括时间戳和签名验证，参考微信支付宝的
@@ -27,11 +23,6 @@ import java.util.Map;
  */
 public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
     private static final Logger logger     = LoggerFactory.getLogger(AbstractParamSigner.class);
-    private static final String NULL       = "null";
-    private static final String UNDEFINED  = "undefined";
-    private static final String TS         = "ts";
-    private static final String NONCE_STR  = "noncestr";
-
 
     @Override
     public void validIfNecessary(R r) throws IOException{
@@ -87,24 +78,24 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
     protected void validGet(R r, SignParam signParam) throws IOException{
         if (Method.GET.name().equalsIgnoreCase(signParam.getMethod())) {
             MultiValueMap<String, String> paramMap = mappedParamForGet(r);
-            validParam(signParam, paramMap);
+            validParam(paramMap, signParam);
         }
     }
 
     protected void validPost(R r, SignParam signParam) throws IOException {
         if (Method.POST.name().equalsIgnoreCase(signParam.getMethod())) {
             MultiValueMap<String, String> paramMap = mappedParamForPost(r);
-            validParam(signParam, paramMap);
+            validParam(paramMap, signParam);
         }
     }
 
 
-    protected void validParam(SignParam signParam, MultiValueMap<String, String> paramMap) {
+    protected void validParam(MultiValueMap<String, String> paramMap, SignParam signParam) {
         MultiValueMap<String, String> handleMap = handleMap(paramMap, signParam);
 
         String signStr = getSignStr(handleMap, signParam);
 
-        String signToJudge = doSign(signParam , signStr);
+        String signToJudge = doSign(signStr, signParam);
 
         if (!signToJudge.equals(signParam.getSign())) {
             logger.info(signParam.getPath() + ":" + signStr + " -> " + signToJudge + " ?= " + signParam.getSign());
@@ -112,46 +103,13 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
         }
     }
 
-    /**
-     * 可以进一步对map进行处理，比如把secret放进去一起排序
-     */
     protected MultiValueMap<String, String> handleMap(MultiValueMap<String, String> paramMap, SignParam signParam){
-        //去掉空值
-        paramMap.forEach((k,l) -> l.removeIf(this::removeAble));
-        //去掉空值之后如果value没有值，那么去掉这个key
-        paramMap.entrySet().removeIf(this::removeAble);
-
-        paramMap.add(TS, signParam.getTimeStamp());
-        paramMap.add(NONCE_STR, signParam.getNonceStr());
-
-        return paramMap;
+        return ParamSignUtil.handleMap(paramMap, signParam.getTimeStamp(), signParam.getNonceStr());
     }
-
-    protected boolean removeAble(String value) {
-        return StrUtil.isEmpty(value)
-                || NULL.equalsIgnoreCase(value)
-                || UNDEFINED.equalsIgnoreCase(value);
-    }
-    protected boolean removeAble(Map.Entry<String , List<String>> entry) {
-        return CollectionUtil.isEmpty(entry.getValue());
-    }
-
-    /**
-     * 字典序排序
-     */
     protected String getSignStr(MultiValueMap<String, String> paramMap, SignParam signParam) {
-        String[] keys = paramMap.keySet().toArray(new String[paramMap.size()]);
-        Arrays.sort(keys);
-        StringBuilder sb = new StringBuilder();
-        for (String key : keys) {
-            for (String value : paramMap.get(key)) {
-                sb.append(key).append(StrUtil.EQUALS).append(value).append(StrUtil.AND);
-            }
-        }
-        //去掉最后的&
-        sb.deleteCharAt(sb.length()-1);
-        return sb.toString();
+        return ParamSignUtil.getSignStr(paramMap);
     }
+
     /**
      * 获取请求用于签名的参数，可以放在header中，可以拼成一个字段放在header中，同样可以放在Query中
      * @param r 代表请求
@@ -180,5 +138,5 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
     /**
      * 签名方法，具体的签名方法
      */
-    protected abstract String doSign(SignParam signParam , String toSign);
+    protected abstract String doSign(String toSign, SignParam signParam);
 }
