@@ -21,17 +21,15 @@ public class ParamSignUtil {
     private static final String NONCE_STR  = "noncestr";
 
     /**
-     * 可以进一步对map进行处理，比如把secret放进去一起排序
+     * 对map进行处理，放入时间戳和随机串，去除空值，null，undefined
      */
     public static MultiValueMap<String, String> handleMap(MultiValueMap<String, String> paramMap, String timestamp, String nonceStr){
+        paramMap.add(TS, timestamp);
+        paramMap.add(NONCE_STR, nonceStr);
         //去掉空值
         paramMap.forEach((k,l) -> l.removeIf(ParamSignUtil::removeAble));
         //去掉空值之后如果value没有值，那么去掉这个key
         paramMap.entrySet().removeIf(ParamSignUtil::removeAble);
-
-        paramMap.add(TS, timestamp);
-        paramMap.add(NONCE_STR, nonceStr);
-
         return paramMap;
     }
 

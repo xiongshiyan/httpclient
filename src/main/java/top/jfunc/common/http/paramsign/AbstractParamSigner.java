@@ -103,6 +103,7 @@ public abstract class AbstractParamSigner<R> implements ParamSigner<R> {
         }
     }
 
+    /**可以进一步对map进行处理，比如把secret放进去一起排序*/
     protected MultiValueMap<String, String> handleMap(MultiValueMap<String, String> paramMap, SignParam signParam){
         return ParamSignUtil.handleMap(paramMap, signParam.getTimeStamp(), signParam.getNonceStr());
     }
