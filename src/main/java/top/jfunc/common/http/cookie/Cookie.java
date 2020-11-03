@@ -25,7 +25,11 @@
 
 package top.jfunc.common.http.cookie;
 
+import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.utils.StrUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * from jodd
@@ -392,5 +396,52 @@ public class Cookie {
 
 		return cookie.toString();
 	}
+
+
+    /**
+     * 形成key1=value1;key2=value2用于请求Cookie:key1=value1;key2=value2
+     * @param cookies 多个cookie
+     * @return cookie字符串
+     */
+    public static String buildCookieString(List<Cookie> cookies){
+        StringBuilder cookieString = new StringBuilder();
+
+        boolean first = true;
+
+        for (Cookie cookie : cookies) {
+            Integer maxAge = cookie.getMaxAge();
+            if (maxAge != null && maxAge == 0) {
+                continue;
+            }
+
+            if (!first) {
+                cookieString.append("; ");
+            }
+
+            first = false;
+            cookieString.append(cookie.getName());
+            cookieString.append(StrUtil.EQUALS);
+            cookieString.append(cookie.getValue());
+        }
+        return cookieString.toString();
+    }
+
+    /**
+     * 从响应中的{@link HttpHeaders#SET_COOKIE}|{@link HttpHeaders#SET_COOKIE2}字段获取cookie解析成一个个的cookie
+     * @param newCookies 多个{@link HttpHeaders#SET_COOKIE}|{@link HttpHeaders#SET_COOKIE2}的值
+     * @return 多个cookie
+     */
+    public static List<Cookie> parseCookies(List<String> newCookies){
+        List<Cookie> cookieList = new ArrayList<>(newCookies.size());
+
+        for (String cookieValue : newCookies) {
+            try {
+                cookieList.add(new Cookie(cookieValue));
+            }catch (Exception e) {
+                // ignore
+            }
+        }
+        return cookieList;
+    }
 
 }

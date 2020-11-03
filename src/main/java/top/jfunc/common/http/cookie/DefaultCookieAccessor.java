@@ -5,7 +5,6 @@ import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.CollectionUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
-import top.jfunc.common.utils.StrUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,8 +33,8 @@ public class DefaultCookieAccessor implements CookieAccessor {
             return;
         }
 
-        StringBuilder cookieString = buildCookieString(cookies);
-        httpRequest.setHeader(HttpHeaders.COOKIE, cookieString.toString());
+        String cookieString = buildCookieString(cookies);
+        httpRequest.setHeader(HttpHeaders.COOKIE, cookieString);
     }
 
     /**
@@ -43,27 +42,8 @@ public class DefaultCookieAccessor implements CookieAccessor {
      * @param cookies 待用cookie
      * @return 构建的cookie header
      */
-    protected StringBuilder buildCookieString(List<Cookie> cookies) {
-        StringBuilder cookieString = new StringBuilder();
-
-        boolean first = true;
-
-        for (Cookie cookie : cookies) {
-            Integer maxAge = cookie.getMaxAge();
-            if (maxAge != null && maxAge == 0) {
-                continue;
-            }
-
-            if (!first) {
-                cookieString.append("; ");
-            }
-
-            first = false;
-            cookieString.append(cookie.getName());
-            cookieString.append(StrUtil.EQUALS);
-            cookieString.append(cookie.getValue());
-        }
-        return cookieString;
+    protected String buildCookieString(List<Cookie> cookies) {
+        return Cookie.buildCookieString(cookies);
     }
 
     /**
@@ -88,32 +68,19 @@ public class DefaultCookieAccessor implements CookieAccessor {
     }
 
     protected List<Cookie> getCookies(MultiValueMap<String, String> responseHeaders) {
-        List<Cookie> cookieList = getCookies(responseHeaders, HttpHeaders.SET_COOKIE);
-        List<Cookie> cookie2List = getCookies(responseHeaders, HttpHeaders.SET_COOKIE2);
-        return CollectionUtil.merge(cookieList, cookie2List);
+        List<String> cookieList = getCookies(responseHeaders, HttpHeaders.SET_COOKIE);
+        List<String> cookie2List = getCookies(responseHeaders, HttpHeaders.SET_COOKIE2);
+        List<String> newCookies = CollectionUtil.merge(cookieList, cookie2List);
+        return Cookie.parseCookies(newCookies);
     }
 
-    protected List<Cookie> getCookies(MultiValueMap<String, String> responseHeaders, String cookieHeader) {
+    protected List<String> getCookies(MultiValueMap<String, String> responseHeaders, String cookieHeader) {
         List<String> newCookies = new ArrayList<>(4);
         for (Map.Entry<String, List<String>> entry : responseHeaders.entrySet()) {
             if(cookieHeader.equalsIgnoreCase(entry.getKey())){
                 newCookies.addAll(entry.getValue());
             }
         }
-
-        if (CollectionUtil.isEmpty(newCookies)) {
-            return null;
-        }
-
-        List<Cookie> cookieList = new ArrayList<>(newCookies.size());
-
-        for (String cookieValue : newCookies) {
-            try {
-                cookieList.add(new Cookie(cookieValue));
-            }catch (Exception e) {
-                // ignore
-            }
-        }
-        return cookieList;
+        return newCookies;
     }
 }
