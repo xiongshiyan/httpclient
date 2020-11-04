@@ -50,8 +50,8 @@ public class DefaultApacheClientFactory extends AbstractRequesterFactory<HttpCli
         String completedUrl = httpRequest.getCompletedUrl();
 
         String hostname = completedUrl.split(SLASH)[2];
-        boolean isHttps = ParamUtil.isHttps(completedUrl);
-        int port = isHttps ? 443 : 80;
+
+        int port = ParamUtil.httpProtocol(completedUrl).getDefaultPort();
         if (hostname.contains(COLON)) {
             String[] arr = hostname.split(COLON);
             hostname = arr[0];
@@ -61,7 +61,7 @@ public class DefaultApacheClientFactory extends AbstractRequesterFactory<HttpCli
         HttpClientConnectionManager connectionManager = createConnectionManager(hostname, port);
         clientBuilder.setConnectionManager(connectionManager).setRetryHandler(ApacheUtil::retryIf);
 
-        if(isHttps){
+        if(ParamUtil.isHttps(completedUrl)){
             //https默认设置这些
             HostnameVerifier hostnameVerifier = ObjectUtil.defaultIfNull(httpRequest.getHostnameVerifier(), config.sslHolder().getHostnameVerifier());
             SSLContext sslContext = ObjectUtil.defaultIfNull(httpRequest.getSslContext(), config.sslHolder().getSslContext());

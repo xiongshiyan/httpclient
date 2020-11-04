@@ -1,6 +1,7 @@
 package top.jfunc.common.http.util;
 
 import top.jfunc.common.Editor;
+import top.jfunc.common.http.base.Protocol;
 import top.jfunc.common.utils.*;
 
 import java.io.UnsupportedEncodingException;
@@ -45,6 +46,24 @@ public class ParamUtil {
      */
     public static boolean isCompletedUrl(String url){
         return isHttp(url) || isHttps(url);
+    }
+
+    /**
+     * 获取一个链接的协议，支持任何URL
+     * @param completeUrl 完整的URL
+     * @return 协议
+     */
+    public static String protocol(String completeUrl){
+        return completeUrl.split(StrUtil.COLON)[0];
+    }
+
+    /**
+     * 获取http协议
+     * @param httpCompleteUrl 完整的Http URL
+     * @return Protocol
+     */
+    public static Protocol httpProtocol(String httpCompleteUrl){
+        return Protocol.valueOf(protocol(httpCompleteUrl).toUpperCase());
     }
 
 
