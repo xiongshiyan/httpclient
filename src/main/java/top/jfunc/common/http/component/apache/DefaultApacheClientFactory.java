@@ -13,6 +13,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import top.jfunc.common.http.base.Protocol;
 import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
@@ -49,16 +50,9 @@ public class DefaultApacheClientFactory extends AbstractRequesterFactory<HttpCli
 
         String completedUrl = httpRequest.getCompletedUrl();
 
-        String hostname = completedUrl.split(SLASH)[2];
+        HttpHost httpHost = getHttpHost(completedUrl);
 
-        int port = ParamUtil.httpProtocol(completedUrl).getDefaultPort();
-        if (hostname.contains(COLON)) {
-            String[] arr = hostname.split(COLON);
-            hostname = arr[0];
-            port = Integer.parseInt(arr[1]);
-        }
-
-        HttpClientConnectionManager connectionManager = createConnectionManager(hostname, port);
+        HttpClientConnectionManager connectionManager = createConnectionManager(httpHost);
         clientBuilder.setConnectionManager(connectionManager).setRetryHandler(ApacheUtil::retryIf);
 
         if(ParamUtil.isHttps(completedUrl)){
@@ -74,11 +68,27 @@ public class DefaultApacheClientFactory extends AbstractRequesterFactory<HttpCli
         }
     }
 
+    protected HttpHost getHttpHost(String completedUrl) {
+        String hostname = completedUrl.split(SLASH)[2];
+
+        Protocol protocol = ParamUtil.httpProtocol(completedUrl);
+        if(null == protocol){
+            protocol = Protocol.HTTP;
+        }
+        int port = protocol.getDefaultPort();
+        if (hostname.contains(COLON)) {
+            String[] arr = hostname.split(COLON);
+            hostname = arr[0];
+            port = Integer.parseInt(arr[1]);
+        }
+        return new HttpHost(hostname, port);
+    }
+
     protected HttpClientBuilder createClientBuilder(){
         return HttpClients.custom();
     }
 
-    protected HttpClientConnectionManager createConnectionManager(String hostname, int port){
+    protected HttpClientConnectionManager createConnectionManager(HttpHost httpHost){
         ConnectionSocketFactory csf = PlainConnectionSocketFactory
                 .getSocketFactory();
         LayeredConnectionSocketFactory sslsf = SSLConnectionSocketFactory
@@ -93,8 +103,6 @@ public class DefaultApacheClientFactory extends AbstractRequesterFactory<HttpCli
         cm.setDefaultMaxPerRoute(maxPerRoute);
         // 设置不活动的连接1000ms之后Validate
         cm.setValidateAfterInactivity(timeOfValidateAfterInactivity);
-
-        HttpHost httpHost = new HttpHost(hostname, port);
         // 将目标主机的最大连接数增加
         cm.setMaxPerRoute(new HttpRoute(httpHost), maxRoute);
         return cm;

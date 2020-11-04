@@ -60,7 +60,11 @@ public class ParamUtil {
      * @return 协议
      */
     public static String protocol(String completeUrl){
-        return completeUrl.substring(0, completeUrl.indexOf(StrUtil.COLON));
+        int index = completeUrl.indexOf(StrUtil.COLON);
+        if(-1 == index){
+            return null;
+        }
+        return completeUrl.substring(0, index);
         //return completeUrl.split(StrUtil.COLON)[0];
     }
 
@@ -70,7 +74,11 @@ public class ParamUtil {
      * @return Protocol
      */
     public static Protocol httpProtocol(String httpCompleteUrl){
-        return Protocol.valueOf(protocol(httpCompleteUrl).toUpperCase());
+        String protocol = protocol(httpCompleteUrl);
+        if(null == protocol){
+            return null;
+        }
+        return Protocol.valueOf(protocol.toUpperCase());
     }
 
 
