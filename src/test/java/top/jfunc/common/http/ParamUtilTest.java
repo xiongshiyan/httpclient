@@ -43,12 +43,12 @@ public class ParamUtilTest {
         String p2 = ParamUtil.protocol(completedUrlHttp);
         String p3 = ParamUtil.protocol("file:///etc/my.cnf");
         String p4 = ParamUtil.protocol("ftp://192.168.1.100/d");
+        String p5 = ParamUtil.protocol("/d");
         Assert.assertEquals("https", p1);
         Assert.assertEquals("http", p2);
         Assert.assertEquals("file", p3);
         Assert.assertEquals("ftp", p4);
-        Assert.assertEquals(Protocol.HTTPS, Protocol.valueOf(p1.toUpperCase()));
-        Assert.assertEquals(Protocol.HTTP, Protocol.valueOf(p2.toUpperCase()));
+        Assert.assertEquals(null, p5);
         Assert.assertEquals(Protocol.HTTPS, ParamUtil.httpProtocol(completedUrlHttps));
         Assert.assertEquals(Protocol.HTTP, ParamUtil.httpProtocol(completedUrlHttp));
     }
