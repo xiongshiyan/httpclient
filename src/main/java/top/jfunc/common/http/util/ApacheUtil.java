@@ -1,28 +1,18 @@
 package top.jfunc.common.http.util;
 
 import org.apache.http.*;
-import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
-import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.base.HttpHeaders;
+import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ProxyInfo;
 import top.jfunc.common.utils.*;
 
@@ -34,10 +24,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
-import java.net.*;
-
-import static top.jfunc.common.utils.StrUtil.COLON;
-import static top.jfunc.common.utils.StrUtil.SLASH;
+import java.net.ConnectException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.UnknownHostException;
 
 /**
  * @author xiongshiyan at 2019/7/9 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -65,61 +55,7 @@ public class ApacheUtil {
         }
     }
 
-    /**
-     * https://ss.xx.xx.ss:8080/dsda
-     */
-    public static HttpClientBuilder getCloseableHttpClientBuilder(String url, HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws IOException{
-        return createHttpClient(200, 40, 100, url , hostnameVerifier , sslContext , redirectable);
-    }
-
-    public static HttpClientBuilder createHttpClient(int maxTotal, int maxPerRoute, int maxRoute, String url , HostnameVerifier hostnameVerifier , SSLContext sslContext , boolean redirectable) throws IOException{
-        String hostname = url.split(SLASH)[2];
-        boolean isHttps = ParamUtil.isHttps(url);
-        int port = isHttps ? 443 : 80;
-        if (hostname.contains(COLON)) {
-            String[] arr = hostname.split(COLON);
-            hostname = arr[0];
-            port = Integer.parseInt(arr[1]);
-        }
-
-        ConnectionSocketFactory csf = PlainConnectionSocketFactory
-                .getSocketFactory();
-        LayeredConnectionSocketFactory sslsf = SSLConnectionSocketFactory
-                .getSocketFactory();
-        Registry<ConnectionSocketFactory> registry = RegistryBuilder
-                .<ConnectionSocketFactory> create().register(StrUtil.HTTP, csf)
-                .register(StrUtil.HTTPS, sslsf).build();
-        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
-        // 将最大连接数增加
-        cm.setMaxTotal(maxTotal);
-        // 将每个路由基础的连接增加
-        cm.setDefaultMaxPerRoute(maxPerRoute);
-        // 设置不活动的连接1000ms之后Validate
-        cm.setValidateAfterInactivity(1000);
-
-        HttpHost httpHost = new HttpHost(hostname, port);
-        // 将目标主机的最大连接数增加
-        cm.setMaxPerRoute(new HttpRoute(httpHost), maxRoute);
-
-        // 请求重试处理
-        HttpRequestRetryHandler httpRequestRetryHandler = ApacheUtil::retryIf ;
-
-        HttpClientBuilder httpClientBuilder = HttpClients.custom()
-                .setConnectionManager(cm)
-                .setRetryHandler(httpRequestRetryHandler);
-
-        //是否重定向
-        if(!redirectable){
-            httpClientBuilder.disableRedirectHandling();
-        }
-
-        if(isHttps){
-            initSSL(httpClientBuilder , hostnameVerifier , sslContext);
-        }
-        return httpClientBuilder;
-    }
-
-    private static boolean retryIf(IOException exception, int executionCount, HttpContext context) {
+    public static boolean retryIf(IOException exception, int executionCount, HttpContext context) {
         if (executionCount >= 3) {
             return false;
         }

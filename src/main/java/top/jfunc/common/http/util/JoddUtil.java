@@ -46,14 +46,14 @@ public class JoddUtil {
 
     public static MultiValueMap<String , String> parseHeaders(HttpResponse response) {
         Collection<String> headerNames = response.headerNames();
-        MultiValueMap<String,String> arrayListMultimap = new ArrayListMultiValueMap<>(headerNames.size());
+        MultiValueMap<String,String> multiValueMap = new ArrayListMultiValueMap<>(headerNames.size());
         for (String headerName : headerNames) {
             List<String> headers = response.headers(headerName);
             for (String headerValue : headers) {
-                arrayListMultimap.add(headerName , headerValue);
+                multiValueMap.add(headerName , headerValue);
             }
         }
-        return arrayListMultimap;
+        return multiValueMap;
     }
 
     /**
