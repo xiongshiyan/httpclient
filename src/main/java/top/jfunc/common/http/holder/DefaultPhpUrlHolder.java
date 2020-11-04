@@ -45,8 +45,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
         }
 
         //拼装url
-        String url = protocol.name().toLowerCase() + COLON_SPLASH
-                + host + COLON + port;
+        String url = protocol.name().toLowerCase() + COLON_SPLASH + host + COLON + port;
         String p = (path.startsWith(SLASH) ? path : (SLASH + path));
         return url + p;
     }
@@ -57,7 +56,7 @@ public class DefaultPhpUrlHolder extends DefaultUrlHolder implements PhpUrlHolde
         int ndx = destination.indexOf(COLON_SPLASH);
         if (ndx != -1) {
             //获取协议，如果协议名不正确，直接抛出异常
-            this.protocol = Protocol.valueOf(destination.substring(0, ndx).toUpperCase());
+            this.protocol = ParamUtil.httpProtocol(destination);
             destination = destination.substring(ndx + 3);
         }
         // host
