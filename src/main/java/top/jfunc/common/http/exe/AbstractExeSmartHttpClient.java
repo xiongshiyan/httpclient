@@ -13,7 +13,7 @@ import top.jfunc.common.utils.MultiValueMap;
  * @since 2020.12.01
  * @author 熊诗言2020/12/01
  */
-public class AbstractExeSmartHttpClient<CC> extends AbstractImplementSmartHttpClient<CC> {
+public abstract class AbstractExeSmartHttpClient<CC> extends AbstractImplementSmartHttpClient<CC> {
     private HttpRequestExecutor<CC> httpRequestExecutor;
 
     @Override
