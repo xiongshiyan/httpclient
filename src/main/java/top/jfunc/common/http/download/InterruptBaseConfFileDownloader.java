@@ -53,7 +53,7 @@ public class InterruptBaseConfFileDownloader extends AbstractDownloader implemen
             accessFile.seek(downloadLength);
             //添加Range头
             downloadRequest.addHeader(HttpHeaders.RANGE , "bytes=" + downloadLength + "-");
-            getSmartHttpClient().download(downloadRequest , (statusCode, inputStream, rc, hd) ->{
+            getSmartHttpClient().download(downloadRequest , (statusCode, statusPhrase, inputStream, rc, hd) ->{
                 byte[] buffer = new byte[getBufferSize()];
                 int len = 0;
                 long downloaded = downloadLength;

@@ -49,7 +49,7 @@ public class InterruptBaseDownloadFileDownloader extends AbstractDownloader impl
         try (FileOutputStream outputStream = new FileOutputStream(downloadRequest.getFile() , true)){
             //添加Range头
             downloadRequest.addHeader(HttpHeaders.RANGE , "bytes=" + downloadLength + "-");
-            getSmartHttpClient().download(downloadRequest , (statusCode, inputStream, rc, hd) ->{
+            getSmartHttpClient().download(downloadRequest , (statusCode, statusPhrase, inputStream, rc, hd) ->{
                 byte[] buffer = new byte[getBufferSize()];
                 int len = 0;
                 while( (len = inputStream.read(buffer)) != -1 ){

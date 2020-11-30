@@ -78,7 +78,7 @@ class DownloadThread extends Thread{
             accessFile.seek(startPosition);
             downloadRequest.addHeader(HttpHeaders.RANGE , "bytes="+ startPosition+ "-"+ endPosition);
 
-            smartHttpClient.get(downloadRequest ,(statusCode, inputStream, rc, hd) ->{
+            smartHttpClient.get(downloadRequest ,(statusCode, statusPhrase, inputStream, rc, hd) ->{
                 byte[] buffer = new byte[bufferSize];
                 int len = 0;
                 int total = len;
