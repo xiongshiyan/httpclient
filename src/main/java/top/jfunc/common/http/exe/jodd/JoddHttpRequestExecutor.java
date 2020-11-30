@@ -4,33 +4,24 @@ import jodd.http.HttpResponse;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.jodd.*;
+import top.jfunc.common.http.exe.BaseHttpRequestExecutor;
 import top.jfunc.common.http.exe.ClientHttpResponse;
 import top.jfunc.common.http.exe.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
 
-public class JoddHttpRequestExecutor implements HttpRequestExecutor<jodd.http.HttpRequest> {
+public class JoddHttpRequestExecutor extends BaseHttpRequestExecutor<jodd.http.HttpRequest, HttpResponse> implements HttpRequestExecutor<jodd.http.HttpRequest> {
 
     private RequesterFactory<jodd.http.HttpRequest> httpRequestRequesterFactory;
     private HeaderHandler<jodd.http.HttpRequest> httpRequestHeaderHandler;
     private RequestSender<jodd.http.HttpRequest, HttpResponse> requestSender;
-    private StreamExtractor<HttpResponse> httpResponseStreamExtractor;
-    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
-    private ContentCallbackHandler<jodd.http.HttpRequest> contentCallbackHandler;
 
     public JoddHttpRequestExecutor() {
-        init();
-    }
-
-    protected void init(){
+        super(new DefaultJoddStreamExtractor(), new DefaultJoddHeaderExtractor());
         setHttpRequestRequesterFactory(new DefaultJoddHttpRequestFactory());
         setHttpRequestHeaderHandler(new DefaultJoddHeaderHandler());
         setRequestSender(new DefaultJoddSender());
-        setHttpResponseStreamExtractor(new DefaultJoddStreamExtractor());
-        setHttpResponseHeaderExtractor(new DefaultJoddHeaderExtractor());
-
-        setContentCallbackHandler(new DefaultContentCallbackHandler<>());
     }
 
     @Override
@@ -46,7 +37,7 @@ public class JoddHttpRequestExecutor implements HttpRequestExecutor<jodd.http.Ht
 
         //4.真正请求
         HttpResponse response = send(request, httpRequest);
-        return new JoddClientHttpResponse(response, httpRequest, getHttpResponseStreamExtractor(), getHttpResponseHeaderExtractor());
+        return new JoddClientHttpResponse(response, httpRequest, getResponseStreamExtractor(), getResponseHeaderExtractor());
     }
     protected void handleHeaders(jodd.http.HttpRequest request , top.jfunc.common.http.request.HttpRequest httpRequest) throws IOException {
         getHttpRequestHeaderHandler().configHeaders(request , httpRequest);
@@ -78,29 +69,5 @@ public class JoddHttpRequestExecutor implements HttpRequestExecutor<jodd.http.Ht
 
     public void setRequestSender(RequestSender<jodd.http.HttpRequest, HttpResponse> requestSender) {
         this.requestSender = requestSender;
-    }
-
-    public StreamExtractor<HttpResponse> getHttpResponseStreamExtractor() {
-        return httpResponseStreamExtractor;
-    }
-
-    public void setHttpResponseStreamExtractor(StreamExtractor<HttpResponse> httpResponseStreamExtractor) {
-        this.httpResponseStreamExtractor = httpResponseStreamExtractor;
-    }
-
-    public HeaderExtractor<HttpResponse> getHttpResponseHeaderExtractor() {
-        return httpResponseHeaderExtractor;
-    }
-
-    public void setHttpResponseHeaderExtractor(HeaderExtractor<HttpResponse> httpResponseHeaderExtractor) {
-        this.httpResponseHeaderExtractor = httpResponseHeaderExtractor;
-    }
-
-    public ContentCallbackHandler<jodd.http.HttpRequest> getContentCallbackHandler() {
-        return contentCallbackHandler;
-    }
-
-    public void setContentCallbackHandler(ContentCallbackHandler<jodd.http.HttpRequest> contentCallbackHandler) {
-        this.contentCallbackHandler = contentCallbackHandler;
     }
 }

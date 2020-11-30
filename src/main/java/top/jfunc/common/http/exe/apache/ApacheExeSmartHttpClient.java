@@ -3,7 +3,7 @@ package top.jfunc.common.http.exe.apache;
 import org.apache.http.HttpEntityEnclosingRequest;
 import top.jfunc.common.http.component.apache.DefaultApacheBodyContentCallbackCreator;
 import top.jfunc.common.http.component.apache.DefaultApacheUploadContentCallbackCreator;
-import top.jfunc.common.http.exe.AbstractExeSmartHttpClient;
+import top.jfunc.common.http.exe.BaseExeSmartHttpClient;
 
 /**
  * 使用Apache HttpClient 实现的Http请求类
@@ -11,7 +11,7 @@ import top.jfunc.common.http.exe.AbstractExeSmartHttpClient;
  * @since 2020.12.01
  * @author 熊诗言2020/12/01
  */
-public class ApacheExeSmartHttpClient extends AbstractExeSmartHttpClient<HttpEntityEnclosingRequest> {
+public class ApacheExeSmartHttpClient extends BaseExeSmartHttpClient<HttpEntityEnclosingRequest> {
     @Override
     protected void init() {
         super.init();

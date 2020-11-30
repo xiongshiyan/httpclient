@@ -19,89 +19,41 @@ package top.jfunc.common.http.exe.okhttp3;
 import okhttp3.Response;
 import top.jfunc.common.http.component.HeaderExtractor;
 import top.jfunc.common.http.component.StreamExtractor;
+import top.jfunc.common.http.exe.BaseClientHttpResponse;
 import top.jfunc.common.http.exe.ClientHttpResponse;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.OkHttp3Util;
 import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
- * {@link ClientHttpResponse} implementation that uses standard JDK facilities.
+ * {@link ClientHttpResponse} implementation that uses OkHttp2 facilities.
  *
- * @author Arjen Poutsma
- * @author Brian Clozel
- * @since 3.0
+ * @author xiongshiyan
  */
-public class OkHttp3ClientHttpResponse implements ClientHttpResponse {
-    private StreamExtractor<Response> responseStreamExtractor;
-    private HeaderExtractor<Response> responseHeaderExtractor;
-
-	private final Response response;
-
-	private HttpRequest httpRequest;
-
-	private MultiValueMap<String, String> headers;
-
-	private InputStream responseStream;
+public class OkHttp3ClientHttpResponse extends BaseClientHttpResponse<Response> {
 
 
-	protected OkHttp3ClientHttpResponse(Response response, HttpRequest httpRequest, StreamExtractor<Response> streamExtractor, HeaderExtractor<Response> headerExtractor) {
-		this.response = response;
-		this.httpRequest = httpRequest;
-        setResponseStreamExtractor(streamExtractor);
-        setResponseHeaderExtractor(headerExtractor);
+	public OkHttp3ClientHttpResponse(Response response, HttpRequest httpRequest, StreamExtractor<Response> streamExtractor, HeaderExtractor<Response> headerExtractor) {
+		super(response, httpRequest, streamExtractor, headerExtractor);
 	}
 
 
 	@Override
 	public int getStatusCode() throws IOException {
-		return this.response.code();
+		return response.code();
 	}
 
 	@Override
 	public String getStatusText() throws IOException {
-		return this.response.message();
+		return response.message();
 	}
 
-	@Override
-	public MultiValueMap<String, String> getHeaders() throws IOException {
-	    if(null == this.headers){
-	       this.headers = getResponseHeaderExtractor().extract(response, httpRequest);
-        }
-		//6.返回header,包括Cookie处理
-		return this.headers;
-	}
-
-	@Override
-	public InputStream getBody() throws IOException {
-		/*InputStream errorStream = this.connection.getErrorStream();
-		this.responseStream = (errorStream != null ? errorStream : this.connection.getInputStream());
-		return this.responseStream;*/
-		return this.responseStream =  getResponseStreamExtractor().extract(this.response, this.httpRequest);
-    }
 
 	@Override
 	public void close() {
-        IoUtil.close(this.responseStream);
+		IoUtil.close(responseStream);
 		OkHttp3Util.closeQuietly(response);
-	}
-
-	public StreamExtractor<Response> getResponseStreamExtractor() {
-		return responseStreamExtractor;
-	}
-
-	public void setResponseStreamExtractor(StreamExtractor<Response> responseStreamExtractor) {
-		this.responseStreamExtractor = responseStreamExtractor;
-	}
-
-	public HeaderExtractor<Response> getResponseHeaderExtractor() {
-		return responseHeaderExtractor;
-	}
-
-	public void setResponseHeaderExtractor(HeaderExtractor<Response> responseHeaderExtractor) {
-		this.responseHeaderExtractor = responseHeaderExtractor;
 	}
 }

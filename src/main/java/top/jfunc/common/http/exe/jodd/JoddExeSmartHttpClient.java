@@ -3,7 +3,7 @@ package top.jfunc.common.http.exe.jodd;
 import jodd.http.HttpRequest;
 import top.jfunc.common.http.component.jodd.DefaultJoddBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jodd.DefaultJoddUploadContentCallbackCreator;
-import top.jfunc.common.http.exe.AbstractExeSmartHttpClient;
+import top.jfunc.common.http.exe.BaseExeSmartHttpClient;
 
 /**
  * 使用Jodd实现的Http请求类
@@ -11,7 +11,7 @@ import top.jfunc.common.http.exe.AbstractExeSmartHttpClient;
  * @since 2020.12.01
  * @author 熊诗言2020/12/01
  */
-public class JoddExeSmartHttpClient extends AbstractExeSmartHttpClient<HttpRequest> {
+public class JoddExeSmartHttpClient extends BaseExeSmartHttpClient<HttpRequest> {
     @Override
     protected void init() {
         super.init();

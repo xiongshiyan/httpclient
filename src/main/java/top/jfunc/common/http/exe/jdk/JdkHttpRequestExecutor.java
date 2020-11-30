@@ -3,6 +3,7 @@ package top.jfunc.common.http.exe.jdk;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.jdk.*;
+import top.jfunc.common.http.exe.BaseHttpRequestExecutor;
 import top.jfunc.common.http.exe.ClientHttpResponse;
 import top.jfunc.common.http.exe.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
@@ -10,26 +11,17 @@ import top.jfunc.common.http.request.HttpRequest;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class JdkHttpRequestExecutor implements HttpRequestExecutor<HttpURLConnection> {
+public class JdkHttpRequestExecutor extends BaseHttpRequestExecutor<HttpURLConnection, HttpURLConnection> implements HttpRequestExecutor<HttpURLConnection> {
 
     private RequesterFactory<HttpURLConnection> httpURLConnectionFactory;
     private HeaderHandler<HttpURLConnection> httpURLConnectionHeaderHandler;
     private RequestSender<HttpURLConnection , HttpURLConnection> connectionSender;
-    private StreamExtractor<HttpURLConnection> httpURLConnectionStreamExtractor;
-    private HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor;
-    private ContentCallbackHandler<HttpURLConnection> contentCallbackHandler;
 
     public JdkHttpRequestExecutor() {
-        init();
-    }
-
-    protected void init(){
+        super(new DefaultJdkStreamExtractor(), new DefaultJdkHeaderExtractor());
         setHttpURLConnectionFactory(new DefaultJdkConnectionFactory());
         setHttpURLConnectionHeaderHandler(new DefaultJdkHeaderHandler());
         setConnectionSender(new DefaultJdkConnectionSender());
-        setHttpURLConnectionStreamExtractor(new DefaultJdkStreamExtractor());
-        setHttpURLConnectionHeaderExtractor(new DefaultJdkHeaderExtractor());
-        setContentCallbackHandler(new DefaultContentCallbackHandler<>());
     }
 
     @Override
@@ -46,7 +38,7 @@ public class JdkHttpRequestExecutor implements HttpRequestExecutor<HttpURLConnec
         //4.连接
         connect(connection, httpRequest);
 
-        return new JdkClientHttpResponse(connection, httpRequest, getHttpURLConnectionStreamExtractor(), getHttpURLConnectionHeaderExtractor());
+        return new JdkClientHttpResponse(connection, httpRequest, getResponseStreamExtractor(), getResponseHeaderExtractor());
     }
 
     protected HttpURLConnection connect(HttpURLConnection connection, HttpRequest httpRequest) throws IOException {
@@ -79,29 +71,5 @@ public class JdkHttpRequestExecutor implements HttpRequestExecutor<HttpURLConnec
 
     public void setConnectionSender(RequestSender<HttpURLConnection, HttpURLConnection> connectionSender) {
         this.connectionSender = connectionSender;
-    }
-
-    public StreamExtractor<HttpURLConnection> getHttpURLConnectionStreamExtractor() {
-        return httpURLConnectionStreamExtractor;
-    }
-
-    public void setHttpURLConnectionStreamExtractor(StreamExtractor<HttpURLConnection> httpURLConnectionStreamExtractor) {
-        this.httpURLConnectionStreamExtractor = httpURLConnectionStreamExtractor;
-    }
-
-    public HeaderExtractor<HttpURLConnection> getHttpURLConnectionHeaderExtractor() {
-        return httpURLConnectionHeaderExtractor;
-    }
-
-    public void setHttpURLConnectionHeaderExtractor(HeaderExtractor<HttpURLConnection> httpURLConnectionHeaderExtractor) {
-        this.httpURLConnectionHeaderExtractor = httpURLConnectionHeaderExtractor;
-    }
-
-    public ContentCallbackHandler<HttpURLConnection> getContentCallbackHandler() {
-        return contentCallbackHandler;
-    }
-
-    public void setContentCallbackHandler(ContentCallbackHandler<HttpURLConnection> contentCallbackHandler) {
-        this.contentCallbackHandler = contentCallbackHandler;
     }
 }

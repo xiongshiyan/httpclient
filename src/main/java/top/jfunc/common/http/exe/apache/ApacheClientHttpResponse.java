@@ -19,91 +19,39 @@ package top.jfunc.common.http.exe.apache;
 import org.apache.http.HttpResponse;
 import top.jfunc.common.http.component.HeaderExtractor;
 import top.jfunc.common.http.component.StreamExtractor;
+import top.jfunc.common.http.exe.BaseClientHttpResponse;
 import top.jfunc.common.http.exe.ClientHttpResponse;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.ApacheUtil;
 import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
- * {@link ClientHttpResponse} implementation that uses standard JDK facilities.
+ * {@link ClientHttpResponse} implementation that uses Apache facilities.
  *
- * @author Arjen Poutsma
- * @author Brian Clozel
- * @since 3.0
+ * @author xiongshiyan
  */
-public class ApacheClientHttpResponse implements ClientHttpResponse {
-    private StreamExtractor<HttpResponse> httpResponseStreamExtractor;
-    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
+public class ApacheClientHttpResponse extends BaseClientHttpResponse<HttpResponse> {
 
-    private HttpResponse httpResponse;
-	private HttpRequest httpRequest;
-
-	private MultiValueMap<String, String> headers;
-
-	private InputStream responseStream;
-
-
-	protected ApacheClientHttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, StreamExtractor<HttpResponse> streamExtractor, HeaderExtractor<HttpResponse> headerExtractor) {
-		this.httpResponse = httpResponse;
-		this.httpRequest = httpRequest;
-        setHttpResponseStreamExtractor(streamExtractor);
-        setHttpResponseHeaderExtractor(headerExtractor);
+	public ApacheClientHttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, StreamExtractor<HttpResponse> streamExtractor, HeaderExtractor<HttpResponse> headerExtractor) {
+		super(httpResponse, httpRequest, streamExtractor, headerExtractor);
 	}
 
 
 	@Override
 	public int getStatusCode() throws IOException {
-		return this.httpResponse.getStatusLine().getStatusCode() ;
+		return response.getStatusLine().getStatusCode() ;
 	}
 
 	@Override
 	public String getStatusText() throws IOException {
-		return this.httpResponse.getStatusLine().getReasonPhrase() ;
+		return response.getStatusLine().getReasonPhrase() ;
 	}
-
-	@Override
-	public MultiValueMap<String, String> getHeaders() throws IOException {
-	    if(null == this.headers){
-	       this.headers = getHttpResponseHeaderExtractor().extract(this.httpResponse, this.httpRequest);
-        }
-		return this.headers;
-	}
-
-	@Override
-	public InputStream getBody() throws IOException {
-		/*InputStream errorStream = this.connection.getErrorStream();
-		this.responseStream = (errorStream != null ? errorStream : this.connection.getInputStream());
-		return this.responseStream;*/
-		return this.responseStream =  getHttpResponseStreamExtractor().extract(this.httpResponse, this.httpRequest);
-    }
 
 	@Override
 	public void close() {
-        IoUtil.close(this.responseStream);
-        closeResponse(this.httpResponse);
+		IoUtil.close(responseStream);
+		ApacheUtil.closeQuietly(response);
 	}
-    protected void closeResponse(HttpResponse httpResponse)  {
-        ///过度设计的嫌疑
-        ///getResponseCloser().close(new HttpResponseCloser(httpResponse));
-        ApacheUtil.closeQuietly(httpResponse);
-    }
-    public StreamExtractor<HttpResponse> getHttpResponseStreamExtractor() {
-        return httpResponseStreamExtractor;
-    }
-
-    public void setHttpResponseStreamExtractor(StreamExtractor<HttpResponse> httpResponseStreamExtractor) {
-        this.httpResponseStreamExtractor = httpResponseStreamExtractor;
-    }
-
-    public HeaderExtractor<HttpResponse> getHttpResponseHeaderExtractor() {
-        return httpResponseHeaderExtractor;
-    }
-
-    public void setHttpResponseHeaderExtractor(HeaderExtractor<HttpResponse> httpResponseHeaderExtractor) {
-        this.httpResponseHeaderExtractor = httpResponseHeaderExtractor;
-    }
 }

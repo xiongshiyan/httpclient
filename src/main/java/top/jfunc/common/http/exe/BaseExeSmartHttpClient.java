@@ -14,7 +14,7 @@ import java.io.IOException;
  * @since 2020.12.01
  * @author 熊诗言2020/12/01
  */
-public abstract class AbstractExeSmartHttpClient<CC> extends AbstractImplementSmartHttpClient<CC> {
+public abstract class BaseExeSmartHttpClient<CC> extends AbstractImplementSmartHttpClient<CC> {
     private HttpRequestExecutor<CC> httpRequestExecutor;
 
     @Override

@@ -6,35 +6,25 @@ import okhttp3.Response;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.okhttp3.*;
+import top.jfunc.common.http.exe.BaseHttpRequestExecutor;
 import top.jfunc.common.http.exe.ClientHttpResponse;
 import top.jfunc.common.http.exe.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
 
-public class OkHttp3HttpRequestExecutor implements HttpRequestExecutor<Request.Builder> {
+public class OkHttp3HttpRequestExecutor extends BaseHttpRequestExecutor<Request.Builder, Response> implements HttpRequestExecutor<Request.Builder> {
     private RequesterFactory<OkHttpClient> okHttpClientFactory;
     private RequesterFactory<Request.Builder> requestBuilderFactory;
     private HeaderHandler<Request.Builder> requestBuilderHeaderHandler;
     private RequestExecutor<OkHttpClient , Request , Response> requestExecutor;
-    private StreamExtractor<Response> responseStreamExtractor;
-    private HeaderExtractor<Response> responseHeaderExtractor;
-
-    private ContentCallbackHandler<Request.Builder> contentCallbackHandler;
 
     public OkHttp3HttpRequestExecutor() {
-        init();
-    }
-
-    protected void init(){
+        super(new DefaultOkHttp3StreamExtractor(), new DefaultOkHttp3HeaderExtractor());
         setOkHttpClientFactory(new SingleOkHttp3ClientFactory());
         setRequestBuilderFactory(new DefaultOkHttp3RequestBuilderFactory());
         setRequestBuilderHeaderHandler(new DefaultOkHttp3HeaderHandler());
         setRequestExecutor(new DefaultOkHttp3RequestExecutor());
-        setResponseStreamExtractor(new DefaultOkHttp3StreamExtractor());
-        setResponseHeaderExtractor(new DefaultOkHttp3HeaderExtractor());
-
-        setContentCallbackHandler(new DefaultContentCallbackHandler<>());
     }
 
     @Override
@@ -91,29 +81,5 @@ public class OkHttp3HttpRequestExecutor implements HttpRequestExecutor<Request.B
 
     public void setRequestExecutor(RequestExecutor<OkHttpClient, Request, Response> requestExecutor) {
         this.requestExecutor = requestExecutor;
-    }
-
-    public StreamExtractor<Response> getResponseStreamExtractor() {
-        return responseStreamExtractor;
-    }
-
-    public void setResponseStreamExtractor(StreamExtractor<Response> responseStreamExtractor) {
-        this.responseStreamExtractor = responseStreamExtractor;
-    }
-
-    public HeaderExtractor<Response> getResponseHeaderExtractor() {
-        return responseHeaderExtractor;
-    }
-
-    public void setResponseHeaderExtractor(HeaderExtractor<Response> responseHeaderExtractor) {
-        this.responseHeaderExtractor = responseHeaderExtractor;
-    }
-
-    public ContentCallbackHandler<Request.Builder> getContentCallbackHandler() {
-        return contentCallbackHandler;
-    }
-
-    public void setContentCallbackHandler(ContentCallbackHandler<Request.Builder> contentCallbackHandler) {
-        this.contentCallbackHandler = contentCallbackHandler;
     }
 }

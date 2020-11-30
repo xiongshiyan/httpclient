@@ -2,7 +2,7 @@ package top.jfunc.common.http.exe.jdk;
 
 import top.jfunc.common.http.component.jdk.DefaultJdkBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jdk.DefaultJdkUploadContentCallbackCreator;
-import top.jfunc.common.http.exe.AbstractExeSmartHttpClient;
+import top.jfunc.common.http.exe.BaseExeSmartHttpClient;
 
 import java.net.HttpURLConnection;
 
@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
  * @since 2020.12.01
  * @author 熊诗言2020/12/01
  */
-public class NativeExeSmartHttpClient extends AbstractExeSmartHttpClient<HttpURLConnection> {
+public class NativeExeSmartHttpClient extends BaseExeSmartHttpClient<HttpURLConnection> {
     @Override
     protected void init() {
         super.init();

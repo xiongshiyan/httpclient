@@ -19,88 +19,39 @@ package top.jfunc.common.http.exe.jodd;
 import jodd.http.HttpResponse;
 import top.jfunc.common.http.component.HeaderExtractor;
 import top.jfunc.common.http.component.StreamExtractor;
+import top.jfunc.common.http.exe.BaseClientHttpResponse;
 import top.jfunc.common.http.exe.ClientHttpResponse;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.JoddUtil;
 import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
- * {@link ClientHttpResponse} implementation that uses standard JDK facilities.
+ * {@link ClientHttpResponse} implementation that uses Jodd facilities.
  *
- * @author Arjen Poutsma
- * @author Brian Clozel
- * @since 3.0
+ * @author xiongshiyan
  */
-public class JoddClientHttpResponse implements ClientHttpResponse {
-    private StreamExtractor<HttpResponse> httpResponseStreamExtractor;
-    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
+public class JoddClientHttpResponse extends BaseClientHttpResponse<HttpResponse> {
 
-	private final HttpResponse httpResponse;
-
-	private HttpRequest httpRequest;
-
-	private MultiValueMap<String, String> headers;
-
-	private InputStream responseStream;
-
-
-	protected JoddClientHttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, StreamExtractor<HttpResponse> streamExtractor, HeaderExtractor<HttpResponse> headerExtractor) {
-		this.httpResponse = httpResponse;
-		this.httpRequest = httpRequest;
-        setHttpResponseStreamExtractor(streamExtractor);
-        setHttpResponseHeaderExtractor(headerExtractor);
+	public JoddClientHttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, StreamExtractor<HttpResponse> streamExtractor, HeaderExtractor<HttpResponse> headerExtractor) {
+		super(httpResponse, httpRequest, streamExtractor, headerExtractor);
 	}
 
 
 	@Override
 	public int getStatusCode() throws IOException {
-		return this.httpResponse.statusCode();
+		return response.statusCode();
 	}
 
 	@Override
 	public String getStatusText() throws IOException {
-		return this.httpResponse.statusPhrase();
+		return response.statusPhrase();
 	}
-
-	@Override
-	public MultiValueMap<String, String> getHeaders() throws IOException {
-	    if(null == this.headers){
-	       this.headers = getHttpResponseHeaderExtractor().extract(httpResponse, httpRequest);
-        }
-		//6.返回header,包括Cookie处理
-		return this.headers;
-	}
-
-	@Override
-	public InputStream getBody() throws IOException {
-		/*InputStream errorStream = this.connection.getErrorStream();
-		this.responseStream = (errorStream != null ? errorStream : this.connection.getInputStream());
-		return this.responseStream;*/
-		return this.responseStream =  getHttpResponseStreamExtractor().extract(this.httpResponse, this.httpRequest);
-    }
 
 	@Override
 	public void close() {
-		JoddUtil.closeQuietly(httpResponse);
-        IoUtil.close(this.responseStream);
-	}
-	public StreamExtractor<HttpResponse> getHttpResponseStreamExtractor() {
-		return httpResponseStreamExtractor;
-	}
-
-	public void setHttpResponseStreamExtractor(StreamExtractor<HttpResponse> httpResponseStreamExtractor) {
-		this.httpResponseStreamExtractor = httpResponseStreamExtractor;
-	}
-
-	public HeaderExtractor<HttpResponse> getHttpResponseHeaderExtractor() {
-		return httpResponseHeaderExtractor;
-	}
-
-	public void setHttpResponseHeaderExtractor(HeaderExtractor<HttpResponse> httpResponseHeaderExtractor) {
-		this.httpResponseHeaderExtractor = httpResponseHeaderExtractor;
+		IoUtil.close(responseStream);
+		JoddUtil.closeQuietly(response);
 	}
 }

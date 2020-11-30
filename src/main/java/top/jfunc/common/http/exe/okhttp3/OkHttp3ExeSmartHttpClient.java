@@ -3,7 +3,7 @@ package top.jfunc.common.http.exe.okhttp3;
 import okhttp3.Request;
 import top.jfunc.common.http.component.okhttp3.DefaultOkHttp3BodyContentCallbackCreator;
 import top.jfunc.common.http.component.okhttp3.DefaultOkHttp3UploadContentCallbackCreator;
-import top.jfunc.common.http.exe.AbstractExeSmartHttpClient;
+import top.jfunc.common.http.exe.BaseExeSmartHttpClient;
 
 /**
  * 使用OkHttp3实现的Http请求类
@@ -11,7 +11,7 @@ import top.jfunc.common.http.exe.AbstractExeSmartHttpClient;
  * @since 2020.12.01
  * @author 熊诗言2020/12/01
  */
-public class OkHttp3ExeSmartHttpClient extends AbstractExeSmartHttpClient<Request.Builder> {
+public class OkHttp3ExeSmartHttpClient extends BaseExeSmartHttpClient<Request.Builder> {
     @Override
     protected void init() {
         super.init();

@@ -8,38 +8,27 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.apache.*;
+import top.jfunc.common.http.exe.BaseHttpRequestExecutor;
 import top.jfunc.common.http.exe.ClientHttpResponse;
 import top.jfunc.common.http.exe.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
 
-public class ApacheHttpRequestExecutor implements HttpRequestExecutor<HttpEntityEnclosingRequest> {
+public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<HttpEntityEnclosingRequest, HttpResponse> implements HttpRequestExecutor<HttpEntityEnclosingRequest> {
     private RequesterFactory<HttpUriRequest> httpUriRequestRequesterFactory;
     private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler;
     private RequesterFactory<HttpClient> httpClientRequesterFactory;
     private RequestExecutor<HttpClient , HttpUriRequest , HttpResponse> requestExecutor;
-
-    private StreamExtractor<HttpResponse> responseStreamExtractor;
-    private HeaderExtractor<HttpResponse> httpResponseHeaderExtractor;
-    private ContentCallbackHandler<HttpEntityEnclosingRequest> contentCallbackHandler;
     private Closer httpClientCloser;
 
     public ApacheHttpRequestExecutor() {
-        init();
-    }
-
-    protected void init(){
+        super(new DefaultApacheResponseStreamExtractor(), new DefaultApacheHeaderExtractor());
         setHttpUriRequestRequesterFactory(new DefaultApacheRequestFactory());
         setHttpUriRequestHeaderHandler(new DefaultApacheHeaderHandler());
         setHttpClientRequesterFactory(new DefaultApacheClientFactory());
         setRequestExecutor(new DefaultApacheRequestExecutor());
-        setResponseStreamExtractor(new DefaultApacheResponseStreamExtractor());
-        setHttpResponseHeaderExtractor(new DefaultApacheHeaderExtractor());
-
         setHttpClientCloser(new DefaultCloser());
-
-        setContentCallbackHandler(new DefaultContentCallbackHandler<>());
     }
 
     @Override
@@ -60,7 +49,7 @@ public class ApacheHttpRequestExecutor implements HttpRequestExecutor<HttpEntity
         //4.发送请求
         HttpResponse response = execute(httpClient, httpUriRequest , httpRequest);
 
-        ApacheClientHttpResponse clientHttpResponse = new ApacheClientHttpResponse(response, httpRequest, getResponseStreamExtractor(), getHttpResponseHeaderExtractor());
+        ApacheClientHttpResponse clientHttpResponse = new ApacheClientHttpResponse(response, httpRequest, getResponseStreamExtractor(), getResponseHeaderExtractor());
 
         closeHttpClient(httpClient);
 
@@ -76,13 +65,6 @@ public class ApacheHttpRequestExecutor implements HttpRequestExecutor<HttpEntity
 
     protected void closeHttpClient(HttpClient httpClient) throws IOException {
         getHttpClientCloser().close(new HttpClientCloser(httpClient));
-    }
-    public ContentCallbackHandler<HttpEntityEnclosingRequest> getContentCallbackHandler() {
-        return contentCallbackHandler;
-    }
-
-    public void setContentCallbackHandler(ContentCallbackHandler<HttpEntityEnclosingRequest> contentCallbackHandler) {
-        this.contentCallbackHandler = contentCallbackHandler;
     }
 
     public RequesterFactory<HttpUriRequest> getHttpUriRequestRequesterFactory() {
@@ -115,22 +97,6 @@ public class ApacheHttpRequestExecutor implements HttpRequestExecutor<HttpEntity
 
     public void setRequestExecutor(RequestExecutor<HttpClient, HttpUriRequest, HttpResponse> requestExecutor) {
         this.requestExecutor = requestExecutor;
-    }
-
-    public StreamExtractor<HttpResponse> getResponseStreamExtractor() {
-        return responseStreamExtractor;
-    }
-
-    public void setResponseStreamExtractor(StreamExtractor<HttpResponse> responseStreamExtractor) {
-        this.responseStreamExtractor = responseStreamExtractor;
-    }
-
-    public HeaderExtractor<HttpResponse> getHttpResponseHeaderExtractor() {
-        return httpResponseHeaderExtractor;
-    }
-
-    public void setHttpResponseHeaderExtractor(HeaderExtractor<HttpResponse> httpResponseHeaderExtractor) {
-        this.httpResponseHeaderExtractor = httpResponseHeaderExtractor;
     }
 
     public Closer getHttpClientCloser() {
