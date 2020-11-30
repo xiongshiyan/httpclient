@@ -23,7 +23,7 @@ public abstract class BaseExeSmartHttpClient<CC> extends AbstractImplementSmartH
         try {
             clientHttpResponse = exe(httpRequest, contentCallback);
 
-            return resultCallback.convert(clientHttpResponse.getStatusCode(), clientHttpResponse.getBody(), calculateResultCharset(httpRequest), clientHttpResponse.getHeaders());
+            return resultCallback.convert(clientHttpResponse.getStatusCode(), clientHttpResponse.getStatusText(), clientHttpResponse.getBody(), calculateResultCharset(httpRequest), clientHttpResponse.getHeaders());
         } finally {
             IoUtil.close(clientHttpResponse);
         }

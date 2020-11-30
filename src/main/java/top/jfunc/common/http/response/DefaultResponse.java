@@ -17,6 +17,7 @@ public class DefaultResponse implements Response{
      * 返回码
      */
     private int statusCode = HttpStatus.HTTP_OK;
+    private String statusPhrase;
     /**
      * 返回体的字节数组
      */
@@ -36,8 +37,9 @@ public class DefaultResponse implements Response{
      */
     private MultiValueMap<String, String> headers = null;
 
-    public DefaultResponse(int statusCode, byte[] bodyBytes, String resultCharset, MultiValueMap<String, String> headers) {
+    public DefaultResponse(int statusCode, String statusPhrase, byte[] bodyBytes, String resultCharset, MultiValueMap<String, String> headers) {
         this.statusCode = statusCode;
+        this.statusPhrase = statusPhrase;
         this.bodyBytes = bodyBytes;
         if(null != resultCharset){
             this.resultCharset = resultCharset;
@@ -79,6 +81,11 @@ public class DefaultResponse implements Response{
     @Override
     public int getStatusCode() {
         return statusCode;
+    }
+
+    @Override
+    public String getStatusPhrase() {
+        return statusPhrase;
     }
 
     @Override

@@ -75,8 +75,8 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             }*/
 
 
-            return resultCallback.convert(connection.getResponseCode(), inputStream,
-                    calculateResultCharset(httpRequest), responseHeaders);
+            return resultCallback.convert(connection.getResponseCode(), connection.getResponseMessage(),
+                    inputStream, calculateResultCharset(httpRequest), responseHeaders);
 
         } finally {
             //关闭顺序不能改变，否则服务端可能出现这个异常  严重: java.io.IOException: 远程主机强迫关闭了一个现有的连接

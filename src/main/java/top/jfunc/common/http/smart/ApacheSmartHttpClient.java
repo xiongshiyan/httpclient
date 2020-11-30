@@ -2,6 +2,7 @@ package top.jfunc.common.http.smart;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -82,8 +83,9 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
             //7.处理Cookie
             getCookieAccessor().saveCookieIfNecessary(httpRequest, responseHeaders);
 
-            return resultCallback.convert(response.getStatusLine().getStatusCode() , inputStream,
-                    calculateResultCharset(httpRequest), responseHeaders);
+            StatusLine statusLine = response.getStatusLine();
+            return resultCallback.convert(statusLine.getStatusCode() , statusLine.getReasonPhrase(),
+                    inputStream, calculateResultCharset(httpRequest), responseHeaders);
         }finally {
             closeInputStream(inputStream);
             closeResponse(response);

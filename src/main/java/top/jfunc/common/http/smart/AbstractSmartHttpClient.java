@@ -190,7 +190,7 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     @Override
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
         HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
-        return get(httpRequest , (statusCode, inputStream, rc, hd)-> IoUtil.copy2File(inputStream, file));
+        return get(httpRequest , (statusCode, statusPhrase, inputStream, rc, hd)-> IoUtil.copy2File(inputStream, file));
     }
 
 

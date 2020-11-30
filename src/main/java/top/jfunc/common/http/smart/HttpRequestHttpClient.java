@@ -137,7 +137,7 @@ public interface HttpRequestHttpClient extends FreezableConfigAccessor {
      */
     default File download(DownloadRequest downloadRequest) throws IOException{
         return download(downloadRequest ,
-                (statusCode, inputStream, resultCharset, headers) -> IoUtil.copy2File(inputStream, downloadRequest.getFile()));
+                (statusCode, statusPhrase, inputStream, resultCharset, headers) -> IoUtil.copy2File(inputStream, downloadRequest.getFile()));
     }
 
     /**

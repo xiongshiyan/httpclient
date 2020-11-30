@@ -72,8 +72,8 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
             //6.处理Cookie
             getCookieAccessor().saveCookieIfNecessary(httpRequest , responseHeaders);
 
-            return resultCallback.convert(response.code(), inputStream,
-                    calculateResultCharset(httpRequest) , responseHeaders);
+            return resultCallback.convert(response.code(), response.message(),
+                    inputStream, calculateResultCharset(httpRequest) , responseHeaders);
         } finally {
             closeInputStream(inputStream);
             closeResponse(response);

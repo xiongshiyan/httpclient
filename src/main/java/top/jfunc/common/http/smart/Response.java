@@ -28,6 +28,12 @@ public interface Response extends Closeable{
     int getStatusCode();
 
     /**
+     * 响应的简短说明
+     * @return 响应的简短说明
+     */
+    String getStatusPhrase();
+
+    /**
      * 响应体作为字节数组
      * @return byte[]
      */

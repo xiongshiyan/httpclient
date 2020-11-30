@@ -31,12 +31,14 @@ public class DemoImpl extends AbstractImplementSmartHttpClient<Socket> {
         //6.获取响应的statusCode
         int statusCode = 200;
 
+        String statusPhrase = "OK";
+
         //7.获取响应body
         InputStream inputStream = null;
 
         //8.获取响应header
         MultiValueMap<String , String> responseHeaders = null;
 
-        return resultCallback.convert(200 , inputStream , calculateResultCharset(httpRequest) , responseHeaders);
+        return resultCallback.convert(statusCode , statusPhrase, inputStream , calculateResultCharset(httpRequest) , responseHeaders);
     }
 }
