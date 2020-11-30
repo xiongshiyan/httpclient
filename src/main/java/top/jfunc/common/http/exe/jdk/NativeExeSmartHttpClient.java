@@ -1,15 +1,8 @@
 package top.jfunc.common.http.exe.jdk;
 
-import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.component.jdk.DefaultJdkBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jdk.DefaultJdkUploadContentCallbackCreator;
 import top.jfunc.common.http.exe.AbstractExeSmartHttpClient;
-import top.jfunc.common.http.exe.ClientHttpResponse;
-import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.utils.IoUtil;
-import top.jfunc.common.utils.MapUtil;
-import top.jfunc.common.utils.MultiValueMap;
-import top.jfunc.common.utils.ObjectUtil;
 
 import java.net.HttpURLConnection;
 
@@ -29,17 +22,16 @@ public class NativeExeSmartHttpClient extends AbstractExeSmartHttpClient<HttpURL
 
         setHttpRequestExecutor(new JdkHttpRequestExecutor());
     }
-
+    ///
+    /*
     @Override
     protected <R> R doInternalTemplate(HttpRequest httpRequest, ContentCallback<HttpURLConnection> contentCallback , ResultCallback<R> resultCallback) throws Exception {
         ClientHttpResponse clientHttpResponse= null;
         try {
-            getCookieAccessor().addCookieIfNecessary(httpRequest);
-            clientHttpResponse = getHttpRequestExecutor().execute(httpRequest, contentCallback);
-            MultiValueMap<String, String> responseHeaders = clientHttpResponse.getHeaders();
-            getCookieAccessor().saveCookieIfNecessary(httpRequest, responseHeaders);
+            clientHttpResponse = exe(httpRequest, contentCallback);
 
             //jdk对于重定向的特殊处理
+            MultiValueMap<String, String> responseHeaders = clientHttpResponse.getHeaders();
             if(needRedirect(httpRequest, clientHttpResponse.getStatusCode(), responseHeaders)){
                 String redirectUrl = responseHeaders.getFirst(HttpHeaders.LOCATION);
                 HttpRequest hr = createRedirectHttpRequest(httpRequest, redirectUrl);
@@ -58,16 +50,13 @@ public class NativeExeSmartHttpClient extends AbstractExeSmartHttpClient<HttpURL
         hr.followRedirects(Config.FOLLOW_REDIRECTS);
         return hr;
     }
-    /**
-     * 判断是否重定向
-     */
     protected boolean needRedirect(HttpRequest httpRequest, int statusCode, MultiValueMap<String, String> responseHeaders) {
         Config config = httpRequest.getConfig();
         boolean followRedirects = ObjectUtil.defaultIfNull(httpRequest.followRedirects() , config.followRedirects());
         return followRedirects && HttpStatus.needRedirect(statusCode)
                 && MapUtil.notEmpty(responseHeaders)
                 && responseHeaders.containsKey(HttpHeaders.LOCATION);
-    }
+    }*/
 
     @Override
     public String toString() {

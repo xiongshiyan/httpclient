@@ -1,7 +1,6 @@
 package top.jfunc.common.http.component.jdk;
 
-import top.jfunc.common.http.base.Config;
-import top.jfunc.common.http.base.ProxyInfo;
+import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.component.AbstractRequesterFactory;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.NativeUtil;
@@ -18,6 +17,8 @@ import java.net.URL;
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpURLConnection> {
+    private MethodContentStrategy methodContentStrategy = new DefaultMethodContentStrategy();
+
     @Override
     public HttpURLConnection doCreate(HttpRequest httpRequest) throws IOException{
         URL url = new URL(httpRequest.getCompletedUrl());
@@ -28,6 +29,12 @@ public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpUR
                 (HttpURLConnection)url.openConnection(proxyInfo.getProxy()) :
                 (HttpURLConnection) url.openConnection();
 
+        configConnection(connection , httpRequest);
+
+        return connection;
+    }
+
+    protected void configConnection(HttpURLConnection connection , HttpRequest httpRequest) throws IOException{
         ////////////////////////////////////ssl处理///////////////////////////////////
         if(connection instanceof HttpsURLConnection){
             //默认设置这些
@@ -35,22 +42,29 @@ public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpUR
         }
         ////////////////////////////////////ssl处理///////////////////////////////////
 
-        configInOutput(connection , httpRequest);
+        Method method = httpRequest.getMethod();
+        Config config = httpRequest.getConfig();
 
-        connection.setRequestMethod(httpRequest.getMethod().name());
+        boolean followRedirects = ObjectUtil.defaultIfNull(httpRequest.followRedirects() , config.followRedirects());
+
+        if (followRedirects) {
+            if(Method.GET == method || Method.POST == method){
+                connection.setInstanceFollowRedirects(true);
+            }
+        }
+        else {
+            connection.setInstanceFollowRedirects(false);
+        }
+        ///
+        /*connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setUseCaches(false);*/
+        connection.setDoInput(true);
+        connection.setDoOutput(getMethodContentStrategy().supportContent(method));
+
+        connection.setRequestMethod(method.name());
         connection.setConnectTimeout(config.getConnectionTimeoutWithDefault(httpRequest.getConnectionTimeout()));
         connection.setReadTimeout(config.getReadTimeoutWithDefault(httpRequest.getReadTimeout()));
-
-        ///HttpUrlConnection的重定向貌似很多bug，自己来实现
-        ///connection.setInstanceFollowRedirects(httpRequest.followRedirects());
-
-        return connection;
-    }
-
-    protected void configInOutput(HttpURLConnection connection , HttpRequest httpRequest) {
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        connection.setUseCaches(false);
     }
 
     protected void initSSL(HttpsURLConnection connection , HttpRequest httpRequest){
@@ -58,5 +72,13 @@ public class DefaultJdkConnectionFactory extends AbstractRequesterFactory<HttpUR
         HostnameVerifier hostnameVerifier = ObjectUtil.defaultIfNull(httpRequest.getHostnameVerifier(), config.sslHolder().getHostnameVerifier());
         SSLSocketFactory sslSocketFactory = ObjectUtil.defaultIfNull(httpRequest.getSslSocketFactory(), config.sslHolder().getSslSocketFactory());
         NativeUtil.initSSL(connection, hostnameVerifier , sslSocketFactory);
+    }
+
+    public MethodContentStrategy getMethodContentStrategy() {
+        return methodContentStrategy;
+    }
+
+    public void setMethodContentStrategy(MethodContentStrategy methodContentStrategy) {
+        this.methodContentStrategy = methodContentStrategy;
     }
 }

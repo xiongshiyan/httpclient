@@ -28,7 +28,8 @@ public class Non200Test {
     @Test
     public void testJdk() throws Exception{
         NativeSmartHttpClient smartHttpClient = new NativeSmartHttpClient();
-        testAll(smartHttpClient);
+        test400(smartHttpClient);
+        test301(smartHttpClient);
     }
     @Test
     public void testApache() throws Exception{
