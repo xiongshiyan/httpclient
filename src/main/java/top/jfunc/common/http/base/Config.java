@@ -1,6 +1,7 @@
 package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.cookie.CookieStore;
+import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
@@ -235,10 +236,11 @@ public class Config {
         return httpRequest;
     }
 
-    public void onBeforeReturnIfNecessary(HttpRequest httpRequest , Object returnValue){
+    public ClientHttpResponse onBeforeReturnIfNecessary(HttpRequest httpRequest , ClientHttpResponse clientHttpResponse){
         if(hasInterceptors()){
-            compositeInterceptor.onBeforeReturn(httpRequest, returnValue);
+            return compositeInterceptor.onBeforeReturn(httpRequest, clientHttpResponse);
         }
+        return clientHttpResponse;
     }
     public void onErrorIfNecessary(HttpRequest httpRequest , Exception exception){
         if(hasInterceptors()){

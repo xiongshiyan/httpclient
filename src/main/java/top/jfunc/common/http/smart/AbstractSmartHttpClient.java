@@ -1,18 +1,20 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.base.*;
-import top.jfunc.common.http.component.*;
+import top.jfunc.common.http.component.BodyContentCallbackCreator;
+import top.jfunc.common.http.component.UploadContentCallbackCreator;
 import top.jfunc.common.http.component.httprequest.*;
 import top.jfunc.common.http.cookie.CookieAccessor;
 import top.jfunc.common.http.cookie.DefaultCookieAccessor;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
+import top.jfunc.common.http.response.ResponseConverter;
+import top.jfunc.common.http.response.ResponseExtractor;
 import top.jfunc.common.utils.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,12 +30,6 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     private BodyContentCallbackCreator<CC> bodyContentCallbackCreator;
     /**处理文件上传*/
     private UploadContentCallbackCreator<CC> uploadContentCallbackCreator;
-    /**ContentCallback处理器*/
-    private ContentCallbackHandler<CC> contentCallbackHandler;
-    /**InputStream关闭器*/
-    private Closer inputStreamCloser;
-    /**Response关闭器*/
-    ///private Closer responseCloser;
 
     private HttpRequestFactory httpRequestFactory;
     private StringBodyHttpRequestFactory stringBodyHttpRequestFactory;
@@ -55,10 +51,6 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
      * 初始化方法，子类可以复写，但要先调用父类的
      */
     protected void init() {
-        setContentCallbackHandler(new DefaultContentCallbackHandler<>());
-        setInputStreamCloser(new DefaultCloser());
-        ///setResponseCloser(new DefaultCloser());
-
         setHttpRequestFactory(new DefaultHttpRequestFactory());
         setStringBodyHttpRequestFactory(new DefaultStringBodyHttpRequestFactory());
         setUploadRequestFactory(new DefaultUploadRequestFactory());
@@ -67,86 +59,18 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     }
 
     @Override
-    public <R> R http(HttpRequest httpRequest, Method method, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R http(HttpRequest httpRequest, Method method, ResponseConverter<R> responseConverter) throws IOException {
         init(httpRequest , method);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
-        return template(httpRequest , contentCallback, resultCallback);
-    }
-
-    /*@Override
-    public <R> R get(HttpRequest httpRequest , ResultCallback<R> resultCallback) throws IOException {
-        init(httpRequest, Method.GET);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
-        return template(httpRequest , contentCallback , resultCallback);
+        return template(httpRequest, contentCallback, responseConverter);
     }
 
     @Override
-    public <R> R post(StringBodyRequest stringBodyRequest , ResultCallback<R> resultCallback) throws IOException {
-        init(stringBodyRequest, Method.POST);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(stringBodyRequest);
-        return template(stringBodyRequest , contentCallback , resultCallback);
-    }*/
-
-    @Override
-    public <R> R upload(UploadRequest uploadRequest , ResultCallback<R> resultCallback) throws IOException {
+    public <R> R upload(UploadRequest uploadRequest , ResponseConverter<R> responseConverter) throws IOException {
         init(uploadRequest, Method.POST);
         ContentCallback<CC> contentCallback = getUploadContentCallbackCreator().create(uploadRequest);
-        return template(uploadRequest, contentCallback , resultCallback);
+        return template(uploadRequest, contentCallback, responseConverter);
     }
-
-    /*@Override
-    public <R> R head(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
-        //必须要响应头
-        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
-        //设置忽略响应体
-        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
-        init(httpRequest , Method.HEAD);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
-        return template(httpRequest , contentCallback , resultCallback);
-    }
-
-    @Override
-    public <R> R options(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
-        init(httpRequest , Method.OPTIONS);
-        //必须要响应头
-        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
-        //设置忽略响应体
-        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
-        return template(httpRequest , contentCallback , resultCallback);
-    }
-
-    @Override
-    public <R> R put(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException {
-        init(stringBodyRequest , Method.PUT);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(stringBodyRequest);
-        return template(stringBodyRequest , contentCallback , resultCallback);
-    }
-
-    @Override
-    public <R> R patch(StringBodyRequest stringBodyRequest, ResultCallback<R> resultCallback) throws IOException {
-        init(stringBodyRequest , Method.PATCH);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(stringBodyRequest);
-        return template(stringBodyRequest ,contentCallback , resultCallback);
-    }
-
-    @Override
-    public <R> R delete(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
-        init(httpRequest , Method.DELETE);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
-        return template(httpRequest , contentCallback , resultCallback);
-    }
-
-    @Override
-    public <R> R trace(HttpRequest httpRequest, ResultCallback<R> resultCallback) throws IOException {
-        init(httpRequest , Method.TRACE);
-        //必须要响应头
-        httpRequest.retainResponseHeaders(Config.RETAIN_RESPONSE_HEADERS);
-        //设置忽略响应体
-        httpRequest.ignoreResponseBody(Config.IGNORE_RESPONSE_BODY);
-        ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
-        return template(httpRequest , contentCallback, resultCallback);
-    }*/
 
     protected void init(HttpRequest httpRequest , Method method){
         if(null == httpRequest.getConfig()){
@@ -190,7 +114,7 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     @Override
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
         HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
-        return get(httpRequest , (statusCode, statusPhrase, inputStream, rc, hd)-> IoUtil.copy2File(inputStream, file));
+        return get(httpRequest , (clientHttpResponse, resultCharset)-> IoUtil.copy2File(clientHttpResponse.getBody(), file));
     }
 
 
@@ -212,10 +136,6 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         return ObjectUtil.defaultIfNull(httpRequest.getResultCharset(), config.getDefaultResultCharset());
     }
 
-    protected void closeInputStream(InputStream inputStream) throws IOException {
-        getInputStreamCloser().close(inputStream);
-    }
-
     public BodyContentCallbackCreator<CC> getBodyContentCallbackCreator() {
         return bodyContentCallbackCreator;
     }
@@ -232,30 +152,6 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         this.uploadContentCallbackCreator = Objects.requireNonNull(uploadContentCallbackCreator);
     }
 
-    public ContentCallbackHandler<CC> getContentCallbackHandler() {
-        return contentCallbackHandler;
-    }
-
-    public void setContentCallbackHandler(ContentCallbackHandler<CC> contentCallbackHandler) {
-        this.contentCallbackHandler = Objects.requireNonNull(contentCallbackHandler);
-    }
-
-    public Closer getInputStreamCloser() {
-        return inputStreamCloser;
-    }
-
-    public void setInputStreamCloser(Closer inputStreamCloser) {
-        this.inputStreamCloser = Objects.requireNonNull(inputStreamCloser);
-    }
-
-    ///
-    /*public Closer getResponseCloser() {
-        return responseCloser;
-    }
-
-    public void setResponseCloser(Closer responseCloser) {
-        this.responseCloser = Objects.requireNonNull(responseCloser);
-    }*/
 
     public HttpRequestFactory getHttpRequestFactory() {
         return httpRequestFactory;

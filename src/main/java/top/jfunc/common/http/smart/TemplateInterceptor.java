@@ -1,6 +1,7 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.response.ClientHttpResponse;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -21,11 +22,11 @@ public interface TemplateInterceptor {
     /**
      * 对返回结果拦截处理 , 比如统一解密 , 默认不处理
      * @param httpRequest Request
-     * @param response Response
+     * @param clientHttpResponse ClientHttpResponse
      * @return Response
      * @throws IOException IOException
      */
-    default <R> R afterTemplate(HttpRequest httpRequest, R response) throws IOException{
-        return response;
+    default ClientHttpResponse afterTemplate(HttpRequest httpRequest, ClientHttpResponse clientHttpResponse) throws IOException{
+        return clientHttpResponse;
     }
 }

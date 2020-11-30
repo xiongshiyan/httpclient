@@ -2,8 +2,10 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.response.ClientHttpResponse;
+import top.jfunc.common.http.response.ResponseConverter;
+import top.jfunc.common.utils.IoUtil;
 
 import java.io.IOException;
 
@@ -21,7 +23,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
      * @inheritDoc
      */
     @Override
-    public <R> R template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws IOException {
+    public <R> R template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResponseConverter<R> responseConverter) throws IOException {
         //在接口方法入口处调用了init(HttpRequest)方法将系统Config设置到HttpRequest了
         Config config = httpRequest.getConfig();
 
@@ -29,13 +31,16 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         HttpRequest h = beforeTemplate(httpRequest);
         //2.拦截器在之前处理
         HttpRequest request = config.onBeforeIfNecessary(h);
+        ClientHttpResponse clientHttpResponse = null;
         try {
             //3.真正的实现
-            R response = doInternalTemplate(request , contentCallback , resultCallback);
+            clientHttpResponse = doInternalTemplate(request , contentCallback);
             //4.拦截器过滤
-            config.onBeforeReturnIfNecessary(request , response);
+            clientHttpResponse = config.onBeforeReturnIfNecessary(request , clientHttpResponse);
             //5.子类处理
-            return afterTemplate(request , response);
+            clientHttpResponse = afterTemplate(request, clientHttpResponse);
+            //6.结果传唤
+            return responseConverter.convert(clientHttpResponse, calculateResultCharset(h));
         } catch (IOException e) {
             //6.1.拦截器在抛异常的时候处理
             config.onErrorIfNecessary(request , e);
@@ -47,6 +52,8 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         }finally {
             //7.拦截器在任何时候都处理
             config.onFinallyIfNecessary(httpRequest);
+            //这一步特别关键，保证资源关闭
+            IoUtil.close(clientHttpResponse);
         }
     }
 
@@ -54,11 +61,9 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
      * 子类实现真正的自己的
      * @param httpRequest HttpRequest
      * @param contentCallback 处理请求体的
-     * @param resultCallback 结果处理器
-     * @param <R> 处理的结果
      * @return 处理的结果
      * @throws Exception Exception
      */
-    abstract protected  <R> R doInternalTemplate(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResultCallback<R> resultCallback) throws Exception;
+    abstract protected ClientHttpResponse doInternalTemplate(HttpRequest httpRequest, ContentCallback<CC> contentCallback) throws Exception;
 }
 

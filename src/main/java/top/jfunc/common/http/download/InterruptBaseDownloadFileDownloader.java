@@ -9,6 +9,7 @@ import top.jfunc.common.http.smart.SmartHttpClient;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 断点下载器
@@ -49,9 +50,10 @@ public class InterruptBaseDownloadFileDownloader extends AbstractDownloader impl
         try (FileOutputStream outputStream = new FileOutputStream(downloadRequest.getFile() , true)){
             //添加Range头
             downloadRequest.addHeader(HttpHeaders.RANGE , "bytes=" + downloadLength + "-");
-            getSmartHttpClient().download(downloadRequest , (statusCode, statusPhrase, inputStream, rc, hd) ->{
+            getSmartHttpClient().download(downloadRequest , (clientHttpResponse, resultCharset) ->{
                 byte[] buffer = new byte[getBufferSize()];
                 int len = 0;
+                InputStream inputStream = clientHttpResponse.getBody();
                 while( (len = inputStream.read(buffer)) != -1 ){
                     outputStream.write(buffer, 0, len);
                     outputStream.flush();

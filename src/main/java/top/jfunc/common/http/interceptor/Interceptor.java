@@ -1,6 +1,7 @@
 package top.jfunc.common.http.interceptor;
 
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.response.ClientHttpResponse;
 
 /**
  * 执行拦截器，begin、returnValue、exception、finally这几个节点
@@ -18,9 +19,10 @@ public interface Interceptor {
     /**
      * 执行之后拦截 beforeReturn
      * @param httpRequest HttpRequest
-     * @param returnValue 返回的值 返回值目前不允许修改类型，即没有返回
+     * @param clientHttpResponse 返回的值
+     * @return ClientHttpResponse
      */
-    void onBeforeReturn(HttpRequest httpRequest, Object returnValue);
+    ClientHttpResponse onBeforeReturn(HttpRequest httpRequest, ClientHttpResponse clientHttpResponse);
 
     /**
      * 发生异常的时候 exception

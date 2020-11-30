@@ -1,11 +1,9 @@
 package top.jfunc.common.http.exe;
 
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.http.smart.AbstractImplementSmartHttpClient;
-import top.jfunc.common.utils.IoUtil;
 
 import java.io.IOException;
 
@@ -19,15 +17,8 @@ public abstract class BaseExeSmartHttpClient<CC> extends AbstractImplementSmartH
     private HttpRequestExecutor<CC> httpRequestExecutor;
 
     @Override
-    protected <R> R doInternalTemplate(HttpRequest httpRequest , ContentCallback<CC> contentCallback , ResultCallback<R> resultCallback) throws Exception {
-        ClientHttpResponse clientHttpResponse= null;
-        try {
-            clientHttpResponse = exe(httpRequest, contentCallback);
-
-            return resultCallback.convert(clientHttpResponse.getStatusCode(), clientHttpResponse.getStatusText(), clientHttpResponse.getBody(), calculateResultCharset(httpRequest), clientHttpResponse.getHeaders());
-        } finally {
-            IoUtil.close(clientHttpResponse);
-        }
+    protected ClientHttpResponse doInternalTemplate(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws Exception {
+        return exe(httpRequest, contentCallback);
     }
 
     protected ClientHttpResponse exe(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws IOException {

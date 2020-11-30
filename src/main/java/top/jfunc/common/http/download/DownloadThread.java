@@ -8,6 +8,7 @@ import top.jfunc.common.http.smart.SmartHttpClient;
 import top.jfunc.common.utils.ObjectUtil;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.concurrent.CountDownLatch;
 
@@ -78,10 +79,11 @@ class DownloadThread extends Thread{
             accessFile.seek(startPosition);
             downloadRequest.addHeader(HttpHeaders.RANGE , "bytes="+ startPosition+ "-"+ endPosition);
 
-            smartHttpClient.get(downloadRequest ,(statusCode, statusPhrase, inputStream, rc, hd) ->{
+            smartHttpClient.get(downloadRequest ,(clientHttpResponse, resultCharset) ->{
                 byte[] buffer = new byte[bufferSize];
                 int len = 0;
                 int total = len;
+                InputStream inputStream = clientHttpResponse.getBody();
                 while( (len = inputStream.read(buffer)) != -1 ){
                     accessFile.write(buffer, 0, len);
                     total += len;

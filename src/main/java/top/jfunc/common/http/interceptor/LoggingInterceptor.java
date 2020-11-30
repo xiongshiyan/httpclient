@@ -3,7 +3,6 @@ package top.jfunc.common.http.interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.request.*;
-import top.jfunc.common.http.smart.Response;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -110,17 +109,6 @@ public class LoggingInterceptor extends InterceptorAdapter {
             return ((CharSequence) o).length() > 0;
         }
         return true;
-    }
-
-    @Override
-    public void onBeforeReturn(HttpRequest httpRequest, Object returnValue) {
-        if(returnValue instanceof Response){
-            Response response = (Response) returnValue;
-            logger.info("返回响应码:" + response.getStatusCode());
-            logger.info("响应头:" + response.getHeaders());
-        }
-        logger.info("返回值:" + returnValue);
-        super.onBeforeReturn(httpRequest, returnValue);
     }
 
     @Override

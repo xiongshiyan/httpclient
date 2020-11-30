@@ -8,6 +8,7 @@ import top.jfunc.common.http.smart.SmartHttpClient;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 /**
@@ -53,10 +54,11 @@ public class InterruptBaseConfFileDownloader extends AbstractDownloader implemen
             accessFile.seek(downloadLength);
             //添加Range头
             downloadRequest.addHeader(HttpHeaders.RANGE , "bytes=" + downloadLength + "-");
-            getSmartHttpClient().download(downloadRequest , (statusCode, statusPhrase, inputStream, rc, hd) ->{
+            getSmartHttpClient().download(downloadRequest , (clientHttpResponse, resultCharset) ->{
                 byte[] buffer = new byte[getBufferSize()];
                 int len = 0;
                 long downloaded = downloadLength;
+                InputStream inputStream = clientHttpResponse.getBody();
                 while( (len = inputStream.read(buffer)) != -1 ){
                     accessFile.write(buffer, 0, len);
                     downloaded += len;

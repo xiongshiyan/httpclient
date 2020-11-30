@@ -1,6 +1,7 @@
 package top.jfunc.common.http.interceptor;
 
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.response.ClientHttpResponse;
 
 /**
  * 拦截器适配器
@@ -13,8 +14,8 @@ public class InterceptorAdapter implements Interceptor {
     }
 
     @Override
-    public void onBeforeReturn(HttpRequest httpRequest, Object returnValue) {
-
+    public ClientHttpResponse onBeforeReturn(HttpRequest httpRequest, ClientHttpResponse clientHttpResponse) {
+        return clientHttpResponse;
     }
 
     @Override
