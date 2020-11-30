@@ -4,7 +4,6 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.apache.*;
@@ -20,7 +19,6 @@ public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<HttpEntit
     private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler;
     private RequesterFactory<HttpClient> httpClientRequesterFactory;
     private RequestExecutor<HttpClient , HttpUriRequest , HttpResponse> requestExecutor;
-    private Closer httpClientCloser;
 
     public ApacheHttpRequestExecutor() {
         super(new DefaultApacheResponseStreamExtractor(), new DefaultApacheHeaderExtractor());
@@ -28,7 +26,6 @@ public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<HttpEntit
         setHttpUriRequestHeaderHandler(new DefaultApacheHeaderHandler());
         setHttpClientRequesterFactory(new DefaultApacheClientFactory());
         setRequestExecutor(new DefaultApacheRequestExecutor());
-        setHttpClientCloser(new DefaultCloser());
     }
 
     @Override
@@ -57,10 +54,6 @@ public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<HttpEntit
 
     protected HttpResponse execute(HttpClient httpClient, HttpUriRequest httpUriRequest , HttpRequest httpRequest) throws IOException {
         return getRequestExecutor().execute(httpClient , httpUriRequest , httpRequest);
-    }
-
-    protected void closeHttpClient(HttpClient httpClient) throws IOException {
-        getHttpClientCloser().close(new HttpClientCloser(httpClient));
     }
 
     public RequesterFactory<HttpUriRequest> getHttpUriRequestRequesterFactory() {
@@ -93,25 +86,5 @@ public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<HttpEntit
 
     public void setRequestExecutor(RequestExecutor<HttpClient, HttpUriRequest, HttpResponse> requestExecutor) {
         this.requestExecutor = requestExecutor;
-    }
-
-    public Closer getHttpClientCloser() {
-        return httpClientCloser;
-    }
-
-    public void setHttpClientCloser(Closer httpClientCloser) {
-        this.httpClientCloser = httpClientCloser;
-    }
-
-    private static class HttpClientCloser extends AbstractCloseAdapter<HttpClient> {
-        private HttpClientCloser(HttpClient httpClient){
-            super(httpClient);
-        }
-        @Override
-        protected void doClose(HttpClient httpClient) throws IOException {
-            if(httpClient instanceof CloseableHttpClient){
-                ((CloseableHttpClient) httpClient).close();
-            }
-        }
     }
 }
