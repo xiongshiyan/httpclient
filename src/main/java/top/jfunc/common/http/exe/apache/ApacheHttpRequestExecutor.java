@@ -49,11 +49,7 @@ public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<HttpEntit
         //4.发送请求
         HttpResponse response = execute(httpClient, httpUriRequest , httpRequest);
 
-        ApacheClientHttpResponse clientHttpResponse = new ApacheClientHttpResponse(response, httpRequest, getResponseStreamExtractor(), getResponseHeaderExtractor());
-
-        closeHttpClient(httpClient);
-
-        return clientHttpResponse;
+        return new ApacheClientHttpResponse(httpClient, response, httpRequest, getResponseStreamExtractor(), getResponseHeaderExtractor());
     }
     protected void handleHeaders(HttpUriRequest httpUriRequest, HttpRequest httpRequest) throws IOException {
         getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);

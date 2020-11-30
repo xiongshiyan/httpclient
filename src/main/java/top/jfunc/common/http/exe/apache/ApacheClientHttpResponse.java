@@ -17,6 +17,8 @@
 package top.jfunc.common.http.exe.apache;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import top.jfunc.common.http.component.HeaderExtractor;
 import top.jfunc.common.http.component.StreamExtractor;
 import top.jfunc.common.http.exe.BaseClientHttpResponse;
@@ -34,8 +36,11 @@ import java.io.IOException;
  */
 public class ApacheClientHttpResponse extends BaseClientHttpResponse<HttpResponse> {
 
-	public ApacheClientHttpResponse(HttpResponse httpResponse, HttpRequest httpRequest, StreamExtractor<HttpResponse> streamExtractor, HeaderExtractor<HttpResponse> headerExtractor) {
+    private HttpClient httpClient;
+
+	public ApacheClientHttpResponse(HttpClient httpClient, HttpResponse httpResponse, HttpRequest httpRequest, StreamExtractor<HttpResponse> streamExtractor, HeaderExtractor<HttpResponse> headerExtractor) {
 		super(httpResponse, httpRequest, streamExtractor, headerExtractor);
+		this.httpClient = httpClient;
 	}
 
 
@@ -53,5 +58,12 @@ public class ApacheClientHttpResponse extends BaseClientHttpResponse<HttpRespons
 	public void close() {
 		IoUtil.close(responseStream);
 		ApacheUtil.closeQuietly(response);
+        closeHttpClient(httpClient);
 	}
+
+    protected void closeHttpClient(HttpClient httpClient) {
+        if(httpClient instanceof CloseableHttpClient){
+            IoUtil.close((CloseableHttpClient) httpClient);
+        }
+    }
 }
