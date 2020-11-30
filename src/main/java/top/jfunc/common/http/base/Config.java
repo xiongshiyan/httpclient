@@ -68,6 +68,8 @@ public class Config {
     private CookieStore cookieStore                         = null;
     /**拦截器链*/
     private CompositeInterceptor compositeInterceptor       = null;
+    /**方法是否支持body的策略*/
+    private MethodContentStrategy methodContentStrategy     = new DefaultMethodContentStrategy();
 
 
     /**配置冻结器*/
@@ -253,6 +255,15 @@ public class Config {
                 && this.compositeInterceptor.hasInterceptors();
     }
 
+    public MethodContentStrategy getMethodContentStrategy() {
+        return methodContentStrategy;
+    }
+
+    public Config setMethodContentStrategy(MethodContentStrategy methodContentStrategy) {
+        configFrozen.ensureConfigNotFreeze();
+        this.methodContentStrategy = methodContentStrategy;
+        return this;
+    }
 
     /**
      * clone一份，防止全局设置被无意修改

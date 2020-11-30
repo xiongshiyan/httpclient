@@ -18,7 +18,7 @@ class HttpServiceMethod implements ServiceMethod<Object> {
 
     public HttpServiceMethod(SmartHttpClient smartHttpClient, java.lang.reflect.Method method) {
         this.smartHttpClient = smartHttpClient;
-        this.requestFactory = new HttpRequestFactory(method);
+        this.requestFactory = new HttpRequestFactory(method, smartHttpClient.getConfig());
     }
 
     @Override
