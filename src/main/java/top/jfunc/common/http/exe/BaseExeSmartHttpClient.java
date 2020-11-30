@@ -3,6 +3,7 @@ package top.jfunc.common.http.exe;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.ResultCallback;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.http.smart.AbstractImplementSmartHttpClient;
 import top.jfunc.common.utils.IoUtil;
 

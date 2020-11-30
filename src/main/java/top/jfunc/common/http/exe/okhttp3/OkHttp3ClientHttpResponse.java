@@ -20,7 +20,7 @@ import okhttp3.Response;
 import top.jfunc.common.http.component.HeaderExtractor;
 import top.jfunc.common.http.component.StreamExtractor;
 import top.jfunc.common.http.exe.BaseClientHttpResponse;
-import top.jfunc.common.http.exe.ClientHttpResponse;
+import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.util.OkHttp3Util;
 import top.jfunc.common.utils.IoUtil;

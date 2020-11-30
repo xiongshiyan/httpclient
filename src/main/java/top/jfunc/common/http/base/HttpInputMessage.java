@@ -1,4 +1,4 @@
-package top.jfunc.common.http.exe;
+package top.jfunc.common.http.base;
 
 import java.io.IOException;
 import java.io.InputStream;

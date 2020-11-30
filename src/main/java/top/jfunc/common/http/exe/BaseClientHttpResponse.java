@@ -19,6 +19,7 @@ package top.jfunc.common.http.exe;
 import top.jfunc.common.http.component.HeaderExtractor;
 import top.jfunc.common.http.component.StreamExtractor;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;

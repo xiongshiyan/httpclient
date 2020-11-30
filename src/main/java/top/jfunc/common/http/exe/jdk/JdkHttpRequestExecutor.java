@@ -4,7 +4,7 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.jdk.*;
 import top.jfunc.common.http.exe.BaseHttpRequestExecutor;
-import top.jfunc.common.http.exe.ClientHttpResponse;
+import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.http.exe.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
 

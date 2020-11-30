@@ -1,6 +1,8 @@
-package top.jfunc.common.http.exe;
+package top.jfunc.common.http.response;
 
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.base.HttpInputMessage;
+import top.jfunc.common.http.exe.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.Closeable;

@@ -1,4 +1,4 @@
-package top.jfunc.common.http.exe;
+package top.jfunc.common.http.base;
 
 import top.jfunc.common.utils.MultiValueMap;
 
