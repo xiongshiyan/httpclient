@@ -15,15 +15,41 @@ import java.io.IOException;
 public class OkHttp3HttpRequestExecutor extends BaseHttpRequestExecutor<Request.Builder, Response> implements HttpRequestExecutor<Request.Builder> {
     private RequesterFactory<OkHttpClient> okHttpClientFactory;
     private RequesterFactory<Request.Builder> requestBuilderFactory;
-    private HeaderHandler<Request.Builder> requestBuilderHeaderHandler;
     private RequestExecutor<OkHttpClient , Request , Response> requestExecutor;
 
     public OkHttp3HttpRequestExecutor() {
-        super(new DefaultOkHttp3StreamExtractor(), new DefaultOkHttp3HeaderExtractor());
-        setOkHttpClientFactory(new SingleOkHttp3ClientFactory());
-        setRequestBuilderFactory(new DefaultOkHttp3RequestBuilderFactory());
-        setRequestBuilderHeaderHandler(new DefaultOkHttp3HeaderHandler());
-        setRequestExecutor(new DefaultOkHttp3RequestExecutor());
+        super(new DefaultOkHttp3StreamExtractor(), new DefaultOkHttp3HeaderExtractor(), new DefaultOkHttp3HeaderHandler());
+        this.okHttpClientFactory = new SingleOkHttp3ClientFactory();
+        this.requestBuilderFactory = new DefaultOkHttp3RequestBuilderFactory();
+        this.requestExecutor = new DefaultOkHttp3RequestExecutor();
+    }
+
+    public OkHttp3HttpRequestExecutor(StreamExtractor<Response> responseStreamExtractor,
+                                      HeaderExtractor<Response> responseHeaderExtractor,
+                                      RequesterFactory<OkHttpClient> okHttpClientFactory,
+                                      RequesterFactory<Request.Builder> requestBuilderFactory,
+                                      HeaderHandler<Request.Builder> requestBuilderHeaderHandler,
+                                      RequestExecutor<OkHttpClient, Request, Response> requestExecutor) {
+        super(responseStreamExtractor, responseHeaderExtractor, requestBuilderHeaderHandler);
+        this.okHttpClientFactory = okHttpClientFactory;
+        this.requestBuilderFactory = requestBuilderFactory;
+        this.requestExecutor = requestExecutor;
+    }
+
+    public OkHttp3HttpRequestExecutor(ContentCallbackHandler<Request.Builder> contentCallbackHandler,
+                                      StreamExtractor<Response> responseStreamExtractor,
+                                      HeaderExtractor<Response> responseHeaderExtractor,
+                                      HeaderHandler<Request.Builder> requestHeaderHandler,
+                                      RequesterFactory<OkHttpClient> okHttpClientFactory,
+                                      RequesterFactory<Request.Builder> requestBuilderFactory,
+                                      RequestExecutor<OkHttpClient, Request, Response> requestExecutor) {
+        super(contentCallbackHandler,
+                responseStreamExtractor,
+                responseHeaderExtractor,
+                requestHeaderHandler);
+        this.okHttpClientFactory = okHttpClientFactory;
+        this.requestBuilderFactory = requestBuilderFactory;
+        this.requestExecutor = requestExecutor;
     }
 
     @Override
@@ -47,38 +73,16 @@ public class OkHttp3HttpRequestExecutor extends BaseHttpRequestExecutor<Request.
     protected Response execute(OkHttpClient client, HttpRequest httpRequest, Request.Builder builder) throws IOException {
         return getRequestExecutor().execute(client , builder.build() , httpRequest);
     }
-    protected void handleHeaders(Request.Builder builder , HttpRequest httpRequest) throws IOException {
-        getRequestBuilderHeaderHandler().configHeaders(builder , httpRequest);
-    }
+
     public RequesterFactory<OkHttpClient> getOkHttpClientFactory() {
         return okHttpClientFactory;
-    }
-
-    public void setOkHttpClientFactory(RequesterFactory<OkHttpClient> okHttpClientFactory) {
-        this.okHttpClientFactory = okHttpClientFactory;
     }
 
     public RequesterFactory<Request.Builder> getRequestBuilderFactory() {
         return requestBuilderFactory;
     }
 
-    public void setRequestBuilderFactory(RequesterFactory<Request.Builder> requestBuilderFactory) {
-        this.requestBuilderFactory = requestBuilderFactory;
-    }
-
-    public HeaderHandler<Request.Builder> getRequestBuilderHeaderHandler() {
-        return requestBuilderHeaderHandler;
-    }
-
-    public void setRequestBuilderHeaderHandler(HeaderHandler<Request.Builder> requestBuilderHeaderHandler) {
-        this.requestBuilderHeaderHandler = requestBuilderHeaderHandler;
-    }
-
     public RequestExecutor<OkHttpClient, Request, Response> getRequestExecutor() {
         return requestExecutor;
-    }
-
-    public void setRequestExecutor(RequestExecutor<OkHttpClient, Request, Response> requestExecutor) {
-        this.requestExecutor = requestExecutor;
     }
 }

@@ -41,7 +41,7 @@ public class ApacheUtil {
         return inputStream;
     }
 
-    public static HttpUriRequest createHttpUriRequest(String url, Method method) {
+    public static HttpRequest createHttpUriRequest(String url, Method method) {
         switch (method){
             case GET     : return new HttpGet(url);
             case POST    : return new HttpPost(url);
@@ -109,8 +109,6 @@ public class ApacheUtil {
     }
 
     public static void setRequestBody(HttpEntityEnclosingRequest request, String body, String bodyCharset) {
-        if(body == null){return;}
-
         StringEntity entity = new StringEntity(body, bodyCharset);
         entity.setContentEncoding(bodyCharset);
         request.setEntity(entity);
@@ -171,7 +169,7 @@ public class ApacheUtil {
         request.setConfig(builder.build());
     }
 
-    public static void setRequestHeaders(HttpUriRequest request, String contentType,
+    public static void setRequestHeaders(HttpRequest request, String contentType,
                                      MultiValueMap<String, String> headers) {
         //add方式处理多值header
         if(MapUtil.notEmpty(headers)) {

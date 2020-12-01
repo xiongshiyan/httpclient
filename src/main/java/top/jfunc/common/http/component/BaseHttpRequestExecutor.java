@@ -1,5 +1,9 @@
 package top.jfunc.common.http.component;
 
+import top.jfunc.common.http.request.HttpRequest;
+
+import java.io.IOException;
+
 /**
  * 保存一些必须的共用的属性
  * @param <CC> 处理body的
@@ -10,36 +14,45 @@ public abstract class BaseHttpRequestExecutor<CC,RR> {
     private ContentCallbackHandler<CC> contentCallbackHandler;
     private StreamExtractor<RR> responseStreamExtractor;
     private HeaderExtractor<RR> responseHeaderExtractor;
+    private HeaderHandler<CC> requestHeaderHandler;
 
 
-    protected BaseHttpRequestExecutor(StreamExtractor<RR> responseStreamExtractor, HeaderExtractor<RR> responseHeaderExtractor) {
+    protected BaseHttpRequestExecutor(StreamExtractor<RR> responseStreamExtractor,
+                                      HeaderExtractor<RR> responseHeaderExtractor,
+                                      HeaderHandler<CC> requestHeaderHandler) {
         this.contentCallbackHandler = new DefaultContentCallbackHandler<>();
         this.responseStreamExtractor = responseStreamExtractor;
         this.responseHeaderExtractor = responseHeaderExtractor;
+        this.requestHeaderHandler = requestHeaderHandler;
     }
 
+    public BaseHttpRequestExecutor(ContentCallbackHandler<CC> contentCallbackHandler,
+                                   StreamExtractor<RR> responseStreamExtractor,
+                                   HeaderExtractor<RR> responseHeaderExtractor,
+                                   HeaderHandler<CC> requestHeaderHandler) {
+        this.contentCallbackHandler = contentCallbackHandler;
+        this.responseStreamExtractor = responseStreamExtractor;
+        this.responseHeaderExtractor = responseHeaderExtractor;
+        this.requestHeaderHandler = requestHeaderHandler;
+    }
+
+    protected void handleHeaders(CC requester , HttpRequest httpRequest) throws IOException {
+        getRequestHeaderHandler().configHeaders(requester , httpRequest);
+    }
 
     public ContentCallbackHandler<CC> getContentCallbackHandler() {
         return contentCallbackHandler;
-    }
-
-    public void setContentCallbackHandler(ContentCallbackHandler<CC> contentCallbackHandler) {
-        this.contentCallbackHandler = contentCallbackHandler;
     }
 
     public StreamExtractor<RR> getResponseStreamExtractor() {
         return responseStreamExtractor;
     }
 
-    public void setResponseStreamExtractor(StreamExtractor<RR> responseStreamExtractor) {
-        this.responseStreamExtractor = responseStreamExtractor;
-    }
-
     public HeaderExtractor<RR> getResponseHeaderExtractor() {
         return responseHeaderExtractor;
     }
 
-    public void setResponseHeaderExtractor(HeaderExtractor<RR> responseHeaderExtractor) {
-        this.responseHeaderExtractor = responseHeaderExtractor;
+    public HeaderHandler<CC> getRequestHeaderHandler() {
+        return requestHeaderHandler;
     }
 }

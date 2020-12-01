@@ -1,9 +1,7 @@
 package top.jfunc.common.http.component.apache;
 
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.BaseHttpRequestExecutor;
@@ -13,77 +11,82 @@ import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
 
-public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<HttpEntityEnclosingRequest, HttpResponse> implements HttpRequestExecutor<HttpEntityEnclosingRequest> {
-    private RequesterFactory<HttpUriRequest> httpUriRequestRequesterFactory;
-    private HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler;
+public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<org.apache.http.HttpRequest, org.apache.http.HttpResponse> implements HttpRequestExecutor<org.apache.http.HttpRequest> {
+    private RequesterFactory<org.apache.http.HttpRequest> httpRequestRequesterFactory;
     private RequesterFactory<HttpClient> httpClientRequesterFactory;
-    private RequestExecutor<HttpClient , HttpUriRequest , HttpResponse> requestExecutor;
+    private RequestExecutor<HttpClient , org.apache.http.HttpRequest , org.apache.http.HttpResponse> requestExecutor;
 
     public ApacheHttpRequestExecutor() {
-        super(new DefaultApacheResponseStreamExtractor(), new DefaultApacheHeaderExtractor());
-        setHttpUriRequestRequesterFactory(new DefaultApacheRequestFactory());
-        setHttpUriRequestHeaderHandler(new DefaultApacheHeaderHandler());
-        setHttpClientRequesterFactory(new DefaultApacheClientFactory());
-        setRequestExecutor(new DefaultApacheRequestExecutor());
+        super(new DefaultApacheResponseStreamExtractor(),
+                new DefaultApacheHeaderExtractor(),
+                new DefaultApacheHeaderHandler());
+        this.httpRequestRequesterFactory = new DefaultApacheRequestFactory();
+        this.httpClientRequesterFactory = new DefaultApacheClientFactory();
+        this.requestExecutor = new DefaultApacheRequestExecutor();
+    }
+
+    public ApacheHttpRequestExecutor(StreamExtractor<HttpResponse> responseStreamExtractor,
+                                     HeaderExtractor<HttpResponse> responseHeaderExtractor,
+                                     RequesterFactory<org.apache.http.HttpRequest> httpRequestRequesterFactory,
+                                     HeaderHandler<org.apache.http.HttpRequest> httpUriRequestHeaderHandler,
+                                     RequesterFactory<HttpClient> httpClientRequesterFactory,
+                                     RequestExecutor<HttpClient, org.apache.http.HttpRequest, HttpResponse> requestExecutor) {
+        super(responseStreamExtractor,
+                responseHeaderExtractor,
+                httpUriRequestHeaderHandler);
+        this.httpRequestRequesterFactory = httpRequestRequesterFactory;
+        this.httpClientRequesterFactory = httpClientRequesterFactory;
+        this.requestExecutor = requestExecutor;
+    }
+
+    public ApacheHttpRequestExecutor(ContentCallbackHandler<org.apache.http.HttpRequest> contentCallbackHandler,
+                                     StreamExtractor<HttpResponse> responseStreamExtractor,
+                                     HeaderExtractor<HttpResponse> responseHeaderExtractor,
+                                     HeaderHandler<org.apache.http.HttpRequest> requestHeaderHandler,
+                                     RequesterFactory<org.apache.http.HttpRequest> httpRequestRequesterFactory,
+                                     RequesterFactory<HttpClient> httpClientRequesterFactory,
+                                     RequestExecutor<HttpClient, org.apache.http.HttpRequest, HttpResponse> requestExecutor) {
+        super(contentCallbackHandler,
+                responseStreamExtractor,
+                responseHeaderExtractor,
+                requestHeaderHandler);
+        this.httpRequestRequesterFactory = httpRequestRequesterFactory;
+        this.httpClientRequesterFactory = httpClientRequesterFactory;
+        this.requestExecutor = requestExecutor;
     }
 
     @Override
-    public ClientHttpResponse execute(HttpRequest httpRequest, ContentCallback<HttpEntityEnclosingRequest> contentCallback) throws IOException{
+    public ClientHttpResponse execute(HttpRequest httpRequest, ContentCallback<org.apache.http.HttpRequest> contentCallback) throws IOException{
         //1.创建并配置
-        HttpUriRequest httpUriRequest = getHttpUriRequestRequesterFactory().create(httpRequest);
+        org.apache.http.HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest);
 
         //2.创建请求内容，如果有的话
-        if(httpUriRequest instanceof HttpEntityEnclosingRequest){
-            getContentCallbackHandler().handle((HttpEntityEnclosingRequest)httpUriRequest , contentCallback , httpRequest);
-        }
+        getContentCallbackHandler().handle(request , contentCallback , httpRequest);
 
         //3.设置header
-        handleHeaders(httpUriRequest, httpRequest);
+        handleHeaders(request, httpRequest);
 
         HttpClient httpClient = getHttpClientRequesterFactory().create(httpRequest);
 
         //4.发送请求
-        HttpResponse response = execute(httpClient, httpUriRequest , httpRequest);
+        HttpResponse response = execute(httpClient, request , httpRequest);
 
         return new ApacheClientHttpResponse(httpClient, response, httpRequest, getResponseStreamExtractor(), getResponseHeaderExtractor());
     }
-    protected void handleHeaders(HttpUriRequest httpUriRequest, HttpRequest httpRequest) throws IOException {
-        getHttpUriRequestHeaderHandler().configHeaders(httpUriRequest, httpRequest);
+
+    protected HttpResponse execute(HttpClient httpClient, org.apache.http.HttpRequest request , HttpRequest httpRequest) throws IOException {
+        return getRequestExecutor().execute(httpClient , request , httpRequest);
     }
 
-    protected HttpResponse execute(HttpClient httpClient, HttpUriRequest httpUriRequest , HttpRequest httpRequest) throws IOException {
-        return getRequestExecutor().execute(httpClient , httpUriRequest , httpRequest);
-    }
-
-    public RequesterFactory<HttpUriRequest> getHttpUriRequestRequesterFactory() {
-        return httpUriRequestRequesterFactory;
-    }
-
-    public void setHttpUriRequestRequesterFactory(RequesterFactory<HttpUriRequest> httpUriRequestRequesterFactory) {
-        this.httpUriRequestRequesterFactory = httpUriRequestRequesterFactory;
-    }
-
-    public HeaderHandler<HttpUriRequest> getHttpUriRequestHeaderHandler() {
-        return httpUriRequestHeaderHandler;
-    }
-
-    public void setHttpUriRequestHeaderHandler(HeaderHandler<HttpUriRequest> httpUriRequestHeaderHandler) {
-        this.httpUriRequestHeaderHandler = httpUriRequestHeaderHandler;
+    public RequesterFactory<org.apache.http.HttpRequest> getHttpRequestRequesterFactory() {
+        return httpRequestRequesterFactory;
     }
 
     public RequesterFactory<HttpClient> getHttpClientRequesterFactory() {
         return httpClientRequesterFactory;
     }
 
-    public void setHttpClientRequesterFactory(RequesterFactory<HttpClient> httpClientRequesterFactory) {
-        this.httpClientRequesterFactory = httpClientRequesterFactory;
-    }
-
-    public RequestExecutor<HttpClient, HttpUriRequest, HttpResponse> getRequestExecutor() {
+    public RequestExecutor<HttpClient, org.apache.http.HttpRequest, HttpResponse> getRequestExecutor() {
         return requestExecutor;
-    }
-
-    public void setRequestExecutor(RequestExecutor<HttpClient, HttpUriRequest, HttpResponse> requestExecutor) {
-        this.requestExecutor = requestExecutor;
     }
 }
