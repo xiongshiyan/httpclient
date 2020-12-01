@@ -1,4 +1,4 @@
-package top.jfunc.common.http.smart;
+package top.jfunc.common.http.template;
 
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.response.ClientHttpResponse;

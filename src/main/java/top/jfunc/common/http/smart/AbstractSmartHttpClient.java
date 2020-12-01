@@ -7,8 +7,9 @@ import top.jfunc.common.http.component.httprequest.*;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
-import top.jfunc.common.http.response.ResponseConverter;
-import top.jfunc.common.http.response.ResponseExtractor;
+import top.jfunc.common.http.response.ClientHttpResponseConverter;
+import top.jfunc.common.http.template.SmartHttpTemplate;
+import top.jfunc.common.http.util.ResponseExtractor;
 import top.jfunc.common.utils.*;
 
 import java.io.File;
@@ -62,17 +63,17 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     }
 
     @Override
-    public <R> R http(HttpRequest httpRequest, Method method, ResponseConverter<R> responseConverter) throws IOException {
+    public <R> R http(HttpRequest httpRequest, Method method, ClientHttpResponseConverter<R> clientHttpResponseConverter) throws IOException {
         init(httpRequest , method);
         ContentCallback<CC> contentCallback = getBodyContentCallbackCreator().create(httpRequest);
-        return template(httpRequest, contentCallback, responseConverter);
+        return template(httpRequest, contentCallback, clientHttpResponseConverter);
     }
 
     @Override
-    public <R> R upload(UploadRequest uploadRequest , ResponseConverter<R> responseConverter) throws IOException {
+    public <R> R upload(UploadRequest uploadRequest , ClientHttpResponseConverter<R> clientHttpResponseConverter) throws IOException {
         init(uploadRequest, Method.POST);
         ContentCallback<CC> contentCallback = getUploadContentCallbackCreator().create(uploadRequest);
-        return template(uploadRequest, contentCallback, responseConverter);
+        return template(uploadRequest, contentCallback, clientHttpResponseConverter);
     }
 
     protected void init(HttpRequest httpRequest , Method method){

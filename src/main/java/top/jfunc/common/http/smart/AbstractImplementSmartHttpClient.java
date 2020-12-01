@@ -12,7 +12,9 @@ import top.jfunc.common.http.cookie.CookieAccessor;
 import top.jfunc.common.http.cookie.DefaultCookieAccessor;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.response.ClientHttpResponse;
-import top.jfunc.common.http.response.ResponseConverter;
+import top.jfunc.common.http.response.ClientHttpResponseConverter;
+import top.jfunc.common.http.template.SmartHttpTemplate;
+import top.jfunc.common.http.template.TemplateInterceptor;
 import top.jfunc.common.utils.IoUtil;
 
 import java.io.IOException;
@@ -67,7 +69,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
      * @inheritDoc
      */
     @Override
-    public <R> R template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResponseConverter<R> responseConverter) throws IOException {
+    public <R> R template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ClientHttpResponseConverter<R> clientHttpResponseConverter) throws IOException {
         //在接口方法入口处调用了init(HttpRequest)方法将系统Config设置到HttpRequest了
         Config config = httpRequest.getConfig();
 
@@ -84,7 +86,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
             //5.子类处理
             clientHttpResponse = afterTemplate(request, clientHttpResponse);
             //6.结果传唤
-            return responseConverter.convert(clientHttpResponse, calculateResultCharset(h));
+            return clientHttpResponseConverter.convert(clientHttpResponse, calculateResultCharset(h));
         } catch (IOException e) {
             //6.1.拦截器在抛异常的时候处理
             config.onErrorIfNecessary(request , e);

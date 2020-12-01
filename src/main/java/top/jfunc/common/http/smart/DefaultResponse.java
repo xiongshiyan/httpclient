@@ -1,8 +1,7 @@
-package top.jfunc.common.http.response;
+package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.HttpStatus;
-import top.jfunc.common.http.smart.Response;
 import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.MultiValueMap;
 

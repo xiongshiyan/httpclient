@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 代表请求的响应，封装statusCode、body、headers
+ * 面向使用者的代表请求的响应，封装statusCode、body、headers
  * 不提供对InputStream的直接支持，因为其需要手动处理资源释放
  * @author xiongshiyan at 2017/12/9
  */

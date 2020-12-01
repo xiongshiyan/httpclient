@@ -7,7 +7,7 @@ import java.io.IOException;
  * @author xiongshiyan at 2020/11/30 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 @FunctionalInterface
-public interface ResponseConverter<R> {
+public interface ClientHttpResponseConverter<R> {
     /**
      * 将响应转换为需要的
      * @param clientHttpResponse ClientHttpResponse

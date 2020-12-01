@@ -1,8 +1,8 @@
-package top.jfunc.common.http.smart;
+package top.jfunc.common.http.template;
 
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.response.ResponseConverter;
+import top.jfunc.common.http.response.ClientHttpResponseConverter;
 
 import java.io.IOException;
 
@@ -14,9 +14,9 @@ public interface SmartHttpTemplate<CC> {
      * 使用Request来放请求数据
      * @param httpRequest 请求参数
      * @param contentCallback 内容处理器，处理文本或者文件上传
-     * @param responseConverter 结果处理器
+     * @param clientHttpResponseConverter 结果处理器
      * @throws IOException IOException
      * @return <R> 转换过后的结果
      */
-    <R> R template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ResponseConverter<R> responseConverter) throws IOException;
+    <R> R template(HttpRequest httpRequest, ContentCallback<CC> contentCallback, ClientHttpResponseConverter<R> clientHttpResponseConverter) throws IOException;
 }
