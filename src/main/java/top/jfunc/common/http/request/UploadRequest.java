@@ -6,7 +6,8 @@ import top.jfunc.common.utils.MultiValueMap;
 import java.util.Map;
 
 /**
- * 文件上传请求
+ * 文件上传multipart/form-data
+ * @see top.jfunc.common.http.base.MediaType#MULTIPART_FORM_DATA_STRING
  * @author xiongshiyan at 2019/5/18 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public interface UploadRequest extends HttpRequest {
