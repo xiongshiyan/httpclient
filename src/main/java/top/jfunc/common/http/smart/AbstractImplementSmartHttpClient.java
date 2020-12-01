@@ -3,7 +3,13 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.BodyContentCallbackCreator;
+import top.jfunc.common.http.component.HttpRequestExecutor;
 import top.jfunc.common.http.component.UploadContentCallbackCreator;
+import top.jfunc.common.http.component.httprequest.HttpRequestFactory;
+import top.jfunc.common.http.component.httprequest.StringBodyHttpRequestFactory;
+import top.jfunc.common.http.component.httprequest.UploadRequestFactory;
+import top.jfunc.common.http.cookie.CookieAccessor;
+import top.jfunc.common.http.cookie.DefaultCookieAccessor;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.http.response.ResponseConverter;
@@ -12,7 +18,7 @@ import top.jfunc.common.utils.IoUtil;
 import java.io.IOException;
 
 /**
- * 统一异常处理
+ * 统一异常处理、拦截方法
  * @see SmartHttpTemplate
  * @see SimpleHttpClient
  * @see HttpRequestHttpClient
@@ -20,9 +26,40 @@ import java.io.IOException;
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmartHttpClient<CC> implements TemplateInterceptor {
+    /**执行请求获取响应*/
+    private HttpRequestExecutor<CC> httpRequestExecutor;
+    /**处理Cookie*/
+    private CookieAccessor cookieAccessor;
 
-    protected AbstractImplementSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator, UploadContentCallbackCreator<CC> uploadContentCallbackCreator) {
+    protected AbstractImplementSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
+                                               UploadContentCallbackCreator<CC> uploadContentCallbackCreator,
+                                               HttpRequestExecutor<CC> httpRequestExecutor) {
         super(bodyContentCallbackCreator, uploadContentCallbackCreator);
+        this.httpRequestExecutor = httpRequestExecutor;
+        this.cookieAccessor = new DefaultCookieAccessor();
+    }
+    protected AbstractImplementSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
+                                               UploadContentCallbackCreator<CC> uploadContentCallbackCreator,
+                                               HttpRequestExecutor<CC> httpRequestExecutor,
+                                               CookieAccessor cookieAccessor) {
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator);
+        this.httpRequestExecutor = httpRequestExecutor;
+        this.cookieAccessor = cookieAccessor;
+    }
+    protected AbstractImplementSmartHttpClient(HttpRequestFactory httpRequestFactory,
+                                               StringBodyHttpRequestFactory stringBodyHttpRequestFactory,
+                                               UploadRequestFactory uploadRequestFactory,
+                                               BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
+                                               UploadContentCallbackCreator<CC> uploadContentCallbackCreator,
+                                               HttpRequestExecutor<CC> httpRequestExecutor,
+                                               CookieAccessor cookieAccessor) {
+        super(httpRequestFactory,
+                stringBodyHttpRequestFactory,
+                uploadRequestFactory,
+                bodyContentCallbackCreator,
+                uploadContentCallbackCreator);
+        this.httpRequestExecutor = httpRequestExecutor;
+        this.cookieAccessor = cookieAccessor;
     }
 
     /**
@@ -41,7 +78,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         ClientHttpResponse clientHttpResponse = null;
         try {
             //3.真正的实现
-            clientHttpResponse = doInternalTemplate(request , contentCallback);
+            clientHttpResponse = execute(request , contentCallback);
             //4.拦截器过滤
             clientHttpResponse = config.onBeforeReturnIfNecessary(request , clientHttpResponse);
             //5.子类处理
@@ -64,13 +101,22 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         }
     }
 
-    /**
-     * 子类实现真正的自己的
-     * @param httpRequest HttpRequest
-     * @param contentCallback 处理请求体的
-     * @return 处理的结果
-     * @throws Exception Exception
-     */
-    abstract protected ClientHttpResponse doInternalTemplate(HttpRequest httpRequest, ContentCallback<CC> contentCallback) throws Exception;
+    protected ClientHttpResponse execute(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws IOException {
+        getCookieAccessor().addCookieIfNecessary(httpRequest);
+
+        ClientHttpResponse clientHttpResponse = getHttpRequestExecutor().execute(httpRequest, contentCallback);
+
+        getCookieAccessor().saveCookieIfNecessary(httpRequest, clientHttpResponse.getHeaders());
+
+        return clientHttpResponse;
+    }
+
+    public HttpRequestExecutor<CC> getHttpRequestExecutor() {
+        return httpRequestExecutor;
+    }
+
+    public CookieAccessor getCookieAccessor() {
+        return cookieAccessor;
+    }
 }
 

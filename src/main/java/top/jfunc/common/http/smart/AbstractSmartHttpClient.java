@@ -4,8 +4,6 @@ import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.component.BodyContentCallbackCreator;
 import top.jfunc.common.http.component.UploadContentCallbackCreator;
 import top.jfunc.common.http.component.httprequest.*;
-import top.jfunc.common.http.cookie.CookieAccessor;
-import top.jfunc.common.http.cookie.DefaultCookieAccessor;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -25,39 +23,42 @@ import java.util.Objects;
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC> {
-
+    /**一堆参数组装为{@link HttpRequest}*/
+    private HttpRequestFactory httpRequestFactory;
+    /**一堆参数组装为{@link StringBodyRequest}*/
+    private StringBodyHttpRequestFactory stringBodyHttpRequestFactory;
+    /**一堆参数组装为{@link UploadRequest}*/
+    private UploadRequestFactory uploadRequestFactory;
     /**处理一般包含body的*/
     private BodyContentCallbackCreator<CC> bodyContentCallbackCreator;
     /**处理文件上传*/
     private UploadContentCallbackCreator<CC> uploadContentCallbackCreator;
-
-    private HttpRequestFactory httpRequestFactory;
-    private StringBodyHttpRequestFactory stringBodyHttpRequestFactory;
-    private UploadRequestFactory uploadRequestFactory;
-
-    /**处理Cookie*/
-    private CookieAccessor cookieAccessor;
 
     /**配置冻结器*/
     private ConfigFrozen configFrozen = new ConfigFrozen();
     /**保存系统默认配置*/
     private Config config = Config.defaultConfig();
 
-    protected AbstractSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator, UploadContentCallbackCreator<CC> uploadContentCallbackCreator){
-        init();
+    protected AbstractSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
+                                      UploadContentCallbackCreator<CC> uploadContentCallbackCreator){
+        this.httpRequestFactory = new DefaultHttpRequestFactory();
+        this.stringBodyHttpRequestFactory = new DefaultStringBodyHttpRequestFactory();
+        this.uploadRequestFactory = new DefaultUploadRequestFactory();
+
         this.bodyContentCallbackCreator = bodyContentCallbackCreator;
         this.uploadContentCallbackCreator = uploadContentCallbackCreator;
     }
+    protected AbstractSmartHttpClient(HttpRequestFactory httpRequestFactory,
+                                      StringBodyHttpRequestFactory stringBodyHttpRequestFactory,
+                                      UploadRequestFactory uploadRequestFactory,
+                                      BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
+                                      UploadContentCallbackCreator<CC> uploadContentCallbackCreator){
+        this.httpRequestFactory = httpRequestFactory;
+        this.stringBodyHttpRequestFactory = stringBodyHttpRequestFactory;
+        this.uploadRequestFactory = uploadRequestFactory;
 
-    /**
-     * 初始化方法，子类可以复写，但要先调用父类的
-     */
-    protected void init() {
-        setHttpRequestFactory(new DefaultHttpRequestFactory());
-        setStringBodyHttpRequestFactory(new DefaultStringBodyHttpRequestFactory());
-        setUploadRequestFactory(new DefaultUploadRequestFactory());
-
-        setCookieAccessor(new DefaultCookieAccessor());
+        this.bodyContentCallbackCreator = bodyContentCallbackCreator;
+        this.uploadContentCallbackCreator = uploadContentCallbackCreator;
     }
 
     @Override
@@ -142,51 +143,21 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         return bodyContentCallbackCreator;
     }
 
-    public void setBodyContentCallbackCreator(BodyContentCallbackCreator<CC> bodyContentCallbackCreator) {
-        this.bodyContentCallbackCreator = Objects.requireNonNull(bodyContentCallbackCreator);
-    }
-
     public UploadContentCallbackCreator<CC> getUploadContentCallbackCreator() {
         return uploadContentCallbackCreator;
     }
 
-    public void setUploadContentCallbackCreator(UploadContentCallbackCreator<CC> uploadContentCallbackCreator) {
-        this.uploadContentCallbackCreator = Objects.requireNonNull(uploadContentCallbackCreator);
-    }
-
-
     public HttpRequestFactory getHttpRequestFactory() {
         return httpRequestFactory;
-    }
-
-    public void setHttpRequestFactory(HttpRequestFactory httpRequestFactory) {
-        this.httpRequestFactory = Objects.requireNonNull(httpRequestFactory);
     }
 
     public StringBodyHttpRequestFactory getStringBodyHttpRequestFactory() {
         return stringBodyHttpRequestFactory;
     }
 
-    public void setStringBodyHttpRequestFactory(StringBodyHttpRequestFactory stringBodyHttpRequestFactory) {
-        this.stringBodyHttpRequestFactory = Objects.requireNonNull(stringBodyHttpRequestFactory);
-    }
-
     public UploadRequestFactory getUploadRequestFactory() {
         return uploadRequestFactory;
     }
-
-    public void setUploadRequestFactory(UploadRequestFactory uploadRequestFactory) {
-        this.uploadRequestFactory = Objects.requireNonNull(uploadRequestFactory);
-    }
-
-    public CookieAccessor getCookieAccessor() {
-        return cookieAccessor;
-    }
-
-    public void setCookieAccessor(CookieAccessor cookieAccessor) {
-        this.cookieAccessor = Objects.requireNonNull(cookieAccessor);
-    }
-
 
     @Override
     public Config getConfig() {
