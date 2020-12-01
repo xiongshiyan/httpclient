@@ -10,6 +10,12 @@ import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
 
+/**
+ * Jodd实现的处理
+ * @author xiongshiyan
+ * @see 2020.12.01
+ * @since 1.2.12
+ */
 public class JoddHttpRequestExecutor extends BaseHttpRequestExecutor<jodd.http.HttpRequest, HttpResponse> implements HttpRequestExecutor<jodd.http.HttpRequest> {
     private RequesterFactory<jodd.http.HttpRequest> httpRequestRequesterFactory;
     private RequestSender<jodd.http.HttpRequest, HttpResponse> requestSender;

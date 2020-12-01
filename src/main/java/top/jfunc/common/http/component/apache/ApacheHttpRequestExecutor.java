@@ -11,6 +11,12 @@ import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
 
+/**
+ * Apache实现的处理
+ * @author xiongshiyan
+ * @see 2020.12.01
+ * @since 1.2.12
+ */
 public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<org.apache.http.HttpRequest, org.apache.http.HttpResponse> implements HttpRequestExecutor<org.apache.http.HttpRequest> {
     private RequesterFactory<org.apache.http.HttpRequest> httpRequestRequesterFactory;
     private RequesterFactory<HttpClient> httpClientRequesterFactory;
@@ -66,9 +72,10 @@ public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<org.apach
         //3.设置header
         handleHeaders(request, httpRequest);
 
+        //4.创建HttpClient
         HttpClient httpClient = getHttpClientRequesterFactory().create(httpRequest);
 
-        //4.发送请求
+        //5.发送请求
         HttpResponse response = execute(httpClient, request , httpRequest);
 
         return new ApacheClientHttpResponse(httpClient, response, httpRequest, getResponseStreamExtractor(), getResponseHeaderExtractor());

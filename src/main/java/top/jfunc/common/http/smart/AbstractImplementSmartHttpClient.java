@@ -88,17 +88,17 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
             //6.结果传唤
             return clientHttpResponseConverter.convert(clientHttpResponse, calculateResultCharset(h));
         } catch (IOException e) {
-            //6.1.拦截器在抛异常的时候处理
+            //7.1.拦截器在抛异常的时候处理
             config.onErrorIfNecessary(request , e);
             throw e;
         } catch (Exception e) {
-            //6.2.拦截器在抛异常的时候处理
+            //7.2.拦截器在抛异常的时候处理
             config.onErrorIfNecessary(request, e);
             throw new RuntimeException(e);
         }finally {
-            //7.拦截器在任何时候都处理
+            //8.拦截器在任何时候都处理
             config.onFinallyIfNecessary(httpRequest);
-            //这一步特别关键，保证资源关闭
+            //9.这一步特别关键，保证资源关闭
             IoUtil.close(clientHttpResponse);
         }
     }
