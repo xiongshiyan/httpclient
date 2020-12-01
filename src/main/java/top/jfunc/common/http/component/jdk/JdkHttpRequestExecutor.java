@@ -53,7 +53,7 @@ public class JdkHttpRequestExecutor extends BaseHttpRequestExecutor<HttpURLConne
         handleHeaders(connection, httpRequest);
 
         //3.写入内容
-        getContentCallbackHandler().handle(connection , contentCallback , httpRequest);
+        handleBody(connection , contentCallback , httpRequest);
 
         //4.连接
         connect(connection, httpRequest);

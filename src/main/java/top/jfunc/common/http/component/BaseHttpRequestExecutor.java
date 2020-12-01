@@ -1,5 +1,6 @@
 package top.jfunc.common.http.component;
 
+import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.IOException;
@@ -38,6 +39,9 @@ public abstract class BaseHttpRequestExecutor<CC,RR> {
 
     protected void handleHeaders(CC requester , HttpRequest httpRequest) throws IOException {
         getRequestHeaderHandler().configHeaders(requester , httpRequest);
+    }
+    protected void handleBody(CC requester , ContentCallback<CC> contentCallback, HttpRequest httpRequest) throws IOException {
+        getContentCallbackHandler().handle(requester , contentCallback , httpRequest);
     }
 
     public ContentCallbackHandler<CC> getContentCallbackHandler() {

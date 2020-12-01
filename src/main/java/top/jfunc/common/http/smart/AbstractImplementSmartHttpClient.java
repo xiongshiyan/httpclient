@@ -101,7 +101,7 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         }
     }
 
-    protected ClientHttpResponse execute(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws IOException {
+    protected ClientHttpResponse execute(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws Exception {
         getCookieAccessor().addCookieIfNecessary(httpRequest);
 
         ClientHttpResponse clientHttpResponse = getHttpRequestExecutor().execute(httpRequest, contentCallback);

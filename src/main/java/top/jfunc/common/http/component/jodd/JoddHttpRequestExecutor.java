@@ -50,7 +50,7 @@ public class JoddHttpRequestExecutor extends BaseHttpRequestExecutor<jodd.http.H
         jodd.http.HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest);
 
         //2.处理body
-        getContentCallbackHandler().handle(request , contentCallback , httpRequest);
+        handleBody(request , contentCallback , httpRequest);
 
         //3.设置header
         handleHeaders(request , httpRequest);

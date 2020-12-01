@@ -61,7 +61,7 @@ public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<org.apach
         org.apache.http.HttpRequest request = getHttpRequestRequesterFactory().create(httpRequest);
 
         //2.创建请求内容，如果有的话
-        getContentCallbackHandler().handle(request , contentCallback , httpRequest);
+        handleBody(request , contentCallback , httpRequest);
 
         //3.设置header
         handleHeaders(request, httpRequest);

@@ -61,7 +61,7 @@ public class OkHttp3HttpRequestExecutor extends BaseHttpRequestExecutor<Request.
         Request.Builder builder = getRequestBuilderFactory().create(httpRequest);
 
         //2.2处理请求体
-        getContentCallbackHandler().handle(builder , contentCallback , httpRequest);
+        handleBody(builder , contentCallback , httpRequest);
 
         //2.3设置headers
         handleHeaders(builder , httpRequest);
