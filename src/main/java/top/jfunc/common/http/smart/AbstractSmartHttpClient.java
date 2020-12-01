@@ -43,8 +43,10 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     /**保存系统默认配置*/
     private Config config = Config.defaultConfig();
 
-    public AbstractSmartHttpClient(){
+    protected AbstractSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator, UploadContentCallbackCreator<CC> uploadContentCallbackCreator){
         init();
+        this.bodyContentCallbackCreator = bodyContentCallbackCreator;
+        this.uploadContentCallbackCreator = uploadContentCallbackCreator;
     }
 
     /**

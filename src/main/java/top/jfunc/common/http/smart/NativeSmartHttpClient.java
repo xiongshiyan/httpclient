@@ -13,15 +13,13 @@ import java.net.HttpURLConnection;
  * @author 熊诗言2020/12/01
  */
 public class NativeSmartHttpClient extends BaseExeSmartHttpClient<HttpURLConnection> {
-    @Override
-    protected void init() {
-        super.init();
 
-        setBodyContentCallbackCreator(new DefaultJdkBodyContentCallbackCreator());
-        setUploadContentCallbackCreator(new DefaultJdkUploadContentCallbackCreator());
-
-        setHttpRequestExecutor(new JdkHttpRequestExecutor());
+    public NativeSmartHttpClient(){
+        super(new DefaultJdkBodyContentCallbackCreator(),
+                new DefaultJdkUploadContentCallbackCreator(),
+                new JdkHttpRequestExecutor());
     }
+
     ///
     /*
     @Override

@@ -12,14 +12,11 @@ import top.jfunc.common.http.component.jodd.JoddHttpRequestExecutor;
  * @author 熊诗言2020/12/01
  */
 public class JoddSmartHttpClient extends BaseExeSmartHttpClient<HttpRequest> {
-    @Override
-    protected void init() {
-        super.init();
 
-        setBodyContentCallbackCreator(new DefaultJoddBodyContentCallbackCreator());
-        setUploadContentCallbackCreator(new DefaultJoddUploadContentCallbackCreator());
-
-        setHttpRequestExecutor(new JoddHttpRequestExecutor());
+    public JoddSmartHttpClient() {
+        super(new DefaultJoddBodyContentCallbackCreator(),
+                new DefaultJoddUploadContentCallbackCreator(),
+                new JoddHttpRequestExecutor());
     }
 
     @Override

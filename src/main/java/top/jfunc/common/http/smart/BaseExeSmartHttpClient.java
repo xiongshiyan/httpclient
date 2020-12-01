@@ -1,7 +1,9 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.component.BodyContentCallbackCreator;
 import top.jfunc.common.http.component.HttpRequestExecutor;
+import top.jfunc.common.http.component.UploadContentCallbackCreator;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.response.ClientHttpResponse;
 
@@ -15,6 +17,12 @@ import java.io.IOException;
  */
 public abstract class BaseExeSmartHttpClient<CC> extends AbstractImplementSmartHttpClient<CC> {
     private HttpRequestExecutor<CC> httpRequestExecutor;
+
+
+    protected BaseExeSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator, UploadContentCallbackCreator<CC> uploadContentCallbackCreator, HttpRequestExecutor<CC> httpRequestExecutor) {
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator);
+        this.httpRequestExecutor = httpRequestExecutor;
+    }
 
     @Override
     protected ClientHttpResponse doInternalTemplate(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws Exception {

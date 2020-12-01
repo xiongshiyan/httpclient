@@ -2,6 +2,8 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.component.BodyContentCallbackCreator;
+import top.jfunc.common.http.component.UploadContentCallbackCreator;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.http.response.ResponseConverter;
@@ -18,6 +20,11 @@ import java.io.IOException;
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmartHttpClient<CC> implements TemplateInterceptor {
+
+    protected AbstractImplementSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator, UploadContentCallbackCreator<CC> uploadContentCallbackCreator) {
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator);
+    }
+
     /**
      * 统一的拦截和异常处理：最佳实践使用拦截器代替子类复写
      * @inheritDoc

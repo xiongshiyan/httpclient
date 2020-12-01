@@ -12,14 +12,11 @@ import top.jfunc.common.http.component.apache.ApacheHttpRequestExecutor;
  * @author 熊诗言2020/12/01
  */
 public class ApacheSmartHttpClient extends BaseExeSmartHttpClient<HttpEntityEnclosingRequest> {
-    @Override
-    protected void init() {
-        super.init();
 
-        setBodyContentCallbackCreator(new DefaultApacheBodyContentCallbackCreator());
-        setUploadContentCallbackCreator(new DefaultApacheUploadContentCallbackCreator());
-
-        setHttpRequestExecutor(new ApacheHttpRequestExecutor());
+    public ApacheSmartHttpClient(){
+        super(new DefaultApacheBodyContentCallbackCreator(),
+                new DefaultApacheUploadContentCallbackCreator(),
+                new ApacheHttpRequestExecutor());
     }
 
     @Override

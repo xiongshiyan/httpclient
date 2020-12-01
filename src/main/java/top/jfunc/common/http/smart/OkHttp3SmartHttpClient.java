@@ -12,14 +12,11 @@ import top.jfunc.common.http.component.okhttp3.OkHttp3HttpRequestExecutor;
  * @author 熊诗言2020/12/01
  */
 public class OkHttp3SmartHttpClient extends BaseExeSmartHttpClient<Request.Builder> {
-    @Override
-    protected void init() {
-        super.init();
 
-        setBodyContentCallbackCreator(new DefaultOkHttp3BodyContentCallbackCreator());
-        setUploadContentCallbackCreator(new DefaultOkHttp3UploadContentCallbackCreator());
-
-        setHttpRequestExecutor(new OkHttp3HttpRequestExecutor());
+    public OkHttp3SmartHttpClient(){
+        super(new DefaultOkHttp3BodyContentCallbackCreator(),
+                new DefaultOkHttp3UploadContentCallbackCreator(),
+                new OkHttp3HttpRequestExecutor());
     }
 
     @Override
