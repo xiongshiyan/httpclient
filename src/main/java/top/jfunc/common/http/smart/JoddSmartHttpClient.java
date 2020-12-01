@@ -3,8 +3,7 @@ package top.jfunc.common.http.smart;
 import jodd.http.HttpRequest;
 import top.jfunc.common.http.component.jodd.DefaultJoddBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jodd.DefaultJoddUploadContentCallbackCreator;
-import top.jfunc.common.http.exe.BaseExeSmartHttpClient;
-import top.jfunc.common.http.exe.jodd.JoddHttpRequestExecutor;
+import top.jfunc.common.http.component.jodd.JoddHttpRequestExecutor;
 
 /**
  * 使用Jodd实现的Http请求类

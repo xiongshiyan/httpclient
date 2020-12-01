@@ -1,14 +1,18 @@
-package top.jfunc.common.http.exe;
+package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.component.*;
-
-public class BaseHttpRequestExecutor<CC,RR> {
+/**
+ * 保存一些必须的共用的属性
+ * @param <CC> 处理body的
+ * @param <RR> 获取响应的header和stream的
+ * @author xiongshiyan
+ */
+public abstract class BaseHttpRequestExecutor<CC,RR> {
     private ContentCallbackHandler<CC> contentCallbackHandler;
     private StreamExtractor<RR> responseStreamExtractor;
     private HeaderExtractor<RR> responseHeaderExtractor;
 
 
-    public BaseHttpRequestExecutor(StreamExtractor<RR> responseStreamExtractor, HeaderExtractor<RR> responseHeaderExtractor) {
+    protected BaseHttpRequestExecutor(StreamExtractor<RR> responseStreamExtractor, HeaderExtractor<RR> responseHeaderExtractor) {
         this.contentCallbackHandler = new DefaultContentCallbackHandler<>();
         this.responseStreamExtractor = responseStreamExtractor;
         this.responseHeaderExtractor = responseHeaderExtractor;

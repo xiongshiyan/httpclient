@@ -2,8 +2,7 @@ package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.component.jdk.DefaultJdkBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jdk.DefaultJdkUploadContentCallbackCreator;
-import top.jfunc.common.http.exe.BaseExeSmartHttpClient;
-import top.jfunc.common.http.exe.jdk.JdkHttpRequestExecutor;
+import top.jfunc.common.http.component.jdk.JdkHttpRequestExecutor;
 
 import java.net.HttpURLConnection;
 

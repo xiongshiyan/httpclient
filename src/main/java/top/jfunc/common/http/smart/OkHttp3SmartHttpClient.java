@@ -3,8 +3,7 @@ package top.jfunc.common.http.smart;
 import okhttp3.Request;
 import top.jfunc.common.http.component.okhttp3.DefaultOkHttp3BodyContentCallbackCreator;
 import top.jfunc.common.http.component.okhttp3.DefaultOkHttp3UploadContentCallbackCreator;
-import top.jfunc.common.http.exe.BaseExeSmartHttpClient;
-import top.jfunc.common.http.exe.okhttp3.OkHttp3HttpRequestExecutor;
+import top.jfunc.common.http.component.okhttp3.OkHttp3HttpRequestExecutor;
 
 /**
  * 使用OkHttp3实现的Http请求类

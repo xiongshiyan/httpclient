@@ -1,4 +1,4 @@
-package top.jfunc.common.http.exe;
+package top.jfunc.common.http.component;
 
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.request.HttpRequest;

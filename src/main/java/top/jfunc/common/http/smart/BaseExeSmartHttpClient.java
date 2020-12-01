@@ -1,9 +1,9 @@
-package top.jfunc.common.http.exe;
+package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.base.ContentCallback;
+import top.jfunc.common.http.component.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.response.ClientHttpResponse;
-import top.jfunc.common.http.smart.AbstractImplementSmartHttpClient;
 
 import java.io.IOException;
 
@@ -18,10 +18,10 @@ public abstract class BaseExeSmartHttpClient<CC> extends AbstractImplementSmartH
 
     @Override
     protected ClientHttpResponse doInternalTemplate(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws Exception {
-        return exe(httpRequest, contentCallback);
+        return execute(httpRequest, contentCallback);
     }
 
-    protected ClientHttpResponse exe(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws IOException {
+    protected ClientHttpResponse execute(HttpRequest httpRequest , ContentCallback<CC> contentCallback) throws IOException {
         getCookieAccessor().addCookieIfNecessary(httpRequest);
 
         ClientHttpResponse clientHttpResponse = getHttpRequestExecutor().execute(httpRequest, contentCallback);

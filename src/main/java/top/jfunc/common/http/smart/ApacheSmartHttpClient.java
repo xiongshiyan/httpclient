@@ -3,8 +3,7 @@ package top.jfunc.common.http.smart;
 import org.apache.http.HttpEntityEnclosingRequest;
 import top.jfunc.common.http.component.apache.DefaultApacheBodyContentCallbackCreator;
 import top.jfunc.common.http.component.apache.DefaultApacheUploadContentCallbackCreator;
-import top.jfunc.common.http.exe.BaseExeSmartHttpClient;
-import top.jfunc.common.http.exe.apache.ApacheHttpRequestExecutor;
+import top.jfunc.common.http.component.apache.ApacheHttpRequestExecutor;
 
 /**
  * 使用Apache HttpClient 实现的Http请求类

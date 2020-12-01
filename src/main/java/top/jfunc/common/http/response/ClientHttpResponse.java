@@ -1,8 +1,8 @@
 package top.jfunc.common.http.response;
 
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.HttpInputMessage;
-import top.jfunc.common.http.exe.HttpRequestExecutor;
+import top.jfunc.common.http.message.HttpInputMessage;
+import top.jfunc.common.http.component.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
 
 import java.io.Closeable;
@@ -36,6 +36,7 @@ public interface ClientHttpResponse extends HttpInputMessage, Closeable {
 
 	/**
 	 * Close this response, freeing any resources created.
+	 * @throws IOException in case of I/O errors
 	 */
 	@Override
 	void close() throws IOException;
