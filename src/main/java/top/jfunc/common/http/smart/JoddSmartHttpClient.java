@@ -4,9 +4,7 @@ import jodd.http.HttpRequest;
 import top.jfunc.common.http.component.BodyContentCallbackCreator;
 import top.jfunc.common.http.component.HttpRequestExecutor;
 import top.jfunc.common.http.component.UploadContentCallbackCreator;
-import top.jfunc.common.http.component.assembling.HttpRequestFactory;
-import top.jfunc.common.http.component.assembling.StringBodyHttpRequestFactory;
-import top.jfunc.common.http.component.assembling.UploadRequestFactory;
+import top.jfunc.common.http.component.AssemblingFactory;
 import top.jfunc.common.http.component.jodd.DefaultJoddBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jodd.DefaultJoddUploadContentCallbackCreator;
 import top.jfunc.common.http.component.jodd.JoddHttpRequestExecutor;
@@ -29,35 +27,22 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
     public JoddSmartHttpClient(BodyContentCallbackCreator<HttpRequest> bodyContentCallbackCreator,
                                UploadContentCallbackCreator<HttpRequest> uploadContentCallbackCreator,
                                HttpRequestExecutor<HttpRequest> httpRequestExecutor) {
-        super(bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor);
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
 
     public JoddSmartHttpClient(BodyContentCallbackCreator<HttpRequest> bodyContentCallbackCreator,
                                UploadContentCallbackCreator<HttpRequest> uploadContentCallbackCreator,
                                HttpRequestExecutor<HttpRequest> httpRequestExecutor,
                                CookieAccessor cookieAccessor) {
-        super(bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor,
-                cookieAccessor);
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
     }
 
-    public JoddSmartHttpClient(HttpRequestFactory httpRequestFactory,
-                               StringBodyHttpRequestFactory stringBodyHttpRequestFactory,
-                               UploadRequestFactory uploadRequestFactory,
+    public JoddSmartHttpClient(AssemblingFactory assemblingFactory,
                                BodyContentCallbackCreator<HttpRequest> bodyContentCallbackCreator,
                                UploadContentCallbackCreator<HttpRequest> uploadContentCallbackCreator,
                                HttpRequestExecutor<HttpRequest> httpRequestExecutor,
                                CookieAccessor cookieAccessor) {
-        super(httpRequestFactory,
-                stringBodyHttpRequestFactory,
-                uploadRequestFactory,
-                bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor,
-                cookieAccessor);
+        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
     }
 
     @Override

@@ -7,9 +7,7 @@ import top.jfunc.common.http.component.UploadContentCallbackCreator;
 import top.jfunc.common.http.component.apache.DefaultApacheBodyContentCallbackCreator;
 import top.jfunc.common.http.component.apache.DefaultApacheUploadContentCallbackCreator;
 import top.jfunc.common.http.component.apache.ApacheHttpRequestExecutor;
-import top.jfunc.common.http.component.assembling.HttpRequestFactory;
-import top.jfunc.common.http.component.assembling.StringBodyHttpRequestFactory;
-import top.jfunc.common.http.component.assembling.UploadRequestFactory;
+import top.jfunc.common.http.component.AssemblingFactory;
 import top.jfunc.common.http.cookie.CookieAccessor;
 
 /**
@@ -29,35 +27,22 @@ public class ApacheSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     public ApacheSmartHttpClient(BodyContentCallbackCreator<HttpRequest> bodyContentCallbackCreator,
                                  UploadContentCallbackCreator<HttpRequest> uploadContentCallbackCreator,
                                  HttpRequestExecutor<HttpRequest> httpRequestExecutor) {
-        super(bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor);
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
 
     public ApacheSmartHttpClient(BodyContentCallbackCreator<HttpRequest> bodyContentCallbackCreator,
                                  UploadContentCallbackCreator<HttpRequest> uploadContentCallbackCreator,
                                  HttpRequestExecutor<HttpRequest> httpRequestExecutor,
                                  CookieAccessor cookieAccessor) {
-        super(bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor,
-                cookieAccessor);
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
     }
 
-    public ApacheSmartHttpClient(HttpRequestFactory httpRequestFactory,
-                                 StringBodyHttpRequestFactory stringBodyHttpRequestFactory,
-                                 UploadRequestFactory uploadRequestFactory,
+    public ApacheSmartHttpClient(AssemblingFactory assemblingFactory,
                                  BodyContentCallbackCreator<HttpRequest> bodyContentCallbackCreator,
                                  UploadContentCallbackCreator<HttpRequest> uploadContentCallbackCreator,
                                  HttpRequestExecutor<HttpRequest> httpRequestExecutor,
                                  CookieAccessor cookieAccessor) {
-        super(httpRequestFactory,
-                stringBodyHttpRequestFactory,
-                uploadRequestFactory,
-                bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor,
-                cookieAccessor);
+        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
     }
 
     @Override

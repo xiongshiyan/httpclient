@@ -1,4 +1,4 @@
-package top.jfunc.common.http.component.assembling;
+package top.jfunc.common.http.component;
 
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.HttpRequest;
@@ -14,10 +14,7 @@ import top.jfunc.common.utils.MultiValueMap;
 /**
  * @author xiongshiyan at 2020/1/15 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public class DefaultSimpleFactory implements HttpRequestFactory, StringBodyHttpRequestFactory, UploadRequestFactory {
-    /**因为是线程安全的所以只需要一个实例，但是不是标准的单例模式，只是为了使用的时候不需要实例化那么多*/
-    public static final DefaultSimpleFactory INSTANCE = new DefaultSimpleFactory();
-
+public class DefaultSimpleAssemblingFactory implements AssemblingFactory {
     @Override
     public HttpRequest create(String url,
                               MultiValueMap<String, String> queryParams,

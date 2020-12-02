@@ -1,9 +1,10 @@
 package top.jfunc.common.http.smart;
 
 import top.jfunc.common.http.base.*;
+import top.jfunc.common.http.component.AssemblingFactory;
 import top.jfunc.common.http.component.BodyContentCallbackCreator;
+import top.jfunc.common.http.component.DefaultSimpleAssemblingFactory;
 import top.jfunc.common.http.component.UploadContentCallbackCreator;
-import top.jfunc.common.http.component.assembling.*;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -24,12 +25,8 @@ import java.util.Objects;
  * @author xiongshiyan at 2019/5/8 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, SmartHttpTemplate<CC> {
-    /**一堆参数组装为{@link HttpRequest}*/
-    private HttpRequestFactory httpRequestFactory;
-    /**一堆参数组装为{@link StringBodyRequest}*/
-    private StringBodyHttpRequestFactory stringBodyHttpRequestFactory;
-    /**一堆参数组装为{@link UploadRequest}*/
-    private UploadRequestFactory uploadRequestFactory;
+    /**一堆参数组装为{@link HttpRequest}、{@link StringBodyRequest}、{@link UploadRequest}*/
+    private AssemblingFactory assemblingFactory;
 
     /**处理一般包含body的*/
     private BodyContentCallbackCreator<CC> bodyContentCallbackCreator;
@@ -43,22 +40,15 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
 
     protected AbstractSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
                                       UploadContentCallbackCreator<CC> uploadContentCallbackCreator){
-        this.httpRequestFactory = DefaultSimpleFactory.INSTANCE;
-        this.stringBodyHttpRequestFactory = DefaultSimpleFactory.INSTANCE;
-        this.uploadRequestFactory = DefaultSimpleFactory.INSTANCE;
+        this.assemblingFactory = new DefaultSimpleAssemblingFactory();
 
         this.bodyContentCallbackCreator = bodyContentCallbackCreator;
         this.uploadContentCallbackCreator = uploadContentCallbackCreator;
     }
-    protected AbstractSmartHttpClient(HttpRequestFactory httpRequestFactory,
-                                      StringBodyHttpRequestFactory stringBodyHttpRequestFactory,
-                                      UploadRequestFactory uploadRequestFactory,
+    protected AbstractSmartHttpClient(AssemblingFactory assemblingFactory,
                                       BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
                                       UploadContentCallbackCreator<CC> uploadContentCallbackCreator){
-        this.httpRequestFactory = httpRequestFactory;
-        this.stringBodyHttpRequestFactory = stringBodyHttpRequestFactory;
-        this.uploadRequestFactory = uploadRequestFactory;
-
+        this.assemblingFactory = assemblingFactory;
         this.bodyContentCallbackCreator = bodyContentCallbackCreator;
         this.uploadContentCallbackCreator = uploadContentCallbackCreator;
     }
@@ -101,7 +91,7 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         if(MapUtil.notEmpty(headers)){
             h = ArrayListMultiValueMap.fromMap(headers);
         }
-        HttpRequest httpRequest = getHttpRequestFactory()
+        HttpRequest httpRequest = getAssemblingFactory()
                 .create(url, p, h, connectTimeout, readTimeout, resultCharset);
         return get(httpRequest , ResponseExtractor::extractString);
     }
@@ -117,21 +107,21 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         if(MapUtil.notEmpty(headers)){
             h = ArrayListMultiValueMap.fromMap(headers);
         }
-        StringBodyRequest stringBodyRequest = getStringBodyHttpRequestFactory()
+        StringBodyRequest stringBodyRequest = getAssemblingFactory()
                 .create(url, p, body, contentType, h, connectTimeout, readTimeout, bodyCharset, resultCharset);
         return post(stringBodyRequest , ResponseExtractor::extractString);
     }
 
     @Override
     public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
-        HttpRequest httpRequest = getHttpRequestFactory()
+        HttpRequest httpRequest = getAssemblingFactory()
                 .create(url, null, headers, connectTimeout, readTimeout, null);
         return get(httpRequest , ResponseExtractor::extractBytes);
     }
 
     @Override
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
-        HttpRequest httpRequest = getHttpRequestFactory()
+        HttpRequest httpRequest = getAssemblingFactory()
                 .create(url, null, headers, connectTimeout, readTimeout, null);
         return get(httpRequest, (chr, r) -> IoUtil.copy2File(chr.getBody(), file));
     }
@@ -140,7 +130,7 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     @Override
     public String upload(String url, MultiValueMap<String,String> headers,
                          int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException{
-        UploadRequest uploadRequest = getUploadRequestFactory()
+        UploadRequest uploadRequest = getAssemblingFactory()
                 .create(url, null, formFiles, headers, connectTimeout, readTimeout, resultCharset);
         return upload(uploadRequest , ResponseExtractor::extractString);
     }
@@ -148,7 +138,7 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     @Override
     public String upload(String url, MultiValueMap<String, String> formParams, MultiValueMap<String, String> headers,
                          int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException {
-        UploadRequest uploadRequest = getUploadRequestFactory()
+        UploadRequest uploadRequest = getAssemblingFactory()
                 .create(url, formParams, formFiles, headers, connectTimeout, readTimeout, resultCharset);
         return upload(uploadRequest , ResponseExtractor::extractString);
     }
@@ -167,16 +157,8 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         return uploadContentCallbackCreator;
     }
 
-    public HttpRequestFactory getHttpRequestFactory() {
-        return httpRequestFactory;
-    }
-
-    public StringBodyHttpRequestFactory getStringBodyHttpRequestFactory() {
-        return stringBodyHttpRequestFactory;
-    }
-
-    public UploadRequestFactory getUploadRequestFactory() {
-        return uploadRequestFactory;
+    public AssemblingFactory getAssemblingFactory() {
+        return assemblingFactory;
     }
 
     @Override

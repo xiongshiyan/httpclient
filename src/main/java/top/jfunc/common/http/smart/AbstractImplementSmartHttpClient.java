@@ -5,9 +5,7 @@ import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.BodyContentCallbackCreator;
 import top.jfunc.common.http.component.HttpRequestExecutor;
 import top.jfunc.common.http.component.UploadContentCallbackCreator;
-import top.jfunc.common.http.component.assembling.HttpRequestFactory;
-import top.jfunc.common.http.component.assembling.StringBodyHttpRequestFactory;
-import top.jfunc.common.http.component.assembling.UploadRequestFactory;
+import top.jfunc.common.http.component.AssemblingFactory;
 import top.jfunc.common.http.cookie.CookieAccessor;
 import top.jfunc.common.http.cookie.DefaultCookieAccessor;
 import top.jfunc.common.http.request.HttpRequest;
@@ -48,16 +46,12 @@ public abstract class AbstractImplementSmartHttpClient<CC> extends AbstractSmart
         this.httpRequestExecutor = httpRequestExecutor;
         this.cookieAccessor = cookieAccessor;
     }
-    protected AbstractImplementSmartHttpClient(HttpRequestFactory httpRequestFactory,
-                                               StringBodyHttpRequestFactory stringBodyHttpRequestFactory,
-                                               UploadRequestFactory uploadRequestFactory,
+    protected AbstractImplementSmartHttpClient(AssemblingFactory assemblingFactory,
                                                BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
                                                UploadContentCallbackCreator<CC> uploadContentCallbackCreator,
                                                HttpRequestExecutor<CC> httpRequestExecutor,
                                                CookieAccessor cookieAccessor) {
-        super(httpRequestFactory,
-                stringBodyHttpRequestFactory,
-                uploadRequestFactory,
+        super(assemblingFactory,
                 bodyContentCallbackCreator,
                 uploadContentCallbackCreator);
         this.httpRequestExecutor = httpRequestExecutor;

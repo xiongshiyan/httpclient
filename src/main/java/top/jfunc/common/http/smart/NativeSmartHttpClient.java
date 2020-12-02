@@ -1,11 +1,9 @@
 package top.jfunc.common.http.smart;
 
+import top.jfunc.common.http.component.AssemblingFactory;
 import top.jfunc.common.http.component.BodyContentCallbackCreator;
 import top.jfunc.common.http.component.HttpRequestExecutor;
 import top.jfunc.common.http.component.UploadContentCallbackCreator;
-import top.jfunc.common.http.component.assembling.HttpRequestFactory;
-import top.jfunc.common.http.component.assembling.StringBodyHttpRequestFactory;
-import top.jfunc.common.http.component.assembling.UploadRequestFactory;
 import top.jfunc.common.http.component.jdk.DefaultJdkBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jdk.DefaultJdkUploadContentCallbackCreator;
 import top.jfunc.common.http.component.jdk.JdkHttpRequestExecutor;
@@ -30,35 +28,22 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
     public NativeSmartHttpClient(BodyContentCallbackCreator<HttpURLConnection> bodyContentCallbackCreator,
                                  UploadContentCallbackCreator<HttpURLConnection> uploadContentCallbackCreator,
                                  HttpRequestExecutor<HttpURLConnection> httpRequestExecutor) {
-        super(bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor);
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
 
     public NativeSmartHttpClient(BodyContentCallbackCreator<HttpURLConnection> bodyContentCallbackCreator,
                                  UploadContentCallbackCreator<HttpURLConnection> uploadContentCallbackCreator,
                                  HttpRequestExecutor<HttpURLConnection> httpRequestExecutor,
                                  CookieAccessor cookieAccessor) {
-        super(bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor,
-                cookieAccessor);
+        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
     }
 
-    public NativeSmartHttpClient(HttpRequestFactory httpRequestFactory,
-                                 StringBodyHttpRequestFactory stringBodyHttpRequestFactory,
-                                 UploadRequestFactory uploadRequestFactory,
+    public NativeSmartHttpClient(AssemblingFactory assemblingFactory,
                                  BodyContentCallbackCreator<HttpURLConnection> bodyContentCallbackCreator,
                                  UploadContentCallbackCreator<HttpURLConnection> uploadContentCallbackCreator,
                                  HttpRequestExecutor<HttpURLConnection> httpRequestExecutor,
                                  CookieAccessor cookieAccessor) {
-        super(httpRequestFactory,
-                stringBodyHttpRequestFactory,
-                uploadRequestFactory,
-                bodyContentCallbackCreator,
-                uploadContentCallbackCreator,
-                httpRequestExecutor,
-                cookieAccessor);
+        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
     }
     ///
     /*
@@ -82,7 +67,7 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         }
     }
     protected HttpRequest createRedirectHttpRequest(HttpRequest httpRequest, String redirectUrl) {
-        HttpRequest hr = getHttpRequestFactory().create(redirectUrl , null , null , httpRequest.getConnectionTimeout() , httpRequest.getReadTimeout() , httpRequest.getResultCharset());
+        HttpRequest hr = getAssemblingFactory().create(redirectUrl , null , null , httpRequest.getConnectionTimeout() , httpRequest.getReadTimeout() , httpRequest.getResultCharset());
         init(hr , Method.GET);
         //处理多次重定向的情况
         hr.followRedirects(Config.FOLLOW_REDIRECTS);
