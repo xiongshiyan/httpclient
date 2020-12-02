@@ -91,7 +91,8 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     /////////////////////////////////////////////////////SimpleHttpClient///////////////////////////////////////////////////////////////
 
     @Override
-    public String get(String url, Map<String, String> queryParams, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
+    public String get(String url, Map<String, String> queryParams, Map<String, String> headers,
+                      int connectTimeout, int readTimeout, String resultCharset) throws IOException{
         MultiValueMap<String , String> p = null;
         if(MapUtil.notEmpty(queryParams)){
             p = ArrayListMultiValueMap.fromMap(queryParams);
@@ -100,12 +101,14 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         if(MapUtil.notEmpty(headers)){
             h = ArrayListMultiValueMap.fromMap(headers);
         }
-        HttpRequest httpRequest = getHttpRequestFactory().create(url, p, h, connectTimeout, readTimeout, resultCharset);
+        HttpRequest httpRequest = getHttpRequestFactory()
+                .create(url, p, h, connectTimeout, readTimeout, resultCharset);
         return get(httpRequest , ResponseExtractor::extractString);
     }
 
     @Override
-    public String post(String url, Map<String, String> queryParams, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
+    public String post(String url, Map<String, String> queryParams, String body, String contentType, Map<String, String> headers,
+                       int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
         MultiValueMap<String , String> p = null;
         if(MapUtil.notEmpty(queryParams)){
             p = ArrayListMultiValueMap.fromMap(queryParams);
@@ -114,32 +117,39 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
         if(MapUtil.notEmpty(headers)){
             h = ArrayListMultiValueMap.fromMap(headers);
         }
-        StringBodyRequest stringBodyRequest = getStringBodyHttpRequestFactory().create(url, p, body, contentType, h, connectTimeout, readTimeout, bodyCharset, resultCharset);
+        StringBodyRequest stringBodyRequest = getStringBodyHttpRequestFactory()
+                .create(url, p, body, contentType, h, connectTimeout, readTimeout, bodyCharset, resultCharset);
         return post(stringBodyRequest , ResponseExtractor::extractString);
     }
 
     @Override
     public byte[] getAsBytes(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout) throws IOException {
-        HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
+        HttpRequest httpRequest = getHttpRequestFactory()
+                .create(url, null, headers, connectTimeout, readTimeout, null);
         return get(httpRequest , ResponseExtractor::extractBytes);
     }
 
     @Override
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
-        HttpRequest httpRequest = getHttpRequestFactory().create(url, null, headers, connectTimeout, readTimeout, null);
-        return get(httpRequest , (clientHttpResponse, resultCharset)-> IoUtil.copy2File(clientHttpResponse.getBody(), file));
+        HttpRequest httpRequest = getHttpRequestFactory()
+                .create(url, null, headers, connectTimeout, readTimeout, null);
+        return get(httpRequest ,
+                (clientHttpResponse, resultCharset) -> IoUtil.copy2File(clientHttpResponse.getBody(), file));
     }
 
 
     @Override
-    public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException{
-        UploadRequest uploadRequest = getUploadRequestFactory().create(url, null, headers, connectTimeout, readTimeout, resultCharset, formFiles);
+    public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout,
+                         int readTimeout, String resultCharset, FormFile... formFiles) throws IOException{
+        UploadRequest uploadRequest = getUploadRequestFactory()
+                .create(url, null, headers, connectTimeout, readTimeout, resultCharset, formFiles);
         return upload(uploadRequest , ResponseExtractor::extractString);
     }
 
     @Override
     public String upload(String url, MultiValueMap<String, String> formParams, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException {
-        UploadRequest uploadRequest = getUploadRequestFactory().create(url, formParams, headers, connectTimeout, readTimeout, resultCharset, formFiles);
+        UploadRequest uploadRequest = getUploadRequestFactory()
+                .create(url, formParams, headers, connectTimeout, readTimeout, resultCharset, formFiles);
         return upload(uploadRequest , ResponseExtractor::extractString);
     }
 

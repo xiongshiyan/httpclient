@@ -11,8 +11,6 @@ import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
-import java.util.Map;
-
 /**
  * @author xiongshiyan at 2020/1/15 , contact me with email yanshixiong@126.com or phone 15208384257
  */
@@ -49,12 +47,12 @@ public class DefaultSimpleFactory implements HttpRequestFactory, StringBodyHttpR
                                 String resultCharset,
                                 FormFile... files) {
         UploadRequest uploadRequest = UpLoadRequest.of(url);
-        if(ArrayUtil.isNotEmpty(files)){
-            uploadRequest.addFormFile(files);
-        }
 
         if(MapUtil.notEmpty(formParams)){
             uploadRequest.setFormParams(formParams);
+        }
+        if(ArrayUtil.isNotEmpty(files)){
+            uploadRequest.addFormFile(files);
         }
 
         set(uploadRequest, null, headers, connectTimeout, readTimeout, resultCharset);
