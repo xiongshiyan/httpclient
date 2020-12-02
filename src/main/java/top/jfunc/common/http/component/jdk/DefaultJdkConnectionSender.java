@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 /**
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
+@Deprecated
 public class DefaultJdkConnectionSender implements RequestSender<HttpURLConnection , HttpURLConnection> {
     @Override
     public HttpURLConnection send(HttpURLConnection connection , HttpRequest httpRequest) throws IOException{

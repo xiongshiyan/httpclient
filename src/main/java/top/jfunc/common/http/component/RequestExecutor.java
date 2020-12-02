@@ -9,6 +9,7 @@ import java.io.IOException;
  * @see RequestSender
  * @author xiongshiyan at 2020/1/6 , contact me with email yanshixiong@126.com or phone 15208384257
  */
+@Deprecated
 public interface RequestExecutor<Client , Request , Response> {
     /**
      * 客户端Client执行器来执行请求Request，得到响应Response
