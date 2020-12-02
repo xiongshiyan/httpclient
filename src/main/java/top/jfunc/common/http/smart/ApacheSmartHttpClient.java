@@ -7,9 +7,9 @@ import top.jfunc.common.http.component.UploadContentCallbackCreator;
 import top.jfunc.common.http.component.apache.DefaultApacheBodyContentCallbackCreator;
 import top.jfunc.common.http.component.apache.DefaultApacheUploadContentCallbackCreator;
 import top.jfunc.common.http.component.apache.ApacheHttpRequestExecutor;
-import top.jfunc.common.http.component.httprequest.HttpRequestFactory;
-import top.jfunc.common.http.component.httprequest.StringBodyHttpRequestFactory;
-import top.jfunc.common.http.component.httprequest.UploadRequestFactory;
+import top.jfunc.common.http.component.assembling.HttpRequestFactory;
+import top.jfunc.common.http.component.assembling.StringBodyHttpRequestFactory;
+import top.jfunc.common.http.component.assembling.UploadRequestFactory;
 import top.jfunc.common.http.cookie.CookieAccessor;
 
 /**

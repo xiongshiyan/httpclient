@@ -3,7 +3,7 @@ package top.jfunc.common.http.smart;
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.component.BodyContentCallbackCreator;
 import top.jfunc.common.http.component.UploadContentCallbackCreator;
-import top.jfunc.common.http.component.httprequest.*;
+import top.jfunc.common.http.component.assembling.*;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.request.UploadRequest;
@@ -43,9 +43,9 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
 
     protected AbstractSmartHttpClient(BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
                                       UploadContentCallbackCreator<CC> uploadContentCallbackCreator){
-        this.httpRequestFactory = new DefaultSimpleFactory();
-        this.stringBodyHttpRequestFactory = new DefaultSimpleFactory();
-        this.uploadRequestFactory = new DefaultSimpleFactory();
+        this.httpRequestFactory = DefaultSimpleFactory.INSTANCE;
+        this.stringBodyHttpRequestFactory = DefaultSimpleFactory.INSTANCE;
+        this.uploadRequestFactory = DefaultSimpleFactory.INSTANCE;
 
         this.bodyContentCallbackCreator = bodyContentCallbackCreator;
         this.uploadContentCallbackCreator = uploadContentCallbackCreator;
@@ -133,23 +133,23 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     public File getAsFile(String url, MultiValueMap<String, String> headers, File file, int connectTimeout, int readTimeout) throws IOException {
         HttpRequest httpRequest = getHttpRequestFactory()
                 .create(url, null, headers, connectTimeout, readTimeout, null);
-        return get(httpRequest ,
-                (clientHttpResponse, resultCharset) -> IoUtil.copy2File(clientHttpResponse.getBody(), file));
+        return get(httpRequest, (chr, r) -> IoUtil.copy2File(chr.getBody(), file));
     }
 
 
     @Override
-    public String upload(String url, MultiValueMap<String,String> headers, int connectTimeout,
-                         int readTimeout, String resultCharset, FormFile... formFiles) throws IOException{
+    public String upload(String url, MultiValueMap<String,String> headers,
+                         int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException{
         UploadRequest uploadRequest = getUploadRequestFactory()
-                .create(url, null, headers, connectTimeout, readTimeout, resultCharset, formFiles);
+                .create(url, null, formFiles, headers, connectTimeout, readTimeout, resultCharset);
         return upload(uploadRequest , ResponseExtractor::extractString);
     }
 
     @Override
-    public String upload(String url, MultiValueMap<String, String> formParams, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException {
+    public String upload(String url, MultiValueMap<String, String> formParams, MultiValueMap<String, String> headers,
+                         int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException {
         UploadRequest uploadRequest = getUploadRequestFactory()
-                .create(url, formParams, headers, connectTimeout, readTimeout, resultCharset, formFiles);
+                .create(url, formParams, formFiles, headers, connectTimeout, readTimeout, resultCharset);
         return upload(uploadRequest , ResponseExtractor::extractString);
     }
 

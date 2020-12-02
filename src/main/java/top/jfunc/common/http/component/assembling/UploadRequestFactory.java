@@ -1,12 +1,8 @@
-package top.jfunc.common.http.component.httprequest;
+package top.jfunc.common.http.component.assembling;
 
 import top.jfunc.common.http.base.FormFile;
-import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.utils.MultiValueMap;
-
-import java.io.File;
-import java.util.Map;
 
 /**
  * @author xiongshiyan at 2020/1/15 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -26,9 +22,9 @@ public interface UploadRequestFactory{
      */
     UploadRequest create(String url,
                          MultiValueMap<String, String> formParams,
+                         FormFile[] formFiles,
                          MultiValueMap<String, String> headers,
                          int connectTimeout,
                          int readTimeout,
-                         String resultCharset,
-                         FormFile... formFiles);
+                         String resultCharset);
 }

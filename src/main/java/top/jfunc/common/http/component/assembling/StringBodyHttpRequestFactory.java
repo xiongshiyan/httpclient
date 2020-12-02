@@ -1,4 +1,4 @@
-package top.jfunc.common.http.component.httprequest;
+package top.jfunc.common.http.component.assembling;
 
 import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.utils.MultiValueMap;

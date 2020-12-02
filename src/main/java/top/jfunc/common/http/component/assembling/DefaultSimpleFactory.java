@@ -1,4 +1,4 @@
-package top.jfunc.common.http.component.httprequest;
+package top.jfunc.common.http.component.assembling;
 
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.request.HttpRequest;
@@ -15,6 +15,9 @@ import top.jfunc.common.utils.MultiValueMap;
  * @author xiongshiyan at 2020/1/15 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class DefaultSimpleFactory implements HttpRequestFactory, StringBodyHttpRequestFactory, UploadRequestFactory {
+    /**因为是线程安全的所以只需要一个实例，但是不是标准的单例模式，只是为了使用的时候不需要实例化那么多*/
+    public static final DefaultSimpleFactory INSTANCE = new DefaultSimpleFactory();
+
     @Override
     public HttpRequest create(String url,
                               MultiValueMap<String, String> queryParams,
@@ -28,7 +31,15 @@ public class DefaultSimpleFactory implements HttpRequestFactory, StringBodyHttpR
     }
 
     @Override
-    public StringBodyRequest create(String url, MultiValueMap<String, String> queryParams, String body, String contentType, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) {
+    public StringBodyRequest create(String url,
+                                    MultiValueMap<String, String> queryParams,
+                                    String body,
+                                    String contentType,
+                                    MultiValueMap<String, String> headers,
+                                    int connectTimeout,
+                                    int readTimeout,
+                                    String bodyCharset,
+                                    String resultCharset) {
         CommonBodyRequest stringBodyRequest = CommonBodyRequest.of(url);
         stringBodyRequest.setBody(body , contentType);
         if(null != bodyCharset){
@@ -41,18 +52,18 @@ public class DefaultSimpleFactory implements HttpRequestFactory, StringBodyHttpR
     @Override
     public UploadRequest create(String url,
                                 MultiValueMap<String, String> formParams,
+                                FormFile[] formFiles,
                                 MultiValueMap<String, String> headers,
                                 int connectTimeout,
                                 int readTimeout,
-                                String resultCharset,
-                                FormFile... files) {
+                                String resultCharset) {
         UploadRequest uploadRequest = UpLoadRequest.of(url);
 
         if(MapUtil.notEmpty(formParams)){
             uploadRequest.setFormParams(formParams);
         }
-        if(ArrayUtil.isNotEmpty(files)){
-            uploadRequest.addFormFile(files);
+        if(ArrayUtil.isNotEmpty(formFiles)){
+            uploadRequest.addFormFile(formFiles);
         }
 
         set(uploadRequest, null, headers, connectTimeout, readTimeout, resultCharset);
