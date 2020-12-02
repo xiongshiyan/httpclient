@@ -28,7 +28,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      /**
      * HTTP GET请求
      * @param url URL，可以帶参数
-     * @param params 参数列表，可以为 null, 此系列get方法的params按照URLEncoder(UTF-8)拼装,
+     * @param queryParams 参数列表，可以为 null, 此系列get方法的params按照URLEncoder(UTF-8)拼装,
      *               如果是其他的编码请使用{@link SmartHttpClient#get(HttpRequest)},然后Request中设置bodyCharset
      * @param headers HTTP header 可以为 null
      * @param connectTimeout 连接超时时间
@@ -37,102 +37,106 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @return 返回的内容
      * @throws IOException 超时异常 {@link java.net.SocketTimeoutException connect timed out/read time out}
      */
-    String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout, String resultCharset) throws IOException;
+    String get(String url, Map<String, String> queryParams, Map<String, String> headers,
+               int connectTimeout, int readTimeout, String resultCharset) throws IOException;
 
     /**
      * HTTP GET请求
      * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
-     * @param params params
+     * @param queryParams queryParams
      * @param headers headers
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
      * @return String
      * @throws IOException IOException
      */
-    default String get(String url, Map<String, String> params, Map<String, String> headers, int connectTimeout, int readTimeout) throws IOException{
-        return get(url, params, headers, connectTimeout, readTimeout , null);
+    default String get(String url, Map<String, String> queryParams, Map<String, String> headers,
+                       int connectTimeout, int readTimeout) throws IOException{
+        return get(url, queryParams, headers, connectTimeout, readTimeout , null);
     }
 
     /**
      * HTTP GET请求
      * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
-     * @param params params
+     * @param queryParams params
      * @param headers headers
      * @param resultCharset resultCharset
      * @return String
      * @throws IOException IOException
      */
-    default String get(String url, Map<String, String> params, Map<String, String> headers, String resultCharset) throws IOException{
-        return get(url,params,headers, Config.UNSIGNED, Config.UNSIGNED,resultCharset);
+    default String get(String url, Map<String, String> queryParams, Map<String, String> headers, String resultCharset) throws IOException{
+        return get(url, queryParams, headers, Config.UNSIGNED, Config.UNSIGNED, resultCharset);
     }
 
     /**
      * HTTP GET请求
      * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
-     * @param params params
+     * @param queryParams params
      * @param headers headers
      * @return String
      * @throws IOException IOException
      */
-    default String get(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
-        return get(url,params,headers, Config.UNSIGNED, Config.UNSIGNED);
+    default String get(String url, Map<String, String> queryParams, Map<String, String> headers) throws IOException{
+        return get(url, queryParams, headers, Config.UNSIGNED, Config.UNSIGNED);
     }
 
     /**
      * HTTP GET请求
      * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
-     * @param params params
+     * @param queryParams params
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
      * @param resultCharset resultCharset
      * @return String
      * @throws IOException IOException
      */
-    default String get(String url, Map<String, String> params, int connectTimeout, int readTimeout, String resultCharset) throws IOException{
-        return get(url,params,null,connectTimeout,readTimeout,resultCharset);
+    default String get(String url, Map<String, String> queryParams,
+                       int connectTimeout, int readTimeout, String resultCharset) throws IOException{
+        return get(url, queryParams,null, connectTimeout, readTimeout, resultCharset);
     }
 
     /**
      * HTTP GET请求
      * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
-     * @param params params
+     * @param queryParams params
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
      * @return String
      * @throws IOException IOException
      */
-    default String get(String url, Map<String, String> params, int connectTimeout, int readTimeout) throws IOException{
-        return get(url,params,null,connectTimeout,readTimeout);
+    default String get(String url, Map<String, String> queryParams,
+                       int connectTimeout, int readTimeout) throws IOException{
+        return get(url, queryParams, null, connectTimeout, readTimeout);
     }
 
     /**
      * HTTP GET请求
      * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
-     * @param params params
+     * @param queryParams params
      * @param resultCharset resultCharset
      * @return String
      * @throws IOException IOException
      */
-    default String get(String url, Map<String, String> params, String resultCharset) throws IOException{
-        return get(url,params,null, Config.UNSIGNED, Config.UNSIGNED,resultCharset);
+    default String get(String url, Map<String, String> queryParams, String resultCharset) throws IOException{
+        return get(url, queryParams,null, Config.UNSIGNED, Config.UNSIGNED,resultCharset);
     }
 
     /**
      * HTTP GET请求
      * @see SimpleHttpClient#get(String, Map, Map, int, int, String)
      * @param url url
-     * @param params params
+     * @param queryParams params
      * @return String
      * @throws IOException IOException
      */
-    default String get(String url, Map<String, String> params) throws IOException{
-        return get(url,params,null, Config.UNSIGNED, Config.UNSIGNED);
+    default String get(String url, Map<String, String> queryParams) throws IOException{
+        return get(url, queryParams, null, Config.UNSIGNED, Config.UNSIGNED);
     }
 
     /**
@@ -161,6 +165,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
     /**
      * HTTP POST
      * @param url URL
+     * @param queryParams params
      * @param body 请求体
      * @param contentType 请求体类型
      * @param headers 头
@@ -171,7 +176,26 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @return 请求返回
      * @throws IOException 超时异常 {@link java.net.SocketTimeoutException connect timed out/read time out}
      */
-    String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException;
+    String post(String url, Map<String, String> queryParams, String body, String contentType, Map<String, String> headers,
+                int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException;
+
+    /**
+     * HTTP POST
+     * @param url URL
+     * @param body 请求体
+     * @param contentType 请求体类型
+     * @param headers 头
+     * @param connectTimeout 连接超时时间
+     * @param readTimeout 读超时时间
+     * @param bodyCharset 请求体编码
+     * @param resultCharset 返回编码
+     * @return 请求返回
+     * @throws IOException 超时异常 {@link java.net.SocketTimeoutException connect timed out/read time out}
+     */
+    default String post(String url, String body, String contentType, Map<String, String> headers,
+                        int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException{
+        return post(url, null, body, contentType, headers, connectTimeout, readTimeout, bodyCharset, resultCharset);
+    }
 
     /**
      * HTTP POST
@@ -185,8 +209,9 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @return String
      * @throws IOException IOException
      */
-    default String post(String url, String body, String contentType, Map<String, String> headers, int connectTimeout, int readTimeout) throws IOException{
-        return post(url,body,contentType,headers,connectTimeout,readTimeout, null,null);
+    default String post(String url, String body, String contentType, Map<String, String> headers,
+                        int connectTimeout, int readTimeout) throws IOException{
+        return post(url, body, contentType, headers, connectTimeout, readTimeout, null,null);
     }
 
     /**
@@ -201,7 +226,8 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @return String
      * @throws IOException IOException
      */
-    default String post(String url, String body, String contentType, Map<String, String> headers, String bodyCharset, String resultCharset) throws IOException{
+    default String post(String url, String body, String contentType, Map<String, String> headers,
+                        String bodyCharset, String resultCharset) throws IOException{
         return post(url,body,contentType,headers, Config.UNSIGNED, Config.UNSIGNED,bodyCharset,resultCharset);
     }
 
@@ -216,7 +242,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, Map<String, String> headers) throws IOException{
-        return post(url,body,contentType,headers, Config.UNSIGNED, Config.UNSIGNED);
+        return post(url, body, contentType, headers, Config.UNSIGNED, Config.UNSIGNED);
     }
 
     /**
@@ -232,8 +258,9 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @return String
      * @throws IOException IOException
      */
-    default String post(String url, String body, String contentType, int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,contentType,null,connectTimeout,readTimeout,bodyCharset,resultCharset);
+    default String post(String url, String body, String contentType,
+                        int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException{
+        return post(url, body, contentType,null, connectTimeout, readTimeout, bodyCharset, resultCharset);
     }
 
     /**
@@ -248,7 +275,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, int connectTimeout, int readTimeout) throws IOException{
-        return post(url,body,contentType,null,connectTimeout,readTimeout);
+        return post(url, body, contentType,null, connectTimeout, readTimeout);
     }
 
     /**
@@ -263,7 +290,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType, String bodyCharset, String resultCharset) throws IOException{
-        return post(url,body,contentType,null, Config.UNSIGNED, Config.UNSIGNED,bodyCharset,resultCharset);
+        return post(url, body, contentType,null, Config.UNSIGNED, Config.UNSIGNED,bodyCharset,resultCharset);
     }
 
     /**
@@ -276,7 +303,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default String post(String url, String body, String contentType) throws IOException{
-        return post(url,body,contentType,null, Config.UNSIGNED, Config.UNSIGNED);
+        return post(url, body, contentType,null, Config.UNSIGNED, Config.UNSIGNED);
     }
 
     /**
@@ -291,7 +318,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      */
     default String postJson(String url, String body, String bodyCharset, String resultCharset) throws IOException{
         MediaType jsonType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
-        return post(url,body, jsonType.toString(),null, Config.UNSIGNED, Config.UNSIGNED,bodyCharset,resultCharset);
+        return post(url, body, jsonType.toString(),null, Config.UNSIGNED, Config.UNSIGNED,bodyCharset, resultCharset);
     }
 
     /**
@@ -304,7 +331,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      */
     default String postJson(String url, String body) throws IOException{
         MediaType jsonType = MediaType.APPLICATION_JSON.withCharset(Config.DEFAULT_CHARSET);
-        return post(url,body, jsonType.toString(),null, Config.UNSIGNED, Config.UNSIGNED);
+        return post(url, body, jsonType.toString(),null, Config.UNSIGNED, Config.UNSIGNED);
     }
 
     /**
@@ -312,57 +339,58 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @see SimpleHttpClient#post(String, String, String, Map, int, int, String, String)
      * @see ParamUtil#contactMap(Map)
      * @param url url
-     * @param params params 参数用 =和& 连接
+     * @param formParams params 参数用 =和& 连接
      * @param headers headers
      * @param bodyCharset bodyCharset
      * @param resultCharset resultCharset
      * @return String
      * @throws IOException IOException
      */
-    default String post(String url, Map<String, String> params, Map<String, String> headers, String bodyCharset, String resultCharset) throws IOException{
-        return post(url, ParamUtil.contactMap(params , bodyCharset), MediaType.APPLICATION_FORM_DATA.withCharset(bodyCharset).toString(),headers,bodyCharset,resultCharset);
+    default String post(String url, Map<String, String> formParams, Map<String, String> headers,
+                        String bodyCharset, String resultCharset) throws IOException{
+        return post(url, ParamUtil.contactMap(formParams, bodyCharset), MediaType.APPLICATION_FORM_DATA.withCharset(bodyCharset).toString(),headers,bodyCharset,resultCharset);
     }
 
     /**
      * HTTP POST form
      * @see SimpleHttpClient#post(String, Map, Map, String, String)
      * @param url url
-     * @param params params 参数用 =和& 连接
+     * @param formParams params 参数用 =和& 连接
      * @param headers headers
      * @return String
      * @throws IOException IOException
      */
-    default String post(String url, Map<String, String> params, Map<String, String> headers) throws IOException{
+    default String post(String url, Map<String, String> formParams, Map<String, String> headers) throws IOException{
         MediaType mediaType = MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
-        return post(url, ParamUtil.contactMap(params , Config.DEFAULT_CHARSET), mediaType.toString(),headers);
+        return post(url, ParamUtil.contactMap(formParams, Config.DEFAULT_CHARSET), mediaType.toString(), headers);
     }
 
     /**
      * HTTP POST form
      * @see SimpleHttpClient#post(String, Map, Map, String, String)
      * @param url url
-     * @param params params 参数用 =和& 连接
+     * @param formParams params 参数用 =和& 连接
      * @param bodyCharset bodyCharset
      * @param resultCharset resultCharset
      * @return String
      * @throws IOException IOException
      */
-    default String post(String url, Map<String, String> params, String bodyCharset, String resultCharset) throws IOException{
+    default String post(String url, Map<String, String> formParams, String bodyCharset, String resultCharset) throws IOException{
         MediaType mediaType = MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
-        return post(url, ParamUtil.contactMap(params , bodyCharset), mediaType.toString(),null,bodyCharset,resultCharset);
+        return post(url, ParamUtil.contactMap(formParams, bodyCharset), mediaType.toString(),null, bodyCharset, resultCharset);
     }
 
     /**
      * HTTP POST form
      * @see SimpleHttpClient#post(String, Map, Map, String, String)
      * @param url url
-     * @param params params 参数用 =和& 连接
+     * @param formParams params 参数用 =和& 连接
      * @return String
      * @throws IOException IOException
      */
-    default String post(String url, Map<String, String> params) throws IOException{
+    default String post(String url, Map<String, String> formParams) throws IOException{
         MediaType mediaType = MediaType.APPLICATION_FORM_DATA.withCharset(Config.DEFAULT_CHARSET);
-        return post(url, ParamUtil.contactMap(params , Config.DEFAULT_CHARSET), mediaType.toString(),null);
+        return post(url, ParamUtil.contactMap(formParams, Config.DEFAULT_CHARSET), mediaType.toString(),null);
     }
 
     /**
@@ -386,7 +414,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default byte[] getAsBytes(String url, int connectTimeout, int readTimeout) throws IOException{
-        return getAsBytes(url , null , connectTimeout , readTimeout);
+        return getAsBytes(url, null, connectTimeout , readTimeout);
     }
 
     /**
@@ -398,7 +426,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default byte[] getAsBytes(String url, MultiValueMap<String, String> headers) throws IOException{
-        return getAsBytes(url , headers , Config.UNSIGNED, Config.UNSIGNED);
+        return getAsBytes(url, headers, Config.UNSIGNED, Config.UNSIGNED);
     }
 
     /**
@@ -409,7 +437,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default byte[] getAsBytes(String url) throws IOException{
-        return getAsBytes(url , null , Config.UNSIGNED, Config.UNSIGNED);
+        return getAsBytes(url, null, Config.UNSIGNED, Config.UNSIGNED);
     }
 
     /**
@@ -435,7 +463,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default File getAsFile(String url, File file, int connectTimeout, int readTimeout) throws IOException{
-        return getAsFile(url , null  , file , connectTimeout , readTimeout);
+        return getAsFile(url, null, file, connectTimeout, readTimeout);
     }
     /**
      * 下载为文件
@@ -447,7 +475,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default File getAsFile(String url, MultiValueMap<String, String> headers, File file) throws IOException{
-        return getAsFile(url , headers  , file , Config.UNSIGNED, Config.UNSIGNED);
+        return getAsFile(url, headers, file, Config.UNSIGNED, Config.UNSIGNED);
     }
     /**
      * 下载为文件
@@ -458,7 +486,7 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @throws IOException IOException
      */
     default File getAsFile(String url, File file) throws IOException{
-        return getAsFile(url , null  , file , Config.UNSIGNED, Config.UNSIGNED);
+        return getAsFile(url, null, file, Config.UNSIGNED, Config.UNSIGNED);
     }
 
     /**
@@ -468,11 +496,12 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
      * @param resultCharset resultCharset
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    String upload(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException;
+    String upload(String url, MultiValueMap<String, String> headers,
+                  int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException;
 
     /**
      * 上传文件
@@ -481,12 +510,13 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @param headers headers
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    default String upload(String url, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
-        return upload(url, headers ,connectTimeout , readTimeout , null , files);
+    default String upload(String url, MultiValueMap<String, String> headers,
+                          int connectTimeout, int readTimeout, FormFile... formFiles) throws IOException{
+        return upload(url, headers, connectTimeout, readTimeout, null, formFiles);
     }
 
     /**
@@ -494,12 +524,12 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @see SimpleHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param headers headers
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    default String upload(String url, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
-        return upload(url, headers ,null, Config.UNSIGNED, Config.UNSIGNED, files);
+    default String upload(String url, MultiValueMap<String, String> headers, FormFile... formFiles) throws IOException{
+        return upload(url, headers ,null, Config.UNSIGNED, Config.UNSIGNED, formFiles);
     }
 
     /**
@@ -508,24 +538,24 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @param url url
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    default String upload(String url, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
-        return upload(url, null ,connectTimeout , readTimeout , null , files);
+    default String upload(String url, int connectTimeout, int readTimeout, FormFile... formFiles) throws IOException{
+        return upload(url, null, connectTimeout, readTimeout, null, formFiles);
     }
 
     /**
      * 上传文件
      * @see SimpleHttpClient#upload(String, MultiValueMap, int, int, String, FormFile...)
      * @param url url
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    default String upload(String url, FormFile... files) throws IOException{
-        return upload(url, null , null, Config.UNSIGNED, Config.UNSIGNED, files);
+    default String upload(String url, FormFile... formFiles) throws IOException{
+        return upload(url, null, null, Config.UNSIGNED, Config.UNSIGNED, formFiles);
     }
 
     /**
@@ -536,11 +566,12 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
      * @param resultCharset resultCharset
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, String resultCharset, FormFile... files) throws IOException;
+    String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers,
+                  int connectTimeout, int readTimeout, String resultCharset, FormFile... formFiles) throws IOException;
 
     /**
      * 上传文件和key-value数据
@@ -550,12 +581,13 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @param headers headers
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    default String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, int connectTimeout, int readTimeout, FormFile... files) throws IOException{
-        return upload(url, params ,headers ,connectTimeout , readTimeout , null , files);
+    default String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers,
+                          int connectTimeout, int readTimeout, FormFile... formFiles) throws IOException{
+        return upload(url, params, headers, connectTimeout, readTimeout, null, formFiles);
     }
 
     /**
@@ -564,12 +596,13 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @param url url
      * @param params params
      * @param headers headers
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    default String upload(String url, MultiValueMap<String, String> params, MultiValueMap<String, String> headers, FormFile... files) throws IOException{
-        return upload(url, params ,headers , Config.UNSIGNED, Config.UNSIGNED, null , files);
+    default String upload(String url, MultiValueMap<String, String> params,
+                          MultiValueMap<String, String> headers, FormFile... formFiles) throws IOException{
+        return upload(url, params, headers, Config.UNSIGNED, Config.UNSIGNED, null, formFiles);
     }
 
     /**
@@ -579,12 +612,13 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @param params params
      * @param connectTimeout connectTimeout
      * @param readTimeout readTimeout
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    default String upload(String url, int connectTimeout, int readTimeout, MultiValueMap<String, String> params, FormFile... files) throws IOException{
-        return upload(url, params ,null ,connectTimeout , readTimeout , null , files);
+    default String upload(String url, int connectTimeout, int readTimeout,
+                          MultiValueMap<String, String> params, FormFile... formFiles) throws IOException{
+        return upload(url, params,null, connectTimeout, readTimeout, null, formFiles);
     }
 
     /**
@@ -592,15 +626,15 @@ public interface SimpleHttpClient extends FreezableConfigAccessor {
      * @see SimpleHttpClient#upload(String, MultiValueMap, MultiValueMap, int, int, String, FormFile...)
      * @param url url
      * @param params params
-     * @param files files
+     * @param formFiles formFiles
      * @return String
      * @throws IOException IOException
      */
-    default String upload(String url, Map<String, String> params, FormFile... files) throws IOException{
+    default String upload(String url, Map<String, String> params, FormFile... formFiles) throws IOException{
         MultiValueMap<String , String> p = null;
         if(MapUtil.notEmpty(params)){
             p = ArrayListMultiValueMap.fromMap(params);
         }
-        return upload(url, p ,null , Config.UNSIGNED, Config.UNSIGNED, null , files);
+        return upload(url, p,null, Config.UNSIGNED, Config.UNSIGNED, null, formFiles);
     }
 }

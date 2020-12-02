@@ -14,27 +14,26 @@ public class CompositeContentCallBackCreator<CC> implements ContentCallbackCreat
     private BodyContentCallbackCreator<CC> bodyContentCallbackCreator;
     private UploadContentCallbackCreator<CC> uploadContentCallbackCreator;
 
+
+    public CompositeContentCallBackCreator(BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
+                                           UploadContentCallbackCreator<CC> uploadContentCallbackCreator) {
+        this.bodyContentCallbackCreator = bodyContentCallbackCreator;
+        this.uploadContentCallbackCreator = uploadContentCallbackCreator;
+    }
+
     @Override
     public ContentCallback<CC> create(HttpRequest httpRequest) throws IOException {
         if(httpRequest instanceof UploadRequest){
-            return uploadContentCallbackCreator.create(httpRequest);
+            return getUploadContentCallbackCreator().create(httpRequest);
         }
-        return bodyContentCallbackCreator.create(httpRequest);
+        return getBodyContentCallbackCreator().create(httpRequest);
     }
 
     public BodyContentCallbackCreator<CC> getBodyContentCallbackCreator() {
         return bodyContentCallbackCreator;
     }
 
-    public void setBodyContentCallbackCreator(BodyContentCallbackCreator<CC> bodyContentCallbackCreator) {
-        this.bodyContentCallbackCreator = bodyContentCallbackCreator;
-    }
-
     public UploadContentCallbackCreator<CC> getUploadContentCallbackCreator() {
         return uploadContentCallbackCreator;
-    }
-
-    public void setUploadContentCallbackCreator(UploadContentCallbackCreator<CC> uploadContentCallbackCreator) {
-        this.uploadContentCallbackCreator = uploadContentCallbackCreator;
     }
 }
