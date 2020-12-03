@@ -128,12 +128,11 @@ public class ApacheUtil {
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                 .setCharset(CharsetUtil.charset(charset));
 
-        if(null != params){
-            ///params.keySet().forEach(key->params.get(key).forEach(value->multipartEntityBuilder.addTextBody(key , value)));
+        if(MapUtil.notEmpty(params)){
             params.forEachKeyValue(multipartEntityBuilder::addTextBody);
         }
 
-        if(null != formFiles){
+        if(ArrayUtil.isNotEmpty(formFiles)){
             for (FormFile formFile : formFiles) {
                 multipartEntityBuilder.addBinaryBody(formFile.getParameterName(), formFile.getInStream() , ContentType.parse(formFile.getContentType()) , formFile.getFilName());
             }
@@ -171,20 +170,9 @@ public class ApacheUtil {
 
     public static void setRequestHeaders(HttpRequest request, String contentType,
                                      MultiValueMap<String, String> headers) {
-        //add方式处理多值header
         if(MapUtil.notEmpty(headers)) {
-            ///
-            /*Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)->request.addHeader(k,v)));*/
-            /*Set<Map.Entry<String, List<String>>> entries = headers.entrySet();
-            entries.forEach(entry -> entry.getValue().forEach(v->request.addHeader(entry.getKey() , v)));*/
             headers.forEachKeyValue(request::addHeader);
         }
-
-        ///set方式处理单值header
-        /*if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
-            overwriteHeaders.forEach(request::setHeader);
-        }*/
 
         if(null != contentType){
             request.setHeader(HttpHeaders.CONTENT_TYPE, contentType);

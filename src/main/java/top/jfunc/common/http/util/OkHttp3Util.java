@@ -75,7 +75,6 @@ public class OkHttp3Util {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
         if(null != params){
-            /*params.keySet().forEach(key->params.get(key).forEach(value->builder.addFormDataPart(key , value)));*/
             params.forEachKeyValue(builder::addFormDataPart);
         }
 
@@ -95,18 +94,9 @@ public class OkHttp3Util {
 
     public static void setRequestHeaders(Request.Builder builder, String contentType,
                                      MultiValueMap<String, String> headers) {
-        //add方式处理多值header
         if(MapUtil.notEmpty(headers)) {
-            ///
-            /*Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)->builder.addHeader(k,v)));*/
             headers.forEachKeyValue(builder::addHeader);
         }
-
-        ///set方式处理单值header
-        /*if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
-            overwriteHeaders.forEach(builder::header);
-        }*/
 
         if(null != contentType){
             builder.header(HttpHeaders.CONTENT_TYPE, contentType);

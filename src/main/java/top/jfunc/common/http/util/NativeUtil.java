@@ -42,18 +42,13 @@ public class NativeUtil {
         connection.setRequestProperty(HttpHeaders.CONTENT_LENGTH , String.valueOf(getFormFilesLen(formFiles) + END_LINE.length()));
         connection.setRequestProperty(HttpHeaders.CONTENT_TYPE , "multipart/form-data; boundary=" + BOUNDARY);
 
-        // 设置DataOutputStream
-        DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
-        /*for (int i = 0; i < files.length; i++) {
-            writeOneFile(ds, files[i]);
-        }*/
-        for (FormFile formFile : formFiles) {
-            writeOneFile(ds, formFile);
+        try(DataOutputStream ds = new DataOutputStream(connection.getOutputStream())) {
+            for (FormFile formFile : formFiles) {
+                writeOneFile(ds, formFile);
+            }
+            ds.writeBytes(END_LINE);
+            ds.flush();
         }
-        ds.writeBytes(END_LINE);
-        /* close streams */
-        ds.flush();
-        //ds.close();
     }
 
     public static void upload0(HttpURLConnection connection , MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException{
@@ -66,22 +61,17 @@ public class NativeUtil {
         connection.setRequestProperty(HttpHeaders.CONTENT_LENGTH , String.valueOf(dataLength));
         connection.setRequestProperty(HttpHeaders.CONTENT_TYPE , "multipart/form-data; boundary=" + BOUNDARY);
 
-        DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
-
-        //写params数据
-        ds.writeBytes(textEntity);
-        //写文件
-        /*for (int i = 0; i < files.length; i++) {
-            writeOneFile(ds, files[i]);
-        }*/
-        for (FormFile formFile : formFiles) {
-            writeOneFile(ds, formFile);
+        try(DataOutputStream ds = new DataOutputStream(connection.getOutputStream())) {
+            //写params数据
+            ds.writeBytes(textEntity);
+            //写文件
+            for (FormFile formFile : formFiles) {
+                writeOneFile(ds, formFile);
+            }
+            //写末尾行
+            ds.writeBytes(END_LINE);
+            ds.flush();
         }
-        //写末尾行
-        ds.writeBytes(END_LINE);
-        /* close streams */
-        ds.flush();
-        ds.close();
     }
 
     /**
@@ -93,11 +83,10 @@ public class NativeUtil {
         ds.writeBytes("Content-Disposition: form-data; name=\"" + formFile.getParameterName() + "\"; filename=\"" + formFile.getFilName() + "\"" + CRLF);
         ds.writeBytes("Content-Type: " + formFile.getContentType() + CRLF + CRLF);
 
-        InputStream inStream = formFile.getInStream();
-        IoUtil.copy(inStream, ds);
-        ds.writeBytes(CRLF);
-
-        IoUtil.close(inStream);
+        try(InputStream inStream = formFile.getInStream()){
+            IoUtil.copy(inStream, ds);
+            ds.writeBytes(CRLF);
+        }
     }
 
     /**
@@ -122,18 +111,7 @@ public class NativeUtil {
 
     private static String getTextEntity(MultiValueMap<String, String> params) {
         StringBuilder textEntity = new StringBuilder();
-        // 构造文本类型参数的实体数据
-        if(null != params){
-            ///
-            /*Set<String> keySet = params.keySet();
-            for(String key : keySet){
-                List<String> list = params.get(key);
-                for(String value : list){
-                    textEntity.append(PART_BEGIN_LINE);
-                    textEntity.append("Content-Disposition: form-data; name=\"" + key + "\"" + END + END);
-                    textEntity.append(value).append(END);
-                }
-            }*/
+        if(MapUtil.notEmpty(params)){
             params.forEachKeyValue((key,value)->{
                 textEntity.append(PART_BEGIN_LINE);
                 textEntity.append("Content-Disposition: form-data; name=\"" + key + "\"" + CRLF + CRLF);
@@ -142,15 +120,6 @@ public class NativeUtil {
         }
         return textEntity.toString();
     }
-    /*protected MultiValueMap<String, String> mergeHeaders(MultiValueMap<String, String> headers) {
-        if(null == headers){
-            headers = new ArrayListMultiValueMap<>(1);
-        }
-        ///headers.put("Connection" , "Keep-Alive");
-        //headers.add("Charset" , "UTF-8");
-        headers.add(HeaderRegular.CONTENT_TYPE.toString() , "multipart/form-data; boundary=" + BOUNDARY);
-        return headers;
-    }*/
 
     public static InputStream getStreamFrom(HttpURLConnection connect , int statusCode) throws IOException{
         InputStream inputStream;
@@ -191,16 +160,8 @@ public class NativeUtil {
                                      MultiValueMap<String, String> headers) {
         //add方式处理多值header
         if(MapUtil.notEmpty(headers)) {
-            ///
-            /*Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)->connection.addRequestProperty(k,v)));*/
             headers.forEachKeyValue(connection::addRequestProperty);
         }
-
-        ///set方式处理单值header
-        /*if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
-            overwriteHeaders.forEach(connection::setRequestProperty);
-        }*/
 
         if(null != contentType){
             connection.setRequestProperty(HttpHeaders.CONTENT_TYPE, contentType);
@@ -214,15 +175,9 @@ public class NativeUtil {
 
         //！！！！！！设置ContentType非常重要，他写入的时候根据Content-Type的编码来写的！！！！！！！
 
-        OutputStream outputStream = connect.getOutputStream();
-        outputStream.write(data.getBytes(bodyCharset));
-        outputStream.close();
-        /* PrintWriter out = new PrintWriter(connect.getOutputStream());
-        if (null != data) {
-            out.print(data);
-            out.flush();
+        try(OutputStream outputStream = connect.getOutputStream()){
+            outputStream.write(data.getBytes(bodyCharset));
         }
-        out.close();*/
     }
 
     public static MultiValueMap<String , String> parseHeaders(HttpURLConnection connection) {
@@ -241,26 +196,11 @@ public class NativeUtil {
             } catch (Exception e) {}
         }
     }
-    ///
-    /*
-    protected void initDefaultSSL(String sslVer) {
-        try {
-            TrustManager[] tmCerts = new TrustManager[1];
-            tmCerts[0] = new DefaultTrustManager();
-            SSLContext sslContext = SSLContext.getInstance(sslVer);
-            sslContext.init(null, tmCerts, null);
-            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-
-            HostnameVerifier hostnameVerifier = new TrustAnyHostnameVerifier();
-            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
-        } catch (Exception e) {
-        }
-    }*/
 
     /**
      * form-data的格式为：
      */
-/*
+    /*
     --*****xsyloveyou******
     Content-Disposition: form-data; name="k1"
 
@@ -281,5 +221,5 @@ public class NativeUtil {
             我是文件内容2
     --*****xsyloveyou******--
 
-*/
+    */
 }

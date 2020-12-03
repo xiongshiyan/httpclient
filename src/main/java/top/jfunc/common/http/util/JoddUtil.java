@@ -26,18 +26,9 @@ import java.util.List;
 public class JoddUtil {
     public static void setRequestHeaders(HttpRequest request, String contentType,
                                      MultiValueMap<String, String> headers) {
-        //add方式处理多值header
         if(MapUtil.notEmpty(headers)) {
-            ///
-            /*Set<String> keySet = headers.keySet();
-            keySet.forEach((k)->headers.get(k).forEach((v)-> httpRequest.header(k , v)));*/
             headers.forEachKeyValue(request::header);
         }
-
-        ///set方式处理单值header
-        /*if(null != overwriteHeaders && !overwriteHeaders.isEmpty()){
-            overwriteHeaders.forEach(request::headerOverwrite);
-        }*/
 
         if(null != contentType){
             request.contentType(contentType);
@@ -109,11 +100,10 @@ public class JoddUtil {
     public static void upload0(HttpRequest httpRequest , MultiValueMap<String, String> params, String charset, Iterable<FormFile> formFiles){
         httpRequest.multipart(true);
         httpRequest.formEncoding(charset);
-        if(null != params){
-            /*params.getMap().forEach((k , l) ->l.forEach(v->httpRequest.form(k , v)));*/
+        if(MapUtil.notEmpty(params)){
             params.forEachKeyValue(httpRequest::form);
         }
-        if(null != formFiles){
+        if(ArrayUtil.isNotEmpty(formFiles)){
             for (FormFile formFile : formFiles) {
                 httpRequest.form(formFile.getParameterName() , new FormFileUpload(formFile));
             }
