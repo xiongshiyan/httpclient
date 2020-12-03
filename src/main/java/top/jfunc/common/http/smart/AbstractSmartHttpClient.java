@@ -83,32 +83,20 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     @Override
     public String get(String url, Map<String, String> queryParams, Map<String, String> headers,
                       int connectTimeout, int readTimeout, String resultCharset) throws IOException{
-        MultiValueMap<String , String> p = null;
-        if(MapUtil.notEmpty(queryParams)){
-            p = ArrayListMultiValueMap.fromMap(queryParams);
-        }
-        MultiValueMap<String , String> h = null;
-        if(MapUtil.notEmpty(headers)){
-            h = ArrayListMultiValueMap.fromMap(headers);
-        }
+        MultiValueMap<String , String> q = ArrayListMultiValueMap.fromMap(queryParams);
+        MultiValueMap<String , String> h = ArrayListMultiValueMap.fromMap(headers);
         HttpRequest httpRequest = getAssemblingFactory()
-                .create(url, p, h, connectTimeout, readTimeout, resultCharset);
+                .create(url, q, h, connectTimeout, readTimeout, resultCharset);
         return get(httpRequest , ResponseExtractor::extractString);
     }
 
     @Override
     public String post(String url, Map<String, String> queryParams, String body, String contentType, Map<String, String> headers,
                        int connectTimeout, int readTimeout, String bodyCharset, String resultCharset) throws IOException {
-        MultiValueMap<String , String> p = null;
-        if(MapUtil.notEmpty(queryParams)){
-            p = ArrayListMultiValueMap.fromMap(queryParams);
-        }
-        MultiValueMap<String , String> h = null;
-        if(MapUtil.notEmpty(headers)){
-            h = ArrayListMultiValueMap.fromMap(headers);
-        }
+        MultiValueMap<String , String> q = ArrayListMultiValueMap.fromMap(queryParams);
+        MultiValueMap<String , String> h = ArrayListMultiValueMap.fromMap(headers);
         StringBodyRequest stringBodyRequest = getAssemblingFactory()
-                .create(url, p, body, contentType, h, connectTimeout, readTimeout, bodyCharset, resultCharset);
+                .create(url, q, body, contentType, h, connectTimeout, readTimeout, bodyCharset, resultCharset);
         return post(stringBodyRequest , ResponseExtractor::extractString);
     }
 

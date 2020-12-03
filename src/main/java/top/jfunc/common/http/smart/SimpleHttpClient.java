@@ -16,11 +16,9 @@ import java.util.Map;
 
 /**
  * GET POST接口
- * 此接口可以实现一些简单的Http请求
  * 从接口定义看出，参数直接在接口方法中，改变一个参数就需要重新定义个方法，
- * 实在太啰嗦，并且不好维护， 所以墙裂建议使用其子类{@link SmartHttpClient}，
- * 使用{@link HttpRequest} 及子类或者{@link Request} 来表达请求参数
- * 使用{@link SmartHttpClient}还可以实现一些高级功能，比如拦截。
+ * 实在太啰嗦，并且不好维护， 所以墙裂建议使用其兄弟类
+ * {@link HttpRequestHttpClient} 或者子类{@link SmartHttpClient}，
  * @author 熊诗言
  * @since 2017/11/24
  */
