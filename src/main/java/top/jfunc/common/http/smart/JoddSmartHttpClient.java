@@ -12,8 +12,6 @@ import top.jfunc.common.http.cookie.CookieAccessor;
 
 /**
  * 使用Jodd实现的Http请求类
- * @since 1.2.12
- * @since 2020.12.01
  * @author 熊诗言2020/12/01
  */
 public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRequest> {

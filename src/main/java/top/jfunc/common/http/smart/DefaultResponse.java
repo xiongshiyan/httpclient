@@ -83,7 +83,7 @@ public class DefaultResponse implements Response{
     }
 
     @Override
-    public String getStatusPhrase() {
+    public String getStatusText() {
         return statusPhrase;
     }
 

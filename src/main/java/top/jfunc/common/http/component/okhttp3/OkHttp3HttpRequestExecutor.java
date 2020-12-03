@@ -53,16 +53,16 @@ public class OkHttp3HttpRequestExecutor extends BaseHttpRequestExecutor<Request.
         //1.创建并配置OkHttpClient
         OkHttpClient client = getOkHttpClientFactory().create(httpRequest);
 
-        //2.1设置URL
+        //2.创建builder
         Request.Builder builder = getRequestBuilderFactory().create(httpRequest);
 
-        //2.2处理请求体
+        //3.处理请求体
         handleBody(builder , contentCallback , httpRequest);
 
-        //2.3设置headers
+        //4.设置headers
         handleHeaders(builder , httpRequest);
 
-        //3.执行请求
+        //5.执行请求
         Response response = getResponse(client, builder, httpRequest);
 
         return new OkHttp3ClientHttpResponse(response, httpRequest, getResponseStreamExtractor(), getResponseHeaderExtractor());

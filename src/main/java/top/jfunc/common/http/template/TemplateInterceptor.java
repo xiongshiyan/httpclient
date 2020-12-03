@@ -22,8 +22,8 @@ public interface TemplateInterceptor {
     /**
      * 对返回结果拦截处理 , 比如统一解密 , 默认不处理
      * @param httpRequest Request
-     * @param clientHttpResponse ClientHttpResponse
-     * @return Response
+     * @param clientHttpResponse 框架得到的{@link ClientHttpResponse}
+     * @return ClientHttpResponse 处理过后的响应
      * @throws IOException IOException
      */
     default ClientHttpResponse afterTemplate(HttpRequest httpRequest, ClientHttpResponse clientHttpResponse) throws IOException{

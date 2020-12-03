@@ -31,7 +31,7 @@ public interface Response extends Closeable{
      * 响应的简短说明
      * @return 响应的简短说明
      */
-    String getStatusPhrase();
+    String getStatusText();
 
     /**
      * 响应体作为字节数组

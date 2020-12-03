@@ -28,7 +28,7 @@ import top.jfunc.common.utils.IoUtil;
 import java.io.IOException;
 
 /**
- * {@link ClientHttpResponse} implementation that uses OkHttp2 facilities.
+ * {@link ClientHttpResponse} implementation that uses OkHttp3 facilities.
  *
  * @author xiongshiyan
  */

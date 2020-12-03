@@ -22,6 +22,13 @@ public class ResponseExtractor {
     }
 
     /**
+     * 获取响应的简短说明
+     */
+    public static String extractStatusText(ClientHttpResponse clientHttpResponse, String resultCharset) throws IOException {
+        return clientHttpResponse.getStatusText();
+    }
+
+    /**
      * 获取响应header
      */
     public static MultiValueMap<String, String> extractHeaders(ClientHttpResponse clientHttpResponse, String resultCharset) throws IOException {
@@ -42,6 +49,7 @@ public class ResponseExtractor {
         InputStream inputStream = clientHttpResponse.getBody();
         return null != inputStream ? IoUtil.stream2Bytes(inputStream) : new byte[0];
     }
+
 
     public static Response toResponse(ClientHttpResponse clientHttpResponse, String resultCharset) throws IOException{
         byte[] bodyBytes = extractBytes(clientHttpResponse, resultCharset);
