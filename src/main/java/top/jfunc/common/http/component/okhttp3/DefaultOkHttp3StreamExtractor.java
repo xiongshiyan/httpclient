@@ -15,6 +15,6 @@ public class DefaultOkHttp3StreamExtractor extends AbstractStreamExtractor<Respo
     @Override
     protected InputStream doExtract(Response response, HttpRequest httpRequest) throws IOException {
         ResponseBody body = response.body();
-        return null != body ? body.byteStream() : null;
+        return null == body ? null : body.byteStream();
     }
 }
