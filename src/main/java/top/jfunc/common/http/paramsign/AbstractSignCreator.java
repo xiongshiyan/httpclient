@@ -9,14 +9,15 @@ import top.jfunc.common.utils.MultiValueMap;
 public abstract class AbstractSignCreator implements SignCreator {
     @Override
     public String create(MultiValueMap<String, String> params) {
-        MultiValueMap<String, String> map = handleMap(params);
-        String signStr = ParamSignUtil.getSignStr(map);
+        String signStr = getSignStr(params);
         return doSign(signStr);
     }
-    protected MultiValueMap<String, String> handleMap(MultiValueMap<String, String> paramMap){
+
+    protected String getSignStr(MultiValueMap<String, String> params) {
         String timestamp = String.valueOf(System.currentTimeMillis());
-        String nonceStr  = CommonUtil.randomString(8);
-        return ParamSignUtil.handleMap(paramMap, timestamp, nonceStr);
+        String nonceStr = CommonUtil.randomString(8);
+        MultiValueMap<String, String> multiValueMap = ParamSignUtil.handleMap(params,timestamp,nonceStr);
+        return ParamSignUtil.getSignStr(multiValueMap);
     }
 
     /**
