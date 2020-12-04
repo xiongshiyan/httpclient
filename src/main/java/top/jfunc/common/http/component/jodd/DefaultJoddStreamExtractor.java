@@ -3,8 +3,9 @@ package top.jfunc.common.http.component.jodd;
 import jodd.http.HttpResponse;
 import top.jfunc.common.http.component.AbstractStreamExtractor;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.util.JoddUtil;
+import top.jfunc.common.utils.ArrayUtil;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,6 +15,7 @@ import java.io.InputStream;
 public class DefaultJoddStreamExtractor extends AbstractStreamExtractor<HttpResponse> {
     @Override
     public InputStream doExtract(HttpResponse httpResponse, HttpRequest httpRequest) throws IOException {
-        return JoddUtil.getStreamFrom(httpResponse);
+        byte[] bodyBytes = httpResponse.bodyBytes();
+        return ArrayUtil.isEmpty(bodyBytes) ? null : new ByteArrayInputStream(bodyBytes);
     }
 }

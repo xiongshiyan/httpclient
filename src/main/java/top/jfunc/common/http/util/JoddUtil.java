@@ -12,7 +12,6 @@ import top.jfunc.common.utils.*;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -24,6 +23,7 @@ import java.util.List;
  * @author xiongshiyan at 2019/7/12 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class JoddUtil {
+
     public static void setRequestHeaders(HttpRequest request, String contentType,
                                      MultiValueMap<String, String> headers) {
         if(MapUtil.notEmpty(headers)) {
@@ -71,14 +71,6 @@ public class JoddUtil {
         }
 
         httpRequest.withConnectionProvider(httpConnectionProvider);
-    }
-
-    public static InputStream getStreamFrom(HttpResponse httpResponse) throws IOException{
-        byte[] bodyBytes = httpResponse.bodyBytes();
-        if(ArrayUtil.isEmpty(bodyBytes)){
-            return IoUtil.emptyStream();
-        }
-        return new ByteArrayInputStream(bodyBytes);
     }
 
     public static void closeQuietly(HttpResponse httpResponse) {

@@ -21,7 +21,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
@@ -33,13 +32,6 @@ import java.net.UnknownHostException;
  * @author xiongshiyan at 2019/7/9 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class ApacheUtil {
-    public static InputStream getStreamFrom(HttpEntity entity) throws IOException {
-        InputStream inputStream = entity.getContent();
-        if(null == inputStream){
-            inputStream = IoUtil.emptyStream();
-        }
-        return inputStream;
-    }
 
     public static HttpRequest createHttpUriRequest(String url, Method method) {
         switch (method){
@@ -124,22 +116,21 @@ public class ApacheUtil {
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
     public static void upload0(HttpEntityEnclosingRequest request, MultiValueMap<String, String> params , String charset , Iterable<FormFile> formFiles) throws UnsupportedEncodingException {
-        final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create()
+        final MultipartEntityBuilder builder = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                 .setCharset(CharsetUtil.charset(charset));
 
         if(MapUtil.notEmpty(params)){
-            params.forEachKeyValue(multipartEntityBuilder::addTextBody);
+            params.forEachKeyValue(builder::addTextBody);
         }
 
         if(ArrayUtil.isNotEmpty(formFiles)){
             for (FormFile formFile : formFiles) {
-                multipartEntityBuilder.addBinaryBody(formFile.getParameterName(), formFile.getInStream() , ContentType.parse(formFile.getContentType()) , formFile.getFilName());
+                builder.addBinaryBody(formFile.getParameterName(), formFile.getInStream() , ContentType.parse(formFile.getContentType()) , formFile.getFilName());
             }
         }
 
-        HttpEntity reqEntity = multipartEntityBuilder.build();
-        request.setEntity(reqEntity);
+        request.setEntity(builder.build());
     }
 
 

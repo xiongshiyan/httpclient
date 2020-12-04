@@ -24,7 +24,11 @@ public abstract class AbstractStreamExtractor<S> implements StreamExtractor<S> {
     public InputStream extract(S s, HttpRequest httpRequest) throws IOException {
         Config config = httpRequest.getConfig();
         boolean ignoreResponseBody = ObjectUtil.defaultIfNull(httpRequest.ignoreResponseBody(), config.ignoreResponseBody());
-        return ignoreResponseBody ? IoUtil.emptyStream() : doExtract(s , httpRequest);
+        if(ignoreResponseBody){
+            return IoUtil.emptyStream();
+        }
+        InputStream inputStream = doExtract(s, httpRequest);
+        return null != inputStream ? inputStream : IoUtil.emptyStream();
     }
 
     /**

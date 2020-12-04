@@ -1,9 +1,9 @@
 package top.jfunc.common.http.component.okhttp3;
 
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import top.jfunc.common.http.component.AbstractStreamExtractor;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.util.OkHttp3Util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +14,7 @@ import java.io.InputStream;
 public class DefaultOkHttp3StreamExtractor extends AbstractStreamExtractor<Response> {
     @Override
     protected InputStream doExtract(Response response, HttpRequest httpRequest) throws IOException {
-        return OkHttp3Util.getStreamFrom(response);
+        ResponseBody body = response.body();
+        return null != body ? body.byteStream() : null;
     }
 }

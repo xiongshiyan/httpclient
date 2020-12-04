@@ -1,9 +1,9 @@
 package top.jfunc.common.http.component.apache;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import top.jfunc.common.http.component.AbstractStreamExtractor;
 import top.jfunc.common.http.request.HttpRequest;
-import top.jfunc.common.http.util.ApacheUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +14,7 @@ import java.io.InputStream;
 public class DefaultApacheResponseStreamExtractor extends AbstractStreamExtractor<HttpResponse> {
     @Override
     public InputStream doExtract(HttpResponse response, HttpRequest httpRequest) throws IOException {
-        return ApacheUtil.getStreamFrom(response.getEntity());
+        HttpEntity entity = response.getEntity();
+        return null == entity ? null : entity.getContent();
     }
 }

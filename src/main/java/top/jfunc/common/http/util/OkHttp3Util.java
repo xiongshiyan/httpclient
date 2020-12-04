@@ -26,10 +26,6 @@ import java.util.Map;
  * @author xiongshiyan at 2019/7/12 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class OkHttp3Util {
-    public static InputStream getStreamFrom(Response response) {
-        ResponseBody body = response.body();
-        return (body != null) ? body.byteStream() : IoUtil.emptyStream();
-    }
 
     public static void closeQuietly(Response response) {
         if(null != response){

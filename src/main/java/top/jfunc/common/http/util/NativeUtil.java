@@ -20,8 +20,6 @@ import java.util.Map;
 
 import static top.jfunc.common.utils.StrUtil.CRLF;
 import static top.jfunc.common.utils.StrUtil.TWO_HYPHENS;
-import static top.jfunc.common.http.base.HttpStatus.HTTP_BAD_REQUEST;
-import static top.jfunc.common.http.base.HttpStatus.HTTP_OK;
 
 /**
  * @author xiongshiyan at 2019/7/12 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -120,27 +118,6 @@ public class NativeUtil {
         }
         return textEntity.toString();
     }
-
-    public static InputStream getStreamFrom(HttpURLConnection connect , int statusCode) throws IOException{
-        InputStream inputStream;
-        if(hasInputStream(statusCode)){
-            inputStream = connect.getInputStream();
-        }else {
-            inputStream = connect.getErrorStream();
-        }
-        if(null == inputStream){
-            inputStream = IoUtil.emptyStream();
-        }
-        return inputStream;
-    }
-
-    /**
-     * 200(包含)-400(不包含)之间的响应码，可以调用{@link HttpURLConnection#getInputStream()}，否则只能调用{@link HttpURLConnection#getErrorStream()}
-     */
-    private static boolean hasInputStream(int statusCode){
-        return statusCode >= HTTP_OK && statusCode < HTTP_BAD_REQUEST;
-    }
-
 
     /**
      * @see top.jfunc.common.http.ssl.SSLSocketFactoryBuilder#build()
