@@ -1,5 +1,9 @@
 package top.jfunc.common.http.request;
 
+import top.jfunc.common.http.base.Config;
+import top.jfunc.common.http.base.MediaType;
+import top.jfunc.common.utils.StrUtil;
+
 /**
  * 有请求体的请求
  * !!因为Form请求体也是Body，但是用setBody方式不好使用，所以两个分开
@@ -23,9 +27,38 @@ public interface StringBodyRequest extends HttpRequest {
      * 设置BodyCharset
      * 默认都是{@link top.jfunc.common.http.base.Config#DEFAULT_CHARSET}，如果不是
      * 需要显式地设置为null才能利用{@link top.jfunc.common.http.base.Config#defaultBodyCharset}
-     * @see top.jfunc.common.http.base.Config#calculateBodyCharset(String, String)
+     * @see #calculateBodyCharset()
      * @param bodyCharset bodyCharset
      * @return this
      */
     StringBodyRequest setBodyCharset(String bodyCharset);
+
+    /**
+     * bodyCharset[StringHttpRequest中显式地设置]->contentType->全局默认
+     * @return 计算后的bodyCharset
+     */
+    default String calculateBodyCharset(){
+        String bodyCharset = getBodyCharset();
+
+        //本身是可以的
+        if(StrUtil.isNotEmpty(bodyCharset)){
+            return bodyCharset;
+        }
+
+        String contentType = getContentType();
+        if(StrUtil.isEmpty(contentType)){
+            Config config = getConfig();
+            Config.throwExIfNull(config);
+            return config.getDefaultBodyCharset();
+        }
+        MediaType mediaType = MediaType.parse(contentType);
+        //content-type不正确或者没带字符编码
+        if(null == mediaType || null == mediaType.charset()){
+            Config config = getConfig();
+            Config.throwExIfNull(config);
+            return config.getDefaultBodyCharset();
+        }
+
+        return mediaType.charset().name();
+    }
 }

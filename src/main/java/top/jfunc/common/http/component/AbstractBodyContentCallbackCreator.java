@@ -1,6 +1,5 @@
 package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.http.request.StringBodyRequest;
@@ -21,10 +20,7 @@ public abstract class AbstractBodyContentCallbackCreator<CC> implements BodyCont
 
         StringBodyRequest stringBodyRequest = (StringBodyRequest) httpRequest;
 
-        Config config = httpRequest.getConfig();
-        String bodyCharset = config.calculateBodyCharset(stringBodyRequest.getBodyCharset() , stringBodyRequest.getContentType());
-
-        return create(httpRequest.getMethod() , stringBodyRequest.getBody() , bodyCharset , stringBodyRequest.getContentType());
+        return create(httpRequest.getMethod() , stringBodyRequest.getBody() , stringBodyRequest.calculateBodyCharset() , stringBodyRequest.getContentType());
     }
 
 

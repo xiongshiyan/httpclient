@@ -1,6 +1,5 @@
 package top.jfunc.common.http.component;
 
-import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -13,12 +12,7 @@ import java.io.IOException;
 public abstract class AbstractHeaderHandler<C> implements HeaderHandler<C> {
     @Override
     public void configHeaders(C target, HttpRequest httpRequest) throws IOException {
-        Config config = httpRequest.getConfig();
-        //1.合并默认headers
-        MultiValueMap<String, String> handledHeaders = config.mergeDefaultHeaders(httpRequest.getHeaders());
-
-        //2.真正设置
-        doConfigHeaders(target , httpRequest , handledHeaders);
+        doConfigHeaders(target , httpRequest , httpRequest.mergedHeaders());
     }
     /**
      * 真正的设置header

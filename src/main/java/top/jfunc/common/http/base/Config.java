@@ -2,14 +2,11 @@ package top.jfunc.common.http.base;
 
 import top.jfunc.common.http.cookie.CookieStore;
 import top.jfunc.common.http.response.ClientHttpResponse;
-import top.jfunc.common.http.util.ParamUtil;
 import top.jfunc.common.http.holder.*;
 import top.jfunc.common.http.interceptor.CompositeInterceptor;
 import top.jfunc.common.http.interceptor.Interceptor;
 import top.jfunc.common.http.request.HttpRequest;
 import top.jfunc.common.utils.*;
-
-import java.util.Map;
 
 /**
  * 全局公共配置
@@ -293,48 +290,9 @@ public class Config {
         return temp;
     }
 
-    public MultiValueMap<String , String> mergeDefaultHeaders(final MultiValueMap<String , String> headers){
-        return MapUtil.mergeMap(headers , getDefaultHeaders());
-    }
-
-    /**
-     * 处理Route参数、BaseURL、Query参数
-     * @param originUrl 原始的URL
-     * @param routeParams 路径参数
-     * @param queryParams 查询参数
-     * @param queryParamCharset 查询参数编码
-     * @return 处理过后的URL
-     */
-    public String handleUrlIfNecessary(String originUrl ,
-                                          Map<String, String> routeParams ,
-                                          MultiValueMap<String, String> queryParams ,
-                                          String queryParamCharset){
-        //1.处理Route参数
-        String routeUrl = ParamUtil.replaceRouteParamsIfNecessary(originUrl , routeParams);
-        //2.处理BaseUrl
-        String urlWithBase = ParamUtil.concatUrlIfNecessary(getBaseUrl() , routeUrl);
-        //3.处理Query参数
-        MultiValueMap<String, String> params = MapUtil.mergeMap(queryParams, getDefaultQueryParams());
-        String queryCharsetWithDefault = ObjectUtil.defaultIfNull(queryParamCharset , getDefaultQueryCharset());
-        return ParamUtil.contactUrlParams(urlWithBase, params, queryCharsetWithDefault);
-    }
-    /**
-     * bodyCharset[StringHttpRequest中显式地设置为null]->contentType->全局默认
-     */
-    public String calculateBodyCharset(String bodyCharset , String contentType){
-        //本身是可以的
-        if(StrUtil.isNotEmpty(bodyCharset)){
-            return bodyCharset;
+    public static void throwExIfNull(Config config){
+        if(null == config){
+            throw new IllegalStateException("还未进行Config初始化，无法调用，请使用setConfig()方法设置");
         }
-        if(StrUtil.isEmpty(contentType)){
-            return getDefaultBodyCharset();
-        }
-        MediaType mediaType = MediaType.parse(contentType);
-        //content-type不正确或者没带字符编码
-        if(null == mediaType || null == mediaType.charset()){
-            return getDefaultBodyCharset();
-        }
-
-        return mediaType.charset().name();
     }
 }

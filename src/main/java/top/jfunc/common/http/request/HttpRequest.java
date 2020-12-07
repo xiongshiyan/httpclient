@@ -2,6 +2,7 @@ package top.jfunc.common.http.request;
 
 import top.jfunc.common.http.base.*;
 import top.jfunc.common.http.ssl.SSLSocketFactoryBuilder;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -116,6 +117,12 @@ public interface HttpRequest extends ConfigAccessor , Cloneable{
      * @return 请求的Header
      */
     MultiValueMap<String, String> getHeaders();
+
+    default MultiValueMap<String , String> mergedHeaders(){
+        Config config = getConfig();
+        Config.throwExIfNull(config);
+        return MapUtil.mergeMap(getHeaders() , config.getDefaultHeaders());
+    }
 
     /**
      * 便捷的设置header的方法，set方式，相同key就会覆盖
