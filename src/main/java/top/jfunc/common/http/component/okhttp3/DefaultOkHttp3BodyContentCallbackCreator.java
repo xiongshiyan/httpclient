@@ -2,9 +2,9 @@ package top.jfunc.common.http.component.okhttp3;
 
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.AbstractBodyContentCallbackCreator;
+import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.util.OkHttp3Util;
 
 import java.io.IOException;
@@ -14,8 +14,8 @@ import java.io.IOException;
  */
 public class DefaultOkHttp3BodyContentCallbackCreator extends AbstractBodyContentCallbackCreator<Request.Builder> {
     @Override
-    public ContentCallback<Request.Builder> create(Method method, String body, String bodyCharset, String contentType) throws IOException {
-        RequestBody stringBody = OkHttp3Util.stringBody(body, bodyCharset, contentType);
-        return builder -> OkHttp3Util.setRequestBody(builder, method, stringBody);
+    protected ContentCallback<Request.Builder> doCreate(StringBodyRequest stringBodyRequest) throws IOException {
+        RequestBody stringBody = OkHttp3Util.stringBody(stringBodyRequest.getBody(), stringBodyRequest.calculateBodyCharset(), stringBodyRequest.getContentType());
+        return builder -> OkHttp3Util.setRequestBody(builder, stringBodyRequest.getMethod(), stringBody);
     }
 }

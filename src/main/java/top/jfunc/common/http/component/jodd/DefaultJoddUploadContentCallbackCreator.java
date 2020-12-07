@@ -2,10 +2,9 @@ package top.jfunc.common.http.component.jodd;
 
 import jodd.http.HttpRequest;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.component.AbstractUploadContentCallbackCreator;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.util.JoddUtil;
-import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 
@@ -14,7 +13,7 @@ import java.io.IOException;
  */
 public class DefaultJoddUploadContentCallbackCreator extends AbstractUploadContentCallbackCreator<HttpRequest> {
     @Override
-    public ContentCallback<HttpRequest> create(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return httpRequest -> JoddUtil.upload0(httpRequest , params , paramCharset , formFiles);
+    protected ContentCallback<HttpRequest> doCreate(UploadRequest uploadRequest) throws IOException {
+        return httpRequest -> JoddUtil.upload0(httpRequest , uploadRequest.getFormParams() , uploadRequest.getParamCharset() , uploadRequest.getFormFiles());
     }
 }

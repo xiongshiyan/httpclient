@@ -4,10 +4,9 @@ import okhttp3.MultipartBody;
 import okhttp3.Request;
 import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.component.AbstractUploadContentCallbackCreator;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.util.OkHttp3Util;
-import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 
@@ -16,8 +15,8 @@ import java.io.IOException;
  */
 public class DefaultOkHttp3UploadContentCallbackCreator extends AbstractUploadContentCallbackCreator<Request.Builder> {
     @Override
-    public ContentCallback<Request.Builder> create(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        MultipartBody filesBody = OkHttp3Util.filesBody(params , formFiles);
+    protected ContentCallback<Request.Builder> doCreate(UploadRequest uploadRequest) throws IOException {
+        MultipartBody filesBody = OkHttp3Util.filesBody(uploadRequest.getFormParams() , uploadRequest.getFormFiles());
         return builder -> OkHttp3Util.setRequestBody(builder, Method.POST , filesBody);
     }
 }

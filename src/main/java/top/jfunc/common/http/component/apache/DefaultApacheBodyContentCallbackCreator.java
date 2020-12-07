@@ -2,9 +2,9 @@ package top.jfunc.common.http.component.apache;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
-import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.AbstractBodyContentCallbackCreator;
+import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.util.ApacheUtil;
 
 import java.io.IOException;
@@ -14,8 +14,8 @@ import java.io.IOException;
  */
 public class DefaultApacheBodyContentCallbackCreator extends AbstractBodyContentCallbackCreator<HttpRequest> {
     @Override
-    public ContentCallback<HttpRequest> create(Method method, String body, String bodyCharset, String contentType) throws IOException {
-        return request -> setRequestBody(request, body, bodyCharset);
+    protected ContentCallback<HttpRequest> doCreate(StringBodyRequest stringBodyRequest) throws IOException {
+        return request -> setRequestBody(request, stringBodyRequest.getBody(), stringBodyRequest.calculateBodyCharset());
     }
 
     protected void setRequestBody(HttpRequest request, String body, String bodyCharset){

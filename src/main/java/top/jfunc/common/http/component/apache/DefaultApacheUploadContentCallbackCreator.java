@@ -5,6 +5,7 @@ import org.apache.http.HttpRequest;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.component.AbstractUploadContentCallbackCreator;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.util.ApacheUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -15,8 +16,8 @@ import java.io.IOException;
  */
 public class DefaultApacheUploadContentCallbackCreator extends AbstractUploadContentCallbackCreator<HttpRequest> {
     @Override
-    public ContentCallback<HttpRequest> create(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return request -> upload(request, params , paramCharset , formFiles);
+    protected ContentCallback<HttpRequest> doCreate(UploadRequest uploadRequest) throws IOException {
+        return request -> upload(request, uploadRequest.getFormParams() , uploadRequest.getParamCharset() , uploadRequest.getFormFiles());
     }
 
     protected void upload(HttpRequest request, MultiValueMap<String, String> params , String charset , Iterable<FormFile> formFiles) throws IOException{

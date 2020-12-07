@@ -1,10 +1,9 @@
 package top.jfunc.common.http.component.jdk;
 
 import top.jfunc.common.http.base.ContentCallback;
-import top.jfunc.common.http.base.FormFile;
 import top.jfunc.common.http.component.AbstractUploadContentCallbackCreator;
+import top.jfunc.common.http.request.UploadRequest;
 import top.jfunc.common.http.util.NativeUtil;
-import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -14,7 +13,7 @@ import java.net.HttpURLConnection;
  */
 public class DefaultJdkUploadContentCallbackCreator extends AbstractUploadContentCallbackCreator<HttpURLConnection> {
     @Override
-    public ContentCallback<HttpURLConnection> create(MultiValueMap<String, String> params, String paramCharset, Iterable<FormFile> formFiles) throws IOException {
-        return connection -> NativeUtil.upload0(connection , params , paramCharset , formFiles);
+    protected ContentCallback<HttpURLConnection> doCreate(UploadRequest uploadRequest) throws IOException {
+        return connection -> NativeUtil.upload0(connection , uploadRequest.getFormParams() , uploadRequest.getParamCharset() , uploadRequest.getFormFiles());
     }
 }

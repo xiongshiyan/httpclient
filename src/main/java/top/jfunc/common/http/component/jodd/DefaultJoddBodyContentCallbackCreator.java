@@ -2,9 +2,9 @@ package top.jfunc.common.http.component.jodd;
 
 import jodd.http.HttpRequest;
 import top.jfunc.common.http.base.MediaType;
-import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.AbstractBodyContentCallbackCreator;
+import top.jfunc.common.http.request.StringBodyRequest;
 
 import java.io.IOException;
 
@@ -13,9 +13,11 @@ import java.io.IOException;
  */
 public class DefaultJoddBodyContentCallbackCreator extends AbstractBodyContentCallbackCreator<HttpRequest> {
     @Override
-    public ContentCallback<HttpRequest> create(Method method, String body, String bodyCharset, String contentType) throws IOException {
+    protected ContentCallback<HttpRequest> doCreate(StringBodyRequest stringBodyRequest) throws IOException {
+        String contentType = stringBodyRequest.getContentType();
+        String bodyCharset = stringBodyRequest.calculateBodyCharset();
         String type = null == contentType ?
                 MediaType.APPLICATION_JSON.withCharset(bodyCharset).toString() : contentType;
-        return httpRequest -> httpRequest.bodyText(body , type, bodyCharset);
+        return httpRequest -> httpRequest.bodyText(stringBodyRequest.getBody() , type, bodyCharset);
     }
 }

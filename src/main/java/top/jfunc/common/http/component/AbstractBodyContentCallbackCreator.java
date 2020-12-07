@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * @author xiongshiyan at 2020/1/7 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-public abstract class AbstractBodyContentCallbackCreator<CC> implements BodyContentCallbackCreator<CC> {
+public abstract class AbstractBodyContentCallbackCreator<CC> implements ContentCallbackCreator<CC> {
     @Override
     public ContentCallback<CC> create(HttpRequest httpRequest) throws IOException{
 
@@ -17,11 +17,16 @@ public abstract class AbstractBodyContentCallbackCreator<CC> implements BodyCont
             return null;
         }
 
-
-        StringBodyRequest stringBodyRequest = (StringBodyRequest) httpRequest;
-
-        return create(httpRequest.getMethod() , stringBodyRequest.getBody() , stringBodyRequest.calculateBodyCharset() , stringBodyRequest.getContentType());
+        return doCreate((StringBodyRequest) httpRequest);
     }
+
+    /**
+     * 真正的创建方法
+     * @param stringBodyRequest StringBodyRequest
+     * @return ContentCallback
+     * @throws IOException IOException
+     */
+    protected abstract ContentCallback<CC> doCreate(StringBodyRequest stringBodyRequest) throws IOException;
 
 
     protected boolean supportBody(HttpRequest httpRequest){

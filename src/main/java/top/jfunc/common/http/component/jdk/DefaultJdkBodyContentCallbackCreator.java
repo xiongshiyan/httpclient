@@ -1,8 +1,8 @@
 package top.jfunc.common.http.component.jdk;
 
-import top.jfunc.common.http.base.Method;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.AbstractBodyContentCallbackCreator;
+import top.jfunc.common.http.request.StringBodyRequest;
 import top.jfunc.common.http.util.NativeUtil;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
  */
 public class DefaultJdkBodyContentCallbackCreator extends AbstractBodyContentCallbackCreator<HttpURLConnection> {
     @Override
-    public ContentCallback<HttpURLConnection> create(Method method, String body, String bodyCharset, String contentType) throws IOException {
-        return connection -> NativeUtil.writeContent(connection , body , bodyCharset);
+    protected ContentCallback<HttpURLConnection> doCreate(StringBodyRequest stringBodyRequest) throws IOException {
+        return connection -> NativeUtil.writeContent(connection , stringBodyRequest.getBody() , stringBodyRequest.calculateBodyCharset());
     }
 }

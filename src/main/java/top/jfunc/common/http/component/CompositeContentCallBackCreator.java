@@ -11,12 +11,12 @@ import java.io.IOException;
  * @author xiongshiyan at 2020/10/15 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class CompositeContentCallBackCreator<CC> implements ContentCallbackCreator<CC> {
-    private BodyContentCallbackCreator<CC> bodyContentCallbackCreator;
-    private UploadContentCallbackCreator<CC> uploadContentCallbackCreator;
+    private ContentCallbackCreator<CC> bodyContentCallbackCreator;
+    private ContentCallbackCreator<CC> uploadContentCallbackCreator;
 
 
-    public CompositeContentCallBackCreator(BodyContentCallbackCreator<CC> bodyContentCallbackCreator,
-                                           UploadContentCallbackCreator<CC> uploadContentCallbackCreator) {
+    public CompositeContentCallBackCreator(ContentCallbackCreator<CC> bodyContentCallbackCreator,
+                                           ContentCallbackCreator<CC> uploadContentCallbackCreator) {
         this.bodyContentCallbackCreator = bodyContentCallbackCreator;
         this.uploadContentCallbackCreator = uploadContentCallbackCreator;
     }
@@ -29,11 +29,11 @@ public class CompositeContentCallBackCreator<CC> implements ContentCallbackCreat
         return getBodyContentCallbackCreator().create(httpRequest);
     }
 
-    public BodyContentCallbackCreator<CC> getBodyContentCallbackCreator() {
+    public ContentCallbackCreator<CC> getBodyContentCallbackCreator() {
         return bodyContentCallbackCreator;
     }
 
-    public UploadContentCallbackCreator<CC> getUploadContentCallbackCreator() {
+    public ContentCallbackCreator<CC> getUploadContentCallbackCreator() {
         return uploadContentCallbackCreator;
     }
 }
