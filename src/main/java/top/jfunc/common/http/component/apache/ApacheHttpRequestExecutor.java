@@ -6,10 +6,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
-import top.jfunc.common.http.component.BaseHttpRequestExecutor;
-import top.jfunc.common.http.response.ClientHttpResponse;
-import top.jfunc.common.http.component.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.response.ClientHttpResponse;
 
 import java.io.IOException;
 
@@ -19,33 +17,22 @@ import java.io.IOException;
  * @since 2020.12.01
  * @since 1.2.12
  */
-public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<org.apache.http.HttpRequest, org.apache.http.HttpResponse> implements HttpRequestExecutor<org.apache.http.HttpRequest> {
+public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<org.apache.http.HttpRequest, HttpResponse> implements HttpRequestExecutor<org.apache.http.HttpRequest> {
     private RequesterFactory<org.apache.http.HttpRequest> httpRequestRequesterFactory;
     private RequesterFactory<HttpClient> httpClientRequesterFactory;
 
     public ApacheHttpRequestExecutor() {
-        super(new DefaultApacheResponseStreamExtractor(), new DefaultApacheHeaderExtractor(), new DefaultApacheHeaderHandler());
+        super(new DefaultApacheHeaderHandler(), new DefaultApacheResponseStreamExtractor(), new DefaultApacheHeaderExtractor());
         this.httpRequestRequesterFactory = new DefaultApacheRequestFactory();
         this.httpClientRequesterFactory = new DefaultApacheClientFactory();
     }
 
-    public ApacheHttpRequestExecutor(StreamExtractor<HttpResponse> responseStreamExtractor,
-                                     HeaderExtractor<HttpResponse> responseHeaderExtractor,
-                                     RequesterFactory<org.apache.http.HttpRequest> httpRequestRequesterFactory,
-                                     HeaderHandler<org.apache.http.HttpRequest> httpUriRequestHeaderHandler,
-                                     RequesterFactory<HttpClient> httpClientRequesterFactory) {
-        super(responseStreamExtractor, responseHeaderExtractor, httpUriRequestHeaderHandler);
-        this.httpRequestRequesterFactory = httpRequestRequesterFactory;
-        this.httpClientRequesterFactory = httpClientRequesterFactory;
-    }
-
-    public ApacheHttpRequestExecutor(ContentCallbackHandler<org.apache.http.HttpRequest> contentCallbackHandler,
+    public ApacheHttpRequestExecutor(HeaderHandler<org.apache.http.HttpRequest> httpUriRequestHeaderHandler,
                                      StreamExtractor<HttpResponse> responseStreamExtractor,
                                      HeaderExtractor<HttpResponse> responseHeaderExtractor,
-                                     HeaderHandler<org.apache.http.HttpRequest> requestHeaderHandler,
                                      RequesterFactory<org.apache.http.HttpRequest> httpRequestRequesterFactory,
                                      RequesterFactory<HttpClient> httpClientRequesterFactory) {
-        super(contentCallbackHandler, responseStreamExtractor, responseHeaderExtractor, requestHeaderHandler);
+        super(httpUriRequestHeaderHandler, responseStreamExtractor, responseHeaderExtractor);
         this.httpRequestRequesterFactory = httpRequestRequesterFactory;
         this.httpClientRequesterFactory = httpClientRequesterFactory;
     }

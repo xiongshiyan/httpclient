@@ -12,26 +12,14 @@ import java.io.IOException;
  * @author xiongshiyan
  */
 public abstract class BaseHttpRequestExecutor<CC,RR> {
-    private ContentCallbackHandler<CC> contentCallbackHandler;
+    private HeaderHandler<CC> requestHeaderHandler;
     private StreamExtractor<RR> responseStreamExtractor;
     private HeaderExtractor<RR> responseHeaderExtractor;
-    private HeaderHandler<CC> requestHeaderHandler;
 
 
-    protected BaseHttpRequestExecutor(StreamExtractor<RR> responseStreamExtractor,
-                                      HeaderExtractor<RR> responseHeaderExtractor,
-                                      HeaderHandler<CC> requestHeaderHandler) {
-        this.contentCallbackHandler = new DefaultContentCallbackHandler<>();
-        this.responseStreamExtractor = responseStreamExtractor;
-        this.responseHeaderExtractor = responseHeaderExtractor;
-        this.requestHeaderHandler = requestHeaderHandler;
-    }
-
-    public BaseHttpRequestExecutor(ContentCallbackHandler<CC> contentCallbackHandler,
-                                   StreamExtractor<RR> responseStreamExtractor,
-                                   HeaderExtractor<RR> responseHeaderExtractor,
-                                   HeaderHandler<CC> requestHeaderHandler) {
-        this.contentCallbackHandler = contentCallbackHandler;
+    protected BaseHttpRequestExecutor(HeaderHandler<CC> requestHeaderHandler,
+                                      StreamExtractor<RR> responseStreamExtractor,
+                                      HeaderExtractor<RR> responseHeaderExtractor) {
         this.responseStreamExtractor = responseStreamExtractor;
         this.responseHeaderExtractor = responseHeaderExtractor;
         this.requestHeaderHandler = requestHeaderHandler;
@@ -41,11 +29,9 @@ public abstract class BaseHttpRequestExecutor<CC,RR> {
         getRequestHeaderHandler().configHeaders(requester , httpRequest);
     }
     protected void handleBody(CC requester , ContentCallback<CC> contentCallback, HttpRequest httpRequest) throws IOException {
-        getContentCallbackHandler().handle(requester , contentCallback , httpRequest);
-    }
-
-    public ContentCallbackHandler<CC> getContentCallbackHandler() {
-        return contentCallbackHandler;
+        if(null != contentCallback){
+            contentCallback.doWriteWith(requester);
+        }
     }
 
     public StreamExtractor<RR> getResponseStreamExtractor() {

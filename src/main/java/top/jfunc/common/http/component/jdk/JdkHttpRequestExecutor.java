@@ -2,10 +2,8 @@ package top.jfunc.common.http.component.jdk;
 
 import top.jfunc.common.http.base.ContentCallback;
 import top.jfunc.common.http.component.*;
-import top.jfunc.common.http.component.BaseHttpRequestExecutor;
-import top.jfunc.common.http.response.ClientHttpResponse;
-import top.jfunc.common.http.component.HttpRequestExecutor;
 import top.jfunc.common.http.request.HttpRequest;
+import top.jfunc.common.http.response.ClientHttpResponse;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -20,24 +18,15 @@ public class JdkHttpRequestExecutor extends BaseHttpRequestExecutor<HttpURLConne
     private RequesterFactory<HttpURLConnection> httpURLConnectionFactory;
 
     public JdkHttpRequestExecutor() {
-        super(new DefaultJdkStreamExtractor(), new DefaultJdkHeaderExtractor(), new DefaultJdkHeaderHandler());
+        super(new DefaultJdkHeaderHandler(), new DefaultJdkStreamExtractor(), new DefaultJdkHeaderExtractor());
         this.httpURLConnectionFactory = new DefaultJdkConnectionFactory();
     }
 
-    public JdkHttpRequestExecutor(StreamExtractor<HttpURLConnection> responseStreamExtractor,
-                                  HeaderExtractor<HttpURLConnection> responseHeaderExtractor,
-                                  RequesterFactory<HttpURLConnection> httpURLConnectionFactory,
-                                  HeaderHandler<HttpURLConnection> httpURLConnectionHeaderHandler) {
-        super(responseStreamExtractor, responseHeaderExtractor, httpURLConnectionHeaderHandler);
-        this.httpURLConnectionFactory = httpURLConnectionFactory;
-    }
-
-    public JdkHttpRequestExecutor(ContentCallbackHandler<HttpURLConnection> contentCallbackHandler,
+    public JdkHttpRequestExecutor(HeaderHandler<HttpURLConnection> httpURLConnectionHeaderHandler,
                                   StreamExtractor<HttpURLConnection> responseStreamExtractor,
                                   HeaderExtractor<HttpURLConnection> responseHeaderExtractor,
-                                  HeaderHandler<HttpURLConnection> requestHeaderHandler,
                                   RequesterFactory<HttpURLConnection> httpURLConnectionFactory) {
-        super(contentCallbackHandler, responseStreamExtractor, responseHeaderExtractor, requestHeaderHandler);
+        super(httpURLConnectionHeaderHandler, responseStreamExtractor, responseHeaderExtractor);
         this.httpURLConnectionFactory = httpURLConnectionFactory;
     }
 
