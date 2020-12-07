@@ -4,12 +4,15 @@ import top.jfunc.common.http.base.Config;
 import top.jfunc.common.http.base.HttpHeaders;
 import top.jfunc.common.http.request.DownloadRequest;
 import top.jfunc.common.http.smart.SmartHttpClient;
+import top.jfunc.common.utils.MapUtil;
 import top.jfunc.common.utils.MultiValueMap;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiongshiyan at 2020/2/16 , contact me with email yanshixiong@126.com or phone 15208384257
@@ -20,11 +23,16 @@ class DownloadUtil {
      */
     static long getNetFileLength(SmartHttpClient smartHttpClient , DownloadRequest downloadRequest) throws IOException {
         MultiValueMap<String, String> multiValueMap = smartHttpClient.head(downloadRequest);
-        if(multiValueMap.containsKey(HttpHeaders.CONTENT_LENGTH)){
-            return Long.parseLong(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH));
-        }else {
-            return Long.parseLong(multiValueMap.getFirst(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
+
+        if(MapUtil.isEmpty(multiValueMap)){
+            throw new IllegalStateException(downloadRequest.getCompletedUrl() + "\r\n状态异常，无法获取其长度");
         }
+        for (Map.Entry<String, List<String>> entry : multiValueMap.entrySet()) {
+            if(HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(entry.getKey())){
+                return Long.parseLong(entry.getValue().get(0));
+            }
+        }
+        throw new IllegalStateException(downloadRequest.getCompletedUrl() + "\r\n状态异常，无法获取其长度");
     }
 
     /**

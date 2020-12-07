@@ -10,6 +10,7 @@ import top.jfunc.common.http.request.RequestCreator;
 import top.jfunc.common.http.request.basic.DownLoadRequest;
 import top.jfunc.common.http.smart.*;
 import top.jfunc.common.utils.CommonUtil;
+import top.jfunc.common.utils.RandomUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +20,9 @@ import java.io.IOException;
  */
 @Ignore
 public class DownloadTest {
-    DownLoadRequest downLoadRequest = RequestCreator.download("http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz"
-        , new File("C:\\Users\\xiongshiyan\\Desktop\\tomcat-" + CommonUtil.randomString(16) + ".tar.gz"));
+    private static final String FILE = "https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=974248807,3098128878&fm=26&gp=0.jpg";
+    DownLoadRequest downLoadRequest = RequestCreator.download(FILE
+        , new File("C:\\Users\\xiongshiyan\\Desktop\\" + CommonUtil.randomString(16) + ".jpg"));
     @Test
     public void testCommonDownloadJDK() throws IOException{
         //1373
@@ -115,8 +117,8 @@ public class DownloadTest {
     private void interruptBaseConfFileDownloader(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
         Downloader downloader = new InterruptBaseConfFileDownloader(smartHttpClient , 1024);
-        DownLoadRequest downLoadRequest = RequestCreator.download("http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz"
-                , new File("C:\\Users\\xiongshiyan\\Desktop\\tomcat.tar.gz"));
+        DownLoadRequest downLoadRequest = RequestCreator.download(FILE
+                , new File("C:\\Users\\xiongshiyan\\Desktop\\1.jpg"));
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
@@ -147,8 +149,8 @@ public class DownloadTest {
     private void interruptBaseDownloadFileDownloader(SmartHttpClient smartHttpClient) throws IOException{
         long l = System.currentTimeMillis();
         Downloader downloader = new InterruptBaseDownloadFileDownloader(smartHttpClient , 1024);
-        DownLoadRequest downLoadRequest = RequestCreator.download("http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz"
-                , new File("C:\\Users\\xiongshiyan\\Desktop\\tomcat.tar.gz"));
+        DownLoadRequest downLoadRequest = RequestCreator.download(FILE
+                , new File("C:\\Users\\xiongshiyan\\Desktop\\2.jpg"));
         downloader.download(downLoadRequest);
         System.out.println(System.currentTimeMillis() - l);
     }
@@ -177,8 +179,8 @@ public class DownloadTest {
 
     private void getNetFileLength(SmartHttpClient smartHttpClient) throws IOException{
         Downloader downloader = new InterruptBaseDownloadFileDownloader(smartHttpClient , 1024);
-        DownLoadRequest downLoadRequest = RequestCreator.download("http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.51/bin/apache-tomcat-8.5.51.tar.gz"
-                , new File("C:\\Users\\xiongshiyan\\Desktop\\tomcat.tar.gz"));
+        DownLoadRequest downLoadRequest = RequestCreator.download(FILE
+                , new File("C:\\Users\\xiongshiyan\\Desktop\\3.jpg"));
         long netFileLength = downloader.getNetFileLength(downLoadRequest);
         System.out.println(netFileLength);
     }
