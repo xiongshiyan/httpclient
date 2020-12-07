@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Apache实现的处理
  * @author xiongshiyan
- * @see 2020.12.01
+ * @since 2020.12.01
  * @since 1.2.12
  */
 public class ApacheHttpRequestExecutor extends BaseHttpRequestExecutor<org.apache.http.HttpRequest, org.apache.http.HttpResponse> implements HttpRequestExecutor<org.apache.http.HttpRequest> {

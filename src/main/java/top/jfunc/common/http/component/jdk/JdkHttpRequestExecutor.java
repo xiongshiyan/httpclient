@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 /**
  * HTTPURLConnection实现的处理
  * @author xiongshiyan
- * @see 2020.12.01
+ * @since 2020.12.01
  * @since 1.2.12
  */
 public class JdkHttpRequestExecutor extends BaseHttpRequestExecutor<HttpURLConnection, HttpURLConnection> implements HttpRequestExecutor<HttpURLConnection> {
