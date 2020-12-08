@@ -5,7 +5,6 @@ import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.okhttp3.DefaultOkHttp3BodyContentCallbackCreator;
 import top.jfunc.common.http.component.okhttp3.DefaultOkHttp3UploadContentCallbackCreator;
 import top.jfunc.common.http.component.okhttp3.OkHttp3HttpRequestExecutor;
-import top.jfunc.common.http.cookie.CookieAccessor;
 
 /**
  * 使用OkHttp3实现的Http请求类
@@ -25,18 +24,11 @@ public class OkHttp3SmartHttpClient extends AbstractImplementSmartHttpClient<Req
         super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
 
-    public OkHttp3SmartHttpClient(ContentCallbackCreator<Request.Builder> bodyContentCallbackCreator,
-                                  ContentCallbackCreator<Request.Builder> uploadContentCallbackCreator,
-                                  HttpRequestExecutor<Request.Builder> httpRequestExecutor, CookieAccessor cookieAccessor) {
-        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
-    }
-
     public OkHttp3SmartHttpClient(AssemblingFactory assemblingFactory,
                                   ContentCallbackCreator<Request.Builder> bodyContentCallbackCreator,
                                   ContentCallbackCreator<Request.Builder> uploadContentCallbackCreator,
-                                  HttpRequestExecutor<Request.Builder> httpRequestExecutor,
-                                  CookieAccessor cookieAccessor) {
-        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
+                                  HttpRequestExecutor<Request.Builder> httpRequestExecutor) {
+        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
 
     @Override

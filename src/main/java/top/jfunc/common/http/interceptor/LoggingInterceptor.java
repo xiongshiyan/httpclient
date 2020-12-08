@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jfunc.common.http.request.*;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class LoggingInterceptor extends InterceptorAdapter {
     }
 
     @Override
-    public HttpRequest onBefore(HttpRequest httpRequest) {
+    public HttpRequest onBefore(HttpRequest httpRequest) throws IOException {
         try {
             logger.info("请求方法:"+httpRequest.getMethod().name());
             logger.info("httpRequestClass:"+httpRequest.getClass());

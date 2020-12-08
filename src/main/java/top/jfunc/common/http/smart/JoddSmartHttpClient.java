@@ -5,7 +5,6 @@ import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.jodd.DefaultJoddBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jodd.DefaultJoddUploadContentCallbackCreator;
 import top.jfunc.common.http.component.jodd.JoddHttpRequestExecutor;
-import top.jfunc.common.http.cookie.CookieAccessor;
 
 /**
  * 使用Jodd实现的Http请求类
@@ -25,19 +24,11 @@ public class JoddSmartHttpClient extends AbstractImplementSmartHttpClient<HttpRe
         super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
 
-    public JoddSmartHttpClient(ContentCallbackCreator<HttpRequest> bodyContentCallbackCreator,
-                               ContentCallbackCreator<HttpRequest> uploadContentCallbackCreator,
-                               HttpRequestExecutor<HttpRequest> httpRequestExecutor,
-                               CookieAccessor cookieAccessor) {
-        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
-    }
-
     public JoddSmartHttpClient(AssemblingFactory assemblingFactory,
                                ContentCallbackCreator<HttpRequest> bodyContentCallbackCreator,
                                ContentCallbackCreator<HttpRequest> uploadContentCallbackCreator,
-                               HttpRequestExecutor<HttpRequest> httpRequestExecutor,
-                               CookieAccessor cookieAccessor) {
-        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
+                               HttpRequestExecutor<HttpRequest> httpRequestExecutor) {
+        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
 
     @Override

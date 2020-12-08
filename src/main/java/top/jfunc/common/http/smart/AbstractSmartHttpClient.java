@@ -38,7 +38,6 @@ public abstract class AbstractSmartHttpClient<CC> implements SmartHttpClient, Sm
     protected AbstractSmartHttpClient(ContentCallbackCreator<CC> bodyContentCallbackCreator,
                                       ContentCallbackCreator<CC> uploadContentCallbackCreator){
         this.assemblingFactory = new DefaultSimpleAssemblingFactory();
-
         this.bodyContentCallbackCreator = bodyContentCallbackCreator;
         this.uploadContentCallbackCreator = uploadContentCallbackCreator;
     }

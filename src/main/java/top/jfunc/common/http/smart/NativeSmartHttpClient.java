@@ -4,7 +4,6 @@ import top.jfunc.common.http.component.*;
 import top.jfunc.common.http.component.jdk.DefaultJdkBodyContentCallbackCreator;
 import top.jfunc.common.http.component.jdk.DefaultJdkUploadContentCallbackCreator;
 import top.jfunc.common.http.component.jdk.JdkHttpRequestExecutor;
-import top.jfunc.common.http.cookie.CookieAccessor;
 
 import java.net.HttpURLConnection;
 
@@ -26,19 +25,11 @@ public class NativeSmartHttpClient extends AbstractImplementSmartHttpClient<Http
         super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
 
-    public NativeSmartHttpClient(ContentCallbackCreator<HttpURLConnection> bodyContentCallbackCreator,
-                                 ContentCallbackCreator<HttpURLConnection> uploadContentCallbackCreator,
-                                 HttpRequestExecutor<HttpURLConnection> httpRequestExecutor,
-                                 CookieAccessor cookieAccessor) {
-        super(bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
-    }
-
     public NativeSmartHttpClient(AssemblingFactory assemblingFactory,
                                  ContentCallbackCreator<HttpURLConnection> bodyContentCallbackCreator,
                                  ContentCallbackCreator<HttpURLConnection> uploadContentCallbackCreator,
-                                 HttpRequestExecutor<HttpURLConnection> httpRequestExecutor,
-                                 CookieAccessor cookieAccessor) {
-        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor, cookieAccessor);
+                                 HttpRequestExecutor<HttpURLConnection> httpRequestExecutor) {
+        super(assemblingFactory, bodyContentCallbackCreator, uploadContentCallbackCreator, httpRequestExecutor);
     }
     ///
     /*

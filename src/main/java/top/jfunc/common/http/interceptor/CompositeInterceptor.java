@@ -6,6 +6,7 @@ import top.jfunc.common.http.response.ClientHttpResponse;
 import top.jfunc.common.utils.ArrayUtil;
 import top.jfunc.common.utils.CollectionUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +75,7 @@ public class CompositeInterceptor implements Interceptor {
     }
 
     @Override
-    public HttpRequest onBefore(HttpRequest httpRequest) {
+    public HttpRequest onBefore(HttpRequest httpRequest) throws IOException {
         HttpRequest temp = httpRequest;
         //循环执行拦截器代码
         if (CollectionUtil.isNotEmpty(getInterceptors())) {
@@ -87,7 +88,7 @@ public class CompositeInterceptor implements Interceptor {
     }
 
     @Override
-    public ClientHttpResponse onBeforeReturn(HttpRequest httpRequest, ClientHttpResponse clientHttpResponse) {
+    public ClientHttpResponse onBeforeReturn(HttpRequest httpRequest, ClientHttpResponse clientHttpResponse) throws IOException {
         ClientHttpResponse temp = clientHttpResponse;
         //逆序循环执行拦截器代码
         List<Interceptor> interceptors = getInterceptors();

@@ -16,13 +16,21 @@ import java.util.Map;
  * @author xiongshiyan at 2020/1/17 , contact me with email yanshixiong@126.com or phone 15208384257
  */
 public class DefaultCookieAccessor implements CookieAccessor {
+
+    private CookieStore cookieStore;
+
+    public DefaultCookieAccessor(CookieStore cookieStore) {
+        this.cookieStore = cookieStore;
+    }
+
     /**
+     * 请求之前添加{@link Cookie}，{@link Cookie}从{@link CookieStore}中获取
      * @param httpRequest HttpRequest
      * @throws IOException IOException
      */
     @Override
     public void addCookieIfNecessary(HttpRequest httpRequest) throws IOException {
-        CookieStore cookieStore = httpRequest.getConfig().getCookieStore();
+        CookieStore cookieStore = getCookieStore();
         if(null == cookieStore){
             return;
         }
@@ -47,14 +55,14 @@ public class DefaultCookieAccessor implements CookieAccessor {
     }
 
     /**
-     * 如果存在Cookie，将响应的Cookie保存起来
+     * 如果存在{@link Cookie}，将响应的{@link Cookie}保存在{@link CookieStore}中
      * @param httpRequest HttpRequest
      * @param responseHeaders 响应的headers
      * @throws IOException IOException
      */
     @Override
     public void saveCookieIfNecessary(HttpRequest httpRequest, MultiValueMap<String, String> responseHeaders) throws IOException {
-        CookieStore cookieStore = httpRequest.getConfig().getCookieStore();
+        CookieStore cookieStore = getCookieStore();
         if(null == cookieStore || MapUtil.isEmpty(responseHeaders)){
             return;
         }
@@ -82,5 +90,9 @@ public class DefaultCookieAccessor implements CookieAccessor {
             }
         }
         return newCookies;
+    }
+
+    public CookieStore getCookieStore() {
+        return cookieStore;
     }
 }

@@ -7,10 +7,9 @@ import org.junit.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.junit.MockServerRule;
 import top.jfunc.common.http.base.Config;
-import top.jfunc.common.http.cookie.Cookie;
-import top.jfunc.common.http.cookie.CookieStore;
-import top.jfunc.common.http.cookie.InMemoryCookieStore;
+import top.jfunc.common.http.cookie.*;
 import top.jfunc.common.http.holderrequest.impl.HolderGetRequest;
+import top.jfunc.common.http.interceptor.Interceptor;
 import top.jfunc.common.http.smart.*;
 import top.jfunc.common.utils.MultiValueMap;
 
@@ -31,33 +30,34 @@ public class CookieTest {
     public MockServerRule server = new MockServerRule(this, 50000);
 
     private CookieStore cookieStore = new InMemoryCookieStore();
+    private Interceptor cookieInterceptor = new CookieInterceptor(new DefaultCookieAccessor(cookieStore));
 
     @Test
     public void testCookieOkHttp3()throws Exception{
         //只要设置了CookieStore就支持Cookie
         SmartHttpClient smartHttpClient = new OkHttp3SmartHttpClient();
-        smartHttpClient.setConfig(Config.defaultConfig().setCookieStore(cookieStore));
+        smartHttpClient.setConfig(Config.defaultConfig().addInterceptor(cookieInterceptor));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieApacheHttp()throws Exception{
         //只要设置了CookieStore就支持Cookie
         SmartHttpClient smartHttpClient = new ApacheSmartHttpClient();
-        smartHttpClient.setConfig(Config.defaultConfig().setCookieStore(cookieStore));
+        smartHttpClient.setConfig(Config.defaultConfig().addInterceptor(cookieInterceptor));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieNativeHttp()throws Exception{
         //只要设置了CookieStore就支持Cookie
         SmartHttpClient smartHttpClient = new NativeSmartHttpClient();
-        smartHttpClient.setConfig(Config.defaultConfig().setCookieStore(cookieStore));
+        smartHttpClient.setConfig(Config.defaultConfig().addInterceptor(cookieInterceptor));
         testCookie(smartHttpClient);
     }
     @Test
     public void testCookieJoddHttp() throws Exception{
         //只要设置了CookieStore就支持Cookie
         SmartHttpClient smartHttpClient = new JoddSmartHttpClient();
-        smartHttpClient.setConfig(Config.defaultConfig().setCookieStore(cookieStore));
+        smartHttpClient.setConfig(Config.defaultConfig().addInterceptor(cookieInterceptor));
         testCookie(smartHttpClient);
     }
 

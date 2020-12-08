@@ -2,6 +2,7 @@ package top.jfunc.common.http.interceptor;
 
 import top.jfunc.common.http.request.HttpRequest;
 
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class UrlStatisticsInterceptor extends InterceptorAdapter {
     }
 
     @Override
-    public HttpRequest onBefore(HttpRequest httpRequest) {
+    public HttpRequest onBefore(HttpRequest httpRequest) throws IOException {
         if(isStarting()){
             String url = getSaveUrl(httpRequest);
             saveUrl(url);
